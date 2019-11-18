@@ -3,11 +3,11 @@
     <v-btn small depressed style="color: #5e5efb"
             @click="select(category)"
             v-for="(category, index) in categories" :key="index">
-      {{category.name}}        
+      {{category.name}}
     </v-btn>
     <v-divider></v-divider>
   </div>
-	
+
 </template>
 
 <script>
