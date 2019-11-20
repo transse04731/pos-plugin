@@ -1,0 +1,14 @@
+{
+  "_id": "5dd5010a699667151f0a38fc",
+  "__v": 0,
+  "loader": {
+    "type": "vue-singleton"
+  },
+  "props": {
+    "_code_": "",
+    "_code_type_": "commonJs"
+  },
+  "plugin": "pos-plugin",
+  "path": "components/test/TestSingleton.vue",
+  "id": "5dd5010a699667151f0a38fc"
+}
