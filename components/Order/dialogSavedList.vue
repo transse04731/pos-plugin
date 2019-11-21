@@ -20,11 +20,11 @@
 						<td class="ta-left">{{save.time}}</td>
 						<td class="ta-left row-flex justify-center align-items-center">
 							<g-btn background-color="#1271FF" text-color="white">
-								<g-icon svg>icon-open</g-icon>
+								<g-icon class="mr-2"  svg>icon-open</g-icon>
 								Select
 							</g-btn>
 							<g-btn background-color="#FF4452" text-color="white" class="ml-2" @click="dialogDeleteSave = true">
-								<g-icon svg>icon-delete</g-icon>
+								<g-icon class="mr-2" svg>icon-delete</g-icon>
 								Delete
 							</g-btn>
 						</td>
