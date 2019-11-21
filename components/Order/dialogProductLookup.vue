@@ -1,5 +1,5 @@
 <template>
-	<g-dialog v-model="dialogProductLookup" fullscreen>
+	<g-dialog v-model="dialogProductLookup" fullscreen ref="dialog" domain="TestDialog2">
 		<div class="dialog-lookup w-100">
 			<g-toolbar class="header" color="grey lighten 3" elevation="0">
 				<g-text-field outlined clearable class="w-50" style="color: #1d1d26" clear-icon="cancel" v-model="productLookup" @focus="showKeyboard = true" @blur="showKeyboard = false"></g-text-field>
@@ -49,6 +49,7 @@
   import GIcon from 'pos-vue-framework/src/components/GIcon/GIcon';
   import GSimpleTable from 'pos-vue-framework/src/components/GSimpleTable/GSimpleTable';
   import GKeyboard from 'pos-vue-framework/src/components/GKeyboard/GKeyboard';
+  import { getInternalValue } from 'pos-vue-framework/src/mixins/getVModel';
 
   export default {
     name: 'dialogProductLookup',
@@ -136,19 +137,28 @@
         ],
       }
     },
+    methods: {
+      open() {
+        this.dialogProductLookup = true;
+      }
+    },
+    setup() {
+			const dialogProductLookup = getInternalValue(...arguments);
+			return {dialogProductLookup};
+    },
     computed: {
       tbLookup() {
         return this.showKeyboard ? 'tbLookup' : 'tbLookup__full'
       },
-      dialogProductLookup: {
-        get () {
+      /*dialogProductLookup: {
+        get() {
           return this.value;
-				},
-				set (value) {
+        },
+        set(value) {
           this.$emit('input', value);
-				}
-			}
-		},
+        }
+      }*/
+    },
   }
 </script>
 
