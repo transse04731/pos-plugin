@@ -104,15 +104,7 @@
 </template>
 
 <script>
-  import GCard from 'pos-vue-framework/src/components/GCard/GCard';
-  import GCardTitle from 'pos-vue-framework/src/components/GCard/GCardTitle';
-  import GSimpleTable from 'pos-vue-framework/src/components/GSimpleTable/GSimpleTable';
-  import GBtn from 'pos-vue-framework/src/components/GBtn/GBtn';
-  import GIcon from 'pos-vue-framework/src/components/GIcon/GIcon';
-  import GItemGroup from 'pos-vue-framework/src/components/GItemGroup/GItemGroup';
-  import GSpacer from 'pos-vue-framework/src/components/GLayout/GSpacer';
-  import GDialog from 'pos-vue-framework/src/components/GDialog/GDialog';
-  import GBadge from 'pos-vue-framework/src/components/GBadge/GBadge';
+  import {GBadge, GDialog, GSpacer, GItemGroup, GIcon, GBtn, GSimpleTable, GCardTitle, GCard} from 'pos-vue-framework/src/components';
 
   export default {
     name: 'dialogProductSearchResult',

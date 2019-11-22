@@ -1,8 +1,7 @@
 <script>
   import { GExpandTransition } from 'pos-vue-framework/src/components/transition/transition';
   import { getExpansionModel } from 'pos-vue-framework/src/components/GExpansion/GExpansionFactory';
-  import GIcon from 'pos-vue-framework/src/components/GIcon/GIcon';
-  import GBtn from 'pos-vue-framework/src/components/GBtn/GBtn';
+  import {GIcon, GBtn} from 'pos-vue-framework/src/components';
 
   export default {
     name: 'GExpansion',

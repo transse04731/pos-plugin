@@ -61,14 +61,7 @@
 </template>
 
 <script>
-  import GDialog from 'pos-vue-framework/src/components/GDialog/GDialog';
-  import GSimpleTable from 'pos-vue-framework/src/components/GSimpleTable/GSimpleTable';
-  import GBtn from 'pos-vue-framework/src/components/GBtn/GBtn';
-  import GIcon from 'pos-vue-framework/src/components/GIcon/GIcon';
-  import GToolbar from 'pos-vue-framework/src/components/GToolbar/GToolbar';
-  import GCardTitle from 'pos-vue-framework/src/components/GCard/GCardTitle';
-  import GCard from 'pos-vue-framework/src/components/GCard/GCard';
-  import { GCardText, GCardActions } from 'pos-vue-framework/src/components/GCard/GCardFunctionalComponent';
+  import {GCardText, GCardActions, GCard, GCardTitle, GToolbar, GIcon, GBtn, GSimpleTable, GDialog} from 'pos-vue-framework/src/components';
 
   export default {
     name: 'dialogSavedList',
