@@ -1,0 +1,76 @@
+<template>
+	<g-dialog v-model="dialogNewPayment" fullscreen>
+		<div class="dialog-payment w-100">
+			<div class="form">
+				<p class="ml-1 mb-3">Create New Payment</p>
+				<pos-text-field style="width: 268px" label="Name" placeholder="Payment name" v-model="name"/>
+				<pos-file-input label="Icon"/>
+			</div>
+			<div class="keyboard-wrapper">
+				<pos-keyboard-full v-model="name"/>
+			</div>
+			<g-toolbar bottom color="grey lighten 3">
+				<g-btn background-color="white" text-color="#1d1d26" class="ma-2">
+					<g-icon class="mr-2" svg @click="dialogNewPayment = false">
+						icon-back
+					</g-icon>
+					Back
+				</g-btn>
+			</g-toolbar>
+		</div>
+	</g-dialog>
+</template>
+
+<script>
+  import {GSpacer, GIcon, GBtn, GToolbar, GKeyboard, GDialog} from 'pos-vue-framework/src/components';
+	import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
+	import PosFileInput from '../../pos-shared-components/POSInput/PosFileInputImage';
+	import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';
+
+  export default {
+    name: 'dialogNewPayment',
+    components: { PosKeyboardFull, GSpacer, GIcon, GBtn, GToolbar, GKeyboard, PosFileInput, PosTextField, GDialog },
+    data() {
+      return {
+				name: '',
+      }
+    },
+    props: {
+      value: null,
+    },
+    computed: {
+      dialogNewPayment: {
+        get() {
+          return this.value;
+        },
+        set(val) {
+          this.$emit('input', val);
+        }
+      }
+    }
+  }
+</script>
+
+<style scoped lang="scss">
+	.dialog-payment {
+		background-color: white;
+		display: flex;
+		flex-direction: column;
+
+		.form {
+			padding: 32px 32px 0;
+			color: #1d1d26;
+			font-weight: 700;
+		}
+
+		::v-deep .keyboard-wrapper {
+			position: absolute;
+			bottom: 64px;
+			height: 35%;
+			width: 100%;
+			padding: 16px;
+			background-color: #BDBDBD;
+		}
+	}
+
+</style>
