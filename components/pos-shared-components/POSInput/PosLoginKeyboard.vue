@@ -1,5 +1,5 @@
 <template>
-  <g-keyboard :items="numpad" :template="template" v-model="value"/>
+  <g-keyboard :items="numpad" :template="template" v-model="internalValue"/>
 </template>
 
 <script>
@@ -10,7 +10,7 @@
     components: { GKeyboard },
     //injectService: ['PosStore:loginPassword->value'],
     props: {
-      value: null
+      value: ''
     },
     computed: {
       internalValue: {
