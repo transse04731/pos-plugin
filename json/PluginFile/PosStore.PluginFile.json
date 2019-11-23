@@ -1,14 +1,14 @@
 {
-  "_id": "5dd5fabbb7d20e1ba26b1284",
+  "_id": "5dd7be637bcca8354bfd01af",
   "__v": 0,
   "loader": {
     "type": "vue-singleton"
   },
-  "path": "components/Order/PosStore.vue",
+  "path": "components/PosStore.vue",
   "plugin": "pos-plugin",
   "props": {
     "_code_": "",
     "_code_type_": "commonJs"
   },
-  "id": "5dd5fabbb7d20e1ba26b1284"
+  "id": "5dd7be637bcca8354bfd01af"
 }
