@@ -1,9 +1,9 @@
 <template>
   <div area="buttons">
     <g-btn outlined height="100%">F1</g-btn>
-    <g-btn outlined height="100%" @click="dialogChangePrice = true">Change Price</g-btn>
+    <g-btn outlined height="100%" @click="openDialogChangePrice">Change Price</g-btn>
     <g-btn outlined height="100%">Note</g-btn>
-    <g-btn outlined height="100%" @click="dialogProductLookup = true">Product Lookup</g-btn>
+    <g-btn outlined height="100%" @click="openDialogProductLookup">Product Lookup</g-btn>
     <g-btn outlined height="100%" disabled>Disabled Button</g-btn>
     <g-btn outlined height="100%">Discount</g-btn>
     <g-btn outlined height="100%"></g-btn>
@@ -26,7 +26,13 @@
       return {}
     },
     methods: {
-      quickCash() {}
+      quickCash() {},
+      openDialogChangePrice() {
+        this.$getService('dialogChangePrice:setActive')(true)
+      },
+      openDialogProductLookup() {
+        this.$getService('dialogProductLookup:setActive')(true)
+      }
     }
   }
 </script>
