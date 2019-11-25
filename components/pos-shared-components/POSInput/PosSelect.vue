@@ -1,10 +1,10 @@
 <script>
-    import {GSelect} from "pos-vue-framework/src/components";
+  import { GSelect } from 'pos-vue-framework/src/components';
 
-    export default {
-        name: "POSSelect",
-        mixins: [GSelect],
-    }
+  export default {
+    name: 'PosSelect',
+    mixins: [GSelect],
+  }
 </script>
 
 <style scoped lang="scss">
@@ -32,9 +32,9 @@
         display: flex;
       }
 
-			.g-tf-input.selections div {
-				color: #1d1d26 !important;
-			}
+      .g-tf-input.selections div {
+        color: #1d1d26 !important;
+      }
 
       .input {
         height: 40px;
