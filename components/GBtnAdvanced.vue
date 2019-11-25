@@ -1,6 +1,6 @@
 <template>
   <g-btn :width="buttonWidth" :height="buttonHeight" :background-color="buttonBgColor" :text-color="buttonTextColor">
-    <g-icon :size="iconSize">{{props.textValue}}</g-icon>
+    <g-icon :size="iconSize" :svg="iconSvg">{{props.textValue}}</g-icon>
     {{props.text}}
   </g-btn>
 </template>
@@ -18,7 +18,8 @@
       buttonHeight: [String, Number],
       buttonBgColor: String,
       buttonTextColor: String,
-      textValue: String
+      textValue: String,
+      iconSvg: Boolean
     }
   }
 </script>
