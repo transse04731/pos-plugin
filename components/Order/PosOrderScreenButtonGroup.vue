@@ -20,13 +20,12 @@
   import GBtn from 'pos-vue-framework/src/components/GBtn/GBtn';
 
   export default {
-    name: 'PosOrderScreenActionButtonGroup',
+    name: 'PosOrderScreenButtonGroup',
     components: { GBtn },
-    data() {
-      return {}
-    },
+    injectService: [
+      'PosStore:quickCash'
+    ],
     methods: {
-      quickCash() {},
       openDialogChangePrice() {
         this.$getService('dialogChangePrice:setActive')(true)
       },

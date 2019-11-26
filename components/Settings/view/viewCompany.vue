@@ -1,57 +1,45 @@
 <template>
-	<div>
-		<div style="padding-left: 256px">
-			<div class="main">
-				<div class="main__item">
-					<pos-text-field label="Company Name">
-						<template v-slot:append>
-							<g-icon svg>icon-keyboard</g-icon>
-						</template>
-					</pos-text-field>
-				</div>
-				<div class="main__item">
-					<pos-text-field label="Address">
-						<template v-slot:append>
-							<g-icon svg>icon-keyboard</g-icon>
-						</template>
-					</pos-text-field>
-				</div>
-				<div class="main__item">
-					<pos-text-field label="Telephone">
-						<template v-slot:append>
-							<g-icon svg>icon-keyboard</g-icon>
-						</template>
-					</pos-text-field>
-				</div>
-				<div class="main__item">
-					<pos-text-field label="Tax Number">
-						<template v-slot:append>
-							<g-icon svg>icon-keyboard</g-icon>
-						</template>
-					</pos-text-field>
-				</div>
-				<div class="main__item">
-					<p class="ml-2">Logo</p>
-					<g-file-input outlined filled dense prependInnerIcon="icon-upload" svg-icon></g-file-input>
-				</div>
-				<div>
-					<p class="ml-2">Logo size</p>
-					<div class="logo">
-						<div v-for="i in 6" class="item">
-							{{i}}
-						</div>
-					</div>
+	<div class="main-company">
+		<div class="main-company__item">
+			<pos-text-field label="Company Name">
+				<template v-slot:append>
+					<g-icon svg>icon-keyboard</g-icon>
+				</template>
+			</pos-text-field>
+		</div>
+		<div class="main__item">
+			<pos-text-field label="Address">
+				<template v-slot:append>
+					<g-icon svg>icon-keyboard</g-icon>
+				</template>
+			</pos-text-field>
+		</div>
+		<div class="main__item">
+			<pos-text-field label="Telephone">
+				<template v-slot:append>
+					<g-icon svg>icon-keyboard</g-icon>
+				</template>
+			</pos-text-field>
+		</div>
+		<div class="main__item">
+			<pos-text-field label="Tax Number">
+				<template v-slot:append>
+					<g-icon svg>icon-keyboard</g-icon>
+				</template>
+			</pos-text-field>
+		</div>
+		<div class="main__item">
+			<p class="ml-2">Logo</p>
+			<g-file-input outlined filled dense prependInnerIcon="icon-upload" svg-icon></g-file-input>
+		</div>
+		<div>
+			<p class="ml-2">Logo size</p>
+			<div class="logo">
+				<div v-for="i in 6" class="item">
+					{{i}}
 				</div>
 			</div>
 		</div>
-		<g-toolbar absolute bottom color="grey lighten 3">
-			<g-btn background-color="white" text-color="#1d1d26">
-				<g-icon class="mr-2" svg>
-					icon-back
-				</g-icon>
-				Back
-			</g-btn>
-		</g-toolbar>
 	</div>
 </template>
 
@@ -62,16 +50,11 @@
   export default {
     name: 'viewCompany',
     components: { PosTextField, GFileInput, GTextField, GIcon, GBtn, GToolbar },
-    data() {
-      return {
-        keyboardIcon: keyboard
-      }
-    }
   }
 </script>
 
 <style scoped lang="scss">
-	.main {
+	.main-company {
 		display: grid;
 		grid-template-rows: 1fr 1fr 1fr 1fr;
 		grid-auto-columns: 1fr 1fr;
@@ -115,7 +98,7 @@
 		}
 	}
 
-	.main__item {
+	.main-company__item {
 		padding-right: 32px;
 	}
 

@@ -9,6 +9,7 @@
     data: function () {
       return {
         loginPassword: '',
+				//order screen
 				activeProductWindow: 0,
 				listProducts: [
 					[
@@ -142,6 +143,36 @@
 						promotion: 'Promotion A',
 					},
 				],
+				lastPayment: 0,
+				//settings screen
+				sidebarData: [
+					{
+						title: 'Product', icon: 'icon-liefer_packet', svgIcon: true, badge: '3', badgeColor: '#FF9529',
+						items: [
+							{ title: 'Articles', icon: 'radio_button_unchecked', iconType: 'small', isView: true },
+							{ title: 'Category', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/category' */},
+							{ title: 'Layout', icon: 'radio_button_unchecked', iconType: 'small' },
+						]
+					},
+					{ title: 'Reporting', icon: 'icon-bar_chart', svgIcon: true },
+					{ title: 'User', icon: 'person', isView: true /*href: '/setting/user'*/ },
+					{
+						title: 'Settings', icon: 'icon-cog', svgIcon: true, badge: '3', badgeColor: '#9C24AC',
+						items: [
+							{ title: 'General', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/general'*/ },
+							{ title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small' },
+							{ title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small' },
+						]
+					},
+					{
+						title: 'Advanced settings', icon: 'icon-switch', svgIcon: true, badge: '3', badgeColor: '#FF4081',
+						items: [
+							{ title: 'Company Info', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/company'*/ },
+							{ title: 'Payment', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/payment'*/ },
+							{ title: 'License', icon: 'radio_button_unchecked', iconType: 'small' },
+						]
+					},
+				],
 			}
     },
 		domain: 'PosStore',
@@ -158,6 +189,14 @@
 					return 0
 				}
 			},
+			quickCash() {
+				this.lastPayment = +this.paymentTotal
+				this.paymentTotal = 0;
+				this.paymentTax = 0;
+				this.paymentDiscount = 0;
+				this.paymentSubTotal = 0;
+				this.paymentOrderDetail = [];
+			}
 		},
 		mounted() {
 		},
@@ -175,7 +214,10 @@
 				paymentDiscount: this.paymentDiscount,
 				paymentTax: this.paymentTax,
 				paymentSubTotal: this.paymentSubTotal,
-				paymentOrderDetail: this.paymentOrderDetail
+				paymentOrderDetail: this.paymentOrderDetail,
+				lastPayment: this.lastPayment,
+				//settings screen
+				sidebarData: this.sidebarData
 			}
 		}
   }

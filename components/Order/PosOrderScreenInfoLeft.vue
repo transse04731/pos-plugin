@@ -5,12 +5,11 @@
 <script>
   export default {
     name: 'PosOrderScreenInfoLeft',
-    injectService: ['PosStore:convertMoney'],
-    data() {
-      return {
-        lastPayment: 0
-      }
-    }
+    injectService: [
+      'PosStore:convertMoney',
+      'PosStore:paymentTotal',
+      'PosStore:lastPayment'
+    ]
   }
 </script>
 

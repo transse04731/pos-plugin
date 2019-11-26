@@ -84,7 +84,7 @@
 			}
 		},
 		props: {
-      value: null,
+      value: Boolean,
 		},
 		computed: {
       dialogNewProduct: {

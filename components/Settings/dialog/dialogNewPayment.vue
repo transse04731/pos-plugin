@@ -36,7 +36,7 @@
       }
     },
     props: {
-      value: null,
+      value: Boolean,
     },
     computed: {
       dialogNewPayment: {

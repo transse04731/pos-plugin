@@ -2,16 +2,16 @@
   <div>
     <div class="report-column">
       <span>Discount (€)</span>
-      <span class="number">{{convertMoney(discount)}}</span>
+      <span class="number">{{convertMoney(paymentDiscount)}}</span>
       <span>Tax (€)</span>
-      <span class="number">{{convertMoney(tax)}}</span>
+      <span class="number">{{convertMoney(paymentTax)}}</span>
     </div>
     <g-divider inset vertical color="#979797"/>
     <div class="report-column">
       <span>Sub Total (€)</span>
-      <span class="number">{{convertMoney(subTotal)}}</span>
+      <span class="number">{{convertMoney(paymentSubTotal)}}</span>
       <span>Total (€)</span>
-      <span class="number__important">{{convertMoney(total)}}</span>
+      <span class="number__important">{{convertMoney(paymentTotal)}}</span>
     </div>
   </div>
 </template>
@@ -22,15 +22,13 @@
   export default {
     name: 'PosOrderScreenReport',
     components: { GDivider },
-    injectService: ['PosStore:convertMoney'],
-    data() {
-      return {
-        discount: -0.50,
-        tax: 0.50,
-        subTotal: 40.50,
-        total: 40.50,
-      }
-    }
+    injectService: [
+      'PosStore:convertMoney',
+      'PosStore:paymentTax',
+      'PosStore:paymentTotal',
+      'PosStore:paymentSubTotal',
+      'PosStore:paymentDiscount',
+    ]
   }
 </script>
 

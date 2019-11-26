@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div style="padding-left: 256px">
+		<div>
 			<g-simple-table striped>
 					<tr>
 						<th>Name</th>
@@ -12,29 +12,6 @@
 					</tr>
 			</g-simple-table>
 		</div>
-		<g-toolbar absolute bottom color="grey lighten 3">
-			<g-btn background-color="white" text-color="#1d1d26" class="mr-2">
-				<g-icon class="mr-2" svg>
-					icon-back
-				</g-icon>
-				Back
-			</g-btn>
-			<g-spacer/>
-			<g-btn background-color="white" text-color="#1d1d26" class="mr-2">
-				<g-icon class="mr-2" color="red" @click="dialogNewPayment = true">
-					edit
-				</g-icon>
-				Edit
-			</g-btn>
-			<g-btn background-color="white" text-color="#1d1d26">
-				<g-icon class="mr-2" svg @click="dialogDeletePayment = true">
-					icon-trash
-				</g-icon>
-				Delete
-			</g-btn>
-		</g-toolbar>
-		<dialog-delete-payment v-model="dialogDeletePayment"/>
-		<dialog-new-payment v-model="dialogNewPayment"/>
 	</div>
 </template>
 

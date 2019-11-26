@@ -1,41 +1,12 @@
 <template>
-	<div>
-		<div style="padding-left: 256px">
-			<g-simple-table striped>
-					<tr>
-						<th>Name</th>
-					</tr>
-					<tr v-for="(category, i) in categories" :class="[i === 0 && 'bordered']">
-						<td>{{category}}</td>
-					</tr>
-			</g-simple-table>
-		</div>
-		<g-toolbar absolute bottom color="grey lighten 3">
-			<g-btn background-color="white" text-color="#1d1d26" class="mr-2">
-				<g-icon class="mr-2" svg>
-					icon-back
-				</g-icon>
-				Back
-			</g-btn>
-			<g-spacer/>
-			<g-btn background-color="white" text-color="#1d1d26" class="mr-2">
-				<g-icon class="mr-2" color="red">
-					edit
-				</g-icon>
-				Edit
-			</g-btn>
-			<g-btn background-color="white" text-color="#1d1d26" class="mr-2">
-				<g-icon class="mr-2" svg>
-					icon-trash
-				</g-icon>
-				Delete
-			</g-btn>
-			<g-btn flat background-color="green" text-color="white" @click="dialogNewCategory = true">
-				+ Create new category
-			</g-btn>
-		</g-toolbar>
-		<dialog-new-category v-model="dialogNewCategory"/>
-	</div>
+	<g-simple-table striped>
+		<tr>
+			<th>Name</th>
+		</tr>
+		<tr v-for="(category, i) in categories" :class="[i === 0 && 'bordered']">
+			<td>{{category}}</td>
+		</tr>
+	</g-simple-table>
 </template>
 
 <script>
@@ -50,7 +21,6 @@
 		data() {
       return {
         categories: ['Sport', 'Computer', 'Food', 'Device'],
-        dialogNewCategory: false,
 			}
 		}
   }

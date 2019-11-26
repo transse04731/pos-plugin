@@ -1,34 +1,22 @@
 <template>
-	<div>
-		<div style="padding-left: 256px">
-			<g-simple-table>
-				<tr>
-					<td>Barcode</td>
-					<td><g-switch v-model="model"/></td>
-				</tr>
-				<tr>
-					<td>Favorite article</td>
-					<td><g-switch v-model="model"/></td>
-				</tr>
-				<tr>
-					<td>Virtual keyboard</td>
-					<td><g-switch v-model="model"/></td>
-				</tr>
-				<tr>
-					<td>Cashdrawer opens automatically</td>
-					<td><g-switch v-model="model"/></td>
-				</tr>
-			</g-simple-table>
-		</div>
-		<g-toolbar absolute bottom color="grey lighten 3">
-			<g-btn background-color="white" text-color="#1d1d26">
-				<g-icon class="mr-2" svg>
-					icon-back
-				</g-icon>
-				Back
-			</g-btn>
-		</g-toolbar>
-	</div>
+	<g-simple-table>
+		<tr>
+			<td>Barcode</td>
+			<td><g-switch v-model="model"/></td>
+		</tr>
+		<tr>
+			<td>Favorite article</td>
+			<td><g-switch v-model="model"/></td>
+		</tr>
+		<tr>
+			<td>Virtual keyboard</td>
+			<td><g-switch v-model="model"/></td>
+		</tr>
+		<tr>
+			<td>Cashdrawer opens automatically</td>
+			<td><g-switch v-model="model"/></td>
+		</tr>
+	</g-simple-table>
 </template>
 
 <script>
