@@ -22,7 +22,7 @@
     name: 'dialogDeletePayment',
     components: { GCardActions, GCardText, GBtn, GCardTitle, GCard, GDialog },
     props: {
-      value: null,
+      value: Boolean,
     },
 		computed: {
       dialog: {
