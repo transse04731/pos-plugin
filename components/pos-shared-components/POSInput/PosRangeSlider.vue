@@ -8,11 +8,8 @@
 </template>
 
 <script>
-  import {GRangeSlider} from "pos-vue-framework/src/components";
-
   export default {
     name: "PosRangeSlider",
-    components: {GRangeSlider},
     props: {
       min: [String,Number],
       max: [String,Number],

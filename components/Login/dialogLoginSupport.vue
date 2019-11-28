@@ -29,18 +29,11 @@
 <script>
   import loginSupportDialog from './loginSupportDialog'
 
-  console.log('loginSupportDialog', loginSupportDialog);
-  import GDialog from 'pos-vue-framework/src/components/GDialog/GDialog';
   import PosKeyboardFull from '../pos-shared-components/PosKeyboardFull';
-  import GTextField from 'pos-vue-framework/src/components/GInput/GTextField';
-  import GBtn from 'pos-vue-framework/src/components/GBtn/GBtn';
-  import GIcon from 'pos-vue-framework/src/components/GIcon/GIcon';
-  import GCardTitle from 'pos-vue-framework/src/components/GCard/GCardTitle';
-  import GCard from 'pos-vue-framework/src/components/GCard/GCard';
 
   export default {
     name: 'dialogLoginSupport',
-    components: { GCard, GCardTitle, GIcon, GBtn, GTextField, PosKeyboardFull, GDialog },
+    components: { PosKeyboardFull },
     props: {
       value: null
     },

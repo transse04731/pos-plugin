@@ -1,7 +1,7 @@
 <template>
   <div area="buttons">
     <g-btn outlined height="100%">F1</g-btn>
-    <g-btn outlined height="100%" @click="openDialogChangePrice">Change Price</g-btn>
+    <g-btn outlined height="100%" @click="openDialogChangePrice" :disabled="!hasActiveOrderProduct">Change Price</g-btn>
     <g-btn outlined height="100%">Note</g-btn>
     <g-btn outlined height="100%" @click="openDialogProductLookup">Product Lookup</g-btn>
     <g-btn outlined height="100%" disabled>Disabled Button</g-btn>
@@ -18,13 +18,19 @@
 
 <script>
   import GBtn from 'pos-vue-framework/src/components/GBtn/GBtn';
+  import _ from 'lodash'
 
   export default {
     name: 'PosOrderScreenButtonGroup',
     components: { GBtn },
     injectService: [
-      'PosStore:quickCash'
+      'PosStore:(quickCash, activeTableProduct)'
     ],
+    computed: {
+      hasActiveOrderProduct() {
+        return !_.isNil(this.activeTableProduct)
+      }
+    },
     methods: {
       openDialogChangePrice() {
         this.$getService('dialogChangePrice:setActive')(true)

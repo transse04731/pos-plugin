@@ -32,13 +32,8 @@
 </template>
 
 <script>
-  import GToolbar from 'pos-vue-framework/src/components/GToolbar/GToolbar';
-  import GBtn from 'pos-vue-framework/src/components/GBtn/GBtn';
-  import GIcon from 'pos-vue-framework/src/components/GIcon/GIcon';
-  import GSpacer from 'pos-vue-framework/src/components/GLayout/GSpacer';
   export default {
     name: 'viewArticleToolbar',
-    components: { GSpacer, GIcon, GBtn, GToolbar },
     methods: {
       openDialogNewProduct(){
         this.$getService('dialogNewProduct:setActive')(true)

@@ -1,8 +1,8 @@
 <template>
   <div area="menu">
     <g-btn v-for="(item, i) in menu" :key="i" elevation="0" background-color="#fff" text-color="#1d1d26" height="100%"
-           @click.stop="selectMenu(item)" :class="[item === menuSelected ? 'menu__active' : '']">
-      {{item.title}}
+           @click.stop="select(item)" :class="[item === activeCategory ? 'menu__active' : '']">
+      {{item._id}}
     </g-btn>
   </div>
 </template>
@@ -10,28 +10,20 @@
 <script>
   export default {
     name: 'PosOrderScreenProductCategoryMenu',
+    injectService: ['PosStore:(activeCategory,activeCategoryProducts,getActiveProducts,getAllCategories)'],
     data() {
       return {
-        menu: [
-          { title: 'Favorite' },
-          { title: 'Drink' },
-          { title: 'Sport' },
-          { title: 'Material' },
-          { title: 'Wine' },
-          { title: 'Electronic' },
-          { title: 'Other 1' },
-          { title: 'Other 2' },
-        ],
-        menuSelected: null,
+        menu: [],
       }
     },
     methods: {
-      selectMenu(item) {
-        this.menuSelected = item;
+      async select(item) {
+        this.activeCategory = item;
+        await this.getActiveProducts()
       },
     },
-    created() {
-      this.menuSelected = this.menu[0];
+    async created() {
+      this.menu = await this.getAllCategories()
     }
   }
 </script>

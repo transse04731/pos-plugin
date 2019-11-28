@@ -8,10 +8,8 @@
 </template>
 
 <script>
-  import GBtn from 'pos-vue-framework/src/components/GBtn/GBtn';
   export default {
     name: 'PosPaymentScreenActions',
-    components: { GBtn }
   }
 </script>
 

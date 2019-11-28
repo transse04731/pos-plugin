@@ -71,12 +71,8 @@
 </template>
 
 <script>
-  import {GChip, GCheckbox, GSimpleTable, GSpacer, GIcon, GBtn, GToolbar} from 'pos-vue-framework/src/components';
-  import DialogNewProduct from '../dialog/dialogNewProduct';
-
   export default {
     name: 'viewArticle',
-    components: { DialogNewProduct, GChip, GCheckbox, GSimpleTable, GSpacer, GIcon, GBtn, GToolbar },
 		data () {
 			return {
 			  products: [

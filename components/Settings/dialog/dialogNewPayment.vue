@@ -22,14 +22,13 @@
 </template>
 
 <script>
-  import {GSpacer, GIcon, GBtn, GToolbar, GKeyboard, GDialog} from 'pos-vue-framework/src/components';
 	import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
 	import PosFileInput from '../../pos-shared-components/POSInput/PosFileInputImage';
 	import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';
 
   export default {
     name: 'dialogNewPayment',
-    components: { PosKeyboardFull, GSpacer, GIcon, GBtn, GToolbar, GKeyboard, PosFileInput, PosTextField, GDialog },
+    components: { PosKeyboardFull, PosFileInput, PosTextField },
     data() {
       return {
 				name: '',

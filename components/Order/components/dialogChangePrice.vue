@@ -5,28 +5,28 @@
         <div class="header">
           <div class="col-5">
             <p>Original Price</p>
-            <g-text-field read-only outlined value="€ 50"/>
+            <g-text-field read-only outlined :value="`€ ${activeProduct && activeProduct.price}`"/>
           </div>
           <div class="col-5">
             <p>Effective Price</p>
-            <g-text-field read-only outlined class="tf__effective" value="€ 30.50"/>
+            <g-text-field read-only outlined class="tf__effective" :value="`€ ${computedPrice}`"/>
           </div>
         </div>
         <g-radio-group name="basic" v-model="changeType">
           <g-radio color="#1271ff" value="percentage" label="Discount by %"></g-radio>
           <div class="row-flex col-10 m-auto">
-            <g-btn outlined :disabled="disabledPercent">- 5%</g-btn>
-            <g-btn outlined :disabled="disabledPercent">- 10%</g-btn>
-            <g-btn outlined :disabled="disabledPercent">- 15%</g-btn>
-            <g-btn outlined :disabled="disabledPercent">- 20%</g-btn>
+            <g-btn outlined :disabled="disabledPercent" @click="newPercent = 5">- 5%</g-btn>
+            <g-btn outlined :disabled="disabledPercent" @click="newPercent = 10">- 10%</g-btn>
+            <g-btn outlined :disabled="disabledPercent" @click="newPercent = 15">- 15%</g-btn>
+            <g-btn outlined :disabled="disabledPercent" @click="newPercent = 20">- 20%</g-btn>
             <g-text-field dense outlined :disabled="disabledPercent" v-model="newPercent" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false" :rules="[rulePercent.percent]"></g-text-field>
           </div>
           <g-radio color="#1271ff" value="amount" label="Discount by €"></g-radio>
           <div class="row-flex col-10 m-auto">
-            <g-btn outlined :disabled="disabledAmount">- € 5</g-btn>
-            <g-btn outlined :disabled="disabledAmount">- € 10</g-btn>
-            <g-btn outlined :disabled="disabledAmount">- € 15</g-btn>
-            <g-btn outlined :disabled="disabledAmount">- € 20</g-btn>
+            <g-btn outlined :disabled="disabledAmount" @click="newAmount = 5">- € 5</g-btn>
+            <g-btn outlined :disabled="disabledAmount" @click="newAmount = 10">- € 10</g-btn>
+            <g-btn outlined :disabled="disabledAmount" @click="newAmount = 15">- € 15</g-btn>
+            <g-btn outlined :disabled="disabledAmount" @click="newAmount = 20">- € 20</g-btn>
             <g-text-field dense outlined :disabled="disabledAmount" v-model="newAmount" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false"></g-text-field>
           </div>
           <g-radio color="#1271ff" value="new" label="New Price"></g-radio>
@@ -36,7 +36,7 @@
         </g-radio-group>
         <div class="action">
           <g-btn flat background-color="#efefef" text-color="grey darken 1" @click="dialogChangePrice = false">Cancel</g-btn>
-          <g-btn flat background-color="blue accent 3" text-color="white" @click="changePrice()">OK</g-btn>
+          <g-btn flat background-color="blue accent 3" text-color="white" @click="changePrice">OK</g-btn>
         </div>
       </div>
       <div :style="[{visibility: showKeyboard ? 'visible' : 'hidden'}]" class="keyboard-wrapper">
@@ -47,15 +47,17 @@
 </template>
 
 <script>
-  import {GBtn, GRadio, GRadioGroup, GTextField, GDialog} from 'pos-vue-framework/src/components';
   import PosNumpad from '../../pos-shared-components/PosNumpad';
+  import _ from 'lodash'
 
   export default {
     name: 'dialogChangePrice',
-    components: { PosNumpad, GBtn, GRadio, GRadioGroup, GTextField, GDialog },
+    components: { PosNumpad },
+    injectService: ['PosStore:(activeTableProduct,currentOrder)'],
     props: {
       value: Boolean,
       product: null,
+      //todo dynamic discount button value
     },
     data() {
       return {
@@ -70,6 +72,30 @@
       }
     },
     computed: {
+      activeProduct: {
+        get() {
+          if (this.currentOrder && this.currentOrder.length > 0 && !_.isNil(this.activeTableProduct)) {
+            return this.currentOrder[this.activeTableProduct].product
+          }
+        },
+        set(val) {
+          debugger
+          this.currentOrder[this.activeTableProduct].product = val
+        }
+      },
+      computedPrice() {
+        if (this.activeProduct) {
+          if (this.changeType === 'percentage') {
+
+            return (this.activeProduct.price * (100 - this.newPercent)) / 100
+          }
+          if (this.changeType === 'amount') return this.activeProduct.price - this.newAmount
+          if (this.changeType === 'new') return this.newPrice
+
+          return this.activeProduct.price
+        }
+        return 0
+      },
       dialogChangePrice: {
         get() {
           return this.value;
@@ -90,14 +116,16 @@
     },
     methods: {
       changePrice() {
-        if (!this.product) {
+        if (!this.activeProduct) {
           this.dialogChangePrice = false;
           return;
         }
-        this.product.edited = true;
-        this.$emit('change-price', this.product)
+        this.activeProduct = Object.assign(this.activeProduct, {
+          edited: true,
+          price: this.computedPrice
+        })
         this.dialogChangePrice = false;
-      }
+      },
     }
   }
 </script>

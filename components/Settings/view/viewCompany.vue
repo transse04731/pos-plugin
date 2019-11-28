@@ -1,6 +1,6 @@
 <template>
-	<div class="main-company">
-		<div class="main-company__item">
+	<div class="main">
+		<div class="main__item">
 			<pos-text-field label="Company Name">
 				<template v-slot:append>
 					<g-icon svg>icon-keyboard</g-icon>
@@ -44,17 +44,16 @@
 </template>
 
 <script>
-  import {GFileInput, GTextField, GIcon, GBtn, GToolbar} from 'pos-vue-framework/src/components';
   import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
 
   export default {
     name: 'viewCompany',
-    components: { PosTextField, GFileInput, GTextField, GIcon, GBtn, GToolbar },
+    components: { PosTextField },
   }
 </script>
 
 <style scoped lang="scss">
-	.main-company {
+	.main {
 		display: grid;
 		grid-template-rows: 1fr 1fr 1fr 1fr;
 		grid-auto-columns: 1fr 1fr;
@@ -98,7 +97,7 @@
 		}
 	}
 
-	.main-company__item {
+	.main__item {
 		padding-right: 32px;
 	}
 

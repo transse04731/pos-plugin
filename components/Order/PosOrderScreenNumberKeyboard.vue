@@ -9,10 +9,8 @@
 </template>
 
 <script>
-  import GNumberKeyboard from 'pos-vue-framework/src/components/GKeyboard/GNumberKeyboard';
   export default {
     name: 'PosOrderScreenNumberKeyboard',
-    components: { GNumberKeyboard },
     data() {
       return {
         number: '',

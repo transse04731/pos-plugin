@@ -43,11 +43,8 @@
 </template>
 
 <script>
-  import GSimpleTable from 'pos-vue-framework/src/components/GSimpleTable/GSimpleTable';
-  import GIcon from 'pos-vue-framework/src/components/GIcon/GIcon';
   export default {
     name: 'PosPaymentScreenTable',
-    components: { GIcon, GSimpleTable },
     injectService: [
       'PosStore:paymentOrderDetail'
     ]

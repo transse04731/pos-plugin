@@ -10,11 +10,8 @@
 </template>
 
 <script>
-  import {GSimpleTable, GBtn, GIcon, GToolbar} from 'pos-vue-framework/src/components';
-
   export default {
     name: 'viewGeneralToolbar',
-    components: { GSimpleTable, GBtn, GIcon, GToolbar },
   }
 </script>
 

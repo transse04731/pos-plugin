@@ -16,22 +16,15 @@
 </template>
 
 <script>
-  import {GSpacer, GSimpleTable, GIcon, GBtn, GToolbar} from 'pos-vue-framework/src/components';
-  import DialogDeletePayment from '../dialog/dialogDeletePayment';
-  import DialogNewPayment from '../dialog/dialogNewPayment';
-
   export default {
     name: 'viewPayment',
-    components: { DialogNewPayment, DialogDeletePayment, GSpacer, GSimpleTable, GIcon, GBtn, GToolbar },
 		data() {
       return {
         payments: [
 					{ name: 'Cash', icon: 'icon-cash'},
 					{ name: 'Card', icon: 'icon-credit_card'},
 					{ name: 'Paypal', icon: 'icon-paypal'},
-				],
-        dialogDeletePayment: false,
-        dialogNewPayment: false,
+				]
 			}
 		}
   }

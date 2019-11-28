@@ -20,11 +20,8 @@
 </template>
 
 <script>
-  import {GSwitch, GSimpleTable, GBtn, GIcon, GToolbar} from 'pos-vue-framework/src/components';
-
   export default {
     name: 'viewGeneral',
-    components: { GSwitch, GSimpleTable, GBtn, GIcon, GToolbar },
 		data () {
        return {
          model: true,

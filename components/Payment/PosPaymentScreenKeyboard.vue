@@ -20,12 +20,8 @@
 </template>
 
 <script>
-  import GNumberKeyboard from 'pos-vue-framework/src/components/GKeyboard/GNumberKeyboard';
-  import GBtn from 'pos-vue-framework/src/components/GBtn/GBtn';
-
   export default {
     name: 'PosPaymentScreenKeyboard',
-    components: { GBtn, GNumberKeyboard },
     props: {
       value: String
     },

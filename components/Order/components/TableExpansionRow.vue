@@ -1,15 +1,8 @@
 <script>
-  import { GExpandTransition } from 'pos-vue-framework/src/components/transition/transition';
   import { getExpansionModel } from 'pos-vue-framework/src/components/GExpansion/GExpansionFactory';
-  import {GIcon, GBtn} from 'pos-vue-framework/src/components';
 
   export default {
-    name: 'GExpansion',
-    components: {
-      GBtn,
-      GIcon,
-			GExpandTransition
-    },
+    name: 'TableExpansionRow',
     props: {
       items: Array,
       mandatory: Boolean,
@@ -63,7 +56,7 @@
             vShow={isActiveItem(item)}>
 						<div class="col-4 row-flex">
 							<div class="col-4 row-flex align-items-center justify-center">
-								<g-btn icon small text-color="#1d1d26" style="margin: 8px 0">
+								<g-btn icon small text-color="#1d1d26" style="margin: 8px 0" vOn:click_stop={() => context.emit(`click:remove`, item)}>
 									<g-icon>remove_circle_outline</g-icon>
 								</g-btn>
 							</div>
@@ -73,7 +66,7 @@
 								</div>
 							</div>
 							<div class="col-4 row-flex align-items-center justify-center">
-                <g-btn icon small text-color="#1d1d26" style="margin: 8px 0">
+                <g-btn icon small text-color="#1d1d26" style="margin: 8px 0" vOn:click_stop={() => context.emit(`click:add`, item)}>
                   <g-icon>add_circle_outline</g-icon>
                 </g-btn>
 							</div>
@@ -88,7 +81,7 @@
 
 
       function genExpansionGroup() {
-        return <div class={['g-expansion-group']}>
+        return <fragment>
           {
             props.items.map(item =>
               <tr
@@ -99,7 +92,7 @@
 								</td>
               </tr>)
           }
-        </div>
+        </fragment>
       }
 
       return {

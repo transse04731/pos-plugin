@@ -22,11 +22,8 @@
 </template>
 
 <script>
-  import GAvatar from 'pos-vue-framework/src/components/GAvatar/GAvatar';
-  import GIcon from 'pos-vue-framework/src/components/GIcon/GIcon';
   export default {
     name: 'PosPaymentScreenInfo',
-    components: { GIcon, GAvatar }
   }
 </script>
 

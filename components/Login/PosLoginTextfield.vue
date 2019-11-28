@@ -8,13 +8,10 @@
 </template>
 
 <script>
-  import GTextField from 'pos-vue-framework/src/components/GInput/GTextField';
-  import GIcon from 'pos-vue-framework/src/components/GIcon/GIcon';
   import { getInternalValue } from 'pos-vue-framework/src/mixins/getVModel';
 
   export default {
     name: 'PosLoginTextfield',
-    components: { GIcon, GTextField },
     setup() {
       const internalValue = getInternalValue(...arguments);
       return { internalValue }

@@ -83,14 +83,13 @@
 </template>
 
 <script>
-  import {GTextField, GGridLayout, GSpacer, GImg, GAvatar, GListItem, GList, GIcon, GBtn, GToolbar} from 'pos-vue-framework/src/components';
   import PosSwitch from '../../pos-shared-components/PosSwitch';
   import layout from './layoutUserView';
   import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
 
   export default {
     name: 'StaffPermission',
-    components: { PosTextField, GTextField, GGridLayout, GSpacer, GImg, GAvatar, GListItem, GList, PosSwitch, GIcon, GBtn, GToolbar },
+    components: { PosTextField, PosSwitch },
     data() {
       return {
         layout: layout,

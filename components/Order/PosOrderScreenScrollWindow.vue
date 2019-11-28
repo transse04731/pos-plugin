@@ -1,13 +1,20 @@
 <template>
   <div class="main">
-    <g-scroll-window area="window" :show-arrows="false" v-model="activeProductWindow" elevation="0">
-      <g-scroll-window-item v-for="(items, i) in listProducts" :key="i">
-        <g-btn v-for="(item, i) in items" :key="i" flat :background-color="item.color" height="100%">{{item.title}}</g-btn>
+    <g-scroll-window area="window" :show-arrows="false" elevation="0" v-model="activeProductWindow">
+      <g-scroll-window-item v-for="(window, windowIndex) in productWindows" :key="windowIndex">
+        <g-btn v-for="(item, i) in window" :key="i"
+               flat
+               :background-color="item.layouts[0].color"
+               height="100%"
+               @click="addProductToOrder(item)"
+        >
+          {{item.name}}
+        </g-btn>
       </g-scroll-window-item>
     </g-scroll-window>
-    <g-item-group area="delimiter" :items="listProducts" v-model="activeProductWindow" :return-object="false" mandatory>
+    <g-item-group area="delimiter" :items="productWindows" v-model="activeProductWindow" :return-object="false" mandatory>
       <template v-slot:default="{ toggle, active }">
-        <template v-for="(item, index) in listProducts">
+        <template v-for="(item, index) in productWindows">
           <g-item :is-active="active(item)" :key="index">
             <g-btn @click="toggle(item)"></g-btn>
           </g-item>
@@ -18,22 +25,27 @@
 </template>
 
 <script>
-  import GBtn from 'pos-vue-framework/src/components/GBtn/GBtn';
-  import GScrollWindow from 'pos-vue-framework/src/components/GWindow/GScrollWindow';
-  import GScrollWindowItem from 'pos-vue-framework/src/components/GWindow/GScrollWindowItem';
-  import GItemGroup from 'pos-vue-framework/src/components/GItemGroup/GItemGroup';
-  import GItem from 'pos-vue-framework/src/components/GItemGroup/GItem';
+  import _ from 'lodash'
 
   export default {
     name: 'PosOrderScreenScrollWindow',
-    components: { GItem, GItemGroup, GScrollWindowItem, GScrollWindow, GBtn },
     props: {
       value: {
         type: Number,
         default: 0
       }
     },
-    injectService: ['PosStore:activeProductWindow', 'PosStore:listProducts'],
+    injectService: ['PosStore:(activeCategoryProducts,addProductToOrder)'],
+    data() {
+      return {
+        activeProductWindow: 0,
+      }
+    },
+    computed: {
+      productWindows() {
+        return _.chunk(this.activeCategoryProducts, 28)
+      }
+    }
   }
 </script>
 
@@ -56,6 +68,7 @@
         grid-template-rows: repeat(7, 1fr);
         grid-template-columns: repeat(4, 1fr);
         grid-gap: 6px;
+        margin-right: 6px;
       }
     }
 

@@ -16,12 +16,8 @@
 </template>
 
 <script>
-  import { GBtn, GImg, GAvatar, GSidebar, GSideBarTreeView } from 'pos-vue-framework/src/components';
-  import _ from 'lodash'
-
   export default {
     name: 'PosSettingsScreenSidebar',
-    components: { GBtn, GImg, GAvatar, GSidebar, GSideBarTreeView },
 		injectService: ['PosStore:sidebarData'],
 		props: {
 			value: null
@@ -32,46 +28,9 @@
 					return this.value
 				},
 				set(value) {
-					// const activeItemPath = value.split('.').slice(1).join('.')
-					// this.$emit('input', _.get(this.data, activeItemPath))
 					this.$emit('input', value)
 				}
 			}
-		},
-		data() {
-      return {
-        data: [
-          {
-            title: 'Product', icon: 'icon-liefer_packet', svgIcon: true, badge: '3', badgeColor: '#FF9529',
-            items: [
-              { title: 'Articles', icon: 'radio_button_unchecked', iconType: 'small', isView: true },
-              { title: 'Category', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/category' */},
-              { title: 'Layout', icon: 'radio_button_unchecked', iconType: 'small' },
-            ]
-          },
-          { title: 'Reporting', icon: 'icon-bar_chart', svgIcon: true },
-          { title: 'User', icon: 'person', href: '/setting/user' },
-          {
-            title: 'Settings', icon: 'icon-cog', svgIcon: true, badge: '3', badgeColor: '#9C24AC',
-            items: [
-              { title: 'General', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/general'*/ },
-              { title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small' },
-              { title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small' },
-            ]
-          },
-          {
-            title: 'Advanced settings', icon: 'icon-switch', svgIcon: true, badge: '3', badgeColor: '#FF4081',
-            items: [
-              { title: 'Company Info', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/company'*/ },
-              { title: 'Payment', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/payment'*/ },
-              { title: 'License', icon: 'radio_button_unchecked', iconType: 'small' },
-            ]
-          },
-        ],
-      }
-    },
-		onMounted() {
-			console.log(this.sidebarData)
 		}
   }
 </script>

@@ -60,7 +60,6 @@
 </template>
 
 <script>
-  import {GIcon, GBtn, GExpansion, GDialog} from 'pos-vue-framework/src/components';
   import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';
   import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
   import PosSwitch from '../../pos-shared-components/PosSwitch';
@@ -68,7 +67,7 @@
 
   export default {
     name: 'dialogNewProduct',
-    components: { GIcon, GBtn, GExpansion, PosSelect, PosSwitch, PosTextField, PosKeyboardFull, GDialog },
+    components: { PosSelect, PosSwitch, PosTextField, PosKeyboardFull },
 		data () {
       return {
         selected: null,

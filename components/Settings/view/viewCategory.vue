@@ -10,14 +10,8 @@
 </template>
 
 <script>
-  import {GSpacer, GSimpleTable, GIcon, GBtn, GToolbar} from 'pos-vue-framework/src/components';
-  import DialogDeletePayment from '../dialog/dialogDeletePayment';
-  import DialogNewPayment from '../dialog/dialogNewPayment';
-  import DialogNewCategory from '../dialog/dialogNewCategory';
-
   export default {
     name: 'viewCategory',
-    components: { DialogNewCategory, DialogNewPayment, DialogDeletePayment, GSpacer, GSimpleTable, GIcon, GBtn, GToolbar },
 		data() {
       return {
         categories: ['Sport', 'Computer', 'Food', 'Device'],

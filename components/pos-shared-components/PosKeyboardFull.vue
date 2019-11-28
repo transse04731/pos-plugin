@@ -3,11 +3,8 @@
 </template>
 
 <script>
-	import { GKeyboard } from 'pos-vue-framework/src/components';
-
   export default {
     name: 'PosKeyboardFull',
-    components: { GKeyboard },
 		data () {
       return {
         keyboardFull: [

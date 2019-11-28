@@ -16,11 +16,8 @@
 </template>
 
 <script>
-  import {GCardActions, GCardText, GBtn, GCardTitle, GCard, GDialog} from 'pos-vue-framework/src/components';
-
   export default {
     name: 'dialogDeletePayment',
-    components: { GCardActions, GCardText, GBtn, GCardTitle, GCard, GDialog },
     props: {
       value: Boolean,
     },

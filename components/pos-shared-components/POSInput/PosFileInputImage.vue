@@ -7,11 +7,8 @@
 </template>
 
 <script>
-  import {GFileInput} from "pos-vue-framework/src/components";
-
   export default {
     name: "PosFileInputImage",
-    components: {GFileInput},
     methods: {
       getImageSrc(file) {
         let reader = new FileReader()
