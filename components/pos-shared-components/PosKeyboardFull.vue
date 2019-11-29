@@ -55,7 +55,7 @@
           { content: ['7'], action: (value, append) => (value + append), style: 'grid-area: key7' },
           { content: ['8'], action: (value, append) => (value + append), style: 'grid-area: key8' },
           { content: ['9'], action: (value, append) => (value + append), style: 'grid-area: key9' },
-          { content: ['2'], action: (value, append) => (value + append), style: 'grid-area: key4' },
+          { content: ['4'], action: (value, append) => (value + append), style: 'grid-area: key4' },
           { content: ['5'], action: (value, append) => (value + append), style: 'grid-area: key5' },
           { content: ['6'], action: (value, append) => (value + append), style: 'grid-area: key6' },
           { content: ['1'], action: (value, append) => (value + append), style: 'grid-area: key1' },

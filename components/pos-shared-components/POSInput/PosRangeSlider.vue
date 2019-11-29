@@ -1,8 +1,8 @@
 <template>
-  <g-range-slider v-model="value" :min="min" :max="max" height="8px" track-fill-color="#1271FF" thumb-color="#1271FF" thumb-label="always">
+  <g-range-slider v-model="internalValue" :min="min" :max="max" height="8px" track-fill-color="#1271FF" thumb-color="#1271FF" thumb-label="always">
     <template v-slot:thumb-label="props">
       <span>€{{props.value}}</span>
-      <div class="arrow_down"/>
+      <div class="arrow_down"></div>
     </template>
   </g-range-slider>
 </template>
@@ -13,12 +13,18 @@
     props: {
       min: [String,Number],
       max: [String,Number],
+      value: Array,
     },
-    data() {
-      return {
-        value: [0, 20]
+    computed: {
+      internalValue: {
+        get() {
+          return this.value;
+        },
+        set(val) {
+          this.$emit('input', val);
+        }
       }
-    },
+    }
   }
 </script>
 
