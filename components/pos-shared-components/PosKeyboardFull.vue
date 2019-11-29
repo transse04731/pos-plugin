@@ -1,11 +1,11 @@
 <template>
-	<g-keyboard v-model="internalValue" :items="keyboardFull" :template="templateFull"></g-keyboard>
+  <g-keyboard v-model="internalValue" :items="keyboardFull" :template="templateFull"></g-keyboard>
 </template>
 
 <script>
   export default {
     name: 'PosKeyboardFull',
-		data () {
+    data() {
       return {
         keyboardFull: [
           { content: ['Tab'], img: '', style: 'grid-area: tab; background-color: #e0e0e0; font-size: 14px', action: (value) => (value + '  ') },
@@ -19,7 +19,12 @@
           { content: ['i', 'I'], img: '', style: 'grid-area: i', action: (value, append) => (value + append) },
           { content: ['o', 'O'], img: '', style: 'grid-area: o', action: (value, append) => (value + append) },
           { content: ['p', 'P'], img: '', style: 'grid-area: p', action: (value, append) => (value + append) },
-          { content: [''], img: 'delivery/key_delete', style: 'grid-area: del; background-color: #e0e0e0', action: (value) => value.substring(0, value.length - 1) },
+          {
+            content: [''],
+            img: 'delivery/key_delete',
+            style: 'grid-area: del; background-color: #e0e0e0',
+            action: (value) => value.substring(0, value.length - 1)
+          },
           { content: ['Caps lock'], img: '', style: 'grid-area: caps; background-color: #e0e0e0; font-size: 14px' },
           { content: ['a', 'A'], img: '', style: 'grid-area: a', action: (value, append) => (value + append) },
           { content: ['s', 'S'], img: '', style: 'grid-area: s', action: (value, append) => (value + append) },
@@ -69,31 +74,31 @@
           '"shift1 shift1 shift1 shift1 z z x x c c v v b b n n m m comma comma dot dot splash splash shift2 shift2 key1 key1 key2 key2 key3 key3" ' +
           '"sym sym amp amp pct pct pnd pnd space space space space space space space space space space at at lang lang larr larr rarr rarr key0 key0 key0 key0 keyDot keyDot";' +
           'grid-auto-columns: 1fr; grid-gap: 10px',
-			}
-		},
-		props: {
+      }
+    },
+    props: {
       value: null,
-		},
-		computed: {
+    },
+    computed: {
       internalValue: {
-        get () {
+        get() {
           return this.value;
-				},
-				set (val) {
+        },
+        set(val) {
           this.$emit('input', val);
-				}
-			}
-		}
+        }
+      }
+    }
   }
 </script>
 
 <style scoped>
-	.keyboard__template {
-		height: 100%;
-	}
+  .keyboard__template {
+    height: 100%;
+  }
 
-	::v-deep .key {
-		border-radius: 0;
-		font-size: 24px;
-	}
+  ::v-deep .key {
+    border-radius: 0;
+    font-size: 24px;
+  }
 </style>

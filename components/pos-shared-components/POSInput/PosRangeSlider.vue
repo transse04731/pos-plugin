@@ -9,10 +9,10 @@
 
 <script>
   export default {
-    name: "PosRangeSlider",
+    name: 'PosRangeSlider',
     props: {
-      min: [String,Number],
-      max: [String,Number],
+      min: [String, Number],
+      max: [String, Number],
       value: Array,
     },
     computed: {
