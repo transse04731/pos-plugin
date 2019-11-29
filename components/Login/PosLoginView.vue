@@ -62,14 +62,13 @@
 </template>
 
 <script>
-  import { GGridLayout, GBtn, GTextField, GImg, GIcon, GDndDialog, GDialog, GCard, GCardText, GCardActions, GCardSubtitle } from 'pos-vue-framework/src/components';
   import loginSupportDialog from './loginSupportDialog'
   import PosKeyboardFull from '../pos-shared-components/PosKeyboardFull';
   import PosLoginKeyboard from '../pos-shared-components/POSInput/PosLoginKeyboard';
 
   export default {
     name: 'PosLoginView',
-    components: { PosLoginKeyboard, PosKeyboardFull, GGridLayout, GBtn, GTextField, GImg, GIcon, GDndDialog, GDialog, GCard, GCardText, GCardActions, GCardSubtitle, },
+    components: { PosLoginKeyboard, PosKeyboardFull },
     data: () => ({
       password: '',
       keyboardOn: false,

@@ -92,14 +92,6 @@
       tbLookup() {
         return this.showKeyboard ? 'tbLookup' : 'tbLookup__full'
       },
-      /*dialogProductLookup: {
-        get() {
-          return this.value;
-        },
-        set(value) {
-          this.$emit('input', value);
-        }
-      }*/
     },
   }
 </script>

@@ -18,17 +18,8 @@
 </template>
 
 <script>
-  import GSidebar from 'pos-vue-framework/src/components/GSidebar/GSidebar';
-  import GAvatar from 'pos-vue-framework/src/components/GAvatar/GAvatar';
-  import GImg from 'pos-vue-framework/src/components/GImg/GImg';
-  import GSideBarTreeView from 'pos-vue-framework/src/components/GSidebar/GSideBarTreeView';
-  import GSpacer from 'pos-vue-framework/src/components/GLayout/GSpacer';
-  import GBtn from 'pos-vue-framework/src/components/GBtn/GBtn';
-  import GIcon from 'pos-vue-framework/src/components/GIcon/GIcon';
-
   export default {
     name: 'PosDashboardSidebar',
-    components: { GIcon, GBtn, GSpacer, GSideBarTreeView, GImg, GAvatar, GSidebar },
     props: {
       title: {
         type: String,

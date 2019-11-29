@@ -165,6 +165,7 @@
         this.currentOrder = {
           items: []
         }
+        this.activeTableProduct = null
         await this.getSavedOrders()
       },
       async removeSavedOrder(order) {
@@ -187,6 +188,7 @@
           date: new Date()
         }
         await orderModel.create(order)
+        this.activeTableProduct = null
       },
       // order/payment
       convertMoney(val) {

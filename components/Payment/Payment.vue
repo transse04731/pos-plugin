@@ -148,24 +148,10 @@
 </template>
 
 <script>
-  import GBtn from 'pos-vue-framework/src/components/GBtn/GBtn';
-  import GRow from 'pos-vue-framework/src/components/GLayout/GRow';
-  import GAvatar from 'pos-vue-framework/src/components/GAvatar/GAvatar';
-  import GImg from 'pos-vue-framework/src/components/GImg/GImg';
-  import GSimpleTable from 'pos-vue-framework/src/components/GSimpleTable/GSimpleTable';
-  import GDivider from 'pos-vue-framework/src/components/GLayout/GDivider';
-  import GToolbar from 'pos-vue-framework/src/components/GToolbar/GToolbar';
-  import GIcon from 'pos-vue-framework/src/components/GIcon/GIcon';
-  import GTextField from 'pos-vue-framework/src/components/GInput/GTextField';
-  import GSpacer from 'pos-vue-framework/src/components/GLayout/GSpacer';
-  import GKeyboard from 'pos-vue-framework/src/components/GKeyboard/GKeyboard';
-  import GNumberKeyboard from 'pos-vue-framework/src/components/GKeyboard/GNumberKeyboard';
-  import GGridLayout from 'pos-vue-framework/src/components/GGridGenerator/GGridLayout';
   import layout from './paymentLayout'
 
   export default {
     name: 'Payment',
-    components: { GGridLayout, GNumberKeyboard, GKeyboard, GSpacer, GTextField, GIcon, GToolbar, GDivider, GSimpleTable, GImg, GAvatar, GRow, GBtn },
     data() {
       return {
         layout: layout,

@@ -15,11 +15,8 @@
 </template>
 
 <script>
-  import GGridSelect from 'pos-vue-framework/src/components/GGridSelect/GGridSelect';
-  import GBtn from 'pos-vue-framework/src/components/GBtn/GBtn';
   export default {
     name: 'FnButtonChooser',
-    components: { GBtn, GGridSelect },
     data: () => ({
       buttonGroupItems: [
         { area: 'btn-1', disabled: true, text: 'Note', value: 'Note' },

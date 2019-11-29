@@ -10,10 +10,9 @@
 
 <script>
   import POSTextField from 'pos-vue-framework/src/POSComponents/POSInput/POSTextField';
-  import GIcon from 'pos-vue-framework/src/components/GIcon/GIcon';
   export default {
     name: 'FnButtonName',
-    components: { GIcon, POSTextField }
+    components: { POSTextField }
   }
 </script>
 

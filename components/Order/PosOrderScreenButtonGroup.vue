@@ -17,12 +17,10 @@
 </template>
 
 <script>
-  import GBtn from 'pos-vue-framework/src/components/GBtn/GBtn';
   import _ from 'lodash'
 
   export default {
     name: 'PosOrderScreenButtonGroup',
-    components: { GBtn },
     injectService: [
       'PosStore:(quickCash,activeTableProduct,saveInProgressOrder)'
     ],
@@ -36,7 +34,7 @@
         this.$getService('dialogChangePrice:open')('new')
       },
       openDialogDiscount() {
-        this.$getService('dialogChangePrice:open')('amount')
+        this.$getService('dialogChangePrice:open')('percentage')
       },
       openDialogProductLookup() {
         this.$getService('dialogProductLookup:setActive')(true)

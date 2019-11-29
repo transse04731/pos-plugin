@@ -8,11 +8,8 @@
 </template>
 
 <script>
-  import GBtn from 'pos-vue-framework/src/components/GBtn/GBtn';
-  import GIcon from 'pos-vue-framework/src/components/GIcon/GIcon';
   export default {
     name: 'FnButtonAction',
-    components: { GIcon, GBtn },
     props: {
       value: true
     }

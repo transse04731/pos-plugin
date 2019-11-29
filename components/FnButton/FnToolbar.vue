@@ -17,12 +17,8 @@
 </template>
 
 <script>
-  import GToolbar from 'pos-vue-framework/src/components/GToolbar/GToolbar';
-  import GBtn from 'pos-vue-framework/src/components/GBtn/GBtn';
-  import GIcon from 'pos-vue-framework/src/components/GIcon/GIcon';
   export default {
     name: 'FnToolbar',
-    components: { GIcon, GBtn, GToolbar }
   }
 </script>
 

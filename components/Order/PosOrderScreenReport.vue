@@ -17,11 +17,8 @@
 </template>
 
 <script>
-  import GDivider from 'pos-vue-framework/src/components/GLayout/GDivider';
-
   export default {
     name: 'PosOrderScreenReport',
-    components: { GDivider },
     injectService: [
       'PosStore:convertMoney',
       'PosStore:paymentTax',

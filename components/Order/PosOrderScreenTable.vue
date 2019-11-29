@@ -28,12 +28,11 @@
 </template>
 
 <script>
-  import GSimpleTable from 'pos-vue-framework/src/components/GSimpleTable/GSimpleTable';
   import TableExpansionRow from './components/TableExpansionRow';
 
   export default {
     name: 'PosOrderScreenTable',
-    components: { GSimpleTable, TableExpansionRow },
+    components: { TableExpansionRow },
     injectService: ['PosStore:(currentOrder,addItemQuantity,removeItemQuantity,activeTableProduct)'],
     data() {
       return {

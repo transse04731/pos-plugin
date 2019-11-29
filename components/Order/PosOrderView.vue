@@ -127,35 +127,6 @@
 </template>
 
 <script>
-  import {
-    GGridLayout,
-    GRadio,
-    GRadioGroup,
-    GKeyboard,
-    GSpacer,
-    GTextField,
-    GScrollWindowItem,
-    GScrollWindow,
-    GCardText,
-    GCardActions,
-    GCardTitle,
-    GCard,
-    GDialog,
-    GIcon,
-    GBadge,
-    GToolbar,
-    GDivider,
-    GSimpleTable,
-    GImg,
-    GAvatar,
-    GItem,
-    GItemGroup,
-    GWindowItem,
-    GWindow,
-    GNumberKeyboard,
-    GRow,
-    GBtn
-  } from 'pos-vue-framework/src/components/';
   import TableExpansionRow from './components/TableExpansionRow';
   import DialogSavedList from './components/dialogSavedList';
   import DialogProductLookup from './components/dialogProductLookup';
@@ -167,37 +138,10 @@
     name: 'PosOrderView',
     components: {
       DialogProductSearchResult,
-      GGridLayout,
       DialogChangePrice,
       DialogProductLookup,
       DialogSavedList,
-      GRadio,
-      GRadioGroup,
-      GKeyboard,
-      GSpacer,
-      GTextField,
-      GScrollWindowItem,
-      GScrollWindow,
-      GCardText,
-      GCardActions,
-      GCardTitle,
-      GCard,
-      GDialog,
-      GIcon,
-      GBadge,
-      GToolbar,
-      GDivider,
       TableExpansionRow,
-      GSimpleTable,
-      GImg,
-      GAvatar,
-      GItem,
-      GItemGroup,
-      GWindowItem,
-      GWindow,
-      GNumberKeyboard,
-      GRow,
-      GBtn
     },
     data() {
       return {
