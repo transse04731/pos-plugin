@@ -15,24 +15,24 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="order in paymentOrderDetail">
+      <tr v-for="product in paymentOrderDetail">
         <td style="color: inherit; padding: 0">
           <div class="row-flex" style="line-height: 1.75">
             <div class="flex-grow-1 pa-2 ta-left" style="font-size: 15px">
-              <p>{{order.name}}
-                <g-icon v-if="order.edited" small color="#f44336" style="margin-bottom: 5px">edit</g-icon>
+              <p>{{product.name}}
+                <g-icon v-if="product.edited" small color="#f44336" style="margin-bottom: 5px">edit</g-icon>
               </p>
-              <p v-if="order.promotion" class="promotion">{{order.promotion}}</p>
+              <p v-if="product.promotion" class="promotion">{{product.promotion}}</p>
             </div>
-            <div class="w-10 pa-2 ta-center">{{order.unit}}</div>
-            <div class="w-10 pa-2 ta-right">{{order.quantity}}</div>
+            <div class="w-10 pa-2 ta-center">{{product.unit}}</div>
+            <div class="w-10 pa-2 ta-right">{{product.quantity}}</div>
             <div class="w-12 pa-2 ta-right">
-              <p :class="[order.edited && 'text__edited']">{{order.price}}</p>
-              <p v-if="order.promotion && order.oldPrice" class="promotion-price">{{order.oldPrice}}</p>
+              <p :class="[product.edited && 'text__edited']">{{product.price}}</p>
+              <p v-if="product.promotion && product.originalPrice" class="promotion-price">{{product.originalPrice}}</p>
             </div>
             <div class="W-12 pa-2 ta-right">
-              <p :class="[order.edited && 'text__edited']">{{order.price * order.quantity}}</p>
-              <p v-if="order.promotion && order.oldPrice" class="promotion-price">{{order.oldPrice * order.quantity}}</p>
+              <p :class="[product.edited && 'text__edited']">{{product.price * product.quantity}}</p>
+              <p v-if="product.promotion && product.originalPrice" class="promotion-price">{{product.originalPrice * product.quantity}}</p>
             </div>
           </div>
         </td>

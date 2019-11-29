@@ -5,7 +5,7 @@
         <div class="header">
           <div class="col-5">
             <p>Original Price</p>
-            <g-text-field read-only outlined :value="`€ ${activeProduct && activeProduct.price}`"/>
+            <g-text-field read-only outlined :value="`€ ${activeProduct && activeProduct.originalPrice}`"/>
           </div>
           <div class="col-5">
             <p>Effective Price</p>
@@ -53,7 +53,7 @@
   export default {
     name: 'dialogChangePrice',
     components: { PosNumpad },
-    injectService: ['PosStore:(activeTableProduct,currentOrder)'],
+    injectService: ['PosStore:(activeTableProduct,currentOrder,convertMoney)'],
     props: {
       value: Boolean,
       product: null,
@@ -69,38 +69,36 @@
         rulePercent: {
           percent: value => (value < 100 && value > 0) || 'Input: 0 - 100',
         },
+        showDialog: false
       }
     },
     computed: {
       activeProduct: {
         get() {
-          if (this.currentOrder && this.currentOrder.length > 0 && !_.isNil(this.activeTableProduct)) {
-            return this.currentOrder[this.activeTableProduct].product
+          if (this.currentOrder && this.currentOrder.items.length > 0 && !_.isNil(this.activeTableProduct)) {
+            return this.currentOrder.items[this.activeTableProduct]
           }
-        },
-        set(val) {
-          debugger
-          this.currentOrder[this.activeTableProduct].product = val
         }
       },
       computedPrice() {
         if (this.activeProduct) {
           if (this.changeType === 'percentage') {
 
-            return (this.activeProduct.price * (100 - this.newPercent)) / 100
+            return (this.activeProduct.originalPrice * (100 - this.newPercent)) / 100
           }
-          if (this.changeType === 'amount') return this.activeProduct.price - this.newAmount
-          if (this.changeType === 'new') return this.newPrice
+          if (this.changeType === 'amount') return this.activeProduct.originalPrice - this.newAmount
+          if (this.changeType === 'new') return parseFloat(this.newPrice)
 
-          return this.activeProduct.price
+          return this.activeProduct.originalPrice
         }
         return 0
       },
       dialogChangePrice: {
         get() {
-          return this.value;
+          return this.showDialog;
         },
         set(value) {
+          this.showDialog = value
           this.$emit('input', value);
         }
       },
@@ -114,16 +112,23 @@
         return this.changeType !== 'new'
       },
     },
+    watch: {
+      value: val => {
+        this.showDialog = val
+      }
+    },
     methods: {
+      open(changeType) {
+        if (changeType && typeof changeType === 'string') this.changeType = changeType
+        this.dialogChangePrice = true
+      },
       changePrice() {
         if (!this.activeProduct) {
           this.dialogChangePrice = false;
           return;
         }
-        this.activeProduct = Object.assign(this.activeProduct, {
-          edited: true,
-          price: this.computedPrice
-        })
+        this.$set(this.activeProduct, 'price', this.computedPrice)
+        this.$set(this.activeProduct, 'discount', this.activeProduct.originalPrice - this.computedPrice)
         this.dialogChangePrice = false;
       },
     }

@@ -2,8 +2,14 @@
   <g-dialog v-model="dialogProductLookup" fullscreen ref="dialog" domain="TestDialog2">
     <div class="dialog-lookup w-100">
       <g-toolbar class="header" color="grey lighten 3" elevation="0">
-         <g-text-field outlined clearable class="w-50" style="color: #1d1d26" clear-icon="cancel" v-model="productLookup" @focus="showKeyboard = true"></g-text-field>
-        <g-spacer/>
+         <g-text-field outlined clearable class="w-50"
+                       style="color: #1d1d26" clear-icon="cancel"
+                       v-model="productNameQuery"
+                       @focus="showKeyboard = true"
+                       @enter="queryProductsByName"
+                       @blur="showKeyboard = false"
+         ></g-text-field>
+        <g-spacer></g-spacer>
         <g-btn icon style="box-shadow: none; border-radius: 50%" @click="dialogProductLookup = false">
           <g-icon>clear</g-icon>
         </g-btn>
@@ -18,7 +24,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="(product, i) in products" :key="i">
+        <tr v-for="(product, i) in productNameQueryResults" :key="i" @click="addToOrder(product)">
           <td>{{product.name}}</td>
           <td>{{product.barcode ? product.barcode : '-'}}</td>
           <td>{{product.unit ? product.unit : '-s'}}</td>
@@ -34,20 +40,20 @@
         </tbody>
       </g-simple-table>
       <div v-show="showKeyboard" class="keyboard-wrapper">
-        <pos-keyboard-full v-model="productLookup"/>
+        <pos-keyboard-full v-model="productNameQuery"/>
       </div>
     </div>
   </g-dialog>
 </template>
 
 <script>
-  import {GSimpleTable, GIcon, GBtn, GSpacer, GTextField, GToolbar, GDialog} from 'pos-vue-framework/src/components';
   import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';
   import { getInternalValue } from 'pos-vue-framework/src/mixins/getVModel';
 
   export default {
     name: 'dialogProductLookup',
-    components: { PosKeyboardFull, GSimpleTable, GIcon, GBtn, GSpacer, GTextField, GToolbar, GDialog },
+    components: { PosKeyboardFull },
+    injectService: ['PosStore:(productNameQuery,productNameQueryResults,queryProductsByName,addProductToOrder)'],
     props: {
       value: Boolean,
     },
@@ -72,6 +78,10 @@
     methods: {
       open() {
         this.dialogProductLookup = true;
+      },
+      addToOrder(product) {
+        this.addProductToOrder(product)
+        this.dialogProductLookup = false
       }
     },
     setup() {
@@ -127,6 +137,7 @@
         font-size: 13px;
         line-height: 16px;
         color: rgba(29, 29, 38, 0.5);
+        background-color: white;
         text-align: left;
       }
 

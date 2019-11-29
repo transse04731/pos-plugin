@@ -2,7 +2,7 @@
   <g-dialog v-model="dialogProductSearch">
     <g-card style="height: 568px">
       <g-card-title>
-        {{searchedResult.length}} {{searchedResult.length > 1 ? 'results' : 'result'}} for product id "{{this.searchQuery}}"
+        {{formattedQueryResults.length}} {{formattedQueryResults.length > 1 ? 'results' : 'result'}} for product id "{{productIdQuery}}"
         <g-spacer></g-spacer>
         <g-btn @click="dialogProductSearch = false" icon>
           <g-icon>close</g-icon>
@@ -19,16 +19,16 @@
           </tr>
           </thead>
           <tbody>
-          <tr :key="index" v-for="(item, index) in searchedResult">
+          <tr :key="index" v-for="(product, index) in formattedQueryResults">
             <td>
               <div class="result-item result-item-product" style="display: flex;">
                 <div style="display: flex; justify-content: center; align-items: center;">
-                  <p>{{item.productIndex}}</p>
+                  <p>{{index + 1}}</p>
                 </div>
                 <div style="display: flex; justify-content: center; align-items: center;">
                   <div style="padding: 20px;">
-                    <div><p>{{item.productID}}</p></div>
-                    <div><p><b>{{item.productName}}</b></p></div>
+                    <div><p>{{product.id}}</p></div>
+                    <div><p><b>{{product.name}}</b></p></div>
                   </div>
                 </div>
               </div>
@@ -36,13 +36,15 @@
             <td>
               <div class="result-item result-item-unit" style="display: flex;">
                 <div style="display: flex; justify-content: center; align-items: center;">
-                  <g-item-group :items="item.unitOptions" v-model="item.selectedUnit">
+                  <g-item-group :items="product.unit" v-model="product.selectedUnit">
                     <template v-slot:item="{item, toggle, active}">
                       <g-badge overlay style="margin: 12px" v-model="active">
                         <template v-slot:badge>
                           <g-icon x-small>done</g-icon>
                         </template>
-                        <g-btn @click="toggle(item)" outlined style="margin-left: 5px" :active="active" :class="[active ? activeClass : {}]"> {{item.optionTitle}}</g-btn>
+                        <g-btn @click="toggle(item)" outlined style="margin-left: 5px" :active="active" :class="[active ? activeClass : {}]">
+                          {{item}}
+                        </g-btn>
                       </g-badge>
                     </template>
                   </g-item-group>
@@ -50,37 +52,24 @@
               </div>
             </td>
             <td>
-              <div class="result-item result-item-attribute">
-                <div class="result-item-attribute-row">
+              <div class="result-item result-item-attribute" v-if="product.attributes">
+                <div class="result-item-attribute-row" v-for="(attributes, key) in product.attributes">
                   <div class="attribute-title">
                     <span>
-                      Color
+                      {{key}}
                     </span>
                   </div>
-                  <g-item-group :items="item.attributeOptions[0].attributeColor" v-model="item.selectedColor">
+                  <g-item-group :items="attributes"
+                                v-model="product.selectedAttributes[key]"
+                  >
                     <template v-slot:item="{item, toggle, active}">
                       <g-badge overlay style="margin: 12px" v-model="active">
                         <template v-slot:badge>
                           <g-icon x-small>done</g-icon>
                         </template>
-                        <g-btn @click="toggle(item)" outlined style="margin-left: 5px" :active="active" :class="[active ? activeClass : {}]"> {{item.optionTitle}}</g-btn>
-                      </g-badge>
-                    </template>
-                  </g-item-group>
-                </div>
-                <div class="result-item-attribute-row">
-                  <div class="attribute-title">
-                    <span>
-                      Age
-                    </span>
-                  </div>
-                  <g-item-group :items="item.attributeOptions[1].attributeAge" v-model="item.selectedAge">
-                    <template v-slot:item="{item, toggle, active}">
-                      <g-badge overlay style="margin: 12px" v-model="active">
-                        <template v-slot:badge>
-                          <g-icon x-small>done</g-icon>
-                        </template>
-                        <g-btn @click="toggle(item)" outlined style="margin-left: 5px" :active="active" :class="[active ? activeClass : {}]"> {{item.optionTitle}}</g-btn>
+                        <g-btn @click="toggle(item)" outlined style="margin-left: 5px" :active="active" :class="[active ? activeClass : {}]">
+                          {{item.value}}
+                        </g-btn>
                       </g-badge>
                     </template>
                   </g-item-group>
@@ -89,7 +78,11 @@
             </td>
             <td>
               <div class="result-item result-item-action" style="display: flex; justify-content: center; align-items: center;">
-                <g-btn :disabled="!item.selectedColor || !item.selectedUnit || !item.selectedAge" background-color="red" text-color="white">
+                <g-btn :disabled="!isValidItem(product)"
+                       background-color="red"
+                       text-color="white"
+                       @click.stop="addProductToOrder(product)"
+                >
                   <g-icon class="mr-2" svg>icon-back</g-icon>
                   Create new order
                 </g-btn>
@@ -104,14 +97,18 @@
 </template>
 
 <script>
-  import {GBadge, GDialog, GSpacer, GItemGroup, GIcon, GBtn, GSimpleTable, GCardTitle, GCard} from 'pos-vue-framework/src/components';
+  import _ from 'lodash'
 
   export default {
     name: 'dialogProductSearchResult',
-    components: { GBadge, GDialog, GSpacer, GItemGroup, GIcon, GBtn, GSimpleTable, GCardTitle, GCard },
     props: {
       value: null
     },
+    injectService: ['PosStore:(productIdQuery,productIdQueryResults)'],
+    data: () => ({
+      activeClass: 'active-attribute',
+      queryResults: []
+    }),
     computed: {
       dialogProductSearch: {
         get() {
@@ -120,141 +117,57 @@
         set(value) {
           this.$emit('input', value);
         }
-      }
-    },
-    data: () => ({
-      activeClass: 'active-attribute',
-      searchedResult: [
-        {
-          productName: 'Pepsi',
-          productIndex: 1,
-          productID: '#32847837673',
-          unitOptions: [
-            { optionTitle: 'Box' },
-            { optionTitle: 'Pack' },
-          ],
-          selectedUnit: null,
-          attributeOptions: [
-            { attributeColor: [{ optionTitle: 'Black' }, { optionTitle: 'White' }] },
-            { attributeAge: [{ optionTitle: '1-2yrs' }, { optionTitle: '0-6mths' }] },
-          ],
-          selectedAge: null,
-          selectedColor: null
+      },
+      formattedQueryResults: {
+        get() {
+          if (this.productIdQueryResults) {
+            this.queryResults = this.productIdQueryResults.map(result => {
+              let hasAttributes = result.attributes && result.attributes.length;
+              const computedAttributes = hasAttributes && _.groupBy(result.attributes, 'key')
+              let selectedAttributes;
+
+              if (hasAttributes) {
+                selectedAttributes = {}
+                for (const key in computedAttributes) {
+                  if (computedAttributes.hasOwnProperty(key)) Object.assign(selectedAttributes, {[key]: []})
+                }
+              }
+
+              return {
+                _id: result._id,
+                id: result.id,
+                name: result.name,
+                unit: Array.isArray(result.unit) ? result.unit : [result.unit],
+                selectedUnit: null,
+                ...hasAttributes && { attributes: computedAttributes },
+                ...hasAttributes && { selectedAttributes }
+              }
+            })
+          }
+          return this.queryResults
         },
-        {
-          productName: 'Coca Cola',
-          productIndex: 2,
-          productID: '#3284783744374',
-          unitOptions: [
-            { optionTitle: 'Box' },
-            { optionTitle: 'Pack' },
-          ],
-          selectedUnit: null,
-          attributeOptions: [
-            { attributeColor: [{ optionTitle: 'Black' }, { optionTitle: 'White' }] },
-            { attributeAge: [{ optionTitle: '1-2yrs' }, { optionTitle: '0-6mths' }] },
-          ],
-          selectedAge: null,
-          selectedColor: null
-        },
-        {
-          productName: 'Blackbox',
-          productIndex: 3,
-          productID: '#3284783748372',
-          unitOptions: [
-            { optionTitle: 'Box' },
-          ],
-          selectedUnit: null,
-          attributeOptions: [
-            { attributeColor: [{ optionTitle: 'Black' }, { optionTitle: 'White' }] },
-            { attributeAge: [{ optionTitle: '1-2yrs' }, { optionTitle: '0-6mths' }] },
-          ],
-          selectedAge: null,
-          selectedColor: null
-        },
-        {
-          productName: 'Samsung S99',
-          productIndex: 4,
-          productID: '#3284783748374',
-          unitOptions: [
-            { optionTitle: 'Box' },
-            { optionTitle: 'Pack' },
-          ],
-          selectedUnit: null,
-          attributeOptions: [
-            { attributeColor: [{ optionTitle: 'Black' }, { optionTitle: 'White' }] },
-            { attributeAge: [{ optionTitle: '1-2yrs' }, { optionTitle: '0-6mths' }] },
-          ],
-          selectedAge: null,
-          selectedColor: null
-        },
-        {
-          productName: 'Pepsi',
-          productIndex: 1,
-          productID: '#32847837673',
-          unitOptions: [
-            { optionTitle: 'Box' },
-            { optionTitle: 'Pack' },
-          ],
-          selectedUnit: null,
-          attributeOptions: [
-            { attributeColor: [{ optionTitle: 'Black' }, { optionTitle: 'White' }] },
-            { attributeAge: [{ optionTitle: '1-2yrs' }, { optionTitle: '0-6mths' }] },
-          ],
-          selectedAge: null,
-          selectedColor: null
-        },
-        {
-          productName: 'Coca Cola',
-          productIndex: 2,
-          productID: '#3284783744374',
-          unitOptions: [
-            { optionTitle: 'Box' },
-            { optionTitle: 'Pack' },
-          ],
-          selectedUnit: null,
-          attributeOptions: [
-            { attributeColor: [{ optionTitle: 'Black' }, { optionTitle: 'White' }] },
-            { attributeAge: [{ optionTitle: '1-2yrs' }, { optionTitle: '0-6mths' }] },
-          ],
-          selectedAge: null,
-          selectedColor: null
-        },
-        {
-          productName: 'Blackbox',
-          productIndex: 3,
-          productID: '#3284783748372',
-          unitOptions: [
-            { optionTitle: 'Box' },
-            { optionTitle: 'Pack' },
-          ],
-          selectedUnit: null,
-          attributeOptions: [
-            { attributeColor: [{ optionTitle: 'Black' }, { optionTitle: 'White' }] },
-            { attributeAge: [{ optionTitle: '1-2yrs' }, { optionTitle: '0-6mths' }] },
-          ],
-          selectedAge: null,
-          selectedColor: null
-        },
-        {
-          productName: 'Samsung S99',
-          productIndex: 4,
-          productID: '#3284783748374',
-          unitOptions: [
-            { optionTitle: 'Box' },
-            { optionTitle: 'Pack' },
-          ],
-          selectedUnit: null,
-          attributeOptions: [
-            { attributeColor: [{ optionTitle: 'Black' }, { optionTitle: 'White' }] },
-            { attributeAge: [{ optionTitle: '1-2yrs' }, { optionTitle: '0-6mths' }] },
-          ],
-          selectedAge: null,
-          selectedColor: null
+        set(value) {
+          this.queryResults = value
         }
-      ],
-      searchQuery: 'abc'
-    })
+      },
+    },
+    methods: {
+      isValidItem({ selectedAttributes, selectedUnit, unit }) {
+        if (selectedAttributes) {
+          for (const key in selectedAttributes) {
+            if (selectedAttributes.hasOwnProperty(key) && !selectedAttributes[key]) return false
+          }
+        }
+        if (unit) return !!selectedUnit;
+        return true
+      },
+      addProductToOrder(product) {
+        const _product = _.clone(this.productIdQueryResults.find(i => i._id === product._id))
+        _product.unit = product.selectedUnit
+        _product.attributes = _.values(product.selectedAttributes)
+        this.$getService('PosStore:addProductToOrder')(_product)
+      }
+    }
   }
 </script>
 

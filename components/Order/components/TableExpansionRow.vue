@@ -23,13 +23,13 @@
 
       const genHeader = function (item) {
 				const promotion = item['promotion'] && <p class="promotion">{item['promotion']}</p>
-				const oldPrice = item['promotion'] && item['oldPrice'] && <p class="promotion-price">{item['oldPrice']}</p>
-				const oldTotal = item['promotion'] && item['oldPrice'] && <p class="promotion-price">{item['quantity'] * item['oldPrice']}</p>
+				const originalPrice = item['discount'] && item['discount'] > 0&& <p class="promotion-price">{item['originalPrice']}</p>
+				const oldTotal = item['discount'] && item['discount'] >0 && <p class="promotion-price">{item['quantity'] * item['originalPrice']}</p>
         return <div
           class={['g-expansion-header', { 'g-expansion-header__active': isActiveItem(item) }]}
           vOn:click={() => toggleItem(item)}>
           <div class="flex-grow-1 pa-2" style="font-size: 15px">
-						<p>{ item['name'] } <g-icon vShow={item['edited']} small color="#FF4452" style="margin-bottom: 5px">edit</g-icon></p>
+						<p>{ item['name'] } <g-icon vShow={item['price'] !== item['originalPrice']} small color="#FF4452" style="margin-bottom: 5px">edit</g-icon></p>
 						{ promotion }
           </div>
           <span class="w-10 pa-2 ta-center">
@@ -38,12 +38,12 @@
           <span class="w-10 pa-2 ta-right">
             { item['quantity'] }
           </span>
-          <div class={["w-12 pa-2 ta-right", item['edited'] && 'text__editted']}>
+          <div class={["w-12 pa-2 ta-right", item['price'] !== item['originalPrice'] && 'text__editted']}>
 						<p>{ item['price'] }</p>
-						{ oldPrice }
+						{ originalPrice }
           </div>
-          <div class={["w-12 pa-2 ta-right fw-700", item['edited'] && 'text-light-green']}>
-            <p>{ item['quantity'] * item['price'] }</p>
+          <div class={["w-12 pa-2 ta-right fw-700", item['price'] !== item['originalPrice'] && 'text-light-green']}>
+            <p>{ (item['quantity'] * item['price']).toFixed(2) }</p>
 						{ oldTotal }
           </div>
         </div>
@@ -72,7 +72,8 @@
 							</div>
 						</div>
             <div style="flex-grow: 1"></div>
-            <g-btn text small text-color="#f44336" style="margin: 12px 0; letter-spacing: 0; font-size 14px">
+            <g-btn text small text-color="#f44336" style="margin: 12px 0; letter-spacing: 0; font-size 14px"
+                   vOn:click_stop={() => context.emit(`click:remove`, item, true)}>
               <g-icon small class="mr-2">remove_circle</g-icon>Remove item
             </g-btn>
           </div>

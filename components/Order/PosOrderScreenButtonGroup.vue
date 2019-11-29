@@ -5,12 +5,12 @@
     <g-btn outlined height="100%">Note</g-btn>
     <g-btn outlined height="100%" @click="openDialogProductLookup">Product Lookup</g-btn>
     <g-btn outlined height="100%" disabled>Disabled Button</g-btn>
-    <g-btn outlined height="100%">Discount</g-btn>
+    <g-btn outlined height="100%" @click="openDialogDiscount" :disabled="!hasActiveOrderProduct">Discount</g-btn>
     <g-btn outlined height="100%"></g-btn>
     <g-btn outlined height="100%">Plastic Refund</g-btn>
     <g-btn area="btn__big" text background-color="green lighten 1" text-color="white" height="100%" @click="quickCash">Quick Cash</g-btn>
-    <g-btn text background-color="orange lighten 1" text-color="white" height="100%">Save</g-btn>
-    <g-btn text background-color="blue darken 2" height="100%">
+    <g-btn text background-color="orange lighten 1" text-color="white" height="100%" @click.stop="saveInProgressOrder">Save</g-btn>
+    <g-btn text background-color="blue darken 2" height="100%" @click.stop="routeToPayment">
       <span class="text-white">Pay</span>
     </g-btn>
   </div>
@@ -24,7 +24,7 @@
     name: 'PosOrderScreenButtonGroup',
     components: { GBtn },
     injectService: [
-      'PosStore:(quickCash, activeTableProduct)'
+      'PosStore:(quickCash,activeTableProduct,saveInProgressOrder)'
     ],
     computed: {
       hasActiveOrderProduct() {
@@ -33,10 +33,16 @@
     },
     methods: {
       openDialogChangePrice() {
-        this.$getService('dialogChangePrice:setActive')(true)
+        this.$getService('dialogChangePrice:open')('new')
+      },
+      openDialogDiscount() {
+        this.$getService('dialogChangePrice:open')('amount')
       },
       openDialogProductLookup() {
         this.$getService('dialogProductLookup:setActive')(true)
+      },
+      routeToPayment() {
+        this.$router.push({path: `test-pos-payment`})
       }
     }
   }

@@ -8,31 +8,34 @@
       <g-icon class="mr-2" svg>icon-menu</g-icon>
       More
     </g-btn>
-    <g-badge overlay color="#FF4452">
+    <g-badge overlay color="#FF4452" v-if="savedOrders && savedOrders.length > 0">
       <template v-slot:badge>
-        <span>2</span>
+        <span>{{savedOrders.length}}</span>
       </template>
       <g-btn background-color="white" @click="openDialogSavedList">
         <g-icon class="mr-2" svg>icon-folder</g-icon>
         Saved list
       </g-btn>
     </g-badge>
+    <g-btn v-else background-color="white" @click="openDialogSavedList">
+      <g-icon class="mr-2" svg>icon-folder</g-icon>
+      Saved list
+    </g-btn>
   </g-toolbar>
 </template>
 
 <script>
-  import GToolbar from 'pos-vue-framework/src/components/GToolbar/GToolbar';
-  import GBtn from 'pos-vue-framework/src/components/GBtn/GBtn';
-  import GIcon from 'pos-vue-framework/src/components/GIcon/GIcon';
-  import GBadge from 'pos-vue-framework/src/components/GBadge/GBadge';
-
   export default {
     name: 'PosOrderScreenToolbar',
-    components: { GBadge, GIcon, GBtn, GToolbar },
+    injectService: ['PosStore:(savedOrders,getSavedOrders)'],
     methods: {
-      openDialogSavedList() {
+      async openDialogSavedList() {
+        await this.getSavedOrders()
         this.$getService('dialogSavedList:setActive')(true)
       }
+    },
+    async mounted() {
+      await this.getSavedOrders()
     }
   }
 </script>

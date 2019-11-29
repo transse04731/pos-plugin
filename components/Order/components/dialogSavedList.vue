@@ -13,17 +13,17 @@
 					</tr>
 					</thead>
 					<tbody>
-					<tr v-for="(save, i) in savedLists" :key="i">
-						<td class="ta-left text-blue">{{save.id}}</td>
-						<td class="ta-left">{{save.customer}}</td>
-						<td class="ta-right">{{save.quantity}}</td>
-						<td class="ta-left">{{save.time}}</td>
+					<tr v-for="(list, i) in savedLists" :key="i">
+						<td class="ta-left text-blue">{{list.id}}</td>
+						<td class="ta-left">{{list.customer}}</td>
+						<td class="ta-right">{{list.quantity}}</td>
+						<td class="ta-left">{{list.date}}</td>
 						<td class="ta-left row-flex justify-center align-items-center">
-							<g-btn background-color="#1271FF" text-color="white">
+							<g-btn background-color="#1271FF" text-color="white" @click.stop="selectList(list)">
 								<g-icon class="mr-2"  svg>icon-open</g-icon>
 								Select
 							</g-btn>
-							<g-btn background-color="#FF4452" text-color="white" class="ml-2" @click="dialogDeleteSave = true">
+							<g-btn background-color="#FF4452" text-color="white" class="ml-2" @click="openDeleteDialog(list)">
 								<g-icon class="mr-2" svg>icon-delete</g-icon>
 								Delete
 							</g-btn>
@@ -49,11 +49,11 @@
 					Confirmation
 				</g-card-title>
 				<g-card-text>
-					Are you sure you want to delete Saved order <b>"431413413413"</b>?
+					Are you sure you want to delete Saved order <b>"{{listToDelete && listToDelete.id}}"</b>?
 				</g-card-text>
 				<g-card-actions>
 					<g-btn flat background-color="#efefef">Cancel</g-btn>
-					<g-btn flat background-color="red lighten 2" text-color="white">OK</g-btn>
+					<g-btn flat background-color="red lighten 2" text-color="white" @click="removeList()">OK</g-btn>
 				</g-card-actions>
 			</g-card>
 		</g-dialog>
@@ -61,23 +61,16 @@
 </template>
 
 <script>
-  import {GCardText, GCardActions, GCard, GCardTitle, GToolbar, GIcon, GBtn, GSimpleTable, GDialog} from 'pos-vue-framework/src/components';
-
   export default {
     name: 'dialogSavedList',
-    components: { GCardText, GCardActions, GCard, GCardTitle, GToolbar, GIcon, GBtn, GSimpleTable, GDialog },
     props: {
       value: Boolean,
-
     },
+		injectService: ['PosStore:(savedOrders,selectSavedOrder,removeSavedOrder)'],
     data() {
       return {
         dialogDeleteSave: false,
-        savedLists: [
-          { id: '#037187408', customer: 'Unknown', quantity: 10, time: '3 mins ago' },
-          { id: '#037187418', customer: 'David Beckham', quantity: 4, time: '1hr ago' },
-          { id: '#037187423', customer: 'Unknown', quantity: 8, time: '08:23' },
-        ],
+				listToDelete: null
       }
     },
     computed: {
@@ -89,7 +82,33 @@
           this.$emit('input', value)
         }
       },
-    }
+			savedLists() {
+      	if (this.savedOrders) {
+      		return this.savedOrders.map(savedOrder => ({
+						_id: savedOrder._id,
+						id: savedOrder._id,
+						customer: savedOrder.customer,
+						quantity: savedOrder.items.reduce((acc, cur) => (acc + cur.quantity), 0),
+						date: savedOrder.date,
+					}))
+				}
+      	return []
+			}
+    },
+		methods: {
+    	openDeleteDialog(list) {
+				this.listToDelete = list
+				this.dialogDeleteSave = true
+			},
+			selectList(list) {
+				this.selectSavedOrder(list)
+				this.dialogSavedList = false
+			},
+			removeList() {
+				this.removeSavedOrder(this.listToDelete)
+				this.dialogDeleteSave = false
+			}
+ 		}
   }
 </script>
 

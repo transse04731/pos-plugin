@@ -24,6 +24,7 @@
     },
     async created() {
       this.menu = await this.getAllCategories()
+      await this.select(this.menu[0])
     }
   }
 </script>

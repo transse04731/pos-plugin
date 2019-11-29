@@ -15,12 +15,12 @@
     </thead>
     <table-expansion-row
         v-model="activeTableProduct"
-        :items="formattedOrder"
+        :items="orderItems"
         @click:remove="removeItemQuantity"
         @click:add="addItemQuantity"
     />
-    <template v-if="formattedOrder.length < 12">
-      <tr v-for="i in (12 - formattedOrder.length)" class="empty-row">
+    <template v-if="orderItems.length < 12">
+      <tr v-for="i in (12 - orderItems.length)" class="empty-row">
         <td></td>
       </tr>
     </template>
@@ -41,23 +41,12 @@
       }
     },
     computed: {
-      formattedOrder() {
+      orderItems() {
         if (this.currentOrder) {
-          return this.currentOrder.map(item => ({
-            _id: item.product._id,
-            name: item.product.name,
-            unit: item.product.unit,
-            quantity: item.quantity,
-            price: item.product.price,
-          }))
+          return this.currentOrder.items
         }
       }
     },
-    watch: {
-      currentOrder: function (newVal) {
-        console.log(this.$refs.table)
-      }
-    }
   }
 </script>
 

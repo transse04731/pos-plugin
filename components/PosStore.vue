@@ -9,109 +9,19 @@
     data: function () {
       return {
         loginPassword: '',
-        //order screen
-        // listProducts: [
-        // 	[
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'teal accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'teal accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'teal accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'teal accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'teal accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'teal accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'teal accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 	],
-        // 	[
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'teal accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'teal accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'teal accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'teal accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'red accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'teal accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'green accent 1' },
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'teal accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 	],
-        // 	[
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'green accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'teal accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 		{ title: 'Tiramisu', color: 'brown lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'teal accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'teal accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'teal accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'teal accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 		{ title: 'Tiramisu', color: 'pink lighten 4' },
-        // 		{ title: 'Tiramisu', color: 'teal accent 1' },
-        // 		{ title: 'Tiramisu', color: 'blue lighten 3' },
-        // 		{ title: 'Tiramisu', color: 'yellow accent 1' },
-        // 	],
-        // ],
-        activeTableProduct: null, //todo move to table component
-        //// legit store
-        currentOrder: [],
+        // order screen
+        activeTableProduct: null,
+        currentOrder: { items: [] },
+        savedOrders: [],
         activeCategory: null, //todo use fn to load products?
         activeCategoryProducts: [],
         productIdQuery: '',
+        productIdQueryResults: [],
+        productNameQuery: '',
+        productNameQueryResults: [],
         //payment screen variables
         paymentAmountTendered: 0,
         paymentTip: 0,
-        paymentDiscount: 0,
         lastPayment: 0,
         //settings screen
         sidebarData: [
@@ -146,13 +56,21 @@
     },
     domain: 'PosStore',
     computed: {
-      paymentChange() {
-        return this.convertMoney(this.paymentAmountTendered - this.paymentTotal)
+      // order screen
+      paymentDiscount() {
+        if (this.currentOrder.items) {
+          return this.currentOrder.items.reduce((acc, cur) => {
+            return cur.discount ? acc + (cur.discount * cur.quantity) : acc;
+          }, 0)
+        }
       },
-      orderRawTotal() {
+    	paymentChange() {
+    		return this.convertMoney(this.paymentAmountTendered - this.paymentTotal)
+      },
+      paymentSubTotal() {
         if (this.currentOrder) {
-          return this.currentOrder.reduce((acc, cur) => {
-            const price = cur.product.price * cur.quantity
+          return this.currentOrder.items.reduce((acc, cur) => {
+            const price = cur.price * cur.quantity
             return acc + price
           }, 0)
         }
@@ -160,14 +78,11 @@
       },
       paymentTax() {
         if (this.currentOrder) {
-          return this.currentOrder.reduce((acc, cur) => {
-            return acc + cur.product.tax * cur.quantity
+          return this.currentOrder.items.reduce((acc, cur) => {
+            return acc + cur.tax * cur.quantity
           }, 0)
         }
         return 0
-      },
-      paymentSubTotal() {
-        return this.orderRawTotal - this.paymentDiscount
       },
       paymentTotal() {
         return this.paymentSubTotal + this.paymentTax
@@ -180,40 +95,100 @@
       },
       async getActiveProducts() {
         const productModel = cms.getModel('Product');
-        this.activeCategoryProducts = await productModel.find({
+        const products = await productModel.find({
           category: this.activeCategory._id
         })
+        this.activeCategoryProducts = products.map(product => ({
+          ...product,
+          originalPrice: product.price
+        }))
       },
       addProductToOrder(product) {
         if (this.currentOrder && product) {
-          const existingProduct = this.currentOrder.find(i => i.product === product);
+          if (!Array.isArray(this.currentOrder.items)) this.currentOrder.items = []
+
+          const existingProduct = this.currentOrder.items.find(i => i._id === product._id);
           if (existingProduct) {
             existingProduct.quantity = existingProduct.quantity + 1;
           } else {
-            this.currentOrder.push({ product, quantity: 1 })
+            this.currentOrder.items.push({ ...product, quantity: 1 })
           }
         } else {
-          this.currentOrder = [
-            { product, quantity: 1 }
-          ]
+          this.currentOrder = { items: [{ ...product, quantity: 1 }] }
         }
       },
       addItemQuantity(item) {
-        const itemToUpdate = this.currentOrder.find(i => i.product._id === item._id)
-        itemToUpdate.quantity ++
+        const itemToUpdate = this.currentOrder.items.find(i => i._id === item._id)
+        itemToUpdate.quantity++
       },
-      removeItemQuantity(item) {
-        const itemToUpdate = this.currentOrder.find(i => i.product._id === item._id)
-        if (itemToUpdate.quantity - 1 === 0) {
-          this.currentOrder.splice(this.currentOrder.indexOf(itemToUpdate), 1)
+      removeItemQuantity(item, all = false) {
+        const itemToUpdate = this.currentOrder.items.find(i => i._id === item._id)
+        if (all || itemToUpdate.quantity - 1 === 0) {
+          this.currentOrder.items.splice(this.currentOrder.items.indexOf(itemToUpdate), 1)
+          this.activeTableProduct = null
         } else {
-          itemToUpdate.quantity --
+          itemToUpdate.quantity--
         }
       },
-      findProductsByBarcode() {
-
+      async queryProductsById() {
+        const productModel = cms.getModel('Product')
+        this.productIdQueryResults = await productModel.find({ id: { $regex: `${this.productIdQuery}`, $options: 'i' } })
       },
-      //
+      async queryProductsByName() {
+        const productModel = cms.getModel('Product')
+        this.productNameQueryResults = await productModel.find({ name: { $regex: `${this.productNameQuery}`, $options: 'i' } })
+      },
+      async getSavedOrders() {
+        const orderModel = cms.getModel('Order')
+        this.savedOrders = await orderModel.find({ status: 'inProgress' })
+      },
+      async saveInProgressOrder() {
+        const orderModel = cms.getModel('Order')
+        const order = {
+          status: 'inProgress',
+          items: this.currentOrder.items.map(item => ({
+            ...item,
+            product: item._id
+          })),
+          date: new Date()
+        }
+        if (this.currentOrder._id) {
+          const existingOrder = await orderModel.findOne({ _id: this.currentOrder._id })
+          if (existingOrder) {
+            await orderModel.findOneAndUpdate({ _id: this.currentOrder._id }, order)
+          } else {
+            await orderModel.create(order)
+          }
+        } else {
+          await orderModel.create(order)
+        }
+        this.currentOrder = {
+          items: []
+        }
+        await this.getSavedOrders()
+      },
+      async removeSavedOrder(order) {
+        const orderModel = cms.getModel('Order')
+        await orderModel.remove({ _id: order._id })
+        await this.getSavedOrders()
+      },
+      async selectSavedOrder(order) {
+        const orderModel = cms.getModel('Order')
+        this.currentOrder = await orderModel.findOne({ _id: order._id })
+      },
+      async savePaidOrder() {
+        const orderModel = cms.getModel('Order')
+        const order = {
+          status: 'paid',
+          items: this.currentOrder.items.map(item => ({
+            ...item,
+            product: item._id
+          })),
+          date: new Date()
+        }
+        await orderModel.create(order)
+      },
+      // order/payment
       convertMoney(val) {
         if (val && typeof (val) === 'number') {
           return val.toFixed(2)
@@ -221,10 +196,13 @@
           return 0
         }
       },
-      quickCash() {
-        this.lastPayment = +this.paymentTotal;
+      async quickCash() {
+        this.lastPayment = +this.paymentTotal
         //todo add to order history
-        this.currentOrder = []
+        await this.savePaidOrder()
+        this.currentOrder = {
+          items: []
+        }
       }
     },
     provide() {
@@ -242,8 +220,17 @@
         removeItemQuantity: this.removeItemQuantity,
         activeCategory: this.activeCategory,
         activeCategoryProducts: this.activeCategoryProducts,
-				currentOrder: this.currentOrder,
+        currentOrder: this.currentOrder,
+        saveInProgressOrder: this.saveInProgressOrder,
+        removeSavedOrder: this.removeSavedOrder,
+        selectSavedOrder: this.selectSavedOrder,
+        savedOrders: this.savedOrders,
         productIdQuery: this.productIdQuery,
+        productIdQueryResults: this.productIdQueryResults,
+        queryProductsById: this.queryProductsById,
+        productNameQuery: this.productNameQuery,
+        productNameQueryResults: this.productNameQueryResults,
+        queryProductsByName: this.queryProductsByName,
         //payment screen
         paymentTotal: this.paymentTotal,
         paymentAmountTendered: this.paymentAmountTendered,

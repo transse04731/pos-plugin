@@ -1,8 +1,12 @@
 <template>
-  <g-number-keyboard area="keyboard" v-model="number" :items="numpad_1" @submit="openDialogProductSearchResults">
+  <g-number-keyboard area="keyboard" v-model="productIdQuery" :items="numpad_1" @submit="openDialogProductSearchResults">
     <template v-slot:screen>
       <div class="number-key-show ba-thin bg-grey-lighten-3" style="height: calc(16.6667% - 4px)">
-        <input id="number_key_output" class="number-key-text col-12 self-center bg-transparent fs-large-2 fw-700 pl-2" style="border: none; outline: none" v-model="number">
+        <input id="number_key_output"
+               class="number-key-text col-12 self-center bg-transparent fs-large-2 fw-700 pl-2"
+               style="border: none; outline: none"
+               v-model="productIdQuery"
+        />
       </div>
     </template>
   </g-number-keyboard>
@@ -11,9 +15,9 @@
 <script>
   export default {
     name: 'PosOrderScreenNumberKeyboard',
+    injectService: ['PosStore:(productIdQuery,queryProductsById)'],
     data() {
       return {
-        number: '',
         numpad_1: [
           {
             content: ['7'],
@@ -93,8 +97,13 @@
       }
     },
     methods: {
-      openDialogProductSearchResults() {
-        this.$getService('dialogProductSearchResult:setActive')(true)
+      async openDialogProductSearchResults() {
+        if (this.productIdQuery.trim()) {
+          await this.queryProductsById()
+          this.$nextTick(() => {
+            this.$getService('dialogProductSearchResult:setActive')(true)
+          })
+        }
       }
     }
   }
