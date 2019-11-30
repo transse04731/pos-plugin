@@ -167,7 +167,7 @@
       paymentTax() {
         if (this.currentOrder) {
           return this.currentOrder.items.reduce((acc, cur) => {
-            return acc + (cur.price * cur.tax /100) * cur.quantity
+            return acc + (cur.price * cur.tax / 100) * cur.quantity
           }, 0)
         }
         return 0
@@ -195,6 +195,12 @@
           ...product,
           originalPrice: product.price
         }))
+      },
+      getProductGridOrder(product) {
+        return product.layouts.find(layout => this.activeCategory._id === 'Favourite'
+          ? layout.favourite
+          : !layout.favourite
+        ).order || 0
       },
       addProductToOrder(product) {
         if (this.currentOrder && product) {
@@ -231,7 +237,7 @@
             newPrice = (originalPrice * (100 - amount)) / 100
           }
           if (changeType === 'amount') newPrice = originalPrice - amount
-          if (changeType === 'new') newPrice = parseFloat(amount)
+          if (changeType === 'new') newPrice = amount
 
           if (update) {
             this.$set(this.activeProduct, 'price', newPrice)
@@ -243,11 +249,19 @@
       },
       async queryProductsById() {
         const productModel = cms.getModel('Product')
-        this.productIdQueryResults = await productModel.find({ id: { $regex: `${this.productIdQuery}`, $options: 'i' } })
+        const results = await productModel.find({ id: { $regex: `${this.productIdQuery}`, $options: 'i' } })
+        this.productIdQueryResults = results.map(product => ({
+          ...product,
+          originalPrice: product.price
+        }))
       },
       async queryProductsByName() {
         const productModel = cms.getModel('Product')
-        this.productNameQueryResults = await productModel.find({ name: { $regex: `${this.productNameQuery}`, $options: 'i' } })
+        const results = await productModel.find({ name: { $regex: `${this.productNameQuery}`, $options: 'i' } })
+        this.productNameQueryResults = results.map(product => ({
+          ...product,
+          originalPrice: product.price
+        }))
       },
       async getSavedOrders() {
         const orderModel = cms.getModel('Order')
@@ -298,10 +312,10 @@
           })),
           date: new Date(),
           payment: [{ type: this.currentOrder.payment || paymentMethod }],
+          vSum: this.paymentTotal
         }
-        console.log(order)
         if (this.currentOrder.status === 'inProgress') {
-          await orderModel.findOneAndUpdate({_id: this.currentOrder._id}, order)
+          await orderModel.findOneAndUpdate({ _id: this.currentOrder._id }, order)
         } else {
           await orderModel.create(order)
         }
@@ -347,6 +361,8 @@
         listProducts: this.listProducts,
         convertMoney: this.convertMoney,
         //legit
+        getProductGridOrder: this.getProductGridOrder,
+
         getAllCategories: this.getAllCategories,
         getActiveProducts: this.getActiveProducts,
         addItemQuantity: this.addItemQuantity,

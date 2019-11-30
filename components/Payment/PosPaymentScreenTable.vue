@@ -30,7 +30,7 @@
               <p :class="[product.edited && 'text__edited']">{{product.price}}</p>
               <p v-if="product.promotion && product.originalPrice" class="promotion-price">{{product.originalPrice}}</p>
             </div>
-            <div class="W-12 pa-2 ta-right">
+            <div class="w-12 pa-2 ta-right">
               <p :class="[product.edited && 'text__edited']">{{product.price * product.quantity}}</p>
               <p v-if="product.promotion && product.originalPrice" class="promotion-price">{{product.originalPrice * product.quantity}}</p>
             </div>

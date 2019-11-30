@@ -1,6 +1,6 @@
 <template>
   <g-toolbar color="#eee" elevation="0" fill-height>
-    <g-btn background-color="white" class="mr-2">
+    <g-btn background-color="white" class="mr-2" @click.stop="back">
       <g-icon class="mr-2" svg>icon-back</g-icon>
       <span style="color: rgba(0, 0, 0, 0.87)">Back</span>
     </g-btn>
@@ -18,8 +18,10 @@
 <script>
   export default {
     name: 'PosPaymentScreenToolbar',
-    data() {
-      return {}
+    methods: {
+      back() {
+        this.$router.push('test-pos-order')
+      }
     }
   }
 </script>

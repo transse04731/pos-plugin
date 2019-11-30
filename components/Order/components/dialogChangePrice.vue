@@ -3,11 +3,11 @@
     <div class="dialog-change w-100" :style="[{background: showKeyboard ? 'white' : 'transparent'}]">
       <div class="dialog-change-content">
         <div class="header">
-          <div class="col-5">
+          <div class="header-side">
             <p>Original Price</p>
             <g-text-field read-only outlined :value="`€ ${activeProduct && activeProduct.originalPrice}`"/>
           </div>
-          <div class="col-5">
+          <div class="header-side">
             <p>Effective Price</p>
             <g-text-field read-only outlined class="tf__effective" :value="`€ ${computedPrice}`"/>
           </div>
@@ -19,7 +19,7 @@
             <g-btn outlined :disabled="disabledPercent" @click="newPercent = 10">- 10%</g-btn>
             <g-btn outlined :disabled="disabledPercent" @click="newPercent = 15">- 15%</g-btn>
             <g-btn outlined :disabled="disabledPercent" @click="newPercent = 20">- 20%</g-btn>
-            <g-text-field dense outlined :disabled="disabledPercent" v-model="newPercent" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false" :rules="[rulePercent.percent]"></g-text-field>
+            <g-text-field dense outlined :disabled="disabledPercent" v-model.number="newPercent" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false" :rules="[rulePercent.percent]"></g-text-field>
           </div>
           <g-radio color="#1271ff" value="amount" label="Discount by €"></g-radio>
           <div class="row-flex col-10 m-auto">
@@ -27,11 +27,11 @@
             <g-btn outlined :disabled="disabledAmount" @click="newAmount = 10">- € 10</g-btn>
             <g-btn outlined :disabled="disabledAmount" @click="newAmount = 15">- € 15</g-btn>
             <g-btn outlined :disabled="disabledAmount" @click="newAmount = 20">- € 20</g-btn>
-            <g-text-field dense outlined :disabled="disabledAmount" v-model="newAmount" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false"></g-text-field>
+            <g-text-field dense outlined :disabled="disabledAmount" v-model.number="newAmount" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false"></g-text-field>
           </div>
           <g-radio color="#1271ff" value="new" label="New Price"></g-radio>
           <div class="m-auto col-10">
-            <g-text-field dense outlined placeholder="New Price" v-model="newPrice" @focus="showKeyboard = true" @blur="showKeyboard = false" :disabled="disabledNew"></g-text-field>
+            <g-text-field type="number" dense outlined placeholder="New Price" v-model.number="newPrice" @focus="showKeyboard = true" @blur="showKeyboard = false" :disabled="disabledNew"></g-text-field>
           </div>
         </g-radio-group>
         <div class="action">
@@ -80,7 +80,7 @@
             return this.calculateNewPrice('amount', this.newAmount)
           }
           if (this.changeType === 'new') {
-            return this.calculateNewPrice('new', parseFloat(this.newPrice))
+            return this.calculateNewPrice('new', this.newPrice)
           }
           return this.activeProduct.originalPrice
         }
@@ -146,6 +146,11 @@
         font-size: 13px;
         font-weight: 700;
         justify-content: center;
+
+        .header-side {
+          width: calc(41.6667% - 8px);
+          margin: 0 8px;
+        }
 
         .g-tf-wrapper {
           &.tf__effective input {

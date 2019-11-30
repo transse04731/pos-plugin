@@ -1,6 +1,6 @@
 <template>
   <div>
-    <g-grid-select item-value="title" :grid="false" :items="paymentMethods" v-model="activePaymentMethod">
+    <g-grid-select item-value="title" :grid="false" :items="paymentMethods" v-model="activePaymentMethod" mandatory>
       <template #default="{toggleSelect, item, index}">
         <g-btn x-large outlined text-color="#1271ff"
                @click.stop="toggleSelect(item)"
@@ -30,8 +30,8 @@
     data() {
       return {
         paymentMethods: [
-          { icon: 'icon-credit_card', title: 'cash' },
-          { icon: 'icon-cash', title: 'card' }
+          { icon: 'icon-cash', title: 'cash' },
+          { icon: 'icon-credit_card', title: 'card' }
         ],
         paymentMethod: ''
       }

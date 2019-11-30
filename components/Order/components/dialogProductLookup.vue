@@ -114,6 +114,8 @@
     }
 
     .g-table {
+      overflow: scroll;
+
       &.tbLookup {
         height: calc(65% - 64px) !important;
         flex-basis: calc(65% - 64px);

@@ -27,7 +27,7 @@
                 </div>
                 <div style="display: flex; justify-content: center; align-items: center;">
                   <div style="padding: 20px;">
-                    <div><p>{{product.id}}</p></div>
+                    <div><p>#{{product.id}}</p></div>
                     <div><p><b>{{product.name}}</b></p></div>
                   </div>
                 </div>
@@ -79,12 +79,12 @@
             <td>
               <div class="result-item result-item-action" style="display: flex; justify-content: center; align-items: center;">
                 <g-btn :disabled="!isValidItem(product)"
-                       background-color="red"
+                       background-color="blue darken-1"
                        text-color="white"
                        @click.stop="addProductToOrder(product)"
                 >
-                  <g-icon class="mr-2" svg>icon-back</g-icon>
-                  Create new order
+                  <g-icon class="mr-1" size="20">add_circle</g-icon>
+                  Add
                 </g-btn>
               </div>
             </td>
@@ -124,12 +124,11 @@
             this.queryResults = this.productIdQueryResults.map(result => {
               let hasAttributes = result.attributes && result.attributes.length;
               const computedAttributes = hasAttributes && _.groupBy(result.attributes, 'key')
-              let selectedAttributes;
+              let selectedAttributes = {};
 
               if (hasAttributes) {
-                selectedAttributes = {}
                 for (const key in computedAttributes) {
-                  if (computedAttributes.hasOwnProperty(key)) Object.assign(selectedAttributes, {[key]: []})
+                  if (computedAttributes.hasOwnProperty(key)) Object.assign(selectedAttributes, {[key]: undefined})
                 }
               }
 
@@ -166,6 +165,7 @@
         _product.unit = product.selectedUnit
         _product.attributes = _.values(product.selectedAttributes)
         this.$getService('PosStore:addProductToOrder')(_product)
+        this.dialogProductSearch = false
       }
     }
   }
@@ -207,6 +207,7 @@
   }
 
   .g-card {
+    width: 88vw;
     overflow-y: hidden !important;
   }
 
@@ -220,5 +221,9 @@
 
   ::v-deep .g-btn__disabled {
 
+  }
+
+  .g-badge-wrapper .g-btn {
+    min-width: 0 !important;
   }
 </style>

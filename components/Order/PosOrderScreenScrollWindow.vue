@@ -7,6 +7,7 @@
                :background-color="item.layouts[0].color"
                height="100%"
                @click="addProductToOrder(item)"
+               :style="{order: getProductGridOrder(item)}"
         >
           {{item.name}}
         </g-btn>
@@ -35,7 +36,7 @@
         default: 0
       }
     },
-    injectService: ['PosStore:(activeCategoryProducts,addProductToOrder)'],
+    injectService: ['PosStore:(activeCategoryProducts,addProductToOrder,getProductGridOrder)'],
     data() {
       return {
         activeProductWindow: 0,
