@@ -3,6 +3,8 @@
 </template>
 
 <script>
+  import _ from 'lodash'
+
   export default {
     name: 'PosStore',
     props: {},
@@ -148,7 +150,10 @@
         }
       },
       paymentChange() {
-        return this.convertMoney(this.paymentAmountTendered - this.paymentTotal)
+        if (parseFloat(this.paymentAmountTendered) > this.paymentTotal) {
+          return this.paymentAmountTendered - this.paymentTotal
+        }
+        return 0
       },
       paymentSubTotal() {
         if (this.currentOrder) {
@@ -162,13 +167,18 @@
       paymentTax() {
         if (this.currentOrder) {
           return this.currentOrder.items.reduce((acc, cur) => {
-            return acc + cur.tax * cur.quantity
+            return acc + (cur.price * cur.tax /100) * cur.quantity
           }, 0)
         }
         return 0
       },
       paymentTotal() {
         return this.paymentSubTotal + this.paymentTax
+      },
+      activeProduct() {
+        if (this.currentOrder.items && !_.isNil(this.activeTableProduct)) {
+          return this.currentOrder.items[this.activeTableProduct]
+        }
       }
     },
     methods: {
@@ -211,6 +221,24 @@
           this.activeTableProduct = null
         } else {
           itemToUpdate.quantity--
+        }
+      },
+      calculateNewPrice(changeType, amount, update = false) {
+        if (this.activeProduct) {
+          let originalPrice = this.activeProduct.originalPrice;
+          let newPrice = originalPrice
+          if (changeType === 'percentage') {
+            newPrice = (originalPrice * (100 - amount)) / 100
+          }
+          if (changeType === 'amount') newPrice = originalPrice - amount
+          if (changeType === 'new') newPrice = parseFloat(amount)
+
+          if (update) {
+            this.$set(this.activeProduct, 'price', newPrice)
+            this.$set(this.activeProduct, 'discount', originalPrice - newPrice)
+          }
+
+          return newPrice
         }
       },
       async queryProductsById() {
@@ -260,7 +288,7 @@
         const orderModel = cms.getModel('Order')
         this.currentOrder = await orderModel.findOne({ _id: order._id })
       },
-      async savePaidOrder() {
+      async savePaidOrder(paymentMethod) {
         const orderModel = cms.getModel('Order')
         const order = {
           status: 'paid',
@@ -268,10 +296,18 @@
             ...item,
             product: item._id
           })),
-          date: new Date()
+          date: new Date(),
+          payment: [{ type: this.currentOrder.payment || paymentMethod }],
         }
-        await orderModel.create(order)
+        console.log(order)
+        if (this.currentOrder.status === 'inProgress') {
+          await orderModel.findOneAndUpdate({_id: this.currentOrder._id}, order)
+        } else {
+          await orderModel.create(order)
+        }
         this.activeTableProduct = null
+        this.currentOrder = { items: [] }
+        await this.getSavedOrders()
       },
       // order/payment
       convertMoney(val) {
@@ -284,7 +320,7 @@
       async quickCash() {
         this.lastPayment = +this.paymentTotal
         //todo add to order history
-        await this.savePaidOrder()
+        await this.savePaidOrder('Cash')
         this.currentOrder = {
           items: []
         }
@@ -294,6 +330,7 @@
         this.orderHistoryOrders.splice(index, 1);
         this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
       },
+      // payment screen
     },
     mounted() {
     },
@@ -306,6 +343,7 @@
         //order screen
         activeProductWindow: this.activeProductWindow,
         activeTableProduct: this.activeTableProduct,
+        activeProduct: this.activeProduct,
         listProducts: this.listProducts,
         convertMoney: this.convertMoney,
         //legit
@@ -316,6 +354,8 @@
         activeCategory: this.activeCategory,
         activeCategoryProducts: this.activeCategoryProducts,
         currentOrder: this.currentOrder,
+        calculateNewPrice: this.calculateNewPrice,
+        savePaidOrder: this.savePaidOrder,
         saveInProgressOrder: this.saveInProgressOrder,
         removeSavedOrder: this.removeSavedOrder,
         selectSavedOrder: this.selectSavedOrder,

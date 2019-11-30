@@ -10,7 +10,7 @@
       <p class="amount">€ {{paymentAmountTendered}}</p>
     </div>
     <div class="input change">
-      € {{parseInt(paymentChange)}}
+      € {{convertMoney(paymentChange)}}
     </div>
     <div>
       Tip

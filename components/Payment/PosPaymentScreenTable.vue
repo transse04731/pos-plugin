@@ -15,7 +15,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="product in paymentOrderDetail">
+      <tr v-for="product in productList">
         <td style="color: inherit; padding: 0">
           <div class="row-flex" style="line-height: 1.75">
             <div class="flex-grow-1 pa-2 ta-left" style="font-size: 15px">
@@ -46,8 +46,16 @@
   export default {
     name: 'PosPaymentScreenTable',
     injectService: [
-      'PosStore:paymentOrderDetail'
-    ]
+      'PosStore:currentOrder'
+    ],
+    computed: {
+      productList() {
+        return this.currentOrder.items.map(product => ({
+          ...product,
+          edited: product.price !== product.originalPrice
+        }))
+      }
+    }
   }
 </script>
 

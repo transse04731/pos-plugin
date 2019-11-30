@@ -48,16 +48,14 @@
 
 <script>
   import PosNumpad from '../../pos-shared-components/PosNumpad';
-  import _ from 'lodash'
 
   export default {
     name: 'dialogChangePrice',
     components: { PosNumpad },
-    injectService: ['PosStore:(activeTableProduct,currentOrder,convertMoney)'],
+    injectService: ['PosStore:(activeProduct,convertMoney,calculateNewPrice)'],
     props: {
       value: Boolean,
       product: null,
-      //todo dynamic discount button value
     },
     data() {
       return {
@@ -73,22 +71,17 @@
       }
     },
     computed: {
-      activeProduct: {
-        get() {
-          if (this.currentOrder && this.currentOrder.items.length > 0 && !_.isNil(this.activeTableProduct)) {
-            return this.currentOrder.items[this.activeTableProduct]
-          }
-        }
-      },
       computedPrice() {
         if (this.activeProduct) {
           if (this.changeType === 'percentage') {
-
-            return (this.activeProduct.originalPrice * (100 - this.newPercent)) / 100
+            return this.calculateNewPrice('percentage', this.newPercent)
           }
-          if (this.changeType === 'amount') return this.activeProduct.originalPrice - this.newAmount
-          if (this.changeType === 'new') return parseFloat(this.newPrice)
-
+          if (this.changeType === 'amount') {
+            return this.calculateNewPrice('amount', this.newAmount)
+          }
+          if (this.changeType === 'new') {
+            return this.calculateNewPrice('new', parseFloat(this.newPrice))
+          }
           return this.activeProduct.originalPrice
         }
         return 0
@@ -127,8 +120,7 @@
           this.dialogChangePrice = false;
           return;
         }
-        this.$set(this.activeProduct, 'price', this.computedPrice)
-        this.$set(this.activeProduct, 'discount', this.activeProduct.originalPrice - this.computedPrice)
+        this.calculateNewPrice('new', this.computedPrice, true)
         this.dialogChangePrice = false;
       },
     }
