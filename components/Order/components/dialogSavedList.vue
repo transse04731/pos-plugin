@@ -36,10 +36,6 @@
 						<g-icon class="mr-2" svg>icon-back</g-icon>
 						Back
 					</g-btn>
-					<g-btn background-color="white" class="mr-2">
-						<g-icon class="mr-2" svg>icon-folder</g-icon>
-						Saved list
-					</g-btn>
 				</g-toolbar>
 			</div>
 		</g-dialog>
@@ -52,7 +48,7 @@
 					Are you sure you want to delete Saved order <b>"{{listToDelete && listToDelete.id}}"</b>?
 				</g-card-text>
 				<g-card-actions>
-					<g-btn flat background-color="#efefef">Cancel</g-btn>
+					<g-btn flat outlined>Cancel</g-btn>
 					<g-btn flat background-color="red lighten 2" text-color="white" @click="removeList()">OK</g-btn>
 				</g-card-actions>
 			</g-card>
@@ -142,6 +138,11 @@
 
 			.g-btn {
 				min-width: 120px !important;
+
+				&.g-btn__outlined {
+					border: 1px solid #979797;
+					color: #1d1d26;
+				}
 			}
 		}
 	}

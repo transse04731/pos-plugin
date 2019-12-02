@@ -99,10 +99,6 @@
     align-items: center;
     justify-content: flex-end;
     padding: 0 4px;
-
-    &::v-deep .g-btn {
-      border-radius: 2px;
-    }
   }
 
   .keyboard {

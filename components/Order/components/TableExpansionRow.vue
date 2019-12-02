@@ -61,7 +61,7 @@
 								</g-btn>
 							</div>
 							<div class="col-4 row-flex align-items-center justify-center fs-large">
-								<div class="h-70 w-80 row-flex align-items-center justify-center b-blue-accent-3 text-blue-accent-1 bg-white ba-thin">
+								<div class="w-80 row-flex align-items-center justify-center b-blue-accent-3 text-blue-accent-1 bg-white ba-thin" style="height: 32px">
                   { item['quantity'] }
 								</div>
 							</div>
@@ -72,7 +72,7 @@
 							</div>
 						</div>
             <div style="flex-grow: 1"></div>
-            <g-btn text small text-color="#f44336" style="margin: 12px 0; letter-spacing: 0; font-size 14px"
+            <g-btn text small text-color="#f44336" style="margin: 8px 0; letter-spacing: 0; font-size 14px"
                    vOn:click_stop={() => context.emit(`click:remove`, item, true)}>
               <g-icon small class="mr-2">remove_circle</g-icon>Remove item
             </g-btn>
@@ -138,5 +138,6 @@
 	.g-expansion-content {
 		display: flex;
 		background-color: #BBDEFB;
+		transition-duration: 0.25s;
 	}
 </style>

@@ -17,7 +17,7 @@
       <template v-slot:default="{ toggle, active }">
         <template v-for="(item, index) in productWindows">
           <g-item :is-active="active(item)" :key="index">
-            <g-btn @click="toggle(item)"></g-btn>
+            <g-btn @click="toggle(item)" border-radius="50%"></g-btn>
           </g-item>
         </template>
       </template>
@@ -80,7 +80,6 @@
       .g-btn {
         width: 8px !important;
         height: 8px !important;
-        border-radius: 50%;
         min-width: 0 !important;
         padding: 0 !important;
         margin: 0 6px;
