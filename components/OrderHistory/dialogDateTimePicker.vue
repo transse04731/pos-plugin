@@ -20,12 +20,13 @@
 
 <script>
   export default {
-    name: 'DateTimePicker',
+    name: 'dialogDateTimePicker',
     props: {
       value: null
     },
     injectService: [
-      'PosStore:orderHistoryFilters'
+      'PosStore:orderHistoryFilters',
+      'PosStore:getOrderHistory',
     ],
     data: () => ({
       selectedDatetime: []
@@ -41,11 +42,13 @@
       }
     },
     methods: {
-      submit() {
+      async submit() {
         const index = this.orderHistoryFilters.findIndex(f => f.title === 'Datetime');
         const datetimeFilter = {
           title: 'Datetime',
-          value: this.selectedDatetime[0] + ' - ' + this.selectedDatetime[1]
+          text: this.selectedDatetime[0] + ' - ' + this.selectedDatetime[1],
+          value: this.selectedDatetime,
+          property: 'date',
         };
         if (index > -1) {
           this.orderHistoryFilters.splice(index, 1, datetimeFilter);
@@ -53,6 +56,7 @@
           this.orderHistoryFilters.unshift(datetimeFilter);
         }
         this.internalValue = false;
+        await this.getOrderHistory();
       }
     }
     ,

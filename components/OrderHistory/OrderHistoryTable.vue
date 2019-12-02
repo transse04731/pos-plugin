@@ -28,7 +28,7 @@
             <g-chip v-for="filter in orderHistoryFilters" label small background-color="white" close class="ma-1" @close="removeFilter(filter)">
               <div>
                 <span class="chip-title">{{filter.title}}: </span>
-                <span class="chip-content">{{filter.value}}</span>
+                <span class="chip-content">{{filter.text}}</span>
               </div>
             </g-chip>
           </div>
@@ -39,20 +39,20 @@
         </div>
       </td>
     </tr>
-    <tr v-for="order in orderHistoryOrders" :class="[order.id === orderHistoryCurrentOrder.id && 'tr__active']" @click="chooseOrder(order)">
+    <tr v-for="order in orderHistoryOrders" :class="[order._id === orderHistoryCurrentOrder._id && 'tr__active']" @click="chooseOrder(order)">
       <td class="ta-right">{{order.id}}</td>
       <td class="ta-center">{{order.dateTime}}</td>
       <td class="ta-center">{{order.barcode}}</td>
-      <td class="ta-right">€ {{order.amount.toFixed(2)}}</td>
+      <td class="ta-right">€ {{+order.amount.toFixed(2)}}</td>
       <td>{{order.staff}}</td>
-      <td>{{order.info}}</td>
+      <td class="ta-center">{{order.info}}</td>
     </tr>
   </g-simple-table>
 </template>
 <script>
 
   export default {
-    name: 'OrderTable',
+    name: 'OrderHistoryTable',
     props: {
       value: null,
     },
@@ -60,6 +60,7 @@
       'PosStore:orderHistoryOrders',
       'PosStore:orderHistoryFilters',
       'PosStore:orderHistoryCurrentOrder',
+      'PosStore:getOrderHistory',
     ],
     data() {
       return {}
@@ -83,13 +84,18 @@
       chooseOrder(order) {
         this.orderHistoryCurrentOrder = order;
       },
-      removeFilter(filter) {
+      async removeFilter(filter) {
         const index = this.orderHistoryFilters.findIndex(f => f.title === filter.title);
         this.orderHistoryFilters.splice(index, 1);
+        await this.getOrderHistory();
       },
-      clearFilters() {
+      async clearFilters() {
         this.orderHistoryFilters = [];
+        await this.getOrderHistory();
       }
+    },
+    async mounted() {
+      await this.getOrderHistory();
     }
   }
 </script>

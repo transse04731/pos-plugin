@@ -25,14 +25,15 @@
   import PosNumpad from '../pos-shared-components/PosNumpad';
 
   export default {
-    name: 'OrderNumberLookUp',
+    name: 'dialogOrderNumberLookUp',
     components: { PosNumpad, PosTextField },
     props: {
       text: String,
       value: null,
     },
     injectService: [
-      'PosStore:orderHistoryFilters'
+      'PosStore:orderHistoryFilters',
+      'PosStore:getOrderHistory'
     ],
     data() {
       return {
@@ -50,11 +51,13 @@
       }
     },
     methods: {
-      submit() {
+      async submit() {
         const index = this.orderHistoryFilters.findIndex(f => f.title === 'OrderNo');
         const orderFilter = {
           title: 'OrderNo',
-          value: '' + this.screenValue
+          text: this.screenValue,
+          value: this.screenValue,
+          property: 'id'
         };
         if (index > -1) {
           this.orderHistoryFilters.splice(index, 1, orderFilter);
@@ -63,6 +66,7 @@
         }
         this.screenValue = '';
         this.internalValue = false;
+        await this.getOrderHistory();
       }
     }
   }

@@ -1,9 +1,9 @@
 <template>
-  <g-dialog v-model="internalValue" width="90%">
+  <g-dialog v-model="internalValue" width="50%">
     <div class="wrapper">
       <g-icon @click="internalValue = false" svg size="20" class="icon">icon-close</g-icon>
       <div class="screen">
-        <pos-text-field v-model="screenValue" large label="Staff" readOnly/>
+        <pos-text-field v-model="screenValue" large label="Barcode Lookup" :rules="rules" readOnly/>
         <div class="buttons">
           <g-btn text @click="internalValue = false" backgroundColor="#EFEFEF" text-color="#757575" width="120" class="mr-2">
             Cancel
@@ -14,7 +14,7 @@
         </div>
       </div>
       <div class="keyboard">
-        <pos-keyboard-full v-model="screenValue"/>
+        <pos-numpad v-model="screenValue"/>
       </div>
     </div>
   </g-dialog>
@@ -22,18 +22,19 @@
 
 <script>
   import PosTextField from '../pos-shared-components/POSInput/PosTextField';
-  import PosKeyboardFull from '../pos-shared-components/PosKeyboardFull';
+  import PosNumpad from '../pos-shared-components/PosNumpad';
 
   export default {
-    name: 'StaffFilter',
-    components: { PosKeyboardFull, PosTextField },
+    name: 'dialogBarcodeLookUp',
+    components: { PosNumpad, PosTextField },
     props: {
       text: String,
       value: null,
     },
     injectService: [
       'PosStore:orderHistoryFilters',
-      'PosStore:orderHistoryOrders'
+      'PosStore:orderHistoryOrders',
+      'PosStore:getOrderHistory',
     ],
     data() {
       return {
@@ -49,21 +50,29 @@
           this.$emit('input', value)
         }
       },
+      rules() {
+        const index = this.orderHistoryOrders.findIndex(o => o.barcode.includes(this.screenValue));
+        const error = index === -1;
+        return [() => !error || 'Not found'];
+      }
     },
     methods: {
-      submit() {
-        const index = this.orderHistoryFilters.findIndex(f => f.title === 'Staff');
-        const staffFilter = {
-          title: 'Staff',
-          value: this.screenValue
+      async submit() {
+        const index = this.orderHistoryFilters.findIndex(f => f.title === 'Barcode');
+        const barcodeFilter = {
+          title: 'Barcode',
+          text: this.screenValue,
+          value: this.screenValue,
+          property: 'barcode'
         };
         if (index > -1) {
-          this.orderHistoryFilters.splice(index, 1, staffFilter);
+          this.orderHistoryFilters.splice(index, 1, barcodeFilter);
         } else {
-          this.orderHistoryFilters.unshift(staffFilter);
+          this.orderHistoryFilters.unshift(barcodeFilter);
         }
-        this.screenValue = 0;
+        this.screenValue = '';
         this.internalValue = false;
+        await this.getOrderHistory();
       },
     }
   }
@@ -71,9 +80,9 @@
 
 <style scoped lang="scss">
   .wrapper {
+    width: 100%;
     background-color: #FFFFFF;
     padding: 16px;
-    width: 100%;
 
     .icon {
       float: right;
@@ -81,8 +90,6 @@
   }
 
   .bs-tf-wrapper {
-    width: 50%;
-
     ::v-deep .bs-tf-label {
       margin-bottom: 16px;
       font-size: 16px;
@@ -107,7 +114,11 @@
   .keyboard {
     height: 236px;
     background-color: #BDBDBD;
-    padding: 16px;
+    padding: 20px 125px;
     margin: 0 -16px -16px -16px;
+
+    .keyboard__template {
+      height: 100%;
+    }
   }
 </style>

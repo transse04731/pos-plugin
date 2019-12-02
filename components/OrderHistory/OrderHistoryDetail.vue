@@ -5,7 +5,7 @@
       <span class="order-id">{{orderHistoryCurrentOrder.id}}</span>
     </div>
     <g-simple-table striped>
-      <tr v-for="product in orderHistoryCurrentOrder.products">
+      <tr v-for="product in orderHistoryCurrentOrder.items">
         <td>{{product.quantity}}x</td>
         <td>{{product.name}}</td>
         <td class="ta-right">€ {{product.price}}</td>
@@ -24,16 +24,16 @@
     <g-divider/>
     <div class="order-info mt-2">
       <span>Sub Total</span>
-      <span class="order-info-number">€ {{subTotal}}</span>
+      <span class="order-info-number">€ {{subTotal.toFixed(2)}}</span>
     </div>
     <div class="order-info mb-2">
       <span>Tax</span>
-      <span class="order-info-number">€ {{orderHistoryCurrentOrder.tax}}</span>
+      <span class="order-info-number">€ {{orderHistoryCurrentOrder.tax.toFixed(2)}}</span>
     </div>
     <g-divider/>
     <div class="total">
       <span>Total </span>
-      <span class="total__important">€ {{subTotal + orderHistoryCurrentOrder.tax}}</span>
+      <span class="total__important">€ {{(subTotal + orderHistoryCurrentOrder.tax).toFixed(2)}}</span>
     </div>
     <g-divider/>
   </div>
@@ -42,7 +42,7 @@
 <script>
 
   export default {
-    name: 'OrderDetail',
+    name: 'OrderHistoryDetail',
     props: {},
     injectService: [
       'PosStore:orderHistoryCurrentOrder'
@@ -55,7 +55,7 @@
         return this.orderHistoryCurrentOrder && this.orderHistoryCurrentOrder.promotions.reduce((acc, val) => (acc + val.amount), 0);
       },
       subTotal() {
-        return this.orderHistoryCurrentOrder && this.orderHistoryCurrentOrder.products.reduce((acc, val) => (acc + val.price * val.quantity), 0) - this.promotionTotal;
+        return this.orderHistoryCurrentOrder && this.orderHistoryCurrentOrder.items.reduce((acc, val) => (acc + val.price * val.quantity), 0) - this.promotionTotal;
       }
     }
   }

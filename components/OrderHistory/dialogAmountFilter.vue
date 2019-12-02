@@ -22,7 +22,7 @@
   import PosRangeSlider from '../pos-shared-components/POSInput/PosRangeSlider';
 
   export default {
-    name: 'AmountFilter',
+    name: 'dialogAmountFilter',
     components: { PosRangeSlider },
     props: {
       min: {
@@ -37,6 +37,7 @@
     },
     injectService: [
       'PosStore:orderHistoryFilters',
+      'PosStore:getOrderHistory',
     ],
     data() {
       return {
@@ -54,11 +55,13 @@
       }
     },
     methods: {
-      submit() {
+      async submit() {
         const index = this.orderHistoryFilters.findIndex(f => f.title === 'Amount');
         const amountFilter = {
           title: 'Amount',
-          value: this.filter[0] + ' - ' + this.filter[1]
+          text: this.filter[0] + ' - ' + this.filter[1],
+          value: this.filter,
+          property: 'vSum',
         };
         if (index > -1) {
           this.orderHistoryFilters.splice(index, 1, amountFilter);
@@ -66,6 +69,7 @@
           this.orderHistoryFilters.unshift(amountFilter);
         }
         this.internalValue = false;
+        await this.getOrderHistory();
       }
     }
   }

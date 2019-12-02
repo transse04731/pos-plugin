@@ -1,5 +1,5 @@
 <template>
-  <fragment/>
+	<fragment/>
 </template>
 
 <script>
@@ -55,85 +55,7 @@
           },
         ],
         //order history screen variables
-        orderHistoryOrders: [
-          {
-            id: '413431', dateTime: '20.08 18:05', barcode: '19082213050555', amount: 550.00, staff: 'User 1', info: '',
-            products: [
-              { name: 'Tomaten Suppe', quantity: 1, price: 100 },
-              { name: 'Hähnchen Salat', quantity: 2, price: 100 },
-              { name: 'Gebackenes Huhn', quantity: 1, price: 100 },
-              { name: 'Gebackenes Huhn', quantity: 1, price: 100 },
-            ],
-            promotions: [
-              { name: 'Discount 10%', amount: 50 }
-            ],
-            tax: 100
-          },
-          {
-            id: '431413', dateTime: '20.08 20:07', barcode: '45174805917450', amount: 31.80, staff: 'Keanu Reeves', info: 'VIP',
-            products: [
-              { name: 'Tomaten Suppe', quantity: 3, price: 5 },
-              { name: 'Hähnchen Salat', quantity: 1, price: 15 },
-            ],
-            promotions: [],
-            tax: 1.80
-          },
-          {
-            id: '641325', dateTime: '20.08 12:05', barcode: '51451451451451', amount: 5411.00, staff: 'Crypto', info: '',
-            products: [
-              { name: 'Tomaten Suppe', quantity: 1, price: 100 },
-              { name: 'Hähnchen Salat', quantity: 1, price: 100 },
-              { name: 'Gebackenes Huhn', quantity: 4, price: 25 },
-              { name: 'Gebackenes Huhn', quantity: 5, price: 1000 },
-              { name: 'Gebackenes Huhn', quantity: 1, price: 111 },
-            ],
-            promotions: [
-              { name: 'Discount € 250', amount: 250 }
-            ],
-            tax: 250
-          },
-          {
-            id: '414135', dateTime: '20.08 11:03', barcode: '68771457276871', amount: 431.00, staff: 'User 1',
-            products: [
-              { name: 'Tomaten Suppe', quantity: 1, price: 100 },
-              { name: 'Hähnchen Salat', quantity: 2, price: 100 },
-              { name: 'Gebackenes Huhn', quantity: 4, price: 25 },
-              { name: 'Gebackenes Huhn', quantity: 2, price: 50 },
-            ],
-            promotions: [
-              { name: 'Discount € 50', amount: 50 },
-              { name: 'Discount 10%', amount: 50 }
-            ],
-            tax: 31,
-            info: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-          },
-          {
-            id: '254131', dateTime: '20.08 18:05', barcode: '51656156156156', amount: 30.00, staff: 'Brad Pitt', info: '',
-            products: [
-              { name: 'Tomaten Suppe', quantity: 1, price: 30 },
-            ],
-            promotions: [],
-            tax: 0
-          },
-          {
-            id: '413556', dateTime: '20.08 08:32', barcode: '17586218671526', amount: 40.00, staff: 'Angelina Jolie', info: '',
-            products: [
-              { name: 'Tomaten Suppe', quantity: 1, price: 5 },
-              { name: 'Hähnchen Salat', quantity: 1, price: 14 },
-              { name: 'Gebackenes Huhn', quantity: 1, price: 17 },
-            ],
-            promotions: [],
-            tax: 4
-          },
-          {
-            id: '152413', dateTime: '20.08 18:05', barcode: '71571575261565', amount: 84.00, staff: 'User 2', info: 'No ketchup, No onion',
-            products: [
-              { name: 'Tomaten Suppe', quantity: 1, price: 60 },
-            ],
-            promotions: [],
-            tax: 24
-          },
-        ],
+        orderHistoryOrders: [],
         orderHistoryFilters: [],
         orderHistoryCurrentOrder: null,
         oh_amountFilter: null,
@@ -339,8 +261,38 @@
           items: []
         }
       },
-      deleteOrder() {
-        const index = this.orderHistoryOrders.findIndex(o => o.id === this.orderHistoryCurrentOrder.id);
+      async getOrderHistory() {
+        const orderModel = cms.getModel('Order');
+        const condition = this.orderHistoryFilters.reduce((acc, cur) => {
+          if (Array.isArray(cur.value)) {
+            if (cur.title === 'Amount')
+              return { ...acc, [cur.property]: { '$gte': cur.value[0], '$lte': cur.value[1] }};
+            if (cur.title === 'Datetime') {
+              return { ...acc, [cur.property]: { '$gte': new Date(cur.value[0] + " 00:00:00"), '$lte': new Date(cur.value[1] + " 23:59:59")}};
+            }
+          } else if (cur.title === 'Staff') {
+            return { ...acc, [cur.property]: { name: { '$regex': cur.value } } }
+          } else {
+            return { ...acc, [cur.property]: { '$regex': cur.value } }
+          }
+        }, { status: 'paid' });
+        const orders = await orderModel.find(condition);
+        this.orderHistoryOrders = orders.map(order => ({
+          ...order,
+          info: order.note,
+          tax: order.items.reduce((acc, item) => (acc + item.tax / 100 * item.quantity * item.price), 0),
+          dateTime: dayjs(order.date).format('DD.MM HH:mm'),
+          amount: order.vSum ? order.vSum : order.items.reduce((acc, item) => (acc + item.price * item.quantity * (1 + item.tax / 100)), 0),
+          staff: '',
+          barcode: '',
+          promotions: [],
+        }));
+        this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
+      },
+      async deleteOrder() {
+        const orderModel = cms.getModel('Order');
+        await orderModel.deleteOne({ '_id': this.orderHistoryCurrentOrder._id });
+        const index = this.orderHistoryOrders.findIndex(o => o._id === this.orderHistoryCurrentOrder._id);
         this.orderHistoryOrders.splice(index, 1);
         this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
       },
@@ -399,6 +351,7 @@
         orderHistoryFilters: this.orderHistoryFilters,
         orderHistoryCurrentOrder: this.orderHistoryCurrentOrder,
         deleteOrder: this.deleteOrder,
+        getOrderHistory: this.getOrderHistory,
       }
     }
   }
