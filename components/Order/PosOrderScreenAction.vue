@@ -20,4 +20,11 @@
   .action {
     padding: 9px 6px;
   }
+
+  .g-btn {
+    &.g-btn__outlined {
+      border: 1px solid #979797;
+      background-color: #fafafa;
+    }
+  }
 </style>

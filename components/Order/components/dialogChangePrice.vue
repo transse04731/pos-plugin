@@ -35,7 +35,7 @@
           </div>
         </g-radio-group>
         <div class="action">
-          <g-btn flat background-color="#efefef" text-color="grey darken 1" @click="dialogChangePrice = false">Cancel</g-btn>
+          <g-btn flat outlined @click="dialogChangePrice = false">Cancel</g-btn>
           <g-btn flat background-color="blue accent 3" text-color="white" @click="changePrice">OK</g-btn>
         </div>
       </div>
@@ -212,6 +212,11 @@
 
         .g-btn {
           min-width: 120px !important;
+
+          &.g-btn__outlined {
+            border: 1px solid #979797;
+            color: #1d1d26;
+          }
         }
       }
     }

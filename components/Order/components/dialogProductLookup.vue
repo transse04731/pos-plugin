@@ -24,7 +24,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="(product, i) in productNameQueryResults" :key="i" @click="addToOrder(product)">
+        <tr v-for="(product, i) in productNameQueryResults" :key="i" :class="[(selected && product._id === selected._id) && 'tr__selected']" @click="addToOrder(product)">
           <td>{{product.name}}</td>
           <td>{{product.barcode ? product.barcode : '-'}}</td>
           <td>{{product.unit ? product.unit : '-s'}}</td>
@@ -59,20 +59,8 @@
     },
     data() {
       return {
-        productLookup: 'Pro',
         showKeyboard: false,
-        products: [
-          { name: 'Product Name 01', barcode: '89748173401744339', unit: 'Box', attribute: { Color: 'Black, White', Age: '1-2yrs, 0-6mths' } },
-          { name: 'Product Name 01', barcode: '89748173401744339', unit: 'Box', attribute: { Color: 'Black, White', Age: '1-2yrs, 0-6mths' } },
-          { name: 'Product Name 01', barcode: '89748173401744339', unit: 'Box', attribute: { Color: 'Black, White', Age: '1-2yrs, 0-6mths' } },
-          { name: 'Product Name 01', unit: 'Box' },
-          { name: 'Product Name 01', barcode: '89748173401744339', unit: 'Box', attribute: { Color: 'Black, White', Age: '1-2yrs, 0-6mths' } },
-          { name: 'Product Name 01', barcode: '89748173401744339', unit: 'Box', attribute: { Color: 'Black, White', Age: '1-2yrs, 0-6mths' } },
-          { name: 'Product Name 01', barcode: '89748173401744339', unit: 'Box', attribute: { Color: 'Black, White', Age: '1-2yrs, 0-6mths' } },
-          { name: 'Product Name 01', barcode: '89748173401744339', unit: 'Box', attribute: { Color: 'Black, White', Age: '1-2yrs, 0-6mths' } },
-          { name: 'Product Name 01', barcode: '89748173401744339', unit: 'Box', attribute: { Color: 'Black, White', Age: '1-2yrs, 0-6mths' } },
-          { name: 'Product Name 01', barcode: '89748173401744339', unit: 'Box', attribute: { Color: 'Black, White', Age: '1-2yrs, 0-6mths' } },
-        ],
+        selected: null
       }
     },
     methods: {
@@ -81,7 +69,10 @@
       },
       addToOrder(product) {
         this.addProductToOrder(product)
-        this.dialogProductLookup = false
+        this.selected = product
+        setTimeout(() => {
+          this.dialogProductLookup = false
+        }, 200)
       }
     },
     setup() {
@@ -146,6 +137,21 @@
 
       .td-attr:not(:first-child) {
         padding-left: 8px;
+      }
+
+      .tr__selected {
+        td {
+          border-top: 1px solid #1271ff !important;
+          border-bottom: 1px solid #1271ff !important;
+        }
+
+        td:first-child {
+          border-left: 1px solid #1271ff !important;
+        }
+
+        td:last-child {
+          border-right: 1px solid #1271ff !important;
+        }
       }
     }
 
