@@ -43,6 +43,8 @@
               { title: 'General', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/general'*/ },
               { title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small' },
               { title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small' },
+              { title: 'Menu Layout', icon: 'radio_button_unchecked', iconType: 'small' },
+              { title: 'Button Layout', icon: 'radio_button_unchecked', iconType: 'small' },
             ]
           },
           {
@@ -54,11 +56,14 @@
             ]
           },
         ],
+        //category view
+        listCategories: [],
+        selectedCategory: null,
+        isEditCategory: false,
         //order history screen variables
         orderHistoryOrders: [],
         orderHistoryFilters: [],
         orderHistoryCurrentOrder: null,
-        oh_amountFilter: null,
       }
     },
     domain: 'PosStore',
@@ -313,6 +318,19 @@
         this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
       },
       // payment screen
+
+      //setting screen
+      //category view
+      async updateCategory(oldName, newName) {
+        const categoryModel = cms.getModel('Category');
+        if (oldName) {
+          await categoryModel.deleteOne({ '_id': oldName });
+        }
+        if (newName) {
+          await categoryModel.create({ '_id': newName });
+        }
+        this.listCategories = await categoryModel.find();
+      },
     },
     mounted() {
     },
@@ -362,6 +380,11 @@
         lastPayment: this.lastPayment,
         //settings screen
         sidebarData: this.sidebarData,
+        //category view
+        listCategories: this.listCategories,
+        selectedCategory: this.selectedCategory,
+        isEditCategory: this.isEditCategory,
+        updateCategory: this.updateCategory,
         //order history screen
         orderHistoryOrders: this.orderHistoryOrders,
         orderHistoryFilters: this.orderHistoryFilters,

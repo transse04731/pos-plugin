@@ -3,8 +3,8 @@
 		<tr>
 			<th>Name</th>
 		</tr>
-		<tr v-for="(category, i) in categories" :class="[i === 0 && 'bordered']">
-			<td>{{category}}</td>
+		<tr v-for="category in listCategories" :class="[(selectedCategory && selectedCategory._id === category._id) && 'bordered']" @click="select(category)">
+			<td>{{category._id}}</td>
 		</tr>
 	</g-simple-table>
 </template>
@@ -12,11 +12,24 @@
 <script>
   export default {
     name: 'viewCategory',
-		data() {
+    injectService: [
+      'PosStore:listCategories',
+      'PosStore:getAllCategories',
+      'PosStore:selectedCategory',
+    ],
+    data() {
       return {
-        categories: ['Sport', 'Computer', 'Food', 'Device'],
+
 			}
-		}
+		},
+    async mounted() {
+      this.listCategories = await this.getAllCategories();
+    },
+    methods: {
+      select(category) {
+        this.selectedCategory = category;
+      }
+    }
   }
 </script>
 
@@ -38,18 +51,19 @@
 		}
 
 		&.g-data-table__striped {
-			tr:nth-child(even){
-				background-color: white
+			tr:nth-child(even) {
+				background-color: #f2f2f2
 			}
 
 			tr:nth-child(odd):not(:first-child) {
-				background-color: #f2f2f2;
+				background-color: white;
 			}
 		}
 
 		.bordered > td {
 			border: 2px solid #1271ff;
 			box-shadow: 0 0 4px rgba(18, 113, 255, 0.563019);
+			padding-left: 30px;
 		}
 	}
 </style>

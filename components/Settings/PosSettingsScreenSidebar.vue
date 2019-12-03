@@ -1,6 +1,6 @@
 <template>
   <div class="row-flex row-12">
-    <g-sidebar>
+    <g-sidebar medium>
       <template v-slot:header>
         <div class="row-flex align-items-center pa-3 bbw-thin b-grey-lighten-1">
           <g-avatar :size="40">
