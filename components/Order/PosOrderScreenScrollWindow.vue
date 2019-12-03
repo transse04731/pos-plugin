@@ -7,7 +7,6 @@
                :background-color="item.layouts[0].color"
                height="100%"
                @click="addProductToOrder(item)"
-               :style="{order: getProductGridOrder(item)}"
         >
           {{item.name}}
         </g-btn>

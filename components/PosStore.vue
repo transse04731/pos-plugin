@@ -113,7 +113,7 @@
         this.activeCategoryProducts = products.map(product => ({
           ..._.omit(product, 'attributes'),
           originalPrice: product.price
-        }))
+        })).sort((current, next) => this.getProductGridOrder(current) - this.getProductGridOrder(next))
       },
       getProductGridOrder(product) {
         const layout = product.layouts.find(layout => this.activeCategory._id === 'Favourite'
