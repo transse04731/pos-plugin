@@ -1,6 +1,6 @@
 <template>
   <div>
-    <g-number-keyboard area="keyboard" :items="keyboard" :template="template" v-model="paymentAmountTendered">
+    <g-number-keyboard area="keyboard" :items="keyboard" :template="template" v-model="keyboardValue">
       <template v-slot:screen>
         <div></div>
       </template>
@@ -22,9 +22,6 @@
 <script>
   export default {
     name: 'PosPaymentScreenKeyboard',
-    props: {
-      value: String
-    },
     injectService: [
       'PosStore:(paymentAmountTendered,savePaidOrder)'
     ],
@@ -51,10 +48,20 @@
         template: 'grid-template-areas: "key7 key8 key9 key100" "key4 key5 key6 key50" "key1 key2 key3 key20" "key0 keyC keyD key10"; grid-auto-rows: 1fr; grid-auto-columns: 1fr; grid-gap: 6px'
       }
     },
+    computed: {
+      keyboardValue: {
+        get() {
+          return '' + this.paymentAmountTendered
+        },
+        set(value) {
+          this.paymentAmountTendered = +value
+        }
+      }
+    },
     methods: {
       async pay() {
         await this.savePaidOrder()
-        this.$router.push('/view/test-pos-order')
+        await this.$router.push({ path: '/view/test-pos-order' })
       }
     }
   }

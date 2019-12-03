@@ -133,13 +133,13 @@
 
           const latestProduct = _.last(this.currentOrder.items);
 
-          if (_.isEqual(_.omit(latestProduct, 'quantity'), product)) {
-            latestProduct.quantity = latestProduct.quantity + 1;
+          if (_.isEqual(_.omit(latestProduct, 'quantity'), _.omit(product, 'quantity'))) {
+            latestProduct.quantity = latestProduct.quantity + (product.quantity || 1);
           } else {
-            this.currentOrder.items.push({ ...product, quantity: 1 })
+            this.currentOrder.items.push(Object.assign({}, { quantity: 1 }, product))
           }
         } else {
-          this.currentOrder = { items: [{ ...product, quantity: 1 }] }
+          this.currentOrder = { items: [Object.assign({}, { quantity: 1 }, product)] }
         }
       },
       addItemQuantity(item) {
@@ -175,14 +175,24 @@
         }
       },
       queryProductsById() {
-        const results = cms.getList('Product').find(item => item.id === this.productIdQuery)
-        this.productIdQueryResults = results.map(product => ({
-          ...product,
-          originalPrice: product.price
-        }))
+        let quantity;
+        if (this.productIdQuery.includes('x')) {
+          const queryStrArr = this.productIdQuery.split(' ')
+          quantity = parseInt(queryStrArr[2]);
+          this.productIdQuery = queryStrArr[0]
+        }
+        const results = cms.getList('Product').filter(item => item.id === this.productIdQuery)
+        if (results) {
+          this.productIdQueryResults = results.map(product => ({
+            ...product,
+            originalPrice: product.price,
+            ...quantity && { quantity }
+          }))
+        }
       },
       queryProductsByName() {
-        const results = cms.getList('Product').find(product => product.name.toLowerCase().includes(this.productNameQuery.trim().toLowerCase()))
+        const results = cms.getList('Product')
+          .filter(product => product.name.toLowerCase().includes(this.productNameQuery.trim().toLowerCase()))
         this.productNameQueryResults = results.map(product => ({
           ...product,
           originalPrice: product.price

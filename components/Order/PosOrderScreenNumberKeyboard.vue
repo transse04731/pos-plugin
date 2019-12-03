@@ -15,7 +15,7 @@
 <script>
   export default {
     name: 'PosOrderScreenNumberKeyboard',
-    injectService: ['PosStore:(productIdQuery,queryProductsById)'],
+    injectService: ['PosStore:(productIdQuery,queryProductsById,productIdQueryResults,addProductToOrder)'],
     data() {
       return {
         numpad_1: [
@@ -88,10 +88,10 @@
           {
             content: ['x'],
             classes: 'key-number bg-white ba-blue-9 ba-thin',
-            action: (value) => value.substring(0, value.length - 1),
+            action: (value) => !value || value.includes(' x ') ? value : `${value} x `,
             style: 'grid-area: keyX; border: 1px solid #979797'
           },
-          { content: ['C'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: () => '0', style: 'grid-area: keyC; border: 1px solid #979797' },
+          { content: ['C'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: () => '', style: 'grid-area: keyC; border: 1px solid #979797' },
           { content: ['&crarr;'], classes: 'key-number white', type: 'enter', action: () => null, style: 'grid-area: Enter; border: 1px solid #979797' }
         ]
       }
@@ -100,9 +100,13 @@
       async openDialogProductSearchResults() {
         if (this.productIdQuery.trim()) {
           await this.queryProductsById()
-          this.$nextTick(() => {
-            this.$getService('dialogProductSearchResult:setActive')(true)
-          })
+          if (this.productIdQueryResults.length === 1) {
+            this.addProductToOrder(this.productIdQueryResults[0])
+          } else {
+            this.$nextTick(() => {
+              this.$getService('dialogProductSearchResult:setActive')(true)
+            })
+          }
         }
       }
     }

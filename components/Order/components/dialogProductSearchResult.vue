@@ -137,7 +137,7 @@
                 id: result.id,
                 name: result.name,
                 unit: Array.isArray(result.unit) ? result.unit : [result.unit],
-                selectedUnit: null,
+                selectedUnit: Array.isArray(result.unit) ? result.unit[0] : result.unit,
                 ...hasAttributes && { attributes: computedAttributes },
                 ...hasAttributes && { selectedAttributes }
               }
