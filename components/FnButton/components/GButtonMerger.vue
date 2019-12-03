@@ -66,12 +66,11 @@
       return {
         mergedButtons: [],
         mergeMap: {},
-        internalItems: this.items,
       }
     },
     watch: {
-      receivedMergeMap: function() {
-          this.mergeMap = this.receivedMergeMap
+      receivedMergeMap: function () {
+        this.mergeMap = this.receivedMergeMap
       },
       receivedMergedButtons: function () {
         this.mergedButtons = this.receivedMergedButtons
@@ -102,11 +101,19 @@
         if (!this.isIncreasingSequence(distinctValue)) {
           return new Error('Invalid merge!');
         }
+
         boundary.minValue = distinctValue[0];
         boundary.maxValue = distinctValue[distinctValue.length - 1];
 
         return boundary;
       },
+      calculateArea(row, col) {
+        if (!row || !col) {
+          return undefined
+        }
+        return (row[1] - row[0]) * (col[1] - col[0])
+      }
+      ,
       mergeButtons() {
         if (this.internalValue.length <= 0) {
           return;
@@ -127,6 +134,22 @@
           if (this.internalValue.indexOf(i) !== 0) {
             mergedButtons.push(i.value);
           }
+        }
+
+        //validate merge
+        let totalArea = _.reduce(this.internalValue, (sum, item) => sum  + this.calculateArea(item.row, item.col), 0);
+
+        let calculatedRow = this.getGreatestMergeBoundary(itemMergeRowsRaw);
+        let calculatedCol = this.getGreatestMergeBoundary(itemMergeColsRaw);
+        let newButton = {
+          row: [calculatedRow.minValue, calculatedRow.maxValue],
+          col: [calculatedCol.minValue, calculatedCol.maxValue],
+        }
+
+        let newButtonArea = this.calculateArea(newButton.row, newButton.col);
+
+        if(totalArea < newButtonArea) {
+          throw new Error('Cant merge')
         }
 
         //add merged buttons contained in big button
@@ -155,14 +178,12 @@
         }
         this.mergedButtons = Object.assign(this.mergedButtons, this.mergedButtons.concat(mergedButtons));
         //set new grid-row
-        let newRowsBoundary = this.getGreatestMergeBoundary(itemMergeRowsRaw);
-        this.internalValue[0].row[0] = newRowsBoundary.minValue;
-        this.internalValue[0].row[1] = newRowsBoundary.maxValue;
+        this.internalValue[0].row[0] = calculatedRow.minValue;
+        this.internalValue[0].row[1] = calculatedRow.maxValue;
 
         //set new grid-col
-        let newColsBoundary = this.getGreatestMergeBoundary(itemMergeColsRaw);
-        this.internalValue[0].col[0] = newColsBoundary.minValue;
-        this.internalValue[0].col[1] = newColsBoundary.maxValue;
+        this.internalValue[0].col[0] = calculatedCol.minValue;
+        this.internalValue[0].col[1] = calculatedCol.maxValue;
 
         this.$emit('merged', this.mergedButtons, this.mergeMap);
         this.internalValue = [];
