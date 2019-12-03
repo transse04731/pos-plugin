@@ -2,7 +2,7 @@
   import { GTextFieldBs } from 'pos-vue-framework/src/components';
 
   export default {
-    name: 'Pos',
+    name: 'PosTextField',
     mixins: [GTextFieldBs],
   }
 </script>

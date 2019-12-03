@@ -1,62 +1,91 @@
 <template>
-	<g-dialog v-model="dialogNewProduct" fullscreen scrollable>
-		<div class="dialog-product w-100">
-			<div class="form">
-				<div class="title">
-					Create New Product
-				</div>
-				<div class="input">
-					<pos-text-field label="Name" required placeholder="Fill your number"/>
-					<pos-select label="Tax Category" :items="items" item-text="value" v-model="selected" append-icon="mdi-chevron-down" required/>
-					<pos-text-field label="Product ID" placeholder="Auto generate"/>
-					<pos-select label="Product Category":items="items" item-text="value" v-model="selected" append-icon="mdi-chevron-down" required/>
-					<pos-text-field label="Product Code" placeholder="Shortcut Key"/>
-					<pos-select label="Unit" :items="items2" item-text="value" v-model="selected2" append-icon="mdi-chevron-down"/>
-					<div class="row-flex">
-						<div class="col-6">
-							<pos-text-field label="Price" required placeholder="Fill your number">
-								<template v-slot:append>
-									<span style="color: #1471ff">€</span>
-								</template>
-							</pos-text-field>
-						</div>
-						<div class="col-6">
-							<pos-text-field label="Barcode/PLU" placeholder="Fill your number">
-								<template v-slot:append>
-									<g-icon svg>icon-scanning_barcode</g-icon>
-								</template>
-							</pos-text-field>
-						</div>
+	<div>
+		<g-dialog v-model="dialogNewProduct" fullscreen scrollable>
+			<div class="dialog-product w-100">
+				<div class="form">
+					<div class="title">
+						Create New Product
 					</div>
-					<pos-text-field label="Manual Price Input" placeholder="Fill your number"/>
-					<pos-select label="Plastic Bottle" placeholder="Select" append-icon="mdi-chevron-down" :items="[]"/>
-					<div class="row-flex">
-						<div class="col-6">
-							<pos-switch dense label="Favorite" :input-value="true"/>
+					<div class="input">
+						<pos-text-field label="Name" required placeholder="Fill your number" @focus="openDialogDetail"/>
+						<pos-select label="Tax Category" :items="items" item-text="value" v-model="selected" append-icon="mdi-chevron-down" required/>
+						<pos-text-field label="Product ID" placeholder="Auto generate" disabled/>
+						<pos-select label="Product Category" :items="items" item-text="value" v-model="selected" append-icon="mdi-chevron-down" required/>
+						<pos-select label="Unit" :items="items2" item-text="value" v-model="selected2" append-icon="mdi-chevron-down"/>
+						<div></div>
+						<div class="row-flex">
+							<div class="col-6">
+								<pos-text-field label="Price" required placeholder="Fill your number">
+									<template v-slot:append>
+										<span style="color: #1471ff">€</span>
+									</template>
+								</pos-text-field>
+							</div>
+							<div class="col-6">
+								<pos-text-field label="Barcode/PLU" placeholder="Fill your number">
+									<template v-slot:append>
+										<g-icon svg>icon-scanning_barcode</g-icon>
+									</template>
+								</pos-text-field>
+							</div>
 						</div>
-						<div class="col-6">
-							<pos-switch dense label="Non-Refundable" :input-value="true"/>
+						<div></div>
+						<div></div>
+						<div class="row-flex">
+							<div class="col-6">
+								<pos-switch dense label="Favorite" :input-value="true"/>
+							</div>
+							<div class="col-6">
+								<pos-switch dense label="Non-Refundable" :input-value="true"/>
+							</div>
 						</div>
+						<div class="row-flex justify-between">
+							<pos-switch dense label="Active" :input-value="true"/>
+							<pos-switch dense label='Show on "Order Screen"' :input-value="true"/>
+						</div>
+						<pos-switch dense label="Manual Price" :input-value="true"/>
 					</div>
-					<div class="row-flex justify-between">
-						<pos-switch dense label="Active" :input-value="true"/>
-						<pos-switch dense label='Show on "Order Screen"' :input-value="true"/>
+					<div class="accordion">
+						<g-expansion accordion v-model="expansionItem" :items="expansions" item-header="name">
+						</g-expansion>
 					</div>
 				</div>
-				<div class="accordion">
-					<g-expansion accordion v-model="expansionItem" :items="expansions" item-header="name">
-					</g-expansion>
+				<g-toolbar absolute bottom color="grey lighten 3">
+					<g-btn @click="openDialogDetail">Open</g-btn>
+					<g-spacer/>
+					<g-btn outlined class="mr-2" width="120">Cancel</g-btn>
+					<g-btn flat background-color="blue accent 3" text-color="white" width="120">Submit</g-btn>
+				</g-toolbar>
+			</div>
+		</g-dialog>
+		<g-dialog v-model="dialogNewProductDetail" overlay-color="#6b6f82" overlay-opacity="0.95" width="90%" lazy>
+			<div class="dialog-product w-100">
+				<div class="form__detail">
+					<div class="input__detail">
+						<pos-text-field label="Name" required placeholder="Fill your number"/>
+						<pos-text-field label="Product ID" placeholder="Auto generate" disabled/>
+						<pos-text-field label="Price" required placeholder="Fill your number">
+							<template v-slot:append>
+								<span style="color: #1471ff">€</span>
+							</template>
+						</pos-text-field>
+						<pos-text-field label="Barcode/PLU" placeholder="Fill your number">
+							<template v-slot:append>
+								<g-icon svg>icon-scanning_barcode</g-icon>
+							</template>
+						</pos-text-field>
+					</div>
+					<div class="action">
+						<g-btn outlined class="mr-2" width="120" @click="dialogNewProductDetail = false">Cancel</g-btn>
+						<g-btn flat background-color="blue accent 3" text-color="white" width="120">OK</g-btn>
+					</div>
 				</div>
-				<div class="action">
-					<g-btn flat background-color="#EFEFEF" text-color="#757575" class="mr-2" width="120">Cancel</g-btn>
-					<g-btn flat background-color="blue accent 3" text-color="white">Submit</g-btn>
+				<div class="bg-grey-lighten-1 pa-2">
+					<pos-keyboard-full/>
 				</div>
 			</div>
-			<div class="bg-grey-lighten-1 h-30 pa-2">
-				<pos-keyboard-full/>
-			</div>
-		</div>
-	</g-dialog>
+		</g-dialog>
+	</div>
 </template>
 
 <script>
@@ -68,36 +97,43 @@
   export default {
     name: 'dialogNewProduct',
     components: { PosSelect, PosSwitch, PosTextField, PosKeyboardFull },
-		data () {
+    data() {
       return {
         selected: null,
-				items: [{value: 'Vegetables'}],
+        items: [{ value: 'Vegetables' }],
         selected2: null,
-				items2: [{value: 'Box'}],
-				expansions: [
-					{ name: 'Multiple Unit' },
-					{ name: 'Attributes' },
-					{ name: 'More' },
-				],
-        expansionItem: null
-			}
-		},
-		props: {
+        items2: [{ value: 'Box' }],
+        expansions: [
+          { name: 'Multiple Unit' },
+          { name: 'Attributes' },
+          { name: 'More' },
+        ],
+        expansionItem: null,
+        dialogNewProductDetail: false,
+      }
+    },
+    props: {
       value: Boolean,
-		},
-		computed: {
+    },
+    computed: {
       dialogNewProduct: {
-        get () {
+        get() {
           return this.value
-				},
-				set (val) {
+        },
+        set(val) {
           this.$emit('input', val);
-				}
-			}
-		},
-		created () {
+        }
+      }
+    },
+    created() {
       this.selected = 'Vegetables';
       this.selected2 = 'Box';
+    },
+		methods: {
+      openDialogDetail() {
+        //todo onfocus textfield wont trigger click outside
+				this.dialogNewProductDetail = true
+			}
 		}
   }
 </script>
@@ -156,12 +192,28 @@
 					border: none;
 				}
 			}
+		}
+
+		.form__detail {
+			padding: 16px;
+
+			.input__detail {
+				padding: 24px 128px;
+				display: grid;
+				grid-template-rows: 1fr 1fr;
+				grid-template-columns: 1fr 1fr;
+				grid-gap: 16px 64px;
+			}
 
 			.action {
 				display: flex;
 				justify-content: flex-end;
-				padding-right: 48px;
 			}
+		}
+
+		::v-deep .g-btn__outlined {
+			border: 1px solid #979797;
+			color: #1d1d26;
 		}
 	}
 </style>

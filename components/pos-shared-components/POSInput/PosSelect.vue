@@ -16,6 +16,7 @@
 
       .g-tf-wrapper {
         margin: 32px 4px 12px;
+				width: calc(100% - 10px);
       }
 
       .g-tf {
