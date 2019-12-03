@@ -32,7 +32,7 @@
 					</tbody>
 				</g-simple-table>
 				<g-toolbar color="#eee" elevation="2">
-					<g-btn background-color="white" class="mr-2">
+					<g-btn background-color="white" class="mr-2" @click.stop="dialogSavedList = false">
 						<g-icon class="mr-2" svg>icon-back</g-icon>
 						Back
 					</g-btn>
@@ -57,6 +57,11 @@
 </template>
 
 <script>
+	import dayjs from 'dayjs';
+	import relativeTime from 'dayjs/plugin/relativeTime';
+
+	dayjs.extend(relativeTime)
+
   export default {
     name: 'dialogSavedList',
     props: {
@@ -85,7 +90,7 @@
 						id: savedOrder._id,
 						customer: savedOrder.customer,
 						quantity: savedOrder.items.reduce((acc, cur) => (acc + cur.quantity), 0),
-						date: savedOrder.date,
+						date: dayjs(savedOrder.date).fromNow(),
 					}))
 				}
       	return []

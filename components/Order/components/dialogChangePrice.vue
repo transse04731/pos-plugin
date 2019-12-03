@@ -73,16 +73,7 @@
     computed: {
       computedPrice() {
         if (this.activeProduct) {
-          if (this.changeType === 'percentage') {
-            return this.calculateNewPrice('percentage', this.newPercent)
-          }
-          if (this.changeType === 'amount') {
-            return this.calculateNewPrice('amount', this.newAmount)
-          }
-          if (this.changeType === 'new') {
-            return this.calculateNewPrice('new', this.newPrice)
-          }
-          return this.activeProduct.originalPrice
+          return this.getNewPrice();
         }
         return 0
       },
@@ -111,6 +102,18 @@
       }
     },
     methods: {
+      getNewPrice(update = false) {
+        if (this.changeType === 'percentage') {
+          return this.calculateNewPrice('percentage', this.newPercent, update)
+        }
+        if (this.changeType === 'amount') {
+          return this.calculateNewPrice('amount', this.newAmount, update)
+        }
+        if (this.changeType === 'new') {
+          return this.calculateNewPrice('new', this.newPrice, update)
+        }
+        return this.activeProduct.originalPrice
+      },
       open(changeType) {
         if (changeType && typeof changeType === 'string') this.changeType = changeType
         this.dialogChangePrice = true
@@ -120,7 +123,7 @@
           this.dialogChangePrice = false;
           return;
         }
-        this.calculateNewPrice('new', this.computedPrice, true)
+        this.getNewPrice(true)
         this.dialogChangePrice = false;
       },
     }

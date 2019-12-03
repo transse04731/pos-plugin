@@ -42,7 +42,7 @@
     methods: {
       login() {
         if(!this.value || this.value !== '123456') return ''
-        this.$router.push({ path: `view/test-pos-dashboard` })
+        this.$router.push({ path: `/view/test-pos-dashboard` })
         return ''
       }
     }

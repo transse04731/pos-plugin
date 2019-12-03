@@ -17,14 +17,14 @@
       }
     },
     methods: {
-      async select(item) {
+      select(item) {
         this.activeCategory = item;
-        await this.getActiveProducts()
+        this.getActiveProducts()
       },
     },
-    async created() {
-      this.menu = await this.getAllCategories()
-      await this.select(this.menu[0])
+    created() {
+      this.menu = this.getAllCategories()
+      this.select(this.menu[0])
     }
   }
 </script>

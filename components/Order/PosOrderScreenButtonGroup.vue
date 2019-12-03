@@ -40,7 +40,7 @@
         this.$getService('dialogProductLookup:setActive')(true)
       },
       routeToPayment() {
-        this.$router.push({path: `test-pos-payment`})
+        this.$router.push({path: `/view/test-pos-payment`})
       }
     }
   }

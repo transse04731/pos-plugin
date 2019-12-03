@@ -7,6 +7,7 @@
                        v-model="productNameQuery"
                        @focus="showKeyboard = true"
                        @enter="queryProductsByName"
+                       @change="queryProductsByName"
                        @blur="showKeyboard = false"
          ></g-text-field>
         <g-spacer></g-spacer>

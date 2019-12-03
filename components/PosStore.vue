@@ -1,5 +1,5 @@
 <template>
-	<fragment/>
+  <fragment/>
 </template>
 
 <script>
@@ -105,32 +105,31 @@
     },
     methods: {
       //order screen
-      async getAllCategories() {
-        return await cms.getList('Category')
+      getAllCategories() {
+        return cms.getList('Category')
       },
-      async getActiveProducts() {
-        const productModel = cms.getModel('Product');
-        const products = await productModel.find({
-          category: this.activeCategory._id
-        })
+      getActiveProducts() {
+        const products = cms.getList('Product').filter(product => product.category._id === this.activeCategory._id)
         this.activeCategoryProducts = products.map(product => ({
-          ...product,
+          ..._.omit(product, 'attributes'),
           originalPrice: product.price
         }))
       },
       getProductGridOrder(product) {
-        return product.layouts.find(layout => this.activeCategory._id === 'Favourite'
+        const layout = product.layouts.find(layout => this.activeCategory._id === 'Favourite'
           ? layout.favourite
           : !layout.favourite
-        ).order || 0
+        );
+        return layout ? layout.order : 0
       },
       addProductToOrder(product) {
         if (this.currentOrder && product) {
           if (!Array.isArray(this.currentOrder.items)) this.currentOrder.items = []
 
-          const existingProduct = this.currentOrder.items.find(i => i._id === product._id);
-          if (existingProduct) {
-            existingProduct.quantity = existingProduct.quantity + 1;
+          const latestProduct = _.last(this.currentOrder.items);
+
+          if (_.isEqual(_.omit(latestProduct, 'quantity'), product)) {
+            latestProduct.quantity = latestProduct.quantity + 1;
           } else {
             this.currentOrder.items.push({ ...product, quantity: 1 })
           }
@@ -139,11 +138,11 @@
         }
       },
       addItemQuantity(item) {
-        const itemToUpdate = this.currentOrder.items.find(i => i._id === item._id)
+        const itemToUpdate = this.currentOrder.items.find(i => i === item)
         itemToUpdate.quantity++
       },
       removeItemQuantity(item, all = false) {
-        const itemToUpdate = this.currentOrder.items.find(i => i._id === item._id)
+        const itemToUpdate = this.currentOrder.items.find(i => i === item)
         if (all || itemToUpdate.quantity - 1 === 0) {
           this.currentOrder.items.splice(this.currentOrder.items.indexOf(itemToUpdate), 1)
           this.activeTableProduct = null
@@ -163,23 +162,22 @@
 
           if (update) {
             this.$set(this.activeProduct, 'price', newPrice)
-            this.$set(this.activeProduct, 'discount', originalPrice - newPrice)
+            this.$set(this.activeProduct, 'discount', changeType === 'new' ? originalPrice - newPrice : amount)
+            this.$set(this.activeProduct, 'discountUnit', changeType === 'percentage' ? 'percent' : 'amount')
+            this.$set(this.activeProduct, 'vDiscount', originalPrice - newPrice)
           }
-
           return newPrice
         }
       },
-      async queryProductsById() {
-        const productModel = cms.getModel('Product')
-        const results = await productModel.find({ id: { $regex: `${this.productIdQuery}`, $options: 'i' } })
+      queryProductsById() {
+        const results = cms.getList('Product').find(item => item.id === this.productIdQuery)
         this.productIdQueryResults = results.map(product => ({
           ...product,
           originalPrice: product.price
         }))
       },
-      async queryProductsByName() {
-        const productModel = cms.getModel('Product')
-        const results = await productModel.find({ name: { $regex: `${this.productNameQuery}`, $options: 'i' } })
+      queryProductsByName() {
+        const results = cms.getList('Product').find(product => product.name.toLowerCase().includes(this.productNameQuery.trim().toLowerCase()))
         this.productNameQueryResults = results.map(product => ({
           ...product,
           originalPrice: product.price
@@ -190,10 +188,13 @@
         this.savedOrders = await orderModel.find({ status: 'inProgress' })
       },
       async saveInProgressOrder() {
+        if (!this.currentOrder || !this.currentOrder.items.length) return
         const orderModel = cms.getModel('Order')
+        const orderItems = this.compactOrder(this.currentOrder.items)
+
         const order = {
           status: 'inProgress',
-          items: this.currentOrder.items.map(item => ({
+          items: orderItems.map(item => ({
             ...item,
             product: item._id
           })),
@@ -225,10 +226,13 @@
         this.currentOrder = await orderModel.findOne({ _id: order._id })
       },
       async savePaidOrder(paymentMethod) {
+        if (!this.currentOrder || !this.currentOrder.items.length) return
         const orderModel = cms.getModel('Order')
+        const orderItems = this.compactOrder(this.currentOrder.items)
+
         const order = {
           status: 'paid',
-          items: this.currentOrder.items.map(item => ({
+          items: orderItems.map(item => ({
             ...item,
             product: item._id
           })),
@@ -257,18 +261,30 @@
         this.lastPayment = +this.paymentTotal
         //todo add to order history
         await this.savePaidOrder('Cash')
-        this.currentOrder = {
-          items: []
-        }
+      },
+      compactOrder(products) {
+        let resultArr = [];
+        products.forEach(product => {
+          const existingProduct = resultArr.find(r =>
+            _.isEqual(_.omit(r, 'quantity'), _.omit(product, 'quantity'))
+          );
+          if (existingProduct) {
+            existingProduct.quantity = existingProduct.quantity + product.quantity
+          } else {
+            resultArr.push(_.cloneDeep(product));
+          }
+        })
+        return resultArr
       },
       async getOrderHistory() {
         const orderModel = cms.getModel('Order');
         const condition = this.orderHistoryFilters.reduce((acc, cur) => {
           if (Array.isArray(cur.value)) {
-            if (cur.title === 'Amount')
-              return { ...acc, [cur.property]: { '$gte': cur.value[0], '$lte': cur.value[1] }};
+            if (cur.title === 'Amount') {
+              return { ...acc, [cur.property]: { '$gte': cur.value[0], '$lte': cur.value[1] } };
+            }
             if (cur.title === 'Datetime') {
-              return { ...acc, [cur.property]: { '$gte': new Date(cur.value[0] + " 00:00:00"), '$lte': new Date(cur.value[1] + " 23:59:59")}};
+              return { ...acc, [cur.property]: { '$gte': new Date(cur.value[0] + ' 00:00:00'), '$lte': new Date(cur.value[1] + ' 23:59:59') } };
             }
           } else if (cur.title === 'Staff') {
             return { ...acc, [cur.property]: { name: { '$regex': cur.value } } }

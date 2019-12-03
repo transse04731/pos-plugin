@@ -54,7 +54,7 @@
     methods: {
       async pay() {
         await this.savePaidOrder()
-        this.$router.push('test-pos-order')
+        this.$router.push('/view/test-pos-order')
       }
     }
   }
