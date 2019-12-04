@@ -2,7 +2,7 @@
 	<fragment>
 		<g-grid-layout :layout="layout" style="height: calc(100% - 64px)">
 			<div area="list">
-				<g-list :items="items" elevation="0" divider selectable prepend-type="avatar" active-class="item__active">
+				<g-list :items="items" item-text="title" elevation="0" divider selectable prepend-type="avatar" active-class="item__active">
 					<template v-slot:append>
 						<div></div>
 					</template>

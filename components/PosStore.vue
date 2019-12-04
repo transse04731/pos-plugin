@@ -64,7 +64,8 @@
         productFilters: [],
         listProducts: [],
 				selectedProduct: [],
-				test: null,
+				totalProducts: null,
+				productPagination: { limit: 10, currentPage: 1 },
         //order history screen variables
         orderHistoryOrders: [],
         orderHistoryFilters: [],
@@ -352,7 +353,8 @@
       async getListProducts() {
         const productModel = cms.getModel('Product');
 				const condition = this.productFilters.reduce((acc, filter) => ({...acc, ...filter['condition']}), {});
-        const products = await productModel.find(condition);
+				const {limit, currentPage} = this.productPagination;
+        const products = await productModel.find(condition).skip(limit * (currentPage - 1)).limit(limit);
         this.listProducts =  products.map(p => ({
           _id: p._id,
           id: p.id,
@@ -363,12 +365,18 @@
           barcode: p.barcode
         }))
       },
+			async getTotalProducts() {
+				const productModel = cms.getModel('Product');
+				const condition = this.productFilters.reduce((acc, filter) => ({...acc, ...filter['condition']}), {});
+      	this.totalProducts = await productModel.countDocuments(condition);
+			},
 			async deleteSelectedProducts() {
         const productModel = cms.getModel('Product');
         if(this.selectedProduct && this.selectedProduct.length > 0) {
           await productModel.deleteMany({'_id': {"$in": this.selectedProduct}});
 				}
         await this.getListProducts();
+        await this.getTotalProducts();
         this.selectedProduct = [];
 			}
     },
@@ -431,6 +439,8 @@
         updateProductFilters: this.updateProductFilters,
         selectedProduct: this.selectedProduct,
         deleteSelectedProducts: this.deleteSelectedProducts,
+				totalProducts: this.totalProducts,
+				getTotalProducts: this.getTotalProducts,
         //order history screen
         orderHistoryOrders: this.orderHistoryOrders,
         orderHistoryFilters: this.orderHistoryFilters,
