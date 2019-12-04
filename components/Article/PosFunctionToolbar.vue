@@ -9,15 +9,9 @@
 
 
 <script>
-  import {
-    GIcon,
-    GToolbar,
-    GBtn,
-  } from 'pos-vue-framework/src/components/';
-
   export default {
-    name: 'FunctionToolbar',
-    components: { GToolbar, GIcon, GBtn,  }
+    name: 'PosFunctionToolbar',
+    components: {}
   }
 </script>
 

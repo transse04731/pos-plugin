@@ -70,6 +70,9 @@
         orderHistoryOrders: [],
         orderHistoryFilters: [],
         orderHistoryCurrentOrder: null,
+        //article screen
+        articleSelectedColor: null,
+        articleSelectedProductButton: null,
       }
     },
     domain: 'PosStore',
@@ -378,7 +381,84 @@
         await this.getListProducts();
         await this.getTotalProducts();
         this.selectedProduct = [];
-			}
+			},
+
+      //article screen
+      selectArticle(item) {
+        if(this.articleSelectedProductButton && item._id === this.articleSelectedProductButton._id) {
+          this.articleSelectedProductButton = null;
+          this.articleSelectedColor = null;
+          return;
+        }
+        this.articleSelectedProductButton = item;
+        this.articleSelectedColor = this.articleSelectedProductButton.layouts[0].color;
+      },
+
+      async setSelectedArticleColor() {
+        if (!this.articleSelectedColor || !this.articleSelectedProductButton) {
+          return
+        }
+
+        //Update to db
+        const productModel = cms.getModel('Product')
+        const layoutID = this.articleSelectedProductButton.layouts[0]._id;
+        //Update current product
+        let foundItem = this.activeCategoryProducts.find((item) => item._id === this.articleSelectedProductButton._id);
+        if (foundItem) {
+          foundItem.layouts[0].color = this.articleSelectedColor;
+        }
+        await productModel.findOneAndUpdate({ 'layouts._id': layoutID }, {
+          '$set': {
+            'layouts.$.color': this.articleSelectedColor
+          }
+        }, function (err, model) {
+          if (err) {
+            console.log(err);
+          }
+        });
+      },
+      async switchProductOrder(direction) {
+        if (!this.articleSelectedProductButton || !direction) {
+          return;
+        }
+
+        let dir = direction === 'right' ? 1 : -1;
+        let foundItem = this.activeCategoryProducts.find((item) => item._id === this.articleSelectedProductButton._id);
+        if (foundItem) {
+          let foundNextItem = this.activeCategoryProducts.find((item) => item.layouts[0].order === this.articleSelectedProductButton.layouts[0].order + dir);
+          if (foundNextItem) {
+            //Update order on current product list
+            let temp = foundNextItem.layouts[0].order;
+            foundNextItem.layouts[0].order = foundItem.layouts[0].order;
+            foundItem.layouts[0].order = temp;
+            //Update db order
+            const productModel = cms.getModel('Product')
+            const nextProductLayoutID = foundNextItem.layouts[0]._id;
+            const currentProductLayoutID = foundItem.layouts[0]._id;
+
+            await productModel.findOneAndUpdate({ 'layouts._id': currentProductLayoutID }, {
+              '$set': {
+                'layouts.$.order': foundItem.layouts[0].order
+              }
+            }, function (err) {
+              if (err) {
+                console.log(err);
+              }
+            });
+
+            await productModel.findOneAndUpdate({ 'layouts._id': nextProductLayoutID }, {
+              '$set': {
+                'layouts.$.order': foundNextItem.layouts[0].order
+              }
+            }, function (err) {
+              if (err) {
+                console.log(err);
+              }
+            });
+            this.activeCategoryProducts = this.activeCategoryProducts.sort((current, next) => this.getProductGridOrder(current) - this.getProductGridOrder(next))
+          }
+        }
+      },
     },
     mounted() {
     },
@@ -448,6 +528,14 @@
         deleteOrder: this.deleteOrder,
         getOrderHistory: this.getOrderHistory,
         updateOrderHistoryFilter: this.updateOrderHistoryFilter,
+
+        //article screen
+        selectArticle: this.selectArticle,
+        articleSelectedProductButton: this.articleSelectedProductButton,
+        setSelectedArticleColor: this.setSelectedArticleColor,
+        articleSelectedColor: this.articleSelectedColor,
+        switchProductOrder: this.switchProductOrder
+
       }
     }
   }

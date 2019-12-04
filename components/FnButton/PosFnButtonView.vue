@@ -68,7 +68,7 @@
 
     <div area="function-overlay" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99; display: flex; justify-content: center; align-items: center" v-show="selectedButtons.length >= 2 || isButtonSelected === false || mergeMode || splitMode">
       <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100;" v-show="!isButtonSelected || mergeMode || splitMode">
-        <g-icon size="62" svg>icon-info</g-icon>
+        <g-icon size="62" svg>icon-info-green</g-icon>
         <p style="margin-top: 10px" v-if="!isInConfigLayoutMode && !isButtonSelected">Select a button to configure</p>
         <p style="margin-top: 10px" v-else-if="mergeMode">Select multiple buttons to merge</p>
         <p style="margin-top: 10px" v-else="splitMode">Select a button to split</p>

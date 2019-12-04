@@ -52,7 +52,7 @@
     </div>
     <div area="sorting-title" class="title" style="padding: 5px 5px 5px 17px"><p>Sorting</p></div>
     <div area="sorting-content" style="padding: 5px 21.5% 5px 5px; display: flex; justify-content: center">
-      <function-sort-component></function-sort-component>
+      <pos-function-sort-component></pos-function-sort-component>
     </div>
     <div area="button-control" style="background-color: #EEEEEE; padding: 12px; position: relative; bottom: 0;">
       <g-btn background-color="white" class="mr-2">
@@ -126,27 +126,13 @@
 </template>
 
 <script>
-  import {
-    GScrollWindowItem, GScrollWindow, GNumberKeyboard, GItem, GItemGroup, GBadge, GGridSelect, GAvatar, GBtn, GIcon, GGridLayout
-  } from 'pos-vue-framework/src/components';
   import articleLayout from './articleLayout'
-  import FunctionSortComponent from './FunctionSortComponent';
+  import PosFunctionSortComponent from './PosFunctionSortComponent';
 
   export default {
     name: 'PosArticleView',
     components: {
-      FunctionSortComponent,
-      GScrollWindowItem,
-      GScrollWindow,
-      GNumberKeyboard,
-      GItem,
-      GItemGroup,
-      GBadge,
-      GGridSelect,
-      GAvatar,
-      GBtn,
-      GIcon,
-      GGridLayout
+      PosFunctionSortComponent,
     },
     data: () => ({
       layout: articleLayout,

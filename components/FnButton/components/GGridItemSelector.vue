@@ -1,3 +1,9 @@
+<template>
+  <div :style="{gridTemplateRows: rows, gridTemplateColumns: cols }" class='grid-item-selector'>
+    <slot :index="index" :item="item" :toggle-select="toggleSelect" v-for="(item, index) in options"></slot>
+    <slot :index="index" :item="item" :toggle-select="toggleSelect" name="selected" v-for="(item, index) in options" v-if="isSelected(item)"></slot>
+  </div>
+</template>
 <script>
   import _ from 'lodash';
   import { computed, ref } from '@vue/composition-api';
@@ -77,38 +83,13 @@
         return internalValue.value === returnItem;
       }
 
-      const genItem = (item, index) => {
-        return context.slots.default
-          && context.slots.default({
-            toggleSelect, item, index
-          })
-      };
-
-      const genSelectedItem = (item, index) => {
-        return context.slots.selected
-          && context.slots.selected({
-            toggleSelect, item, index
-          })
-      };
-
-      function genWrapper() {
-        return <div {...{ class: 'grid-item-selector', style: { gridTemplateRows: props.rows, gridTemplateColumns: props.cols } }}>
-          {options.value.map((item, index) =>
-            isSelected(item)
-              ? genSelectedItem(item, index)
-              : genItem(item, index))}
-        </div>
-      }
-
       return {
-        genWrapper,
         internalValue,
-        options
+        options,
+        isSelected,
+        toggleSelect
       }
     },
-    render() {
-      return this.genWrapper();
-    }
   }
 </script>
 
@@ -118,6 +99,5 @@
     grid-gap: 4px;
     width: 100%;
     height: 100%;
-    //grid-template-areas: "btn1 btn2 btn3 btn4" "btn5 btn6 btn7 btn8";
   }
 </style>
