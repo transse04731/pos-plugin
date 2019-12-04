@@ -18,7 +18,7 @@
       </g-icon>
       Sort
     </g-btn>
-    <g-btn background-color="white" text-color="#1d1d26">
+    <g-btn background-color="white" text-color="#1d1d26" @click="deleteProducts">
       <g-icon class="mr-2" svg>
         icon-trash
       </g-icon>
@@ -37,6 +37,9 @@
     methods: {
       openDialogNewProduct(){
         this.$getService('dialogNewProduct:setActive')(true)
+      },
+      async deleteProducts() {
+        await this.$getService('PosStore:deleteSelectedProducts')()
       }
     }
   }

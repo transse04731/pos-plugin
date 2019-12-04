@@ -47,8 +47,7 @@
         const datetimeFilter = {
           title: 'Datetime',
           text: this.selectedDatetime[0] + ' - ' + this.selectedDatetime[1],
-          value: this.selectedDatetime,
-          property: 'date',
+          condition: { date: { '$gte': new Date(this.selectedDatetime[0] + ' 00:00:00'), '$lte': new Date(this.selectedDatetime[1] + ' 23:59:59') }}
         };
         if (index > -1) {
           this.orderHistoryFilters.splice(index, 1, datetimeFilter);

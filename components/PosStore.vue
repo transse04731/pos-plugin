@@ -1,5 +1,5 @@
 <template>
-  <fragment/>
+	<fragment/>
 </template>
 
 <script>
@@ -60,6 +60,11 @@
         listCategories: [],
         selectedCategory: null,
         isEditCategory: false,
+        //article view
+        productFilters: [],
+        listProducts: [],
+				selectedProduct: [],
+				test: null,
         //order history screen variables
         orderHistoryOrders: [],
         orderHistoryFilters: [],
@@ -122,8 +127,8 @@
       },
       getProductGridOrder(product) {
         const layout = product.layouts.find(layout => this.activeCategory._id === 'Favourite'
-          ? layout.favourite
-          : !layout.favourite
+            ? layout.favourite
+            : !layout.favourite
         );
         return layout ? layout.order : 0
       },
@@ -192,7 +197,7 @@
       },
       queryProductsByName() {
         const results = cms.getList('Product')
-          .filter(product => product.name.toLowerCase().includes(this.productNameQuery.trim().toLowerCase()))
+        .filter(product => product.name.toLowerCase().includes(this.productNameQuery.trim().toLowerCase()))
         this.productNameQueryResults = results.map(product => ({
           ...product,
           originalPrice: product.price
@@ -281,7 +286,7 @@
         let resultArr = [];
         products.forEach(product => {
           const existingProduct = resultArr.find(r =>
-            _.isEqual(_.omit(r, 'quantity'), _.omit(product, 'quantity'))
+              _.isEqual(_.omit(r, 'quantity'), _.omit(product, 'quantity'))
           );
           if (existingProduct) {
             existingProduct.quantity = existingProduct.quantity + product.quantity
@@ -291,22 +296,17 @@
         })
         return resultArr
       },
+			//order history
+			updateOrderHistoryFilter(filter) {
+        const index = this.orderHistoryFilters.findIndex(f => f.title === filter.title);
+        if(index > -1)
+          this.orderHistoryFilters.splice(index, 1, filter);
+        else
+          this.orderHistoryFilters.unshift(filter);
+			},
       async getOrderHistory() {
         const orderModel = cms.getModel('Order');
-        const condition = this.orderHistoryFilters.reduce((acc, cur) => {
-          if (Array.isArray(cur.value)) {
-            if (cur.title === 'Amount') {
-              return { ...acc, [cur.property]: { '$gte': cur.value[0], '$lte': cur.value[1] } };
-            }
-            if (cur.title === 'Datetime') {
-              return { ...acc, [cur.property]: { '$gte': new Date(cur.value[0] + ' 00:00:00'), '$lte': new Date(cur.value[1] + ' 23:59:59') } };
-            }
-          } else if (cur.title === 'Staff') {
-            return { ...acc, [cur.property]: { name: { '$regex': cur.value } } }
-          } else {
-            return { ...acc, [cur.property]: { '$regex': cur.value } }
-          }
-        }, { status: 'paid' });
+        const condition = this.orderHistoryFilters.reduce((acc, filter) => ({...acc, ...filter['condition']}), { status: 'paid' });
         const orders = await orderModel.find(condition);
         this.orderHistoryOrders = orders.map(order => ({
           ...order,
@@ -341,6 +341,36 @@
         }
         this.listCategories = await categoryModel.find();
       },
+      //article view
+			updateProductFilters (filter) {
+        const index = this.productFilters.findIndex(f => f.title === filter.title);
+        if(index > -1)
+          this.productFilters.splice(index, 1, filter);
+        else
+					this.productFilters.unshift(filter);
+			},
+      async getListProducts() {
+        const productModel = cms.getModel('Product');
+				const condition = this.productFilters.reduce((acc, filter) => ({...acc, ...filter['condition']}), {});
+        const products = await productModel.find(condition);
+        this.listProducts =  products.map(p => ({
+          _id: p._id,
+          id: p.id,
+          name: p.name,
+          price: p.price,
+          category: p.category._id,
+          plastic: p.plastic,
+          barcode: p.barcode
+        }))
+      },
+			async deleteSelectedProducts() {
+        const productModel = cms.getModel('Product');
+        if(this.selectedProduct && this.selectedProduct.length > 0) {
+          await productModel.deleteMany({'_id': {"$in": this.selectedProduct}});
+				}
+        await this.getListProducts();
+        this.selectedProduct = [];
+			}
     },
     mounted() {
     },
@@ -354,7 +384,6 @@
         activeProductWindow: this.activeProductWindow,
         activeTableProduct: this.activeTableProduct,
         activeProduct: this.activeProduct,
-        listProducts: this.listProducts,
         convertMoney: this.convertMoney,
         //legit
         getProductGridOrder: this.getProductGridOrder,
@@ -395,12 +424,20 @@
         selectedCategory: this.selectedCategory,
         isEditCategory: this.isEditCategory,
         updateCategory: this.updateCategory,
+        //article view
+        getListProducts: this.getListProducts,
+        listProducts: this.listProducts,
+        productFilters: this.productFilters,
+        updateProductFilters: this.updateProductFilters,
+        selectedProduct: this.selectedProduct,
+        deleteSelectedProducts: this.deleteSelectedProducts,
         //order history screen
         orderHistoryOrders: this.orderHistoryOrders,
         orderHistoryFilters: this.orderHistoryFilters,
         orderHistoryCurrentOrder: this.orderHistoryCurrentOrder,
         deleteOrder: this.deleteOrder,
         getOrderHistory: this.getOrderHistory,
+        updateOrderHistoryFilter: this.updateOrderHistoryFilter,
       }
     }
   }
