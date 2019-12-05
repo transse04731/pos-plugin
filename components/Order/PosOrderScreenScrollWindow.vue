@@ -42,8 +42,14 @@
       }
     },
     computed: {
+      listProducts() {
+        return this.activeCategoryProducts.map(product => ({
+          ..._.omit(product, 'attributes'),
+          originalPrice: product.price
+        }))
+      },
       productWindows() {
-        return _.chunk(this.activeCategoryProducts, 28)
+        return _.chunk(this.listProducts, 28)
       }
     }
   }

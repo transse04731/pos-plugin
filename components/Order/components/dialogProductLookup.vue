@@ -4,11 +4,12 @@
       <g-toolbar class="header" color="grey lighten 3" elevation="0">
          <g-text-field outlined clearable class="w-50"
                        style="color: #1d1d26" clear-icon="cancel"
-                       v-model="productNameQuery"
+                       :value="productNameQuery"
                        @focus="showKeyboard = true"
                        @enter="queryProductsByName"
                        @change="queryProductsByName"
                        @blur="showKeyboard = false"
+                       @input="debouncedQuery"
          ></g-text-field>
         <g-spacer></g-spacer>
         <g-btn :uppercase="false" icon style="box-shadow: none; border-radius: 50%" @click="dialogProductLookup = false">
@@ -61,7 +62,8 @@
     data() {
       return {
         showKeyboard: false,
-        selected: null
+        selected: null,
+        debouncedQuery: null
       }
     },
     methods: {
@@ -85,6 +87,15 @@
         return this.showKeyboard ? 'tbLookup' : 'tbLookup__full'
       },
     },
+    created() {
+      this.productNameQuery = ''
+      this.queryProductsByName()
+
+      this.debouncedQuery = _.debounce((e) => {
+        this.productNameQuery = e
+        this.queryProductsByName()
+      }, 300)
+    }
   }
 </script>
 

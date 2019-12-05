@@ -13,14 +13,13 @@
       </th>
     </tr>
     </thead>
-    <table-expansion-row
-        v-model="activeTableProduct"
-        :items="orderItems"
-        @click:remove="removeItemQuantity"
-        @click:add="addItemQuantity"
+    <table-expansion-row v-model="activeTableProduct"
+                         :items="orderItems"
+                         @click:remove="removeItemQuantity"
+                         @click:add="addItemQuantity"
     />
-    <template v-if="orderItems.length < 12">
-      <tr v-for="i in (12 - orderItems.length)" class="empty-row">
+    <template v-if="orderItems.length < 10">
+      <tr v-for="i in (10 - orderItems.length)" class="empty-row">
         <td></td>
       </tr>
     </template>
@@ -34,18 +33,19 @@
     name: 'PosOrderScreenTable',
     components: { TableExpansionRow },
     injectService: ['PosStore:(currentOrder,addItemQuantity,removeItemQuantity,activeTableProduct)'],
-    data() {
-      return {
-        // activeTableProduct: null
-      }
-    },
     computed: {
       orderItems() {
-        if (this.currentOrder) {
-          return this.currentOrder.items
+        if (this.$el) {
+          const tableWrapper = this.$el.querySelector('.g-data-table__wrapper')
+          if (this.currentOrder && this.currentOrder.items.length > 10) {
+            this.$nextTick(() => {
+              tableWrapper.scrollTop = tableWrapper.scrollHeight
+            })
+          }
         }
-      }
-    },
+        return this.currentOrder ? this.currentOrder.items : [];
+      },
+    }
   }
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-	<fragment/>
+  <fragment/>
 </template>
 
 <script>
@@ -63,9 +63,9 @@
         //article view
         productFilters: [],
         listProducts: [],
-				selectedProduct: [],
-				totalProducts: null,
-				productPagination: { limit: 10, currentPage: 1 },
+        selectedProduct: [],
+        totalProducts: null,
+        productPagination: { limit: 10, currentPage: 1 },
         //order history screen variables
         orderHistoryOrders: [],
         orderHistoryFilters: [],
@@ -124,15 +124,12 @@
       },
       getActiveProducts() {
         const products = cms.getList('Product').filter(product => product.category._id === this.activeCategory._id)
-        this.activeCategoryProducts = products.map(product => ({
-          ..._.omit(product, 'attributes'),
-          originalPrice: product.price
-        })).sort((current, next) => this.getProductGridOrder(current) - this.getProductGridOrder(next))
+        this.activeCategoryProducts = products.sort((current, next) => this.getProductGridOrder(current) - this.getProductGridOrder(next))
       },
       getProductGridOrder(product) {
         const layout = product.layouts.find(layout => this.activeCategory._id === 'Favourite'
-            ? layout.favourite
-            : !layout.favourite
+          ? layout.favourite
+          : !layout.favourite
         );
         return layout ? layout.order : 0
       },
@@ -290,7 +287,7 @@
         let resultArr = [];
         products.forEach(product => {
           const existingProduct = resultArr.find(r =>
-              _.isEqual(_.omit(r, 'quantity'), _.omit(product, 'quantity'))
+            _.isEqual(_.omit(r, 'quantity'), _.omit(product, 'quantity'))
           );
           if (existingProduct) {
             existingProduct.quantity = existingProduct.quantity + product.quantity
@@ -300,14 +297,14 @@
         })
         return resultArr
       },
-			//order history
-			updateOrderHistoryFilter(filter) {
+      //order history
+      updateOrderHistoryFilter(filter) {
         const index = this.orderHistoryFilters.findIndex(f => f.title === filter.title);
         if(index > -1)
           this.orderHistoryFilters.splice(index, 1, filter);
         else
           this.orderHistoryFilters.unshift(filter);
-			},
+      },
       async getOrderHistory() {
         const orderModel = cms.getModel('Order');
         const condition = this.orderHistoryFilters.reduce((acc, filter) => ({...acc, ...filter['condition']}), { status: 'paid' });
@@ -346,17 +343,17 @@
         this.listCategories = await categoryModel.find();
       },
       //article view
-			updateProductFilters (filter) {
+      updateProductFilters (filter) {
         const index = this.productFilters.findIndex(f => f.title === filter.title);
         if(index > -1)
           this.productFilters.splice(index, 1, filter);
         else
-					this.productFilters.unshift(filter);
-			},
+          this.productFilters.unshift(filter);
+      },
       async getListProducts() {
         const productModel = cms.getModel('Product');
-				const condition = this.productFilters.reduce((acc, filter) => ({...acc, ...filter['condition']}), {});
-				const {limit, currentPage} = this.productPagination;
+        const condition = this.productFilters.reduce((acc, filter) => ({...acc, ...filter['condition']}), {});
+        const {limit, currentPage} = this.productPagination;
         const products = await productModel.find(condition).skip(limit * (currentPage - 1)).limit(limit);
         this.listProducts =  products.map(p => ({
           _id: p._id,
@@ -368,20 +365,20 @@
           barcode: p.barcode
         }))
       },
-			async getTotalProducts() {
-				const productModel = cms.getModel('Product');
-				const condition = this.productFilters.reduce((acc, filter) => ({...acc, ...filter['condition']}), {});
-      	this.totalProducts = await productModel.countDocuments(condition);
-			},
-			async deleteSelectedProducts() {
+      async getTotalProducts() {
+        const productModel = cms.getModel('Product');
+        const condition = this.productFilters.reduce((acc, filter) => ({...acc, ...filter['condition']}), {});
+        this.totalProducts = await productModel.countDocuments(condition);
+      },
+      async deleteSelectedProducts() {
         const productModel = cms.getModel('Product');
         if(this.selectedProduct && this.selectedProduct.length > 0) {
           await productModel.deleteMany({'_id': {"$in": this.selectedProduct}});
-				}
+        }
         await this.getListProducts();
         await this.getTotalProducts();
         this.selectedProduct = [];
-			},
+      },
 
       //article screen
       selectArticle(item) {
@@ -519,8 +516,8 @@
         updateProductFilters: this.updateProductFilters,
         selectedProduct: this.selectedProduct,
         deleteSelectedProducts: this.deleteSelectedProducts,
-				totalProducts: this.totalProducts,
-				getTotalProducts: this.getTotalProducts,
+        totalProducts: this.totalProducts,
+        getTotalProducts: this.getTotalProducts,
         //order history screen
         orderHistoryOrders: this.orderHistoryOrders,
         orderHistoryFilters: this.orderHistoryFilters,
