@@ -10,7 +10,9 @@
     props: {},
     data: function () {
       return {
+        user: null,
         loginPassword: '',
+        incorrectPasscode: false,
         // order screen
         activeTableProduct: null,
         currentOrder: { items: [] },
@@ -118,6 +120,22 @@
       }
     },
     methods: {
+      //login screen
+      login() {
+        try {
+          this.user = _.find(cms.getList('PosSetting')[0].user, user => user.passcode === this.loginPassword)
+          if (this.user) {
+            this.loginPassword = ''
+            return this.$router.push({ path: `/view/test-pos-dashboard` })
+          }
+        } catch { }
+        this.incorrectPasscode = true
+      },
+      resetIncorrectPasscodeFlag() {
+        if (this.incorrectPasscode) {
+          this.incorrectPasscode = false
+        }
+      },
       //order screen
       getAllCategories() {
         return cms.getList('Category')
@@ -464,7 +482,12 @@
     },
     provide() {
       return {
+        // login
         loginPassword: this.loginPassword,
+        login: this.login,
+        resetIncorrectPasscodeFlag: this.resetIncorrectPasscodeFlag,
+        user: this.user,
+
         //order screen
         activeProductWindow: this.activeProductWindow,
         activeTableProduct: this.activeTableProduct,
@@ -532,7 +555,6 @@
         setSelectedArticleColor: this.setSelectedArticleColor,
         articleSelectedColor: this.articleSelectedColor,
         switchProductOrder: this.switchProductOrder
-
       }
     }
   }

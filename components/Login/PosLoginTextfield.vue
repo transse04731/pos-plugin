@@ -1,8 +1,10 @@
 <template>
-  <g-text-field error type="password" v-model="internalValue">
-    <template v-if="internalValue && internalValue.length < 6" v-slot:hint>
-      <g-icon color="red" size="16px" style="margin-right: 8px">mdi-close-circle</g-icon>
-      <p style="color: #F44336;">Passcode is incorrect</p>
+  <g-text-field error type="password" v-model="internalValue" :rules="rules" :key="key">
+    <template v-if="showErrorMessage" v-slot:inputMessage>
+      <div class="invalid-passcode-message">
+        <g-icon color="red" size="16px" style="margin-right: 8px">mdi-close-circle</g-icon>
+        <p style="color: #F44336;">Passcode is incorrect</p>
+      </div>
     </template>
   </g-text-field>
 </template>
@@ -12,25 +14,52 @@
 
   export default {
     name: 'PosLoginTextfield',
+    props: {
+      value: String,
+      //incorrectPasscode: Boolean
+    },
+    data() {
+      return {
+        showErrorMessage: false,
+        rules: [],
+        key: 0
+      }
+    },
+    mounted() {
+      this.$watch('incorrectPasscode', function (val) {
+        this.showErrorMessage = val
+        if (val) {
+          this.rules.splice(0, this.rules.length, () => 'incorrect');
+        } else {
+          this.rules.splice(0, this.rules.length);
+        }
+        this.key ++;
+      });
+    },
     setup() {
       const internalValue = getInternalValue(...arguments);
       return { internalValue }
     },
-    props: {
-      value: ''
-    }
-    //injectService: ['PosStore:loginPassword->value']
   }
 </script>
 
 <style lang="scss" scoped>
-  .login-textfield {
-    ::v-deep .g-tf .inputGroup .g-tf-input {
-      text-align: center;
-      font-size: 24px;
-      letter-spacing: 12px;
-      color: #2196F3;
-    }
+  ::v-deep .g-tf .inputGroup .g-tf-input {
+    text-align: center;
+    font-size: 24px;
+    letter-spacing: 12px;
+    color: #2196F3;
+  }
+
+  ::v-deep .invalid-passcode-message {
+    width: 100%;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    bottom: -32px;
+    position: absolute;
+    display: flex;
+    justify-content: center;
   }
 
 </style>
