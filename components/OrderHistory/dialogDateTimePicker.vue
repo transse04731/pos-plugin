@@ -27,6 +27,7 @@
     injectService: [
       'PosStore:orderHistoryFilters',
       'PosStore:getOrderHistory',
+      'PosStore:getTotalOrders',
     ],
     data: () => ({
       selectedDatetime: []
@@ -56,6 +57,7 @@
         }
         this.internalValue = false;
         await this.getOrderHistory();
+        await this.getTotalOrders();
       }
     }
     ,

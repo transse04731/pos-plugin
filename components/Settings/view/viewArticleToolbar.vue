@@ -1,6 +1,6 @@
 <template>
   <g-toolbar absolute bottom color="grey lighten 3" filled>
-    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-3">
+    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-3" @click="back">
       <g-icon class="mr-2" svg>
         icon-back
       </g-icon>
@@ -35,11 +35,14 @@
   export default {
     name: 'viewArticleToolbar',
     methods: {
-      openDialogNewProduct(){
+      openDialogNewProduct() {
         this.$getService('dialogNewProduct:setActive')(true)
       },
       async deleteProducts() {
         await this.$getService('PosStore:deleteSelectedProducts')()
+      },
+      back() {
+        this.$router.push({ path: '/view/test-pos-dashboard' })
       }
     }
   }

@@ -1,58 +1,66 @@
 <template>
-  <g-simple-table striped fixed-header>
-    <thead>
-    <tr>
-      <th class="ta-right" @click="openOrderNumberLookup">Order No.
-        <g-icon size="12">mdi-magnify</g-icon>
-      </th>
-      <th @click="openDateTimePicker">Date Time
-        <g-icon size="12">mdi-filter</g-icon>
-      </th>
-      <th @click="openBarcodeLookup">Barcode
-        <g-icon size="12">mdi-magnify</g-icon>
-      </th>
-      <th class="ta-right" @click="openAmountFilter">Amount
-        <g-icon size="12">mdi-filter</g-icon>
-      </th>
-      <th class="ta-left" @click="openStaffFilter">Staff
-        <g-icon size="12">mdi-magnify</g-icon>
-      </th>
-      <th>Info</th>
-    </tr>
-    </thead>
-    <tr v-if="orderHistoryFilters && orderHistoryFilters.length > 0" class="bg-grey-lighten-1">
-      <td colspan="6">
-        <div class="filter-list">
-          <span class="ml-1">Filter</span>
-          <div class="group-chip">
-            <g-chip v-for="filter in orderHistoryFilters" label small background-color="white" close class="ma-1" @close="removeFilter(filter)">
-              <div>
-                <span class="chip-title">{{filter.title}}: </span>
-                <span class="chip-content">{{filter.text}}</span>
-              </div>
-            </g-chip>
+  <div style="height: 100%">
+    <g-simple-table striped fixed-header>
+      <thead>
+      <tr>
+        <th class="ta-right" @click="openOrderNumberLookup">Order No.
+          <g-icon size="12">mdi-magnify</g-icon>
+        </th>
+        <th @click="openDateTimePicker">Date Time
+          <g-icon size="12">mdi-filter</g-icon>
+        </th>
+        <th @click="openBarcodeLookup">Barcode
+          <g-icon size="12">mdi-magnify</g-icon>
+        </th>
+        <th class="ta-right" @click="openAmountFilter">Amount
+          <g-icon size="12">mdi-filter</g-icon>
+        </th>
+        <th class="ta-left" @click="openStaffFilter">Staff
+          <g-icon size="12">mdi-magnify</g-icon>
+        </th>
+        <th>Info</th>
+      </tr>
+      </thead>
+      <tr v-if="orderHistoryFilters && orderHistoryFilters.length > 0">
+        <td colspan="6" class="td__sticky">
+          <div class="filter-list">
+            <span class="ml-1">Filter</span>
+            <div class="group-chip">
+              <g-chip v-for="filter in orderHistoryFilters" label small background-color="white" close class="ma-1" @close="removeFilter(filter)">
+                <div>
+                  <span class="chip-title">{{filter.title}}: </span>
+                  <span class="chip-content">{{filter.text}}</span>
+                </div>
+              </g-chip>
+            </div>
+            <g-spacer/>
+            <g-btn :uppercase="false" text x-small background-color="white" height="24" @click="clearFilters">
+              <g-icon svg size="16">icon-cancel3</g-icon>
+            </g-btn>
           </div>
-          <g-spacer/>
-          <g-btn :uppercase="false" text x-small background-color="white" height="24" @click="clearFilters">
-            <g-icon svg size="16">icon-cancel3</g-icon>
-          </g-btn>
-        </div>
-      </td>
-    </tr>
-    <tr v-for="order in orderHistoryOrders" :class="[order._id === orderHistoryCurrentOrder._id && 'tr__active']" @click="chooseOrder(order)">
-      <td class="ta-right">{{order.id}}</td>
-      <td class="ta-center">{{order.dateTime}}</td>
-      <td class="ta-center">{{order.barcode}}</td>
-      <td class="ta-right">€ {{+order.amount.toFixed(2)}}</td>
-      <td>{{order.staff}}</td>
-      <td class="ta-center">{{order.info}}</td>
-    </tr>
-  </g-simple-table>
+        </td>
+      </tr>
+      <tr v-for="order in orderHistoryOrders" :class="[order._id === orderHistoryCurrentOrder._id && 'tr__active']" @click="chooseOrder(order)">
+        <td class="ta-right">{{order.id}}</td>
+        <td class="ta-center">{{order.dateTime}}</td>
+        <td class="ta-center">{{order.barcode}}</td>
+        <td class="ta-right">€ {{+order.amount.toFixed(2)}}</td>
+        <td>{{order.staff}}</td>
+        <td class="ta-center">{{order.info}}</td>
+      </tr>
+    </g-simple-table>
+    <pos-table-pagination @execQueryByPage="updatePagination"
+                          :total-document="totalOrders"
+                          :limit.sync="limit"
+                          :current-page.sync="currentPage"/>
+  </div>
 </template>
 <script>
 
+  import PosTablePagination from '../pos-shared-components/PosTablePagination';
   export default {
     name: 'OrderHistoryTable',
+    components: { PosTablePagination },
     props: {
       value: null,
     },
@@ -61,9 +69,32 @@
       'PosStore:orderHistoryFilters',
       'PosStore:orderHistoryCurrentOrder',
       'PosStore:getOrderHistory',
+      'PosStore:orderHistoryPagination',
+      'PosStore:getTotalOrders',
+      'PosStore:totalOrders',
     ],
     data() {
       return {}
+    },
+    computed: {
+      limit: {
+        get() {
+          return this.orderHistoryPagination.limit;
+        },
+        async set(val) {
+          this.orderHistoryPagination.limit = val;
+          await this.getOrderHistory();
+        }
+      },
+      currentPage: {
+        get() {
+          return this.orderHistoryPagination.currentPage;
+        },
+        async set(val) {
+          this.orderHistoryPagination.currentPage = val;
+          await this.getOrderHistory();
+        }
+      }
     },
     methods: {
       openAmountFilter() {
@@ -88,14 +119,20 @@
         const index = this.orderHistoryFilters.findIndex(f => f.title === filter.title);
         this.orderHistoryFilters.splice(index, 1);
         await this.getOrderHistory();
+        await this.getTotalOrders();
       },
       async clearFilters() {
         this.orderHistoryFilters = [];
         await this.getOrderHistory();
+        await this.getTotalOrders();
+      },
+      async updatePagination() {
+        await this.getOrderHistory();
       }
     },
-    async mounted() {
+    async created() {
       await this.getOrderHistory();
+      await this.getTotalOrders();
     }
   }
 </script>
@@ -103,6 +140,7 @@
 <style scoped lang="scss">
   .g-table {
     min-height: 0;
+    height: calc(100% - 64px);
 
     ::v-deep .g-data-table__wrapper::-webkit-scrollbar {
       display: none;
@@ -126,6 +164,12 @@
       font-size: 13px;
       line-height: 16px;
       padding: 0 8px;
+    }
+
+    .td__sticky {
+      position: sticky;
+      top: 48px;
+      background-color: #bdbdbd;
     }
 
     .tr__active {

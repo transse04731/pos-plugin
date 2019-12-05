@@ -38,7 +38,7 @@
 						</template>
 					</g-checkbox>
 				</td>
-				<td colspan="6" class="bg-grey-lighten-1">
+				<td colspan="6" class="bg-grey-lighten-1" style="height: 48px">
 					<div class="filter">
 						Filter
 						<div class="group-chip">
@@ -176,6 +176,7 @@
 			padding: 0 8px;
 			font-size: 13px;
 			line-height: 16px;
+			height: 33px
 		}
 
 		tr td:first-child,

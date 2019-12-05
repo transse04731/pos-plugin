@@ -72,6 +72,8 @@
         orderHistoryOrders: [],
         orderHistoryFilters: [],
         orderHistoryCurrentOrder: null,
+				totalOrders: null,
+				orderHistoryPagination: { limit: 10, currentPage: 1 },
         //article screen
         articleSelectedColor: null,
         articleSelectedProductButton: null,
@@ -326,7 +328,8 @@
       async getOrderHistory() {
         const orderModel = cms.getModel('Order');
         const condition = this.orderHistoryFilters.reduce((acc, filter) => ({...acc, ...filter['condition']}), { status: 'paid' });
-        const orders = await orderModel.find(condition);
+        const { limit, currentPage } = this.orderHistoryPagination;
+        const orders = await orderModel.find(condition).skip(limit * (currentPage - 1)).limit(limit);
         this.orderHistoryOrders = orders.map(order => ({
           ...order,
           info: order.note,
@@ -339,6 +342,11 @@
         }));
         this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
       },
+			async getTotalOrders() {
+				const orderModel = cms.getModel('Order');
+				const condition = this.orderHistoryFilters.reduce((acc, filter) => ({...acc, ...filter['condition']}), {status: 'paid'});
+				this.totalOrders = await orderModel.countDocuments(condition);
+			},
       async deleteOrder() {
         const orderModel = cms.getModel('Order');
         await orderModel.deleteOne({ '_id': this.orderHistoryCurrentOrder._id });
@@ -548,7 +556,9 @@
         deleteOrder: this.deleteOrder,
         getOrderHistory: this.getOrderHistory,
         updateOrderHistoryFilter: this.updateOrderHistoryFilter,
-
+				totalOrders: this.totalOrders,
+				orderHistoryPagination: this.orderHistoryPagination,
+				getTotalOrders: this.getTotalOrders,
         //article screen
         selectArticle: this.selectArticle,
         articleSelectedProductButton: this.articleSelectedProductButton,
