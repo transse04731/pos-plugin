@@ -2,7 +2,7 @@
   <div>
     <g-grid-select item-value="title" :grid="false" :items="paymentMethods" v-model="activePaymentMethod" mandatory>
       <template #default="{toggleSelect, item, index}">
-        <g-btn x-large outlined text-color="#1271ff"
+        <g-btn :uppercase="false" x-large outlined text-color="#1271ff"
                @click.stop="toggleSelect(item)"
                :class="[index > 0 ? 'ml-3' : null]"
         >
@@ -11,7 +11,7 @@
         </g-btn>
       </template>
       <template #selected="{toggleSelect, item, index}">
-        <g-btn x-large flat background-color="blue accent 3" text-color="white"
+        <g-btn :uppercase="false" x-large flat background-color="blue accent 3" text-color="white"
                @click.stop="toggleSelect(item)"
                :class="[index > 0 ? 'ml-3' : null]"
         >

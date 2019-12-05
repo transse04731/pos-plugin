@@ -17,16 +17,16 @@
       ></g-combobox>
     </div>
     <div style="margin: 0 16px">Total: {{totalDocument}}</div>
-    <g-btn icon flat :disabled="disablePre" @click="gotoFirstPage">
+    <g-btn :uppercase="false" icon flat :disabled="disablePre" @click="gotoFirstPage">
       <g-icon>first_page</g-icon>
     </g-btn>
-    <g-btn icon flat :disabled="disablePre" @click="prevPage">
+    <g-btn :uppercase="false" icon flat :disabled="disablePre" @click="prevPage">
       <g-icon>chevron_left</g-icon>
     </g-btn>
-    <g-btn icon flat :disabled="disableNext" @click="nextPage">
+    <g-btn :uppercase="false" icon flat :disabled="disableNext" @click="nextPage">
       <g-icon>chevron_right</g-icon>
     </g-btn>
-    <g-btn icon flat :disabled="disableNext" @click="gotoLastPage">
+    <g-btn :uppercase="false" icon flat :disabled="disableNext" @click="gotoLastPage">
       <g-icon>last_page</g-icon>
     </g-btn>
   </div>

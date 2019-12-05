@@ -3,14 +3,14 @@
     <g-grid-item-selector :cols="cols" :items="internalNewItems" :rows="rows" multiple return-object v-model="internalValue">
       <template #default="{toggleSelect, item, index}">
         <slot :index="index" :item="item" :toggleSelect="toggleSelect">
-          <g-btn :style="{gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], display: mergedButtons.indexOf(item) >= 0 ? 'none' : '', backgroundColor: item.style.backgroundColor, textColor: item.style.textColor}" @click="toggleSelect(item)" height="100%" width="100%">
+          <g-btn :uppercase="false" :style="{gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], display: mergedButtons.indexOf(item) >= 0 ? 'none' : '', backgroundColor: item.style.backgroundColor, textColor: item.style.textColor}" @click="toggleSelect(item)" height="100%" width="100%">
             {{item.text}}
           </g-btn>
         </slot>
       </template>
       <template #selected="{toggleSelect, item, index}">
         <slot :index="index" :item="item" :toggleSelect="toggleSelect" name="selected">
-          <g-btn :style="{gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], display: mergedButtons.indexOf(item) >= 0 ? 'none' : '', backgroundColor: item.style.backgroundColor, textColor: item.style.textColor, opacity: 0.54}" @click="toggleSelect(item)" height="100%" width="100%">
+          <g-btn :uppercase="false" :style="{gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], display: mergedButtons.indexOf(item) >= 0 ? 'none' : '', backgroundColor: item.style.backgroundColor, textColor: item.style.textColor, opacity: 0.54}" @click="toggleSelect(item)" height="100%" width="100%">
             {{item.text}}
           </g-btn>
         </slot>

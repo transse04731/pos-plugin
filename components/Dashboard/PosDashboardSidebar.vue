@@ -1,5 +1,5 @@
 <template>
-	<g-sidebar>
+	<g-sidebar medium>
 		<template v-slot:header>
 			<div class="sidebar-header">
 				<g-avatar size="40">
@@ -10,7 +10,7 @@
 		</template>
 		<g-side-bar-tree-view :data="data" v-model="sidebar"/>
 		<g-spacer/>
-		<g-btn large text background-color="white" text-color="#424242" width="100%">
+		<g-btn :uppercase="false" large text background-color="white" text-color="#424242" width="100%">
 			<g-icon svg>icon-logout</g-icon>
 			<span class="ml-2">Log Out</span>
 		</g-btn>
@@ -49,7 +49,7 @@
 <style scoped lang="scss">
 	.g-sidebar {
 		.sidebar-header {
-			padding: 16px;
+			padding: 12px;
 			display: flex;
 			align-items: center;
 			font-size: 14px;

@@ -49,7 +49,7 @@
 								</div>
 							</g-chip>
 						</div>
-						<g-btn text v-if="productFilters && productFilters.length > 0" @click="clearFilter"><u>Clear All</u></g-btn>
+						<g-btn :uppercase="false" text v-if="productFilters && productFilters.length > 0" @click="clearFilter"><u>Clear All</u></g-btn>
 					</div>
 				</td>
 			</tr>

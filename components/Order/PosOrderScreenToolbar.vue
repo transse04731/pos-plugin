@@ -1,10 +1,10 @@
 <template>
   <g-toolbar color="#eee" elevation="0" height="100%">
-    <g-btn background-color="white" class="mr-3" style="margin-left: -4px" @click.stop="back">
+    <g-btn :uppercase="false" background-color="white" class="mr-3" style="margin-left: -4px" @click.stop="back">
       <g-icon class="mr-2" svg>icon-back</g-icon>
       Back
     </g-btn>
-    <g-btn background-color="white" class="mr-3">
+    <g-btn :uppercase="false" background-color="white" class="mr-3">
       <g-icon class="mr-2" svg>icon-menu</g-icon>
       More
     </g-btn>
@@ -12,12 +12,12 @@
       <template v-slot:badge>
         <span>{{savedOrders.length}}</span>
       </template>
-      <g-btn background-color="white" @click="openDialogSavedList">
+      <g-btn :uppercase="false" background-color="white" @click="openDialogSavedList">
         <g-icon class="mr-2" svg>icon-folder</g-icon>
         Saved list
       </g-btn>
     </g-badge>
-    <g-btn v-else background-color="white" @click="openDialogSavedList">
+    <g-btn :uppercase="false" v-else background-color="white" @click="openDialogSavedList">
       <g-icon class="mr-2" svg>icon-folder</g-icon>
       Saved list
     </g-btn>

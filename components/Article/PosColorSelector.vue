@@ -1,14 +1,14 @@
 <template>
   <g-grid-select :grid="false" :items="buttonColors" v-model="computedSelectedColor">
     <template #default="{toggleSelect, item, index}">
-      <g-btn :key="index" :ripple="false" :style="{marginRight: '15px', boxShadow: 'none', width: '38px', minWidth: '38px', height: '38px', border: '1px solid #D2D2D2', backgroundColor: item.value}" @click="toggleSelect(item); setSelectedArticleColor();" border-radius="50%"></g-btn>
+      <g-btn :uppercase="false" :key="index" :ripple="false" :style="{marginRight: '15px', boxShadow: 'none', width: '38px', minWidth: '38px', height: '38px', border: '1px solid #D2D2D2', backgroundColor: item.value}" @click="toggleSelect(item); setSelectedArticleColor();" border-radius="50%"></g-btn>
     </template>
     <template #selected="{toggleSelect, item, index}">
       <g-badge :badge-size="12" overlay style="margin-right: 15px;">
         <template v-slot:badge>
           <g-icon>done</g-icon>
         </template>
-        <g-btn :class="activeClass" :style="{boxShadow: 'none', width: '38px', minWidth: '38px', height: '38px', border: '2px solid #1271FF', backgroundColor: item.value}" @click="toggleSelect(item)" border-radius="50%">
+        <g-btn :uppercase="false" :class="activeClass" :style="{boxShadow: 'none', width: '38px', minWidth: '38px', height: '38px', border: '2px solid #1271FF', backgroundColor: item.value}" @click="toggleSelect(item)" border-radius="50%">
           {{item.optionTitle}}
         </g-btn>
       </g-badge>

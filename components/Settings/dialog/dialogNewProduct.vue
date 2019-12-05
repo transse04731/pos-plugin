@@ -51,10 +51,10 @@
 					</div>
 				</div>
 				<g-toolbar absolute bottom color="grey lighten 3">
-					<g-btn @click="openDialogDetail">Open</g-btn>
+					<g-btn :uppercase="false" @click="openDialogDetail">Open</g-btn>
 					<g-spacer/>
-					<g-btn outlined class="mr-2" width="120">Cancel</g-btn>
-					<g-btn flat background-color="blue accent 3" text-color="white" width="120">Submit</g-btn>
+					<g-btn :uppercase="false" outlined class="mr-2" width="120">Cancel</g-btn>
+					<g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" width="120">Submit</g-btn>
 				</g-toolbar>
 			</div>
 		</g-dialog>
@@ -76,8 +76,8 @@
 						</pos-text-field>
 					</div>
 					<div class="action">
-						<g-btn outlined class="mr-2" width="120" @click="dialogNewProductDetail = false">Cancel</g-btn>
-						<g-btn flat background-color="blue accent 3" text-color="white" width="120">OK</g-btn>
+						<g-btn :uppercase="false" outlined class="mr-2" width="120" @click="dialogNewProductDetail = false">Cancel</g-btn>
+						<g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" width="120">OK</g-btn>
 					</div>
 				</div>
 				<div class="bg-grey-lighten-1 pa-2">

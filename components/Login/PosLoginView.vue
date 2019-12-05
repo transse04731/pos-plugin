@@ -21,8 +21,8 @@
           <pos-login-keyboard v-model="password" style="height: 100%"></pos-login-keyboard>
         </div>
         <div class="footer-section">
-          <g-btn text height="60px" style="margin-right: 20px">Version</g-btn>
-          <g-btn @click="keyboardOn = !keyboardOn" text height="60px" style="margin-right: 20px">
+          <g-btn :uppercase="false" text height="60px" style="margin-right: 20px">Version</g-btn>
+          <g-btn :uppercase="false" @click="keyboardOn = !keyboardOn" text height="60px" style="margin-right: 20px">
             <g-icon class="g-icon__left">
               mdi-comment-question-outline
             </g-icon>
@@ -44,7 +44,7 @@
 
             <div area="keyboard_input" class="text-field-section" style="position: relative;height: 70px">
               <g-text-field class="w-85" clear-icon="cancel" clearable outlined style="color: #1d1d26" v-model="supportMessage"></g-text-field>
-              <g-btn background-color="blue" class="send-btn" elevation="0" style="height: calc(100% + 1px)" text-color="white" width="15%">SEND</g-btn>
+              <g-btn :uppercase="false" background-color="blue" class="send-btn" elevation="0" style="height: calc(100% + 1px)" text-color="white" width="15%">SEND</g-btn>
             </div>
 
             <div area="keyboard" class="keyboard-wrapper">
@@ -52,7 +52,7 @@
             </div>
           </g-grid-layout>
 
-          <g-btn @click="keyboardOn = !keyboardOn" class="overlay-close-icon" icon style="position: absolute; top: 5px; right: 5px;">
+          <g-btn :uppercase="false" @click="keyboardOn = !keyboardOn" class="overlay-close-icon" icon style="position: absolute; top: 5px; right: 5px;">
             <g-icon>mdi-close</g-icon>
           </g-btn>
         </div>

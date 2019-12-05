@@ -28,7 +28,7 @@
           <div :class="{'g-expansion-content': true, 'g-expansion-content__active': isActive(item)}" v-show="isActive(item)">
             <div class="col-4 row-flex">
               <div class="col-4 row-flex align-items-center justify-center">
-                <g-btn icon small text-color="#1d1d26" style="margin: 8px 0" @click.stop="onDecreaseQuantityClick(item)">
+                <g-btn :uppercase="false" icon small text-color="#1d1d26" style="margin: 8px 0" @click.stop="onDecreaseQuantityClick(item)">
                   <g-icon>remove_circle_outline</g-icon>
                 </g-btn>
               </div>
@@ -38,13 +38,13 @@
                 </div>
               </div>
               <div class="col-4 row-flex align-items-center justify-center">
-                <g-btn icon small text-color="#1d1d26" style="margin: 8px 0" @click.stop="onIncreaseQuantityClick(item)">
+                <g-btn :uppercase="false" icon small text-color="#1d1d26" style="margin: 8px 0" @click.stop="onIncreaseQuantityClick(item)">
                   <g-icon>add_circle_outline</g-icon>
                 </g-btn>
               </div>
             </div>
             <div style="flex-grow: 1"></div>
-            <g-btn text small text-color="#f44336" style="margin: 8px 0; letter-spacing: 0; font-size: 14px"
+            <g-btn :uppercase="false" text small text-color="#f44336" style="margin: 8px 0; letter-spacing: 0; font-size: 14px"
                    @click.stop="onDecreaseQuantityClick(item, true)">
               <g-icon small class="mr-2">remove_circle</g-icon>
               Remove item

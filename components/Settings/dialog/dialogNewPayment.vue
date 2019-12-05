@@ -10,7 +10,7 @@
 				<pos-keyboard-full v-model="name"/>
 			</div>
 			<g-toolbar bottom color="grey lighten 3">
-				<g-btn background-color="white" text-color="#1d1d26" class="ma-2">
+				<g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="ma-2">
 					<g-icon class="mr-2" svg @click="dialogNewPayment = false">
 						icon-back
 					</g-icon>

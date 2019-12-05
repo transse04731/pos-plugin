@@ -1,16 +1,16 @@
 <template>
   <div area="buttons">
-    <g-btn outlined height="100%">F1</g-btn>
-    <g-btn outlined height="100%" @click="openDialogChangePrice" :disabled="!hasActiveOrderProduct">Change Price</g-btn>
-    <g-btn outlined height="100%">Note</g-btn>
-    <g-btn outlined height="100%" @click="openDialogProductLookup">Product Lookup</g-btn>
-    <g-btn outlined height="100%" disabled>Disabled Button</g-btn>
-    <g-btn outlined height="100%" @click="openDialogDiscount" :disabled="!hasActiveOrderProduct">Discount</g-btn>
-    <g-btn outlined height="100%"></g-btn>
-    <g-btn outlined height="100%">Plastic Refund</g-btn>
-    <g-btn area="btn__big" text background-color="green lighten 1" text-color="white" height="100%" @click="quickCash">Quick Cash</g-btn>
-    <g-btn text background-color="orange lighten 1" text-color="white" height="100%" @click.stop="saveInProgressOrder">Save</g-btn>
-    <g-btn text background-color="blue darken 2" height="100%" @click.stop="routeToPayment">
+    <g-btn :uppercase="false" outlined height="100%">F1</g-btn>
+    <g-btn :uppercase="false" outlined height="100%" @click="openDialogChangePrice" :disabled="!hasActiveOrderProduct">Change Price</g-btn>
+    <g-btn :uppercase="false" outlined height="100%">Note</g-btn>
+    <g-btn :uppercase="false" outlined height="100%" @click="openDialogProductLookup">Product Lookup</g-btn>
+    <g-btn :uppercase="false" outlined height="100%" disabled>Disabled Button</g-btn>
+    <g-btn :uppercase="false" outlined height="100%" @click="openDialogDiscount" :disabled="!hasActiveOrderProduct">Discount</g-btn>
+    <g-btn :uppercase="false" outlined height="100%"></g-btn>
+    <g-btn :uppercase="false" outlined height="100%">Plastic Refund</g-btn>
+    <g-btn :uppercase="false" area="btn__big" text background-color="green lighten 1" text-color="white" height="100%" @click="quickCash">Quick Cash</g-btn>
+    <g-btn :uppercase="false" text background-color="orange lighten 1" text-color="white" height="100%" @click.stop="saveInProgressOrder">Save</g-btn>
+    <g-btn :uppercase="false" text background-color="blue darken 2" height="100%" @click.stop="routeToPayment">
       <span class="text-white">Pay</span>
     </g-btn>
   </div>

@@ -10,7 +10,7 @@
 
         <div area="keyboard_input" class="text-field-section" style="position: relative;height: 70px;">
           <g-text-field clear-icon="cancel" clearable outlined style="color: #1d1d26; width: 85%" v-model="supportMessage"></g-text-field>
-          <g-btn background-color="blue" class="send-btn" elevation="0" style="height: calc(100% + 1px)" text-color="white" width="15%">SEND</g-btn>
+          <g-btn :uppercase="false" background-color="blue" class="send-btn" elevation="0" style="height: calc(100% + 1px)" text-color="white" width="15%">SEND</g-btn>
         </div>
 
         <div area="keyboard" class="keyboard-wrapper">
@@ -18,7 +18,7 @@
         </div>
       </g-grid-layout>
 
-      <g-btn @click="dialogLoginSupport = !dialogLoginSupport" class="overlay-close-icon" icon style="position: absolute; top: 5px; right: 5px;">
+      <g-btn :uppercase="false" @click="dialogLoginSupport = !dialogLoginSupport" class="overlay-close-icon" icon style="position: absolute; top: 5px; right: 5px;">
         <g-icon>mdi-close</g-icon>
       </g-btn>
     </g-card>

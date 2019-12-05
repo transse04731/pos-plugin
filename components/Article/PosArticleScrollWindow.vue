@@ -2,7 +2,7 @@
   <div class="main">
     <g-scroll-window :show-arrows="false" area="window" elevation="0" v-model="activeWindow">
       <g-scroll-window-item :key="windowIndex" v-for="(window, windowIndex) in productWindows">
-        <g-btn :active="articleSelectedProductButton && (articleSelectedProductButton._id === item._id)"
+        <g-btn :uppercase="false" :active="articleSelectedProductButton && (articleSelectedProductButton._id === item._id)"
                :active-class="productActive"
                :key="i"
                :style="{order: getProductGridOrder(item), backgroundColor: item.layouts[0].color}"
@@ -19,7 +19,7 @@
       <template v-slot:default="{ toggle, active }">
         <template v-for="(item, index) in productWindows">
           <g-item :is-active="active(item)" :key="index" :item="item">
-            <g-btn @click="toggle(item)" border-radius="50%"></g-btn>
+            <g-btn :uppercase="false" @click="toggle(item)" border-radius="50%"></g-btn>
           </g-item>
         </template>
       </template>

@@ -8,8 +8,8 @@
 				Are you sure you want to delete payment <b>"Cash"</b>?
 			</g-card-text>
 			<g-card-actions>
-				<g-btn flat background-color="#efefef">Cancel</g-btn>
-				<g-btn flat background-color="red lighten 2" text-color="white">OK</g-btn>
+				<g-btn :uppercase="false" flat background-color="#efefef">Cancel</g-btn>
+				<g-btn :uppercase="false" flat background-color="red lighten 2" text-color="white">OK</g-btn>
 			</g-card-actions>
 		</g-card>
 	</g-dialog>

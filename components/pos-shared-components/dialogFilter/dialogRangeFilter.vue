@@ -11,8 +11,8 @@
 				<span>€ {{max}}</span>
 			</div>
 			<div class="buttons">
-				<g-btn text @click="internalValue = false" backgroundColor="#EFEFEF" text-color="#757575" width="120" style="margin-right: 8px">Cancel</g-btn>
-				<g-btn text @click="submit" backgroundColor="#2979FF" text-color="#FFFFFF" width="120">OK</g-btn>
+				<g-btn :uppercase="false" text @click="internalValue = false" backgroundColor="#EFEFEF" text-color="#757575" width="120" style="margin-right: 8px">Cancel</g-btn>
+				<g-btn :uppercase="false" text @click="submit" backgroundColor="#2979FF" text-color="#FFFFFF" width="120">OK</g-btn>
 			</div>
 		</div>
 	</g-dialog>

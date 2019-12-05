@@ -9,11 +9,11 @@
     <div class="disabled"></div>
     <div class="disabled"></div>
     <div class="disabled"></div>
-    <g-btn outlined height="100%" text-color="#979797">
+    <g-btn :uppercase="false" outlined height="100%" text-color="#979797">
       <span style="color: #1c1c1c; font-size: 16px">Multiple Payment</span>
     </g-btn>
     <div class="disabled"></div>
-    <g-btn flat background-color="blue darken 1" text-color="white" height="100%" @click.stop="pay">
+    <g-btn :uppercase="false" flat background-color="blue darken 1" text-color="white" height="100%" @click.stop="pay">
       <span class="fs-large-2">Pay</span>
     </g-btn>
   </div>

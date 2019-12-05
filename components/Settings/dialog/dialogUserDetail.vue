@@ -7,8 +7,8 @@
 					<pos-text-field large label="Passcode"/>
 				</div>
 				<div class="action">
-					<g-btn outlined class="mr-2" width="120" @click="dialogNewProductDetail = false">Cancel</g-btn>
-					<g-btn flat background-color="blue accent 3" text-color="white" width="120">OK</g-btn>
+					<g-btn :uppercase="false" outlined class="mr-2" width="120" @click="dialogNewProductDetail = false">Cancel</g-btn>
+					<g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" width="120">OK</g-btn>
 				</div>
 			</div>
 			<div class="bg-grey-lighten-1 pa-2">

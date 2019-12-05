@@ -1,31 +1,31 @@
 <template>
   <g-toolbar absolute bottom color="grey lighten 3" filled>
-    <g-btn background-color="white" text-color="#1d1d26" class="mr-3">
+    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-3">
       <g-icon class="mr-2" svg>
         icon-back
       </g-icon>
       Back
     </g-btn>
-    <g-btn background-color="white" text-color="#1d1d26" class="mr-3">
+    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-3">
       <g-icon class="mr-2" svg>
         icon-menu
       </g-icon>
       More
     </g-btn>
-    <g-btn background-color="white" text-color="#1d1d26" class="mr-3">
+    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-3">
       <g-icon class="mr-2" svg>
         icon-sort
       </g-icon>
       Sort
     </g-btn>
-    <g-btn background-color="white" text-color="#1d1d26" @click="deleteProducts">
+    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" @click="deleteProducts">
       <g-icon class="mr-2" svg>
         icon-trash
       </g-icon>
       Delete
     </g-btn>
     <g-spacer/>
-    <g-btn background-color="green" text-color="white" flat @click="openDialogNewProduct">
+    <g-btn :uppercase="false" background-color="green" text-color="white" flat @click="openDialogNewProduct">
       + Create new product
     </g-btn>
   </g-toolbar>

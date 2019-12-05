@@ -5,10 +5,10 @@
 			<div class="screen">
 				<pos-text-field v-model="screenValue" large :label="label" readOnly/>
 				<div class="buttons">
-					<g-btn text @click="internalValue = false" backgroundColor="#EFEFEF" text-color="#757575" width="120" class="mr-2">
+					<g-btn :uppercase="false" text @click="internalValue = false" backgroundColor="#EFEFEF" text-color="#757575" width="120" class="mr-2">
 						Cancel
 					</g-btn>
-					<g-btn text @click="submit" backgroundColor="#2979FF" text-color="#FFFFFF" width="120">
+					<g-btn :uppercase="false" text @click="submit" backgroundColor="#2979FF" text-color="#FFFFFF" width="120">
 						OK
 					</g-btn>
 				</div>

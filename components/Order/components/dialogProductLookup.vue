@@ -11,7 +11,7 @@
                        @blur="showKeyboard = false"
          ></g-text-field>
         <g-spacer></g-spacer>
-        <g-btn icon style="box-shadow: none; border-radius: 50%" @click="dialogProductLookup = false">
+        <g-btn :uppercase="false" icon style="box-shadow: none; border-radius: 50%" @click="dialogProductLookup = false">
           <g-icon>clear</g-icon>
         </g-btn>
       </g-toolbar>

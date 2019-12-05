@@ -50,17 +50,17 @@
         </div>
       </div>
       <div area="action">
-        <g-btn outlined height="100%">F1</g-btn>
-        <g-btn outlined height="100%">F2</g-btn>
-        <g-btn outlined height="100%">F3</g-btn>
-        <g-btn outlined height="100%">F4</g-btn>
+        <g-btn :uppercase="false" outlined height="100%">F1</g-btn>
+        <g-btn :uppercase="false" outlined height="100%">F2</g-btn>
+        <g-btn :uppercase="false" outlined height="100%">F3</g-btn>
+        <g-btn :uppercase="false" outlined height="100%">F4</g-btn>
       </div>
       <g-toolbar area="toolbar" color="#eee" elevation="0" fill-height>
-        <g-btn background-color="white" class="mr-3" style="margin-left: -4px">
+        <g-btn :uppercase="false" background-color="white" class="mr-3" style="margin-left: -4px">
           <g-icon class="mr-2" svg>icon-back</g-icon>
           Back
         </g-btn>
-        <g-btn background-color="white" class="mr-3">
+        <g-btn :uppercase="false" background-color="white" class="mr-3">
           <g-icon class="mr-2" svg>icon-menu</g-icon>
           More
         </g-btn>
@@ -68,28 +68,28 @@
           <template v-slot:badge>
             <span>2</span>
           </template>
-          <g-btn background-color="white" @click="dialogSavedList = true">
+          <g-btn :uppercase="false" background-color="white" @click="dialogSavedList = true">
             <g-icon class="mr-2" svg>icon-folder</g-icon>
             Saved list
           </g-btn>
         </g-badge>
       </g-toolbar>
       <div area="menu">
-        <g-btn v-for="(item, i) in menu" :key="i" elevation="0" background-color="#fff" text-color="#1d1d26" height="100%"
+        <g-btn :uppercase="false" v-for="(item, i) in menu" :key="i" elevation="0" background-color="#fff" text-color="#1d1d26" height="100%"
                @click.stop="selectMenu(item)" :class="[item === menuSelected ? 'menu__active' : '']">
           {{item.title}}
         </g-btn>
       </div>
       <g-scroll-window area="window" :show-arrows="false" v-model="window" elevation="0">
         <g-scroll-window-item v-for="(items, i) in listItems" :key="i">
-          <g-btn v-for="(item, i) in items" :key="i" flat :background-color="item.color" height="100%">{{item.title}}</g-btn>
+          <g-btn :uppercase="false" v-for="(item, i) in items" :key="i" flat :background-color="item.color" height="100%">{{item.title}}</g-btn>
         </g-scroll-window-item>
       </g-scroll-window>
       <g-item-group area="delimeter" :items="listItems" v-model="window" :return-object="false" mandatory>
         <template v-slot:default="{ toggle, active }">
           <template v-for="(item, index) in listItems">
             <g-item :is-active="active(item)" :key="index">
-              <g-btn @click="toggle(item)"></g-btn>
+              <g-btn :uppercase="false" @click="toggle(item)"></g-btn>
             </g-item>
           </template>
         </template>
@@ -102,17 +102,17 @@
         </template>
       </g-number-keyboard>
       <div area="buttons">
-        <g-btn outlined height="100%">F1</g-btn>
-        <g-btn outlined height="100%" @click="dialogChangePrice = true">Change Price</g-btn>
-        <g-btn outlined height="100%">Note</g-btn>
-        <g-btn outlined height="100%" @click="dialogProductLookup = true">Product Lookup</g-btn>
-        <g-btn outlined height="100%" disabled>Disabled Button</g-btn>
-        <g-btn outlined height="100%">Discount</g-btn>
-        <g-btn outlined height="100%"></g-btn>
-        <g-btn outlined height="100%">Plastic Refund</g-btn>
-        <g-btn area="btn__big" text background-color="green lighten 1" text-color="white" height="100%" @click="quickCash">Quick Cash</g-btn>
-        <g-btn text background-color="orange lighten 1" text-color="white" height="100%">Save</g-btn>
-        <g-btn text background-color="blue darken 2" height="100%">
+        <g-btn :uppercase="false" outlined height="100%">F1</g-btn>
+        <g-btn :uppercase="false" outlined height="100%" @click="dialogChangePrice = true">Change Price</g-btn>
+        <g-btn :uppercase="false" outlined height="100%">Note</g-btn>
+        <g-btn :uppercase="false" outlined height="100%" @click="dialogProductLookup = true">Product Lookup</g-btn>
+        <g-btn :uppercase="false" outlined height="100%" disabled>Disabled Button</g-btn>
+        <g-btn :uppercase="false" outlined height="100%">Discount</g-btn>
+        <g-btn :uppercase="false" outlined height="100%"></g-btn>
+        <g-btn :uppercase="false" outlined height="100%">Plastic Refund</g-btn>
+        <g-btn :uppercase="false" area="btn__big" text background-color="green lighten 1" text-color="white" height="100%" @click="quickCash">Quick Cash</g-btn>
+        <g-btn :uppercase="false" text background-color="orange lighten 1" text-color="white" height="100%">Save</g-btn>
+        <g-btn :uppercase="false" text background-color="blue darken 2" height="100%">
           <router-link to="/payment">
             <span class="text-white">Pay</span>
           </router-link>

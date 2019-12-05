@@ -7,10 +7,10 @@
 					Category</p>
 				<pos-text-field style="width: 268px" label="Name" placeholder="Category name" v-model="computedName"/>
 				<div class="row-flex justify-end py-5">
-					<g-btn outlined class="mr-3" width="120" @click="dialogNewCategory = false">
+					<g-btn :uppercase="false" outlined class="mr-3" width="120" @click="dialogNewCategory = false">
 						Cancel
 					</g-btn>
-					<g-btn flat background-color="blue accent 3" width="120" text-color="white" @click="save">
+					<g-btn :uppercase="false" flat background-color="blue accent 3" width="120" text-color="white" @click="save">
 						OK
 					</g-btn>
 				</div>

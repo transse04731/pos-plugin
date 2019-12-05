@@ -7,10 +7,10 @@
       </div>
       <g-date-range-picker v-model="selectedDatetime"/>
       <div class="action">
-        <g-btn text @click="internalValue = false" backgroundColor="#EFEFEF" text-color="#757575" width="120" class="mr-2">
+        <g-btn :uppercase="false" text @click="internalValue = false" backgroundColor="#EFEFEF" text-color="#757575" width="120" class="mr-2">
           Cancel
         </g-btn>
-        <g-btn text @click="submit" backgroundColor="#2979FF" text-color="#FFFFFF" width="120">
+        <g-btn :uppercase="false" text @click="submit" backgroundColor="#2979FF" text-color="#FFFFFF" width="120">
           OK
         </g-btn>
       </div>

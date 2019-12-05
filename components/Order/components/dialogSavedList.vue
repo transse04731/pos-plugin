@@ -19,11 +19,11 @@
 						<td class="ta-right">{{list.quantity}}</td>
 						<td class="ta-left">{{list.date}}</td>
 						<td class="ta-left row-flex justify-center align-items-center">
-							<g-btn background-color="#1271FF" text-color="white" @click.stop="selectList(list)">
+							<g-btn :uppercase="false" background-color="#1271FF" text-color="white" @click.stop="selectList(list)">
 								<g-icon class="mr-2"  svg>icon-open</g-icon>
 								Select
 							</g-btn>
-							<g-btn background-color="#FF4452" text-color="white" class="ml-2" @click="openDeleteDialog(list)">
+							<g-btn :uppercase="false" background-color="#FF4452" text-color="white" class="ml-2" @click="openDeleteDialog(list)">
 								<g-icon class="mr-2" svg>icon-delete</g-icon>
 								Delete
 							</g-btn>
@@ -32,7 +32,7 @@
 					</tbody>
 				</g-simple-table>
 				<g-toolbar color="#eee" elevation="2">
-					<g-btn background-color="white" class="mr-2" @click.stop="dialogSavedList = false">
+					<g-btn :uppercase="false" background-color="white" class="mr-2" @click.stop="dialogSavedList = false">
 						<g-icon class="mr-2" svg>icon-back</g-icon>
 						Back
 					</g-btn>
@@ -48,8 +48,8 @@
 					Are you sure you want to delete Saved order <b>"{{listToDelete && listToDelete.id}}"</b>?
 				</g-card-text>
 				<g-card-actions>
-					<g-btn flat outlined>Cancel</g-btn>
-					<g-btn flat background-color="red lighten 2" text-color="white" @click="removeList()">OK</g-btn>
+					<g-btn :uppercase="false" flat outlined>Cancel</g-btn>
+					<g-btn :uppercase="false" flat background-color="red lighten 2" text-color="white" @click="removeList()">OK</g-btn>
 				</g-card-actions>
 			</g-card>
 		</g-dialog>

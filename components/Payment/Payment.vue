@@ -76,23 +76,23 @@
 				</div>
 			</div>
 			<div area="action">
-				<g-btn outlined height="100%">F1</g-btn>
-				<g-btn outlined height="100%">F2</g-btn>
-				<g-btn outlined height="100%">F1</g-btn>
-				<g-btn outlined height="100%">F2</g-btn>
+				<g-btn :uppercase="false" outlined height="100%">F1</g-btn>
+				<g-btn :uppercase="false" outlined height="100%">F2</g-btn>
+				<g-btn :uppercase="false" outlined height="100%">F1</g-btn>
+				<g-btn :uppercase="false" outlined height="100%">F2</g-btn>
 			</div>
 			<g-toolbar area="toolbar" color="#eee" elevation="0" fill-height>
-				<g-btn background-color="white" class="mr-2">
+				<g-btn :uppercase="false" background-color="white" class="mr-2">
 					<router-link to="/order">
 						<g-icon class="mr-2" svg>icon-back</g-icon>
 						<span style="color: rgba(0, 0, 0, 0.87)">Back</span>
 					</router-link>
 				</g-btn>
-				<g-btn background-color="white" class="mr-2">
+				<g-btn :uppercase="false" background-color="white" class="mr-2">
 					<g-icon class="mr-2" svg>icon-menu</g-icon>
 					More
 				</g-btn>
-				<g-btn background-color="white" @click="dialogSavedList = true">
+				<g-btn :uppercase="false" background-color="white" @click="dialogSavedList = true">
 					<g-icon class="mr-2" svg>icon-cashier</g-icon>
 					Cashier drawer
 				</g-btn>
@@ -116,11 +116,11 @@
 				</div>
 			</div>
 			<div area="main">
-				<g-btn x-large flat background-color="blue accent 3" text-color="white">
+				<g-btn :uppercase="false" x-large flat background-color="blue accent 3" text-color="white">
 					<g-icon svg>icon-cash</g-icon>
 					<span class="ml-2">Cash</span>
 				</g-btn>
-				<g-btn x-large outlined text-color="#1271ff" class="ml-3">
+				<g-btn :uppercase="false" x-large outlined text-color="#1271ff" class="ml-3">
 					<g-icon svg>icon-credit_card</g-icon>
 					<span class="ml-2 text-black">Card</span>
 				</g-btn>
@@ -135,11 +135,11 @@
 				<div class="disabled"></div>
 				<div class="disabled"></div>
 				<div class="disabled"></div>
-				<g-btn outlined height="100%" text-color="#979797">
+				<g-btn :uppercase="false" outlined height="100%" text-color="#979797">
 					<span style="color: #1c1c1c; font-size: 16px">Multiple Payment</span>
 				</g-btn>
 				<div class="disabled"></div>
-				<g-btn flat background-color="blue darken 1" text-color="white" height="100%">
+				<g-btn :uppercase="false" flat background-color="blue darken 1" text-color="white" height="100%">
 					<span class="fs-large-2">Pay</span>
 				</g-btn>
 			</div>

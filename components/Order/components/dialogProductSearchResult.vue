@@ -4,7 +4,7 @@
       <g-card-title>
         {{formattedQueryResults.length}} {{formattedQueryResults.length > 1 ? 'results' : 'result'}} for product id "{{productIdQuery}}"
         <g-spacer></g-spacer>
-        <g-btn @click="dialogProductSearch = false" icon>
+        <g-btn :uppercase="false" @click="dialogProductSearch = false" icon>
           <g-icon>close</g-icon>
         </g-btn>
       </g-card-title>
@@ -42,7 +42,7 @@
                         <template v-slot:badge>
                           <g-icon x-small>done</g-icon>
                         </template>
-                        <g-btn @click="toggle(item)" outlined style="margin-left: 5px" :active="active" :class="[active ? activeClass : {}]">
+                        <g-btn :uppercase="false" @click="toggle(item)" outlined style="margin-left: 5px" :active="active" :class="[active ? activeClass : {}]">
                           {{item}}
                         </g-btn>
                       </g-badge>
@@ -67,7 +67,7 @@
                         <template v-slot:badge>
                           <g-icon x-small>done</g-icon>
                         </template>
-                        <g-btn @click="toggle(item)" outlined style="margin-left: 5px" :active="active" :class="[active ? activeClass : {}]">
+                        <g-btn :uppercase="false" @click="toggle(item)" outlined style="margin-left: 5px" :active="active" :class="[active ? activeClass : {}]">
                           {{item.value}}
                         </g-btn>
                       </g-badge>
@@ -78,7 +78,7 @@
             </td>
             <td>
               <div class="result-item result-item-action" style="display: flex; justify-content: center; align-items: center;">
-                <g-btn :disabled="!isValidItem(product)"
+                <g-btn :uppercase="false" :disabled="!isValidItem(product)"
                        background-color="blue darken-1"
                        text-color="white"
                        @click.stop="addProductToOrder(product)"

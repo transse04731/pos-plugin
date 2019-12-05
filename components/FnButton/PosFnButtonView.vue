@@ -10,7 +10,7 @@
     </div>
 
     <div area="button-action" style="padding: 45px 20px 20px 20px;" v-show="isButtonSelected && !isInConfigLayoutMode">
-      <g-btn :disabled="textFieldValue === ''" @click="textFieldValue = ''" background-color="white" elevation="0" text-color="red">
+      <g-btn :uppercase="false" :disabled="textFieldValue === ''" @click="textFieldValue = ''" background-color="white" elevation="0" text-color="red">
         <g-icon size="16">mdi-minus-circle</g-icon>
         Clear
       </g-btn>
@@ -36,14 +36,14 @@
       <p class="title">Color</p>
       <g-grid-select :grid="false" :items="buttonColors" return-object v-model="selectedColor">
         <template #default="{toggleSelect, item, index}">
-          <g-btn :key="index" :ripple="false" :style="{marginRight: '14px', boxShadow: 'none', borderRadius: '50%', width: '38px', minWidth: '38px',height: '38px', border: '1px solid #D2D2D2', backgroundColor: item.value }" @click="toggleSelect(item)"></g-btn>
+          <g-btn :uppercase="false" :key="index" :ripple="false" :style="{marginRight: '14px', boxShadow: 'none', borderRadius: '50%', width: '38px', minWidth: '38px',height: '38px', border: '1px solid #D2D2D2', backgroundColor: item.value }" @click="toggleSelect(item)"></g-btn>
         </template>
         <template #selected="{toggleSelect, item, index}">
           <g-badge :badge-size="12" overlay style="margin-right: 14px;">
             <template v-slot:badge>
               <g-icon>done</g-icon>
             </template>
-            <g-btn :ripple="false" :style="{boxShadow: 'none', borderRadius: '50%', width: '38px', minWidth: '38px', height: '38px', border: '2px solid #1271FF', backgroundColor: item.value}" @click="toggleSelect(item)">
+            <g-btn :uppercase="false" :ripple="false" :style="{boxShadow: 'none', borderRadius: '50%', width: '38px', minWidth: '38px', height: '38px', border: '2px solid #1271FF', backgroundColor: item.value}" @click="toggleSelect(item)">
               {{item.optionTitle}}
             </g-btn>
           </g-badge>
@@ -53,13 +53,13 @@
 
     <g-button-merger :items="buttonGroupItems" :newItems.sync="newButtonGroupItems" :received-merge-map="mergeMap" :received-merged-buttons="mergedButtons" :value="selectedButtons" @input="updateBtnGrid" @merged="setMergedButtons" area="button-chooser" class="pa-2" ref="merger">
       <template #default="{toggleSelect, item, index}">
-        <g-btn :style="{ display: mergedButtons.indexOf(item.value) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, borderColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : '', border: '1px solid #979797'}" @click="toggleSelect(item)"
+        <g-btn :uppercase="false" :style="{ display: mergedButtons.indexOf(item.value) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, borderColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : '', border: '1px solid #979797'}" @click="toggleSelect(item)"
                elevation="0" height="100%" width="100%">
           {{item.text}}
         </g-btn>
       </template>
       <template #selected="{toggleSelect, item, index}">
-        <g-btn :class="activeSelectedButton" :style="{ display: mergedButtons.indexOf(item.value) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : ''}" @click="toggleSelect(item)"
+        <g-btn :uppercase="false" :class="activeSelectedButton" :style="{ display: mergedButtons.indexOf(item.value) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : ''}" @click="toggleSelect(item)"
                elevation="0" height="100%" width="100%">
           {{item.text}}
         </g-btn>
@@ -76,46 +76,46 @@
     </div>
 
     <div area="button-control" style="background-color: #EEEEEE; padding: 12px; position: relative; bottom: 0; display: flex;">
-      <g-btn background-color="white" class="mr-2" @click="$router.push({ path: '/view/test-pos-dashboard' })">
+      <g-btn :uppercase="false" background-color="white" class="mr-2" @click="$router.push({ path: '/view/test-pos-dashboard' })">
         <g-icon class="mr-2" svg>icon-back</g-icon>
         <span style="color: rgba(0, 0, 0, 0.87)">Back</span>
       </g-btn>
 
       <g-menu nudge-top="5" top v-model="showMenu">
         <template v-slot:activator="{toggleContent}">
-          <g-btn @click="toggleContent" background-color="white" class="mr-2" v-if="!isInConfigLayoutMode">
+          <g-btn :uppercase="false" @click="toggleContent" background-color="white" class="mr-2" v-if="!isInConfigLayoutMode">
             <g-icon class="mr-2" svg>icon-menu</g-icon>
             <span style="color: rgba(0, 0, 0, 0.87)">More</span>
           </g-btn>
 
-          <g-btn @click="toggleMode('cancel')" background-color="white" class="mr-2" v-if="isInConfigLayoutMode">
+          <g-btn :uppercase="false" @click="toggleMode('cancel')" background-color="white" class="mr-2" v-if="isInConfigLayoutMode">
             <g-icon class="mr-2" color="red">mdi-close-circle</g-icon>
             <span style="color: rgba(0, 0, 0, 0.87)">Cancel</span>
           </g-btn>
         </template>
         <div style="display: flex; flex-direction: column;">
-          <g-btn @click="toggleMode('merge')">
+          <g-btn :uppercase="false" @click="toggleMode('merge')">
             <g-icon style="margin-right: 5px;" svg>icon-merge</g-icon>
             Merge Mode
           </g-btn>
-          <g-btn @click="toggleMode('split')">
+          <g-btn :uppercase="false" @click="toggleMode('split')">
             <g-icon style="margin-right: 5px" svg>icon-split</g-icon>
             Split Mode
           </g-btn>
         </div>
       </g-menu>
       <g-spacer/>
-      <g-btn :disabled="selectedButtons.length <= 1" @click="onMerge" background-color="#1976D2" text-color="white" v-if="mergeMode">
+      <g-btn :uppercase="false" :disabled="selectedButtons.length <= 1" @click="onMerge" background-color="#1976D2" text-color="white" v-if="mergeMode">
         <g-icon style="margin-right: 5px;" svg>icon-merge</g-icon>
         Merge
       </g-btn>
-      <g-btn :disabled="validateSplit()" @click="onSplit" background-color="#1976D2" text-color="white" v-if="splitMode">
+      <g-btn :uppercase="false" :disabled="validateSplit()" @click="onSplit" background-color="#1976D2" text-color="white" v-if="splitMode">
         <g-icon style="margin-right: 5px" svg>icon-split</g-icon>
         Split
       </g-btn>
     </div>
     <div area="menu">
-      <g-btn :key="i" :style="item.style ? item.style : ''" background-color="#fff" elevation="0"
+      <g-btn :uppercase="false" :key="i" :style="item.style ? item.style : ''" background-color="#fff" elevation="0"
              height="100%" text-color="#1d1d26" v-for="(item, i) in menu">
         {{item.title}}
       </g-btn>
@@ -127,7 +127,7 @@
     <div area="main">
       <g-scroll-window :show-arrows="false" area="window" v-model="window">
         <g-scroll-window-item :key="i" v-for="(items, i) in listItems">
-          <g-btn :background-color="item.color" :key="i" flat height="100%" v-for="(item, i) in items">{{item.title}}</g-btn>
+          <g-btn :uppercase="false" :background-color="item.color" :key="i" flat height="100%" v-for="(item, i) in items">{{item.title}}</g-btn>
         </g-scroll-window-item>
       </g-scroll-window>
 
@@ -135,7 +135,7 @@
         <template v-slot:default="{ toggle, active }">
           <template v-for="(item, index) in listItems">
             <g-item :is-active="active(item)" :key="index">
-              <g-btn @click="toggle(item)"></g-btn>
+              <g-btn :uppercase="false" @click="toggle(item)"></g-btn>
             </g-item>
           </template>
         </template>
@@ -156,14 +156,14 @@
 
     <g-button-merger :items="sideButtonItems" :received-merge-map="mergeMap" :received-merged-buttons="mergedButtons" :value="selectedButtons" @input="updateBtnGrid" @merged="setMergedButtons" area="buttons" cols="1fr 1fr" ref="sideMerger" rows="1fr 1fr 1fr 1fr 1fr 1fr">
       <template #default="{toggleSelect, item, index}">
-        <g-btn :style="{ display: mergedButtons.indexOf(item.value) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, borderColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : '', border: '1px solid #979797'}"
+        <g-btn :uppercase="false" :style="{ display: mergedButtons.indexOf(item.value) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, borderColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : '', border: '1px solid #979797'}"
                @click="toggleSelect(item)"
                elevation="0" height="100%" width="100%">
           {{item.text}}
         </g-btn>
       </template>
       <template #selected="{toggleSelect, item, index}">
-        <g-btn :class="activeSelectedButton" :style="{ display: mergedButtons.indexOf(item.value) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : ''}" @click="toggleSelect(item)"
+        <g-btn :uppercase="false" :class="activeSelectedButton" :style="{ display: mergedButtons.indexOf(item.value) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : ''}" @click="toggleSelect(item)"
                elevation="0" height="100%" width="100%">
           {{item.text}}
         </g-btn>

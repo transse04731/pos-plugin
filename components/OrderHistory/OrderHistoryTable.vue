@@ -33,7 +33,7 @@
             </g-chip>
           </div>
           <g-spacer/>
-          <g-btn text x-small background-color="white" height="24" @click="clearFilters">
+          <g-btn :uppercase="false" text x-small background-color="white" height="24" @click="clearFilters">
             <g-icon svg size="16">icon-cancel3</g-icon>
           </g-btn>
         </div>
