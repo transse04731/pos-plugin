@@ -6,7 +6,7 @@
           <g-avatar :size="40">
             <g-img src="https://loremflickr.com/320/240"/>
           </g-avatar>
-          <p class="pa-2 fs-small fw-600">Admin</p>
+          <p class="pa-2 fs-small fw-600">{{userName}}</p>
         </div>
       </template>
       <g-side-bar-tree-view :data="sidebarData" v-model="internalValue"/>
@@ -18,7 +18,7 @@
 <script>
   export default {
     name: 'PosSettingsScreenSidebar',
-		injectService: ['PosStore:sidebarData'],
+		injectService: ['PosStore:(sidebarData,user)'],
 		props: {
 			value: null
 		},
@@ -30,7 +30,10 @@
 				set(value) {
 					this.$emit('input', value)
 				}
-			}
+			},
+      userName() {
+			  return this.user ? this.user.name : ''
+      }
 		}
   }
 </script>

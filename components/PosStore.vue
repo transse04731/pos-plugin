@@ -122,7 +122,7 @@
       }
     },
     methods: {
-      //login screen
+      //<!--<editor-fold desc="Login screen">-->
       login() {
         try {
           this.user = _.find(cms.getList('PosSetting')[0].user, user => user.passcode === this.loginPassword)
@@ -138,7 +138,9 @@
           this.incorrectPasscode = false
         }
       },
-      //order screen
+      //<!--</editor-fold>-->
+
+      //<!--<editor-fold desc="Order screen">-->
       getAllCategories() {
         return cms.getList('Category')
       },
@@ -317,7 +319,9 @@
         })
         return resultArr
       },
-      //order history
+      //<!--</editor-fold>-->
+
+      //<!--<editor-fold desc="Order history screen">-->
       updateOrderHistoryFilter(filter) {
         const index = this.orderHistoryFilters.findIndex(f => f.title === filter.title);
         if(index > -1)
@@ -405,8 +409,9 @@
         await this.getTotalProducts();
         this.selectedProduct = [];
       },
+      //<!--</editor-fold>-->
 
-      //article screen
+      //<!--<editor-fold desc="Article screen">-->
       selectArticle(item) {
         if(this.articleSelectedProductButton && item._id === this.articleSelectedProductButton._id) {
           this.articleSelectedProductButton = null;
@@ -482,8 +487,7 @@
           }
         }
       },
-    },
-    mounted() {
+      //<!--</editor-fold>-->
     },
     created() {
       this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
@@ -501,9 +505,7 @@
         activeTableProduct: this.activeTableProduct,
         activeProduct: this.activeProduct,
         convertMoney: this.convertMoney,
-        //legit
         getProductGridOrder: this.getProductGridOrder,
-
         getAllCategories: this.getAllCategories,
         getActiveProducts: this.getActiveProducts,
         addItemQuantity: this.addItemQuantity,
