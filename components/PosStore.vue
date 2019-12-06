@@ -126,7 +126,7 @@
       }
     },
     methods: {
-      //login screen
+      //<!--<editor-fold desc="Login screen">-->
       login() {
         try {
           this.user = _.find(cms.getList('PosSetting')[0].user, user => user.passcode === this.loginPassword)
@@ -134,7 +134,8 @@
             this.loginPassword = ''
             return this.$router.push({ path: `/view/test-pos-dashboard` })
           }
-        } catch {
+        } catch(e) {
+          console.err(e)
         }
         this.incorrectPasscode = true
       },
@@ -143,7 +144,9 @@
           this.incorrectPasscode = false
         }
       },
-      //order screen
+      //<!--</editor-fold>-->
+
+      //<!--<editor-fold desc="Order screen">-->
       getAllCategories() {
         return cms.getList('Category')
       },
@@ -322,7 +325,9 @@
         })
         return resultArr
       },
-      //order history
+      //<!--</editor-fold>-->
+
+      //<!--<editor-fold desc="Order history screen">-->
       updateOrderHistoryFilter(filter) {
         const index = this.orderHistoryFilters.findIndex(f => f.title === filter.title);
         if (index > -1) {
@@ -412,6 +417,8 @@
         await this.getTotalProducts();
         this.selectedProduct = [];
       },
+      //<!--</editor-fold>-->
+
       //payment view
       async getListPayments() {
         const setting = await cms.getModel('PosSetting').find({ payment: { $exists: true } });
@@ -421,42 +428,43 @@
         const settingModel = cms.getModel('PosSetting');
         if (oldPayment && !newPayment) {
           await settingModel.findOneAndUpdate(
-              {
-                payment: { $exists: true }
-              },
-              {
-                $pull: {
-                  payment: { _id: oldPayment._id, name: oldPayment.name }
-                }
+            {
+              payment: { $exists: true }
+            },
+            {
+              $pull: {
+                payment: { _id: oldPayment._id, name: oldPayment.name }
               }
+            }
           )
         } else if (newPayment && !oldPayment) {
           await settingModel.findOneAndUpdate(
-              {
-                payment: { $exists: true }
-              },
-              {
-                $push: {
-                  payment: { name: newPayment.name, icon: newPayment.icon }
-                }
+            {
+              payment: { $exists: true }
+            },
+            {
+              $push: {
+                payment: { name: newPayment.name, icon: newPayment.icon }
               }
+            }
           )
         } else {
           await settingModel.findOneAndUpdate(
-              {
-                "payment._id": oldPayment._id
-              },
-              {
-                $set: {
-                  "payment.$.name": newPayment.name,
-                  "payment.$.icon": newPayment.icon
-                }
+            {
+              "payment._id": oldPayment._id
+            },
+            {
+              $set: {
+                "payment.$.name": newPayment.name,
+                "payment.$.icon": newPayment.icon
               }
+            }
           )
         }
         await this.getListPayments();
       },
-      //article screen
+
+      //<!--<editor-fold desc="Article screen">-->
       selectArticle(item) {
         if (this.articleSelectedProductButton && item._id === this.articleSelectedProductButton._id) {
           this.articleSelectedProductButton = null;
@@ -571,11 +579,11 @@
           }
         }
       },
-    },
-    mounted() {
+      //<!--</editor-fold>-->
     },
     created() {
       this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
+      this.user = cms.getList('PosSetting')[0].user[0]
     },
     provide() {
       return {

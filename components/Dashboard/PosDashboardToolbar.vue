@@ -1,7 +1,7 @@
 <template>
   <g-toolbar gradient="#3949AB,#4FC3F7" elevation="0">
     <slot></slot>
-    <g-spacer/>
+    <g-spacer></g-spacer>
     <div class="time">
       <p>{{time}}</p>
       <p>{{date}}</p>
@@ -26,7 +26,7 @@
     },
     created() {
       this.updateTime();
-      setInterval(() => this.updateTime(), 60*1000);
+      setInterval(() => this.updateTime(), 60 * 1000);
     }
   }
 </script>

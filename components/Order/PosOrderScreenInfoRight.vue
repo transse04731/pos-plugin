@@ -4,8 +4,8 @@
       <g-icon svg>icon-avatar</g-icon>
     </g-avatar>
     <div class="pa-1" style="line-height: 16px">
-      <p class="ta-right fw-700 fs-small">Admin</p>
-      <p class="fs-small-2">16:45 &#8231; May 20, 19</p>
+      <p class="ta-right fw-700 fs-small">{{userName}}</p>
+      <p class="fs-small-2">{{formattedDate}}</p>
     </div>
   </div>
 </template>
@@ -13,8 +13,31 @@
 <script>
   export default {
     name: 'PosOrderScreenInfoRight',
+    injectService: ['PosStore:user'],
     data() {
-      return {}
+      return {
+        date: new Date(),
+        setDateInterval: null
+      }
+    },
+    computed: {
+      userName() {
+        return this.user ? this.user.name : ''
+      },
+      formattedDate: {
+        get() {
+          return dayjs(this.date).format(`HH:mm ‧ MMM DD, YY`)
+        },
+        set(value) {
+          this.date = value
+        }
+      },
+      created() {
+        this.setDateInterval = setInterval(() => this.date = new Date(), 60000)
+      },
+      beforeDestroy() {
+        this.setDateInterval && clearInterval(this.setDateInterval)
+      }
     }
   }
 </script>
