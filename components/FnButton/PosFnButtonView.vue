@@ -2,7 +2,7 @@
   <g-grid-layout :layout="layout" style="height: 100%">
 
     <div area="button-name" style="padding: 12px 10px 12px 13px;" v-show="isButtonSelected && !isInConfigLayoutMode">
-      <pos-text-field :value="textFieldValue" @blur="updateBtnGrid" @input="onTextFieldInput" label="Button Name" placeholder="Fill your text">
+      <pos-text-field :value="textFieldValue" @blur="updateBtnGrid" @input="(val) => updateButton(val, 'text')" label="Button Name" placeholder="Fill your text">
         <template v-slot:append>
           <g-icon color="red">mdi-keyboard</g-icon>
         </template>
@@ -10,8 +10,8 @@
     </div>
 
     <div area="button-action" style="padding: 45px 20px 20px 20px;" v-show="isButtonSelected && !isInConfigLayoutMode">
-      <g-btn :uppercase="false" :disabled="textFieldValue === ''" @click="textFieldValue = ''" background-color="white" elevation="0" text-color="red">
-        <g-icon size="16">mdi-minus-circle</g-icon>
+      <g-btn :uppercase="false" :disabled="isClearBtnDisabled" @click="onClearButtonText" background-color="white" elevation="0" text-color="red">
+        <g-icon size="16" style="margin-right: 8px">mdi-minus-circle</g-icon>
         Clear
       </g-btn>
     </div>
@@ -29,7 +29,7 @@
     </div>
 
     <div area="function-action" style="padding: 3px;" v-show="isButtonSelected && !isInConfigLayoutMode && showFunctionValue">
-      <pos-text-field :value="textFieldFunctionValue" @blur="updateBtnGrid" @input="onTextFieldFunctionInput" label="Value" placeholder="Fill your value"></pos-text-field>
+      <pos-text-field :value="textFieldFunctionValue" @blur="updateBtnGrid" @input="(val) => updateButton(val, 'buttonFunctionValue')" label="Value" placeholder="Fill your value"></pos-text-field>
     </div>
 
     <div area="color" style="padding: 8px 8px 8px 13px" v-show="isButtonSelected && !isInConfigLayoutMode">
@@ -51,7 +51,7 @@
       </g-grid-select>
     </div>
 
-    <g-button-merger :items="buttonGroupItems" :newItems.sync="newButtonGroupItems" :received-merge-map="mergeMap" :received-merged-buttons="mergedButtons" :value="selectedButtons" @input="updateBtnGrid" @merged="setMergedButtons" area="button-chooser" class="pa-2" ref="merger">
+    <g-button-merger :items="buttonGroupItems" :received-merge-map="mergeMap" :received-merged-buttons="mergedButtons" :value="selectedButtons" @input="updateBtnGrid" @merged="setMergedButtons" area="button-chooser" class="pa-2" ref="merger">
       <template #default="{toggleSelect, item, index}">
         <g-btn :uppercase="false" :style="{ display: mergedButtons.indexOf(item.value) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, borderColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : '', border: '1px solid #979797'}" @click="toggleSelect(item)"
                elevation="0" height="100%" width="100%">
@@ -146,7 +146,7 @@
 
     <div area="keyboard__overlay" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99;"></div>
 
-    <g-number-keyboard :items="numpad_1" @submit="dialogProductSearch = true" area="keyboard" v-model="number">
+    <g-number-keyboard :items="numpadItems" @submit="dialogProductSearch = true" area="keyboard" v-model="number">
       <template v-slot:screen>
         <div class="number-key-show ba-thin bg-grey-lighten-3" style="height: calc(16.6667% - 4px)">
           <input class="number-key-text col-12 self-center bg-transparent fs-large-2 fw-700 pl-2" id="number_key_output" style="border: none; outline: none" v-model="number">
@@ -195,11 +195,8 @@
       selectedButton: null,
       number: 0,
       selectedColor: null,
-
       posSettings: null,
       buttonGroupItems: [],
-      newButtonGroupItems: [],
-      newSideButtonGroupItems: [],
       sideButtonItems: [],
       mergedButtons: [],
       mergeMap: null,
@@ -258,7 +255,7 @@
           value: '#F6787C'
         },
       ],
-      numpad_1: [
+      numpadItems: [
         { content: ['7'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key7; border: 1px solid #979797' },
         { content: ['8'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key8; border: 1px solid #979797' },
         { content: ['9'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key9; border: 1px solid #979797' },
@@ -457,34 +454,14 @@
           return
         }
 
-        let valueOfBtn = this.selectedButtons[0].value;
-
-        let index = _.findIndex(this.buttonGroupItems, function (item) {
-          return valueOfBtn === item.value;
-        });
-
-        if (index >= 0) {
-          if (this.selectedFunction) {
-            this.buttonGroupItems[index].buttonFunction = this.selectedFunction;
-            this.selectedButtons[0].buttonFunction = this.selectedFunction;
-          }
-        }
-
-        let sideButtonIndex = _.findIndex(this.sideButtonItems, function (item) {
-          return valueOfBtn === item.value;
-        });
-
-        if (sideButtonIndex >= 0) {
-          if (this.selectedFunction) {
-            this.sideButtonItems[sideButtonIndex].buttonFunction = this.selectedFunction;
-            this.selectedButtons[0].buttonFunction = this.selectedFunction;
-          }
-        }
-
+        this.updateButton(this.selectedFunction, 'buttonFunction');
         this.updateBtnGrid();
       }
     },
     computed: {
+      isClearBtnDisabled() {
+        return !this.selectedButtons || (this.selectedButtons[0] && this.selectedButtons[0].text.length <= 0);
+      },
       showFunctionValue() {
         if (!this.selectedFunction || !this.items) {
           return false;
@@ -507,8 +484,12 @@
         return this.mergeMode || this.splitMode;
       },
     },
-
     methods: {
+      onClearButtonText() {
+        this.updateButton('', 'text');
+        this.textFieldValue = '';
+        this.updateBtnGrid();
+      },
       toggleMode(mode) {
         switch (mode) {
           case 'merge':
@@ -563,54 +544,40 @@
         this.splitMode = false;
         this.selectedButtons = []
       },
+      async updateBtnList(buttonList, dbButtonList) {
+
+        await cms.getModel('PosSetting').findOneAndUpdate({ _id: this.posSettings._id },
+          {
+            [dbButtonList]: buttonList.map(item => ({
+              ...item,
+              rowStart: item.row[0],
+              rowEnd: item.row[1],
+              colStart: item.col[0],
+              colEnd: item.col[1],
+              originalRowStart: item.originalRow[0],
+              originalRowEnd: item.originalRow[1],
+              originalColStart: item.originalCol[0],
+              originalColEnd: item.originalCol[1],
+              backgroundColor: item.style.backgroundColor,
+              textColor: item.style.textColor,
+              containedButtons: this.mergeMap ? this.mergeMap[item.value] : []
+            }))
+          })
+      },
       async updateBtnGrid() {
         let valueOfBtn = this.selectedButtons[0].value;
-        let index = _.findIndex(this.buttonGroupItems, function (item) {
-          return valueOfBtn === item.value;
-        });
+        let foundItem = this.buttonGroupItems.find((item) => item.value === valueOfBtn);
+        if(foundItem) {
+          foundItem = this.selectedButtons[0];
+        }
+        this.updateBtnList(this.buttonGroupItems,'leftFunctionButtons')
 
-        this.newButtonGroupItems[index] = this.selectedButtons[0];
-        await cms.getModel('PosSetting').findOneAndUpdate({ _id: this.posSettings._id },
-          {
-            leftFunctionButtons: this.buttonGroupItems.map(item => ({
-              ...item,
-              rowStart: item.row[0],
-              rowEnd: item.row[1],
-              colStart: item.col[0],
-              colEnd: item.col[1],
-              originalRowStart: item.originalRow[0],
-              originalRowEnd: item.originalRow[1],
-              originalColStart: item.originalCol[0],
-              originalColEnd: item.originalCol[1],
-              backgroundColor: item.style.backgroundColor,
-              textColor: item.style.textColor,
-              containedButtons: this.mergeMap ? this.mergeMap[item.value] : []
-            }))
-          })
+        let foundSideItem = this.sideButtonItems.find((item) => item.value === valueOfBtn);
+        if(foundSideItem) {
+          foundSideItem = this.selectedButtons[0];
+        }
 
-        let sideButtonIndex = _.findIndex(this.sideButtonItems, function (item) {
-          return valueOfBtn === item.value;
-        });
-
-        this.newSideButtonGroupItems[sideButtonIndex] = this.selectedButtons[0];
-        await cms.getModel('PosSetting').findOneAndUpdate({ _id: this.posSettings._id },
-          {
-            rightFunctionButtons: this.sideButtonItems.map(item => ({
-              ...item,
-              rowStart: item.row[0],
-              rowEnd: item.row[1],
-              colStart: item.col[0],
-              colEnd: item.col[1],
-              originalRowStart: item.originalRow[0],
-              originalRowEnd: item.originalRow[1],
-              originalColStart: item.originalCol[0],
-              originalColEnd: item.originalCol[1],
-              backgroundColor: item.style.backgroundColor,
-              textColor: item.style.textColor,
-              containedButtons: this.mergeMap ? this.mergeMap[item.value] : []
-            }))
-          })
-
+        this.updateBtnList(this.sideButtonItems,'rightFunctionButtons')
       },
       setMergedButtons(mergedButtons, mergeMap) {
         this.mergedButtons = mergedButtons;
@@ -623,33 +590,49 @@
             || this.selectedButtons.length !== 1)
           : true;
       },
-      onTextFieldInput(value) {
+      updateButton(newVal, updatedField) {
         if (this.selectedButtons[0]) {
-          this.selectedButtons[0].text = value;
+          this.selectedButtons[0][updatedField] = newVal;
 
-          const selectedButtonIndex = this.buttonGroupItems.findIndex((x) => x.value === this.selectedButtons[0].value);
-          if (selectedButtonIndex >= 0) {
-            this.buttonGroupItems[selectedButtonIndex].text = value;
-          }
-
-          const selectedSideButtonIndex = this.sideButtonItems.findIndex((x) => x.value === this.selectedButtons[0].value);
-          if (selectedSideButtonIndex >= 0) {
-            this.sideButtonItems[selectedSideButtonIndex].text = value;
+          let item = this.findSelectedButton(this.selectedButtons[0]);
+          if (item) {
+            item[updatedField] = newVal;
           }
         }
       },
-      onTextFieldFunctionInput(value) {
-        if (this.selectedButtons[0]) {
-          this.selectedButtons[0].buttonFunctionValue = value;
+      findSelectedButton(button) {
+        if (!button) {
+          return null;
+        }
 
-          let selectedButtonIndex = this.buttonGroupItems.findIndex((x) => x.value === this.selectedButtons[0].value);
-          if (selectedButtonIndex >= 0) {
-            this.buttonGroupItems[selectedButtonIndex].buttonFunctionValue = value;
-          }
+        return this.buttonGroupItems.find((x) => x.value === button.value) || this.sideButtonItems.find((x) => x.value === button.value);
+      },
+      computedFetchedButtons(buttonList, dataList) {
+        for (let item of buttonList) {
+          const {
+            backgroundColor, buttonFunction, buttonFunctionValue, colEnd, colStart, originalColEnd, originalColStart, originalRowEnd,
+            originalRowStart, rowEnd, rowStart, text, textColor, value, containedButtons
+          } = item;
 
-          const selectedSideButtonIndex = this.sideButtonItems.findIndex((x) => x.value === this.selectedButtons[0].value);
-          if (selectedSideButtonIndex >= 0) {
-            this.sideButtonItems[selectedSideButtonIndex].buttonFunctionValue = value;
+          dataList.push({
+            row: [rowStart, rowEnd],
+            col: [colStart, colEnd],
+            originalRow: [originalRowStart, originalRowEnd],
+            originalCol: [originalColStart, originalColEnd],
+            text,
+            value,
+            style: { backgroundColor: backgroundColor, textColor: textColor },
+            buttonFunction,
+            buttonFunctionValue
+          })
+
+          this.mergedButtons = this.mergedButtons.concat(containedButtons);
+          if (containedButtons.length > 0) {
+            if (this.mergeMap) {
+              this.mergeMap = Object.assign(this.mergeMap, { [value]: containedButtons });
+            } else {
+              this.mergeMap = Object.assign({}, { [value]: containedButtons });
+            }
           }
         }
       }
@@ -657,66 +640,8 @@
     async mounted() {
       this.posSettings = await cms.getModel('PosSetting').findOne()
       if (this.posSettings) {
-        const leftFunctionButtons = this.posSettings['leftFunctionButtons'];
-
-        for (let item of leftFunctionButtons) {
-          const {
-            backgroundColor, buttonFunction, buttonFunctionValue, colEnd, colStart, originalColEnd, originalColStart, originalRowEnd,
-            originalRowStart, rowEnd, rowStart, text, textColor, value, containedButtons
-          } = item
-          this.buttonGroupItems.push({
-            row: [rowStart, rowEnd],
-            col: [colStart, colEnd],
-            originalRow: [originalRowStart, originalRowEnd],
-            originalCol: [originalColStart, originalColEnd],
-            text,
-            value,
-            style: { backgroundColor: backgroundColor, textColor: textColor },
-            buttonFunction,
-            buttonFunctionValue
-          })
-
-          this.mergedButtons = this.mergedButtons.concat(containedButtons);
-          if (containedButtons.length > 0) {
-            if (this.mergeMap) {
-              this.mergeMap = Object.assign(this.mergeMap, { [value]: containedButtons });
-            } else {
-              this.mergeMap = Object.assign({}, { [value]: containedButtons });
-            }
-          }
-        }
-
-        const rightFunctionButtons = this.posSettings['rightFunctionButtons'];
-        for (let item of rightFunctionButtons) {
-          const {
-            backgroundColor, buttonFunction, buttonFunctionValue, colEnd, colStart, originalColEnd, originalColStart, originalRowEnd,
-            originalRowStart, rowEnd, rowStart, text, textColor, value, containedButtons
-          } = item
-          this.sideButtonItems.push({
-            row: [rowStart, rowEnd],
-            col: [colStart, colEnd],
-            originalRow: [originalRowStart, originalRowEnd],
-            originalCol: [originalColStart, originalColEnd],
-            text,
-            value,
-            style: { backgroundColor: backgroundColor, textColor: textColor },
-            buttonFunction,
-            buttonFunctionValue
-          })
-
-          this.mergedButtons = this.mergedButtons.concat(containedButtons);
-          if (containedButtons.length > 0) {
-            if (this.mergeMap) {
-              this.mergeMap = Object.assign(this.mergeMap, { [value]: containedButtons });
-            } else {
-              this.mergeMap = Object.assign({}, { [value]: containedButtons });
-            }
-          }
-        }
-
-
-        this.newButtonGroupItems = _.cloneDeep(this.buttonGroupItems)
-        this.newSideButtonGroupItems = _.cloneDeep(this.newSideButtonGroupItems)
+        this.computedFetchedButtons(this.posSettings['leftFunctionButtons'], this.buttonGroupItems);
+        this.computedFetchedButtons(this.posSettings['rightFunctionButtons'], this.sideButtonItems);
       }
 
     }
@@ -764,6 +689,10 @@
   .function {
     ::v-deep .g-select .g-menu--activator .g-tf {
       border: 1px solid #ced4da !important;
+
+      .inputGroup .input .g-tf-input {
+        font-size: 15px;
+      }
     }
   }
 

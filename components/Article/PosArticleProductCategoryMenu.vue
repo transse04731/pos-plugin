@@ -1,15 +1,16 @@
 <template>
   <div area="menu">
-    <g-btn :uppercase="false" v-for="(item, i) in menu" :key="i" elevation="0" background-color="#fff" text-color="#1d1d26" height="100%"
-           @click.stop="select(item)" :class="[item === activeCategory ? 'menu__active' : '']">
+    <g-btn :class="[item === activeCategory ? 'menu__active' : '']" :key="i" :uppercase="false" @click.stop="select(item)" background-color="#fff" elevation="0" height="100%"
+           text-color="#1d1d26" v-for="(item, i) in menu">
       {{item._id}}
     </g-btn>
-  </div></template>
+  </div>
+</template>
 
 <script>
   export default {
     name: 'PosArticleProductCategoryMenu',
-    injectService: ['PosStore:(activeCategory,activeCategoryProducts,getActiveProducts,getAllCategories, articleSelectedProductButton, articleSelectedColor)'],
+    injectService: ['PosStore:(activeCategory,activeCategoryProducts,getActiveProducts,getAllCategories, articleSelectedProductButton, articleSelectedColor, updateArticleOrders)'],
     data() {
       return {
         menu: [],
@@ -21,10 +22,11 @@
         this.articleSelectedProductButton = null;
         this.articleSelectedColor = null;
         await this.getActiveProducts()
+        this.updateArticleOrders();
       },
     },
     async created() {
-      this.menu = await this.getAllCategories()
+      this.menu = await this.getAllCategories();
       await this.select(this.menu[0])
     }
   }
@@ -41,19 +43,19 @@
     grid-auto-flow: column;
     padding: 6px;
 
-  &::-webkit-scrollbar {
-     display: none;
-   }
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
-  &__active {
-     background-color: #2979FF !important;
-     color: white !important;
-   }
+    &__active {
+      background-color: #2979FF !important;
+      color: white !important;
+    }
 
-  &:after {
-     content: '';
-     width: 1px;
-     height: 100%;
-   }
+    &:after {
+      content: '';
+      width: 1px;
+      height: 100%;
+    }
   }
 </style>

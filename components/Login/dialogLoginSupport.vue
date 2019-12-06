@@ -9,7 +9,7 @@
         <p area="ip" class="support-item"><b>IP: </b>{{this.ip}}</p>
 
         <div area="keyboard_input" class="text-field-section" style="position: relative;height: 70px;">
-          <g-text-field clear-icon="cancel" clearable outlined style="color: #1d1d26; width: 85%" v-model="supportMessage"></g-text-field>
+          <g-text-field clear-icon="cancel" clearable outlined style="color: #1d1d26; width: 85%; margin-right: 10px;" v-model="supportMessage"></g-text-field>
           <g-btn :uppercase="false" background-color="blue" class="send-btn" elevation="0" style="height: calc(100% + 1px)" text-color="white" width="15%">SEND</g-btn>
         </div>
 

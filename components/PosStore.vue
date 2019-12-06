@@ -122,7 +122,7 @@
       }
     },
     methods: {
-      //<!--<editor-fold desc="Login screen">-->
+      //login screen
       login() {
         try {
           this.user = _.find(cms.getList('PosSetting')[0].user, user => user.passcode === this.loginPassword)
@@ -138,9 +138,7 @@
           this.incorrectPasscode = false
         }
       },
-      //<!--</editor-fold>-->
-
-      //<!--<editor-fold desc="Order screen">-->
+      //order screen
       getAllCategories() {
         return cms.getList('Category')
       },
@@ -319,9 +317,7 @@
         })
         return resultArr
       },
-      //<!--</editor-fold>-->
-
-      //<!--<editor-fold desc="Order history screen">-->
+      //order history
       updateOrderHistoryFilter(filter) {
         const index = this.orderHistoryFilters.findIndex(f => f.title === filter.title);
         if(index > -1)
@@ -409,9 +405,8 @@
         await this.getTotalProducts();
         this.selectedProduct = [];
       },
-      //<!--</editor-fold>-->
 
-      //<!--<editor-fold desc="Article screen">-->
+      //article screen
       selectArticle(item) {
         if(this.articleSelectedProductButton && item._id === this.articleSelectedProductButton._id) {
           this.articleSelectedProductButton = null;
@@ -421,7 +416,36 @@
         this.articleSelectedProductButton = item;
         this.articleSelectedColor = this.articleSelectedProductButton.layouts[0].color;
       },
+      isIncreasingSequence(numArr) {
+        for (let num = 0; num < numArr.length - 1; num++) {
+          if (!(numArr[num] < numArr[num + 1]) || !(numArr[num + 1] - numArr[num] === 1)) {
+            return num + 1;
+          }
+        }
 
+        return null;
+      },
+      async updateArticleOrders() {
+        let sortedOrderArticles = _.forEach(this.activeCategoryProducts, function (article, index) {
+          if (article.layouts[0].order !== index + 1) {
+            return article.layouts[0].order = index + 1;
+          }
+          return article.layouts[0].order;
+        });
+
+        const productModel = cms.getModel('Product');
+        for (let item of sortedOrderArticles) {
+          await productModel.findOneAndUpdate({ 'layouts._id': item.layouts[0]._id }, {
+            '$set': {
+              'layouts.$.order': item.layouts[0].order
+            }
+          }, function (err) {
+            if (err) {
+              console.log(err);
+            }
+          });
+        }
+      },
       async setSelectedArticleColor() {
         if (!this.articleSelectedColor || !this.articleSelectedProductButton) {
           return
@@ -433,17 +457,20 @@
         //Update current product
         let foundItem = this.activeCategoryProducts.find((item) => item._id === this.articleSelectedProductButton._id);
         if (foundItem) {
-          foundItem.layouts[0].color = this.articleSelectedColor;
+          let updateColorResult = await productModel.findOneAndUpdate({ 'layouts._id': layoutID }, {
+            '$set': {
+              'layouts.$.color': this.articleSelectedColor
+            }
+          }, function (err, model) {
+            if (err) {
+              console.log(err);
+            }
+          });
+
+          if (updateColorResult) {
+            foundItem.layouts[0].color = this.articleSelectedColor;
+          }
         }
-        await productModel.findOneAndUpdate({ 'layouts._id': layoutID }, {
-          '$set': {
-            'layouts.$.color': this.articleSelectedColor
-          }
-        }, function (err, model) {
-          if (err) {
-            console.log(err);
-          }
-        });
       },
       async switchProductOrder(direction) {
         if (!this.articleSelectedProductButton || !direction) {
@@ -451,20 +478,31 @@
         }
 
         let dir = direction === 'right' ? 1 : -1;
+
         let foundItem = this.activeCategoryProducts.find((item) => item._id === this.articleSelectedProductButton._id);
         if (foundItem) {
           let foundNextItem = this.activeCategoryProducts.find((item) => item.layouts[0].order === this.articleSelectedProductButton.layouts[0].order + dir);
           if (foundNextItem) {
             //Update order on current product list
-            let temp = foundNextItem.layouts[0].order;
-            foundNextItem.layouts[0].order = foundItem.layouts[0].order;
-            foundItem.layouts[0].order = temp;
+            let tempNextItemOrder = foundNextItem.layouts[0].order;
+            let tempCurrItemOrder = foundItem.layouts[0].order;
+
             //Update db order
             const productModel = cms.getModel('Product')
             const nextProductLayoutID = foundNextItem.layouts[0]._id;
             const currentProductLayoutID = foundItem.layouts[0]._id;
 
-            await productModel.findOneAndUpdate({ 'layouts._id': currentProductLayoutID }, {
+            let currentItemResult = await productModel.findOneAndUpdate({ 'layouts._id': currentProductLayoutID }, {
+              '$set': {
+                'layouts.$.order': foundNextItem.layouts[0].order
+              }
+            }, function (err) {
+              if (err) {
+                console.log(err);
+              }
+            });
+
+            let nextItemResult = await productModel.findOneAndUpdate({ 'layouts._id': nextProductLayoutID }, {
               '$set': {
                 'layouts.$.order': foundItem.layouts[0].order
               }
@@ -474,20 +512,17 @@
               }
             });
 
-            await productModel.findOneAndUpdate({ 'layouts._id': nextProductLayoutID }, {
-              '$set': {
-                'layouts.$.order': foundNextItem.layouts[0].order
-              }
-            }, function (err) {
-              if (err) {
-                console.log(err);
-              }
-            });
+            if (nextItemResult && currentItemResult) {
+              foundNextItem.layouts[0].order = tempCurrItemOrder;
+              foundItem.layouts[0].order = tempNextItemOrder;
+            }
+
             this.activeCategoryProducts = this.activeCategoryProducts.sort((current, next) => this.getProductGridOrder(current) - this.getProductGridOrder(next))
           }
         }
       },
-      //<!--</editor-fold>-->
+    },
+    mounted() {
     },
     created() {
       this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
@@ -566,7 +601,8 @@
         articleSelectedProductButton: this.articleSelectedProductButton,
         setSelectedArticleColor: this.setSelectedArticleColor,
         articleSelectedColor: this.articleSelectedColor,
-        switchProductOrder: this.switchProductOrder
+        switchProductOrder: this.switchProductOrder,
+        updateArticleOrders: this.updateArticleOrders,
       }
     }
   }
