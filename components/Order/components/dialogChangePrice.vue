@@ -15,11 +15,12 @@
         <g-radio-group name="basic" v-model="changeType">
           <g-radio color="#1271ff" value="percentage" label="Discount by %"></g-radio>
           <div class="row-flex col-10 m-auto">
-            <g-btn :uppercase="false" outlined :disabled="disabledPercent" @click="newPercent = 5">- 5%</g-btn>
-            <g-btn :uppercase="false" outlined :disabled="disabledPercent" @click="newPercent = 10">- 10%</g-btn>
-            <g-btn :uppercase="false" outlined :disabled="disabledPercent" @click="newPercent = 15">- 15%</g-btn>
-            <g-btn :uppercase="false" outlined :disabled="disabledPercent" @click="newPercent = 20">- 20%</g-btn>
+            <g-btn :uppercase="false" outlined :class="[disabledPercent && 'disabled']" :disabled="disabledPercent" @click="newPercent = 5">- 5%</g-btn>
+            <g-btn :uppercase="false" outlined :class="[disabledPercent && 'disabled']" :disabled="disabledPercent" @click="newPercent = 10">- 10%</g-btn>
+            <g-btn :uppercase="false" outlined :class="[disabledPercent && 'disabled']" :disabled="disabledPercent" @click="newPercent = 15">- 15%</g-btn>
+            <g-btn :uppercase="false" outlined :class="[disabledPercent && 'disabled']" :disabled="disabledPercent" @click="newPercent = 20">- 20%</g-btn>
             <g-text-field dense outlined
+                          :class="[disabledPercent && 'disabled']"
                           :disabled="disabledPercent"
                           v-model.number="newPercent"
                           style="flex-grow: 1"
@@ -31,15 +32,15 @@
           </div>
           <g-radio color="#1271ff" value="amount" label="Discount by €"></g-radio>
           <div class="row-flex col-10 m-auto">
-            <g-btn :uppercase="false" outlined :disabled="disabledAmount || activeProduct.originalPrice - 5 < 0" @click="newAmount = 5">- € 5</g-btn>
-            <g-btn :uppercase="false" outlined :disabled="disabledAmount || activeProduct.originalPrice - 10 < 0" @click="newAmount = 10">- € 10</g-btn>
-            <g-btn :uppercase="false" outlined :disabled="disabledAmount || activeProduct.originalPrice - 15 < 0" @click="newAmount = 15">- € 15</g-btn>
-            <g-btn :uppercase="false" outlined :disabled="disabledAmount || activeProduct.originalPrice - 20 < 0" @click="newAmount = 20">- € 20</g-btn>
-            <g-text-field dense outlined :disabled="disabledAmount" v-model.number="newAmount" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false"></g-text-field>
+            <g-btn :uppercase="false" outlined :class="[disabledAmount && 'disabled']"  :disabled="disabledAmount || activeProduct.originalPrice - 5 < 0" @click="newAmount = 5">- € 5</g-btn>
+            <g-btn :uppercase="false" outlined :class="[disabledAmount && 'disabled']"  :disabled="disabledAmount || activeProduct.originalPrice - 10 < 0" @click="newAmount = 10">- € 10</g-btn>
+            <g-btn :uppercase="false" outlined :class="[disabledAmount && 'disabled']"  :disabled="disabledAmount || activeProduct.originalPrice - 15 < 0" @click="newAmount = 15">- € 15</g-btn>
+            <g-btn :uppercase="false" outlined :class="[disabledAmount && 'disabled']"  :disabled="disabledAmount || activeProduct.originalPrice - 20 < 0" @click="newAmount = 20">- € 20</g-btn>
+            <g-text-field dense outlined :class="[disabledAmount && 'disabled']"  :disabled="disabledAmount" v-model.number="newAmount" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false"></g-text-field>
           </div>
           <g-radio color="#1271ff" value="new" label="New Price"></g-radio>
           <div class="m-auto col-10">
-            <g-text-field type="number" dense outlined placeholder="New Price" v-model.number="newPrice" @focus="showKeyboard = true" @blur="showKeyboard = false" :disabled="disabledNew"></g-text-field>
+            <g-text-field type="number" dense outlined placeholder="New Price" v-model.number="newPrice" @focus="showKeyboard = true" @blur="showKeyboard = false" :class="[disabledNew && 'disabled']"  :disabled="disabledNew"></g-text-field>
           </div>
         </g-radio-group>
         <div class="action">
@@ -182,8 +183,9 @@
       .g-tf-wrapper {
         margin: 0;
 
-        &.g-tf-wrapper fieldset {
+        fieldset {
           border-radius: 2px;
+          border-color: #979797;
         }
 
         &.g-tf-wrapper__disabled fieldset {
@@ -202,6 +204,7 @@
 
       div:not(.action) .g-btn {
         height: 42px !important;
+        border-color: #979797;
       }
 
       .g-btn:not(:last-child) {
@@ -234,6 +237,22 @@
           &.g-btn__outlined {
             border: 1px solid #979797;
             color: #1d1d26;
+          }
+        }
+      }
+
+      .disabled {
+        background-color: #f0f0f0;
+        color: #c9c9c9;
+        opacity: 1 !important;
+
+        &.g-btn {
+          border: 1px solid #c9c9c9 !important;
+        }
+
+        &.g-tf-wrapper {
+          fieldset {
+            border: 1px solid rgba(0, 0, 0, 0.4);
           }
         }
       }
