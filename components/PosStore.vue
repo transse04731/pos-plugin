@@ -72,6 +72,8 @@
         listPayments: [],
         isEditPayment: false,
         selectedPayment: null,
+        //general setting
+        generalSetting: null,
         //order history screen variables
         orderHistoryOrders: [],
         orderHistoryFilters: [],
@@ -421,16 +423,14 @@
 
       //payment view
       async getListPayments() {
-        const setting = await cms.getModel('PosSetting').find({ payment: { $exists: true } });
-        this.listPayments = setting[0].payment;
+        const setting = await cms.getModel('PosSetting').findOne({});
+        this.listPayments = setting.payment;
       },
       async updatePayment(oldPayment, newPayment) {
         const settingModel = cms.getModel('PosSetting');
         if (oldPayment && !newPayment) {
           await settingModel.findOneAndUpdate(
-            {
-              payment: { $exists: true }
-            },
+            {},
             {
               $pull: {
                 payment: { _id: oldPayment._id, name: oldPayment.name }
@@ -439,9 +439,7 @@
           )
         } else if (newPayment && !oldPayment) {
           await settingModel.findOneAndUpdate(
-            {
-              payment: { $exists: true }
-            },
+            {},
             {
               $push: {
                 payment: { name: newPayment.name, icon: newPayment.icon }
@@ -463,7 +461,20 @@
         }
         await this.getListPayments();
       },
-
+      //general setting screen
+      async getGeneralSetting() {
+        const setting = await cms.getModel('PosSetting').findOne({generalSetting: {$exists: true}});
+        this.generalSetting = setting.generalSetting;
+      },
+      async updateSetting() {
+        const settingModel = cms.getModel('PosSetting');
+        await settingModel.findOneAndUpdate(
+            {},
+            {
+              generalSetting: this.generalSetting
+            }
+        )
+      },
       //<!--<editor-fold desc="Article screen">-->
       selectArticle(item) {
         if (this.articleSelectedProductButton && item._id === this.articleSelectedProductButton._id) {
@@ -649,6 +660,10 @@
         getListPayments: this.getListPayments,
         selectedPayment: this.selectedPayment,
         updatePayment: this.updatePayment,
+        //general setting view
+        generalSetting: this.generalSetting,
+        getGeneralSetting: this.getGeneralSetting,
+        updateSetting: this.updateSetting,
         //order history screen
         orderHistoryOrders: this.orderHistoryOrders,
         orderHistoryFilters: this.orderHistoryFilters,
