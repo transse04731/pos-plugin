@@ -18,7 +18,7 @@
     methods: {
       back() {
         this.$router.push({ path: '/view/test-pos-dashboard' })
-      }
+      },
     }
   }
 </script>

@@ -74,6 +74,8 @@
         selectedPayment: null,
         //general setting
         generalSetting: null,
+        //company info view
+        companyInfo: null,
         //order history screen variables
         orderHistoryOrders: [],
         orderHistoryFilters: [],
@@ -475,6 +477,19 @@
             }
         )
       },
+      //company info view
+      async getCompanyInfo() {
+        const setting = await cms.getModel('PosSetting').findOne();
+        this.companyInfo = setting.companyInfo;
+      },
+      async updateCompanyInfo() {
+        await cms.getModel('PosSetting').findOneAndUpdate(
+            {},
+            {
+              companyInfo: this.companyInfo
+            }
+        );
+      },
       //<!--<editor-fold desc="Article screen">-->
       selectArticle(item) {
         if (this.articleSelectedProductButton && item._id === this.articleSelectedProductButton._id) {
@@ -664,6 +679,10 @@
         generalSetting: this.generalSetting,
         getGeneralSetting: this.getGeneralSetting,
         updateSetting: this.updateSetting,
+        //company info view
+        companyInfo: this.companyInfo,
+        getCompanyInfo: this.getCompanyInfo,
+        updateCompanyInfo: this.updateCompanyInfo,
         //order history screen
         orderHistoryOrders: this.orderHistoryOrders,
         orderHistoryFilters: this.orderHistoryFilters,

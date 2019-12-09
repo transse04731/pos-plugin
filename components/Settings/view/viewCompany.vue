@@ -1,54 +1,174 @@
 <template>
-	<div class="main">
-		<div class="main__item">
-			<pos-text-field label="Company Name">
-				<template v-slot:append>
-					<g-icon svg>icon-keyboard</g-icon>
-				</template>
-			</pos-text-field>
-		</div>
-		<div class="main__item">
-			<pos-text-field label="Address">
-				<template v-slot:append>
-					<g-icon svg>icon-keyboard</g-icon>
-				</template>
-			</pos-text-field>
-		</div>
-		<div class="main__item">
-			<pos-text-field label="Telephone">
-				<template v-slot:append>
-					<g-icon svg>icon-keyboard</g-icon>
-				</template>
-			</pos-text-field>
-		</div>
-		<div class="main__item">
-			<pos-text-field label="Tax Number">
-				<template v-slot:append>
-					<g-icon svg>icon-keyboard</g-icon>
-				</template>
-			</pos-text-field>
-		</div>
-		<div class="main__item">
-			<p class="ml-2">Logo</p>
-			<g-file-input outlined filled dense prependInnerIcon="icon-upload" svg-icon></g-file-input>
-		</div>
-		<div>
-			<p class="ml-2">Logo size</p>
-			<div class="logo">
-				<div v-for="i in 6" class="item">
-					{{i}}
+	<fragment>
+		<div class="main">
+			<div class="main__item">
+				<pos-text-field label="Company Name" v-model="name" @click="dialogCompanyName = true">
+					<template v-slot:append>
+						<g-icon svg>icon-keyboard</g-icon>
+					</template>
+				</pos-text-field>
+			</div>
+			<div class="main__item">
+				<pos-text-field label="Address" v-model="address" @click="dialogCompanyAddress = true">
+					<template v-slot:append>
+						<g-icon svg>icon-keyboard</g-icon>
+					</template>
+				</pos-text-field>
+			</div>
+			<div class="main__item">
+				<pos-text-field label="Telephone" v-model="telephone" @click="dialogCompanyTelephone = true">
+					<template v-slot:append>
+						<g-icon svg>icon-keyboard</g-icon>
+					</template>
+				</pos-text-field>
+			</div>
+			<div class="main__item">
+				<pos-text-field label="Tax Number" v-model="taxNumber" @click="dialogCompanyTaxNumber = true">
+					<template v-slot:append>
+						<g-icon svg>icon-keyboard</g-icon>
+					</template>
+				</pos-text-field>
+			</div>
+			<div class="main__item">
+				<p class="item-label">Logo</p>
+				<g-file-input outlined filled dense prependInnerIcon="icon-upload" svg-icon v-model="file" @change="convertImg"></g-file-input>
+			</div>
+			<div class="main__item">
+				<p class="item-label">Logo size</p>
+				<div class="logo">
+					<div v-for="i in 6" :key="i" :class="['item', logoSize === i && 'item__selected']" @click="logoSize = i">
+						{{i}}
+					</div>
+				</div>
+			</div>
+			<div class="main__item item__big">
+				<p class="item-label">Logo Preview</p>
+				<div class="preview-wrapper">
+					<img alt :style="imgStyle" :src="logo">
 				</div>
 			</div>
 		</div>
-	</div>
+		<dialog-text-filter label="Company Name" v-model="dialogCompanyName" @submit="changeName($event)"/>
+		<dialog-text-filter label="Address" v-model="dialogCompanyAddress" @submit="changeAddress($event)"/>
+		<dialog-text-filter label="Telephone" v-model="dialogCompanyTelephone" @submit="changeTelephone($event)"/>
+		<dialog-text-filter label="Tax Number" v-model="dialogCompanyTaxNumber" @submit="changeTaxNumber($event)"/>
+	</fragment>
 </template>
 
 <script>
   import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
+	import { convertToUnit } from 'pos-vue-framework/src/utils/helpers';
+	import DialogTextFilter from '../../pos-shared-components/dialogFilter/dialogTextFilter';
 
   export default {
     name: 'viewCompany',
-    components: { PosTextField },
+    components: { DialogTextFilter, PosTextField },
+		injectService: [
+			'PosStore:companyInfo',
+			'PosStore:getCompanyInfo'
+		],
+		data() {
+    	return {
+    		file: null,
+				dialogCompanyName: false,
+				dialogCompanyAddress: false,
+				dialogCompanyTelephone: false,
+				dialogCompanyTaxNumber: false,
+			}
+		},
+		computed: {
+			name: {
+				get() {
+					if(this.companyInfo)
+						return this.companyInfo.name;
+				},
+				set(val) {
+					this.companyInfo.name = val;
+				}
+			},
+			address: {
+				get() {
+					if(this.companyInfo)
+						return this.companyInfo.address;
+				},
+				set(val) {
+					this.companyInfo.address = val;
+				}
+			},
+			telephone: {
+				get() {
+					if(this.companyInfo)
+						return this.companyInfo.telephone;
+				},
+				set(val) {
+					this.companyInfo.telephone = val;
+				}
+			},
+			taxNumber: {
+				get() {
+					if(this.companyInfo)
+						return this.companyInfo.taxNumber;
+				},
+				set(val) {
+					this.companyInfo.taxNumber = val;
+				}
+			},
+			logo: {
+				get() {
+					if(this.companyInfo)
+						return this.companyInfo.logo;
+				},
+				set(val) {
+					this.companyInfo.logo = val;
+				}
+			},
+			logoSize: {
+				get() {
+					if(this.companyInfo)
+						return this.companyInfo.logoSize;
+				},
+				set(val) {
+					this.companyInfo.logoSize = val;
+				}
+			},
+			imgStyle() {
+				const base = 20;
+				return {
+					width: convertToUnit(base * this.logoSize),
+					height: convertToUnit(base * this.logoSize),
+				}
+			}
+		},
+		async created() {
+			await this.getCompanyInfo();
+		},
+		methods: {
+    	convertImg() {
+    		const reader = new FileReader();
+    		reader.onload = () => {
+    			this.logo = reader.result
+				}
+				if(this.file) {
+					reader.readAsDataURL(this.file);
+				}
+			},
+			async changeName(name) {
+    		this.name = name;
+				await this.updateCompanyInfo();
+			},
+			async changeAddress(address) {
+    		this.address = address;
+				await this.updateCompanyInfo();
+			},
+			async changeTelephone(telephone) {
+    		this.telephone = telephone;
+				await this.updateCompanyInfo();
+			},
+			async changeTaxNumber(taxNumber) {
+    		this.taxNumber = taxNumber;
+				await this.updateCompanyInfo();
+			},
+		}
   }
 </script>
 
@@ -58,13 +178,22 @@
 		grid-template-rows: 1fr 1fr 1fr 1fr;
 		grid-auto-columns: 1fr 1fr;
 		grid-auto-flow: column;
-		grid-gap: 24px;
-		padding: 32px;
-		height: 44%;
+		grid-gap: 12px 24px;
+		padding: 32px 52px;
+	}
+
+	.bs-tf-wrapper ::v-deep {
+		.bs-tf-inner-input-group {
+			border-radius: 2px;
+
+			.bs-tf-input {
+				padding: 8px;
+			}
+		}
 	}
 
 	.g-tf-wrapper {
-		margin: 8px 0 0 0;
+		margin: 8px 0 0 4px;
 
 		::v-deep .g-tf .g-tf-input {
 			padding: 4px 6px;
@@ -76,6 +205,14 @@
 	}
 
 	.g-file-input {
+		&.g-tf-wrapper.g-tf__filled.g-tf__outlined ::v-deep .g-file-input--text {
+			padding: 12px 8px 4px;
+		}
+
+		::v-deep .g-tf-prepend__outer {
+			display: none;
+		}
+
 		::v-deep .g-tf-prepend__inner {
 			padding: 0;
 			margin: 0 0 0 16px;
@@ -99,11 +236,35 @@
 
 	.main__item {
 		padding-right: 32px;
+
+		.item-label {
+			font-size: 13px;
+			line-height: 16px;
+			margin-left: 4px;
+			margin-top: 8px;
+		}
+
+		&.item__big {
+			grid-row: span 2;
+			display: flex;
+			flex-direction: column;
+
+			.preview-wrapper {
+				margin: 8px 4px 4px;
+				flex: 1;
+				display: flex;
+				border: 1px solid #ced4da;
+				border-radius: 2px;
+				align-items: center;
+				justify-content: center;
+				background-color: #f0f0f0;
+			}
+		}
 	}
 
 	.logo {
 		display: flex;
-		margin-left: 8px;
+		margin-left: 4px;
 
 		.item {
 			background: #F0F0F0;
@@ -114,6 +275,12 @@
 			margin: 8px 8px 0 0;
 			font-size: 13px;
 			line-height: 16px;
+
+			&.item__selected {
+				border-color: #1471ff;
+				border-width: 2px;
+			}
 		}
+
 	}
 </style>
