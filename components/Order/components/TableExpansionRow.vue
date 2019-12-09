@@ -1,6 +1,6 @@
 <template>
   <fragment>
-    <tr v-for="item in formattedProducts"
+    <tr v-for="(item, index) in formattedProducts" :key="index"
         :class="{'g-expansion': true, 'g-expansion__active': isActive(item)}">
       <td>
         <div :class="{'g-expansion-header': true, 'g-expansion-header__active': isActive(item)}"
