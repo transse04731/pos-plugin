@@ -1,14 +1,16 @@
 <template>
-  <div class="wrapper">
-    <span>Rows per page:</span>
-    <g-select :items="computedRowsPerPageItems"
-              v-model="selectLimit"
-              @input="changeLimitRow($event)"
-    />
-    <div style="margin: 0 16px">
+  <div class="g-pagination-wrapper">
+    <div class="g-pagination-text">Rows per page:</div>
+    <div class="g-pagination-input">
+      <g-select :items="computedRowsPerPageItems"
+                v-model="selectLimit"
+                @input="changeLimitRow($event)"
+      />
+    </div>
+    <div class="g-pagination-text">
       Page:
     </div>
-    <div align-start row class="combo-page" style="margin: 0 16px; width: 64px">
+    <div class="g-pagination-input">
       <g-combobox
           v-model="comboPage"
           :items="listPageNumber"
@@ -17,16 +19,16 @@
       ></g-combobox>
     </div>
     <div style="margin: 0 16px">Total: {{totalDocument}}</div>
-    <g-btn :uppercase="false" icon flat :disabled="disablePre" @click="gotoFirstPage">
+    <g-btn :uppercase="false" flat :disabled="disablePre" @click="gotoFirstPage">
       <g-icon>first_page</g-icon>
     </g-btn>
-    <g-btn :uppercase="false" icon flat :disabled="disablePre" @click="prevPage">
+    <g-btn :uppercase="false" flat :disabled="disablePre" @click="prevPage">
       <g-icon>chevron_left</g-icon>
     </g-btn>
-    <g-btn :uppercase="false" icon flat :disabled="disableNext" @click="nextPage">
+    <g-btn :uppercase="false" flat :disabled="disableNext" @click="nextPage">
       <g-icon>chevron_right</g-icon>
     </g-btn>
-    <g-btn :uppercase="false" icon flat :disabled="disableNext" @click="gotoLastPage">
+    <g-btn :uppercase="false" flat :disabled="disableNext" @click="gotoLastPage">
       <g-icon>last_page</g-icon>
     </g-btn>
   </div>
@@ -93,7 +95,7 @@
       listPageNumber() {
         let i = 0;
         let list = [];
-        while (i < (this.totalPage > 50 ? 50 : this.totalPage)) {
+        while (i < this.totalPage) {
           i++;
           list.push(i);
         }
@@ -126,14 +128,63 @@
 </script>
 
 <style scoped lang="scss">
-  .wrapper {
+  .g-pagination-wrapper {
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    background-color: #e0e0e0;
+    font-size: 13px;
+    font-weight: 400;
 
-    .g-select ::v-deep .g-tf-wrapper {
-      margin: 16px;
-      width: 64px;
+    .g-pagination-input {
+      width: 56px;
+      border: 1px solid #979797;
+      border-radius: 2px;
+      padding: 0 4px;
+      background: #fff;
+
+      ::v-deep .g-tf-wrapper {
+        margin: 4px 0 !important;
+
+        .g-tf::before ,
+        .g-tf::after {
+          display: none;
+        }
+
+        .g-tf-input {
+          font-size: 13px;
+        }
+      }
+    }
+
+    .g-pagination-text {
+      margin-left: 16px;
+      margin-right: 8px;
+    }
+
+    .g-btn {
+      width: 40px !important;
+      height: 40px !important;
+      min-width: 40px !important;
+      background-color: #fff;
+      border-top: 1px solid #979797;
+      border-bottom: 1px solid #979797;
+      border-left: 1px solid #979797;
+      border-radius: 0;
+      padding: 0 !important;
+      margin: 12px 0;
+
+      &:first-child {
+        border-top-left-radius: 2px;
+        border-bottom-left-radius: 2px;
+      }
+
+      &:last-child {
+        border-top-right-radius: 2px;
+        border-bottom-right-radius: 2px;
+        border-right: 1px solid #979797;
+        margin-right: 16px;
+      }
     }
   }
 </style>
