@@ -68,12 +68,16 @@
         selectedProduct: [],
         totalProducts: null,
         productPagination: { limit: 10, currentPage: 1 },
+        //payment view
+        listPayments: [],
+        isEditPayment: false,
+        selectedPayment: null,
         //order history screen variables
         orderHistoryOrders: [],
         orderHistoryFilters: [],
         orderHistoryCurrentOrder: null,
-				totalOrders: null,
-				orderHistoryPagination: { limit: 10, currentPage: 1 },
+        totalOrders: null,
+        orderHistoryPagination: { limit: 10, currentPage: 1 },
         //article screen
         articleSelectedColor: null,
         articleSelectedProductButton: null,
@@ -122,7 +126,7 @@
       }
     },
     methods: {
-      //login screen
+      //<!--<editor-fold desc="Login screen">-->
       login() {
         try {
           this.user = _.find(cms.getList('PosSetting')[0].user, user => user.passcode === this.loginPassword)
@@ -130,7 +134,9 @@
             this.loginPassword = ''
             return this.$router.push({ path: `/view/test-pos-dashboard` })
           }
-        } catch { }
+        } catch(e) {
+          console.err(e)
+        }
         this.incorrectPasscode = true
       },
       resetIncorrectPasscodeFlag() {
@@ -138,7 +144,9 @@
           this.incorrectPasscode = false
         }
       },
-      //order screen
+      //<!--</editor-fold>-->
+
+      //<!--<editor-fold desc="Order screen">-->
       getAllCategories() {
         return cms.getList('Category')
       },
@@ -148,8 +156,8 @@
       },
       getProductGridOrder(product) {
         const layout = product.layouts.find(layout => this.activeCategory._id === 'Favourite'
-          ? layout.favourite
-          : !layout.favourite
+            ? layout.favourite
+            : !layout.favourite
         );
         return layout ? layout.order : 0
       },
@@ -307,7 +315,7 @@
         let resultArr = [];
         products.forEach(product => {
           const existingProduct = resultArr.find(r =>
-            _.isEqual(_.omit(r, 'quantity'), _.omit(product, 'quantity'))
+              _.isEqual(_.omit(r, 'quantity'), _.omit(product, 'quantity'))
           );
           if (existingProduct) {
             existingProduct.quantity = existingProduct.quantity + product.quantity
@@ -317,17 +325,20 @@
         })
         return resultArr
       },
-      //order history
+      //<!--</editor-fold>-->
+
+      //<!--<editor-fold desc="Order history screen">-->
       updateOrderHistoryFilter(filter) {
         const index = this.orderHistoryFilters.findIndex(f => f.title === filter.title);
-        if(index > -1)
+        if (index > -1) {
           this.orderHistoryFilters.splice(index, 1, filter);
-        else
+        } else {
           this.orderHistoryFilters.unshift(filter);
+        }
       },
       async getOrderHistory() {
         const orderModel = cms.getModel('Order');
-        const condition = this.orderHistoryFilters.reduce((acc, filter) => ({...acc, ...filter['condition']}), { status: 'paid' });
+        const condition = this.orderHistoryFilters.reduce((acc, filter) => ({ ...acc, ...filter['condition'] }), { status: 'paid' });
         const { limit, currentPage } = this.orderHistoryPagination;
         const orders = await orderModel.find(condition).skip(limit * (currentPage - 1)).limit(limit);
         this.orderHistoryOrders = orders.map(order => ({
@@ -342,11 +353,11 @@
         }));
         this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
       },
-			async getTotalOrders() {
-				const orderModel = cms.getModel('Order');
-				const condition = this.orderHistoryFilters.reduce((acc, filter) => ({...acc, ...filter['condition']}), {status: 'paid'});
-				this.totalOrders = await orderModel.countDocuments(condition);
-			},
+      async getTotalOrders() {
+        const orderModel = cms.getModel('Order');
+        const condition = this.orderHistoryFilters.reduce((acc, filter) => ({ ...acc, ...filter['condition'] }), { status: 'paid' });
+        this.totalOrders = await orderModel.countDocuments(condition);
+      },
       async deleteOrder() {
         const orderModel = cms.getModel('Order');
         await orderModel.deleteOne({ '_id': this.orderHistoryCurrentOrder._id });
@@ -369,19 +380,20 @@
         this.listCategories = await categoryModel.find();
       },
       //article view
-      updateProductFilters (filter) {
+      updateProductFilters(filter) {
         const index = this.productFilters.findIndex(f => f.title === filter.title);
-        if(index > -1)
+        if (index > -1) {
           this.productFilters.splice(index, 1, filter);
-        else
+        } else {
           this.productFilters.unshift(filter);
+        }
       },
       async getListProducts() {
         const productModel = cms.getModel('Product');
-        const condition = this.productFilters.reduce((acc, filter) => ({...acc, ...filter['condition']}), {});
-        const {limit, currentPage} = this.productPagination;
+        const condition = this.productFilters.reduce((acc, filter) => ({ ...acc, ...filter['condition'] }), {});
+        const { limit, currentPage } = this.productPagination;
         const products = await productModel.find(condition).skip(limit * (currentPage - 1)).limit(limit);
-        this.listProducts =  products.map(p => ({
+        this.listProducts = products.map(p => ({
           _id: p._id,
           id: p.id,
           name: p.name,
@@ -393,22 +405,68 @@
       },
       async getTotalProducts() {
         const productModel = cms.getModel('Product');
-        const condition = this.productFilters.reduce((acc, filter) => ({...acc, ...filter['condition']}), {});
+        const condition = this.productFilters.reduce((acc, filter) => ({ ...acc, ...filter['condition'] }), {});
         this.totalProducts = await productModel.countDocuments(condition);
       },
       async deleteSelectedProducts() {
         const productModel = cms.getModel('Product');
-        if(this.selectedProduct && this.selectedProduct.length > 0) {
-          await productModel.deleteMany({'_id': {"$in": this.selectedProduct}});
+        if (this.selectedProduct && this.selectedProduct.length > 0) {
+          await productModel.deleteMany({ '_id': { '$in': this.selectedProduct } });
         }
         await this.getListProducts();
         await this.getTotalProducts();
         this.selectedProduct = [];
       },
+      //<!--</editor-fold>-->
 
-      //article screen
+      //payment view
+      async getListPayments() {
+        const setting = await cms.getModel('PosSetting').find({ payment: { $exists: true } });
+        this.listPayments = setting[0].payment;
+      },
+      async updatePayment(oldPayment, newPayment) {
+        const settingModel = cms.getModel('PosSetting');
+        if (oldPayment && !newPayment) {
+          await settingModel.findOneAndUpdate(
+            {
+              payment: { $exists: true }
+            },
+            {
+              $pull: {
+                payment: { _id: oldPayment._id, name: oldPayment.name }
+              }
+            }
+          )
+        } else if (newPayment && !oldPayment) {
+          await settingModel.findOneAndUpdate(
+            {
+              payment: { $exists: true }
+            },
+            {
+              $push: {
+                payment: { name: newPayment.name, icon: newPayment.icon }
+              }
+            }
+          )
+        } else {
+          await settingModel.findOneAndUpdate(
+            {
+              "payment._id": oldPayment._id
+            },
+            {
+              $set: {
+                "payment.$.name": newPayment.name,
+                "payment.$.icon": newPayment.icon
+              }
+            }
+          )
+        }
+        await this.getListPayments();
+      },
+
+      //<!--<editor-fold desc="Article screen">-->
       selectArticle(item) {
-        if(this.articleSelectedProductButton && item._id === this.articleSelectedProductButton._id) {
+        if (this.articleSelectedProductButton && item._id === this.articleSelectedProductButton._id) {
           this.articleSelectedProductButton = null;
           this.articleSelectedColor = null;
           return;
@@ -521,11 +579,11 @@
           }
         }
       },
-    },
-    mounted() {
+      //<!--</editor-fold>-->
     },
     created() {
       this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
+      this.user = cms.getList('PosSetting')[0].user[0]
     },
     provide() {
       return {
@@ -586,6 +644,11 @@
         deleteSelectedProducts: this.deleteSelectedProducts,
         totalProducts: this.totalProducts,
         getTotalProducts: this.getTotalProducts,
+        //payment view
+        listPayments: this.listPayments,
+        getListPayments: this.getListPayments,
+        selectedPayment: this.selectedPayment,
+        updatePayment: this.updatePayment,
         //order history screen
         orderHistoryOrders: this.orderHistoryOrders,
         orderHistoryFilters: this.orderHistoryFilters,
@@ -593,9 +656,9 @@
         deleteOrder: this.deleteOrder,
         getOrderHistory: this.getOrderHistory,
         updateOrderHistoryFilter: this.updateOrderHistoryFilter,
-				totalOrders: this.totalOrders,
-				orderHistoryPagination: this.orderHistoryPagination,
-				getTotalOrders: this.getTotalOrders,
+        totalOrders: this.totalOrders,
+        orderHistoryPagination: this.orderHistoryPagination,
+        getTotalOrders: this.getTotalOrders,
         //article screen
         selectArticle: this.selectArticle,
         articleSelectedProductButton: this.articleSelectedProductButton,

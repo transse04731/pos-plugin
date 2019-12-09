@@ -4,12 +4,12 @@
       <div class="dialog-change-content">
         <div class="header">
           <div class="header-side">
-            <p>Original Price</p>
-            <g-text-field read-only outlined :value="`€ ${activeProduct && activeProduct.originalPrice}`"/>
+            <p style="padding-bottom: 9px">Original Price</p>
+            <g-text-field read-only outlined :value="`€ ${activeProduct && activeProduct.originalPrice}`"></g-text-field>
           </div>
           <div class="header-side">
-            <p>Effective Price</p>
-            <g-text-field read-only outlined class="tf__effective" :value="`€ ${computedPrice}`"/>
+            <p style="padding-bottom: 9px">Effective Price</p>
+            <g-text-field read-only outlined class="tf__effective" :value="`€ ${computedPrice}`"></g-text-field>
           </div>
         </div>
         <g-radio-group name="basic" v-model="changeType">
@@ -19,14 +19,22 @@
             <g-btn :uppercase="false" outlined :disabled="disabledPercent" @click="newPercent = 10">- 10%</g-btn>
             <g-btn :uppercase="false" outlined :disabled="disabledPercent" @click="newPercent = 15">- 15%</g-btn>
             <g-btn :uppercase="false" outlined :disabled="disabledPercent" @click="newPercent = 20">- 20%</g-btn>
-            <g-text-field dense outlined :disabled="disabledPercent" v-model.number="newPercent" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false" :rules="[rulePercent.percent]"></g-text-field>
+            <g-text-field dense outlined
+                          :disabled="disabledPercent"
+                          v-model.number="newPercent"
+                          style="flex-grow: 1"
+                          placeholder="Other"
+                          :prefix="newPercent ? '-' : ''"
+                          :suffix="newPercent ? '%' : ''"
+                          @focus="showKeyboard = true" @blur="showKeyboard = false"
+                          :rules="[rulePercent.percent]"></g-text-field>
           </div>
           <g-radio color="#1271ff" value="amount" label="Discount by €"></g-radio>
           <div class="row-flex col-10 m-auto">
-            <g-btn :uppercase="false" outlined :disabled="disabledAmount" @click="newAmount = 5">- € 5</g-btn>
-            <g-btn :uppercase="false" outlined :disabled="disabledAmount" @click="newAmount = 10">- € 10</g-btn>
-            <g-btn :uppercase="false" outlined :disabled="disabledAmount" @click="newAmount = 15">- € 15</g-btn>
-            <g-btn :uppercase="false" outlined :disabled="disabledAmount" @click="newAmount = 20">- € 20</g-btn>
+            <g-btn :uppercase="false" outlined :disabled="disabledAmount || activeProduct.originalPrice - 5 < 0" @click="newAmount = 5">- € 5</g-btn>
+            <g-btn :uppercase="false" outlined :disabled="disabledAmount || activeProduct.originalPrice - 10 < 0" @click="newAmount = 10">- € 10</g-btn>
+            <g-btn :uppercase="false" outlined :disabled="disabledAmount || activeProduct.originalPrice - 15 < 0" @click="newAmount = 15">- € 15</g-btn>
+            <g-btn :uppercase="false" outlined :disabled="disabledAmount || activeProduct.originalPrice - 20 < 0" @click="newAmount = 20">- € 20</g-btn>
             <g-text-field dense outlined :disabled="disabledAmount" v-model.number="newAmount" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false"></g-text-field>
           </div>
           <g-radio color="#1271ff" value="new" label="New Price"></g-radio>
@@ -156,6 +164,8 @@
         }
 
         .g-tf-wrapper {
+          background-color: #F0F0F0;
+
           &.tf__effective input {
             color: #4CAF50;
             font-size: 24px;
@@ -172,6 +182,10 @@
       .g-tf-wrapper {
         margin: 0;
 
+        &.g-tf-wrapper fieldset {
+          border-radius: 2px;
+        }
+
         &.g-tf-wrapper__disabled fieldset {
           opacity: 0.42;
         }
@@ -187,7 +201,7 @@
       }
 
       div:not(.action) .g-btn {
-        height: 44px !important;
+        height: 42px !important;
       }
 
       .g-btn:not(:last-child) {
@@ -203,6 +217,7 @@
         }
 
         .g-radio-label {
+          margin-left: 0;
           font-size: 13px;
           line-height: 16px;
         }

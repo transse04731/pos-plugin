@@ -78,6 +78,7 @@
         this.computedName = '';
         this.selectedCategory = null;
         this.dialogNewCategory = false;
+				this.isParsedValue = false;
       },
     }
   }

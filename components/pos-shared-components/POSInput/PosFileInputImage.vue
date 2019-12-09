@@ -1,84 +1,93 @@
 <template>
-  <g-file-input label="Upload file" accept="image/*">
-    <template v-slot:selection="{file,index,amount}">
-      <img id="img" :src="getImageSrc(file)"/>
-    </template>
-  </g-file-input>
+  <div class="g-image-input__wrapper">
+    <input style="display: none" type="file" ref="fileInput" @change="changeImg"/>
+    <div class="g-image-input__label">{{label}}</div>
+    <div :class="['g-image-input', src ? 'no-bg' : 'default-bg']" @click="inputClick">
+      <g-icon v-if="src" class="g-image-input__icon" @click.stop="clearImg">mdi-close</g-icon>
+      <img alt class="g-image-input__demo" :src="src">
+    </div>
+  </div>
 </template>
 
 <script>
   export default {
     name: "PosFileInputImage",
-    methods: {
-      getImageSrc(file) {
-        let reader = new FileReader()
-        reader.onload = function () {
-          let url = reader.result;
-
-          let myImg = document.getElementById("img")
-          myImg.src = url;
+    props: {
+      value: null,
+      label: String
+    },
+    computed: {
+      src: {
+        get() {
+          return this.value;
+        },
+        set(val) {
+          this.$emit('input', val);
         }
-
-        reader.readAsDataURL(file)
-        return ''
+      }
+    },
+    methods: {
+      inputClick() {
+        this.$refs['fileInput'].click();
+      },
+      clearImg() {
+        this.src = null;
+      },
+      changeImg(e) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.src = reader.result;
+        }
+        if(file)
+          reader.readAsDataURL(file)
       }
     },
   }
 </script>
 
 <style scoped lang="scss">
-  .g-tf-wrapper::v-deep {
-    display: inline-flex;
-    width: auto;
-
-    fieldset {
-      width: auto;
-    }
-
-    .g-tf {
-      height: 192px;
-      width: 268px;
-      margin-top: 30px;
-      background-image: url("./FileInputImage.png");
-      background-size: contain;
+    .g-image-input {
+      height: 193px;
+      width: 270px;
       cursor: pointer;
-    }
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-    .g-tf::before, .g-tf::after {
-      display: none;
-    }
+      &.default-bg {
+        background-image: url("./FileInputImage.png");
+        background-size: cover;
+      }
 
-    .g-file-input--text {
-      position: absolute;
-      width: 106px !important;
-      border: 1px;
-      border-radius: 8px;
-      margin-left: auto;
-      margin-right: auto;
-      top: 32px;
-      left: 0;
-      right: 0;
-    }
+      &.no-bg {
+        background: #eee;
+        border: 1px solid #bdbdbd;
+        border-radius: 6px;
+      }
 
-    .g-tf-label {
-      top: -26px;
-      left: 0 !important;
-      font-size: 16px;
-      line-height: 16px;
-      color: #1D1D26;
+      &__wrapper {
+        margin-top: 30px;
+        margin-left: 4px;
+      }
 
-      &__active {
-        transform: none;
+      &__label {
+        font-weight: 400;
+        font-size: 13px;
+        line-height: 16px;
+        margin-bottom: 8px;
+      }
+
+      &__icon {
+        position: absolute;
+        right: 4px;
+        top: 4px;
+        z-index: 2;
+      }
+
+      &__demo {
+        width: 50%;
       }
     }
-
-    .g-tf-prepend__inner {
-      display: none;
-    }
-
-    .g-tf-append__inner {
-      position: absolute;
-      right: 4px;
-    }
-  }
 </style>

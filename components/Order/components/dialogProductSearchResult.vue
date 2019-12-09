@@ -38,13 +38,13 @@
                 <div style="display: flex; justify-content: center; align-items: center;">
                   <g-item-group :items="product.unit" v-model="product.selectedUnit">
                     <template v-slot:item="{item, toggle, active}">
-                      <g-badge overlay style="margin: 12px" v-model="active">
+                      <g-badge overlay v-model="active" badge-size="14">
                         <template v-slot:badge>
-                          <g-icon x-small>done</g-icon>
+                          <g-icon style="font-size: 13px ;font-weight: bold">done</g-icon>
                         </template>
-                        <g-btn :uppercase="false" @click="toggle(item)" outlined style="margin-left: 5px" :active="active" :class="[active ? activeClass : {}]">
-                          {{item}}
-                        </g-btn>
+                      <g-btn :uppercase="false" @click="toggle(item)" outlined style="margin-left: 5px" :active="active" :class="[active ? activeClass : {}]">
+                        {{item}}
+                      </g-btn>
                       </g-badge>
                     </template>
                   </g-item-group>
@@ -63,9 +63,9 @@
                                 v-model="product.selectedAttributes[key]"
                   >
                     <template v-slot:item="{item, toggle, active}">
-                      <g-badge overlay style="margin: 12px" v-model="active">
+                      <g-badge overlay style="margin: 12px" v-model="active" badge-size="14">
                         <template v-slot:badge>
-                          <g-icon x-small>done</g-icon>
+                          <g-icon style="font-size: 13px ;font-weight: bold">done</g-icon>
                         </template>
                         <g-btn :uppercase="false" @click="toggle(item)" outlined style="margin-left: 5px" :active="active" :class="[active ? activeClass : {}]">
                           {{item.value}}
@@ -171,14 +171,19 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+  ::v-deep .g-badge {
+    padding: 0;
+    transform: translate(calc(50% - 1px), calc(-50% + 1px)) !important;
+  }
+
   .result-item-attribute-row {
     display: flex;
     padding: 5px;
   }
 
   .active-attribute {
-    background-color: #E0E0E0 !important;
+    border: 2px solid #1E88E5;
   }
 
   .result-item-attribute {
