@@ -1,7 +1,14 @@
 <template>
-  <div area="toolbar">
+  <g-toolbar area="toolbar" color="grey lighten 3" height="100%">
+    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-2" @click="back">
+      <g-icon class="mr-2" svg>
+        icon-back
+      </g-icon>
+      Back
+    </g-btn>
+    <g-spacer/>
     <slot :name="internalValue"></slot>
-  </div>
+  </g-toolbar>
 </template>
 
 <script>
@@ -17,6 +24,11 @@
         const activeItemPath = this.value.split('.').slice(1).join('.')
         const activeItem = _.get(this.$getService('PosStore:sidebarData'), activeItemPath)
         if (activeItem.isView) return activeItem.title
+      }
+    },
+    methods: {
+      back() {
+        this.$router.push({ path: '/view/test-pos-dashboard' })
       }
     }
   }

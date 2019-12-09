@@ -1,12 +1,5 @@
 <template>
-	<g-toolbar absolute bottom color="grey lighten 3">
-		<g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-2" @click="back">
-			<g-icon class="mr-2" svg>
-				icon-back
-			</g-icon>
-			Back
-		</g-btn>
-		<g-spacer/>
+	<fragment>
 		<g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-2" @click="openDialogEditCategory">
 			<g-icon class="mr-2" color="red">
 				edit
@@ -22,7 +15,7 @@
 		<g-btn :uppercase="false" flat background-color="green" text-color="white" @click="openDialogNewCategory">
 			+ Create new category
 		</g-btn>
-	</g-toolbar>
+	</fragment>
 </template>
 
 <script>
