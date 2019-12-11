@@ -76,6 +76,9 @@
         generalSetting: null,
         //company info view
         companyInfo: null,
+        //user view
+        listUsers: [],
+        selectedUser: {},
         //order history screen variables
         orderHistoryOrders: [],
         orderHistoryFilters: [],
@@ -435,7 +438,7 @@
             {},
             {
               $pull: {
-                payment: { _id: oldPayment._id, name: oldPayment.name }
+                payment: { _id: oldPayment._id }
               }
             }
           )
@@ -444,7 +447,7 @@
             {},
             {
               $push: {
-                payment: { name: newPayment.name, icon: newPayment.icon }
+                payment: {...newPayment}
               }
             }
           )
@@ -455,8 +458,7 @@
             },
             {
               $set: {
-                "payment.$.name": newPayment.name,
-                "payment.$.icon": newPayment.icon
+                "payment.$": newPayment,
               }
             }
           )
@@ -489,6 +491,46 @@
               companyInfo: this.companyInfo
             }
         );
+      },
+      //user view
+      async getListUsers() {
+        const setting = await cms.getModel('PosSetting').findOne();
+        this.listUsers = setting.user;
+      },
+      async updateUser(oldUserId, newUser) {
+        const settingModel = cms.getModel('PosSetting');
+        if(oldUserId && !newUser) {
+          await settingModel.findOneAndUpdate({}, {
+            $pull: {
+              user: {_id : oldUserId}
+            }
+          })
+        } else if(newUser && !oldUserId) {
+          await settingModel.findOneAndUpdate({}, {
+            $push: {
+              user: {...newUser}
+            }
+          })
+        } else {
+          await settingModel.findOneAndUpdate(
+              {
+                "user._id": oldUserId
+              },
+              {
+                $set: {
+                  "user.$": newUser,
+                }
+              }
+          )
+        }
+        await this.getListUsers();
+        //update currentUser logged in if change
+        if(this.user._id === oldUserId) {
+          this.user = this.listUsers.find(u => u._id === oldUserId);
+        }
+      },
+      async getListAvatar() {
+        return await cms.getModel('Avatar').find();
       },
       //<!--<editor-fold desc="Article screen">-->
       selectArticle(item) {
@@ -683,6 +725,12 @@
         companyInfo: this.companyInfo,
         getCompanyInfo: this.getCompanyInfo,
         updateCompanyInfo: this.updateCompanyInfo,
+        //user view
+        listUsers: this.listUsers,
+        selectedUser: this.selectedUser,
+        getListUsers: this.getListUsers,
+        updateUser: this.updateUser,
+        getListAvatar: this.getListAvatar,
         //order history screen
         orderHistoryOrders: this.orderHistoryOrders,
         orderHistoryFilters: this.orderHistoryFilters,

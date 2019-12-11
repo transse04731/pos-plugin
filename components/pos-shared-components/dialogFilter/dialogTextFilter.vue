@@ -1,5 +1,5 @@
 <template>
-	<g-dialog v-model="internalValue" width="90%">
+	<g-dialog v-model="internalValue" width="90%" lazy>
 		<div class="wrapper">
 			<g-icon @click="internalValue = false" svg size="20" class="icon">icon-close</g-icon>
 			<div class="screen">
@@ -30,6 +30,10 @@
     props: {
       label: String,
       value: null,
+			defaultValue: {
+      	type: String,
+				default: ''
+			},
     },
     data() {
       return {
@@ -51,8 +55,14 @@
         this.$emit('submit', this.screenValue);
         this.internalValue = false;
       },
-    }
-  }
+    },
+		watch: {
+			internalValue: function(val) {
+				if(val)
+    			this.screenValue = this.defaultValue;
+			}
+		}
+	}
 </script>
 
 <style scoped lang="scss">

@@ -36,7 +36,7 @@
 			<div class="main__item">
 				<p class="item-label">Logo size</p>
 				<div class="logo">
-					<div v-for="i in 6" :key="i" :class="['item', logoSize === i && 'item__selected']" @click="logoSize = i">
+					<div v-for="i in 6" :key="i" :class="['item', logoSize === i && 'item__selected']" @click="changeLogoSize(i)">
 						{{i}}
 					</div>
 				</div>
@@ -48,10 +48,10 @@
 				</div>
 			</div>
 		</div>
-		<dialog-text-filter label="Company Name" v-model="dialogCompanyName" @submit="changeName($event)"/>
-		<dialog-text-filter label="Address" v-model="dialogCompanyAddress" @submit="changeAddress($event)"/>
-		<dialog-text-filter label="Telephone" v-model="dialogCompanyTelephone" @submit="changeTelephone($event)"/>
-		<dialog-text-filter label="Tax Number" v-model="dialogCompanyTaxNumber" @submit="changeTaxNumber($event)"/>
+		<dialog-text-filter label="Company Name" :default-value="name" v-model="dialogCompanyName" @submit="changeName($event)"/>
+		<dialog-text-filter label="Address" :default-value="address" v-model="dialogCompanyAddress" @submit="changeAddress($event)"/>
+		<dialog-text-filter label="Telephone" :default-value="telephone" v-model="dialogCompanyTelephone" @submit="changeTelephone($event)"/>
+		<dialog-text-filter label="Tax Number" :default-value="taxNumber" v-model="dialogCompanyTaxNumber" @submit="changeTaxNumber($event)"/>
 	</fragment>
 </template>
 
@@ -65,7 +65,8 @@
     components: { DialogTextFilter, PosTextField },
 		injectService: [
 			'PosStore:companyInfo',
-			'PosStore:getCompanyInfo'
+			'PosStore:getCompanyInfo',
+			'PosStore:updateCompanyInfo'
 		],
 		data() {
     	return {
@@ -143,10 +144,11 @@
 			await this.getCompanyInfo();
 		},
 		methods: {
-    	convertImg() {
+			convertImg() {
     		const reader = new FileReader();
-    		reader.onload = () => {
+    		reader.onload = async () => {
     			this.logo = reader.result
+					await this.updateCompanyInfo();
 				}
 				if(this.file) {
 					reader.readAsDataURL(this.file);
@@ -168,6 +170,10 @@
     		this.taxNumber = taxNumber;
 				await this.updateCompanyInfo();
 			},
+			async changeLogoSize(size) {
+    		this.logoSize = size;
+				await this.updateCompanyInfo();
+			}
 		}
   }
 </script>

@@ -4,7 +4,7 @@
       <template v-slot:header>
         <div class="row-flex align-items-center pa-3 bbw-thin b-grey-lighten-1">
           <g-avatar :size="40">
-            <g-img src="https://loremflickr.com/320/240"/>
+            <g-img :src="user.avatar"/>
           </g-avatar>
           <p class="pa-2 fs-small fw-600">{{userName}}</p>
         </div>
