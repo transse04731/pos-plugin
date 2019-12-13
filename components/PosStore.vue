@@ -125,6 +125,30 @@
       paymentTotal() {
         return this.paymentSubTotal + this.paymentTax
       },
+      activeProducts() {
+        return _.groupBy(cms.getList('Product'), 'category._id')
+      },
+      scrollWindowProducts() {
+        const products = {}
+        const groupedProducts = _.groupBy(cms.getList('Product'), 'category._id')
+        if (groupedProducts) {
+          for (const key in groupedProducts) {
+            if (groupedProducts.hasOwnProperty(key)) {
+              const isFavourite = key === 'Favourite'
+              Object.assign(products, {
+                [key]: _.chunk(groupedProducts[key], 28).map(list =>
+                  list.sort((current, next) => {
+                    return this.getProductGridOrder(current, isFavourite) - this.getProductGridOrder(next, isFavourite)
+                  }).map(product => ({
+                    ..._.omit(product, 'attributes'),
+                    originalPrice: product.price
+                  })))
+              })
+            }
+          }
+        }
+        return products
+      },
       activeProduct() {
         if (this.currentOrder.items && !_.isNil(this.activeTableProduct)) {
           return this.currentOrder.items[this.activeTableProduct]
@@ -160,8 +184,9 @@
         const products = cms.getList('Product').filter(product => product.category._id === this.activeCategory._id)
         this.activeCategoryProducts = products.sort((current, next) => this.getProductGridOrder(current) - this.getProductGridOrder(next))
       },
-      getProductGridOrder(product) {
-        const layout = product.layouts.find(layout => this.activeCategory._id === 'Favourite'
+      getProductGridOrder(product, isFavourite = false) {
+        const layout = product.layouts && product.layouts.find(layout =>
+          isFavourite || (this.activeCategory && this.activeCategory._id === 'Favourite')
             ? layout.favourite
             : !layout.favourite
         );
@@ -231,12 +256,11 @@
         }
       },
       queryProductsByName() {
-        const results = cms.getList('Product')
-        .filter(product => product.name.toLowerCase().includes(this.productNameQuery.trim().toLowerCase()))
-        this.productNameQueryResults = results.map(product => ({
+        const results = cms.getList('Product').filter(product => product.name.toLowerCase().includes(this.productNameQuery.trim().toLowerCase()))
+        this.productNameQueryResults = Object.freeze(results.map(product => ({
           ...product,
           originalPrice: product.price
-        }))
+        })))
       },
       async getSavedOrders() {
         const orderModel = cms.getModel('Order')
@@ -675,6 +699,8 @@
         //order screen
         activeProductWindow: this.activeProductWindow,
         activeTableProduct: this.activeTableProduct,
+        activeProducts: this.activeProducts,
+        scrollWindowProducts: this.scrollWindowProducts,
         activeProduct: this.activeProduct,
         convertMoney: this.convertMoney,
         getProductGridOrder: this.getProductGridOrder,

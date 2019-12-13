@@ -49,9 +49,14 @@
     margin-right: 0;
   }
 
-  .g-toolbar-content > .g-btn:first-child {
-    margin-left: 0;
+  ::v-deep .g-toolbar-content {
+    overflow: visible;
+
+    & > .g-btn:first-child {
+      margin-left: 0;
+    }
   }
+
 
   .g-toolbar-background > div {
     box-shadow: inset -8px 0 8px -8px rgba(0, 0, 0, 0.25);

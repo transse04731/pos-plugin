@@ -1,22 +1,22 @@
 <template>
-  <g-dialog v-model="dialogProductLookup" fullscreen ref="dialog" domain="TestDialog2">
+  <g-dialog v-model="dialogProductLookup" fullscreen ref="dialog" domain="TestDialog2"lazy>
     <div class="dialog-lookup w-100">
       <g-toolbar class="header" color="grey lighten 3" elevation="0">
-         <g-text-field outlined clearable class="w-50"
-                       style="color: #1d1d26" clear-icon="cancel"
-                       :value="productNameQuery"
-                       @focus="showKeyboard = true"
-                       @enter="queryProductsByName"
-                       @change="queryProductsByName"
-                       @blur="showKeyboard = false"
-                       @input="debouncedQuery"
-         ></g-text-field>
+        <g-text-field outlined clearable class="w-50"
+                      style="color: #1d1d26" clear-icon="cancel"
+                      :value="productNameQuery"
+                      @focus="showKeyboard = true"
+                      @enter="queryProductsByName"
+                      @change="queryProductsByName"
+                      @blur="showKeyboard = false"
+                      @input="debouncedQuery"
+        ></g-text-field>
         <g-spacer></g-spacer>
-        <g-btn :uppercase="false" icon style="box-shadow: none; border-radius: 50%" @click="dialogProductLookup = false">
+        <g-btn :uppercase="false" icon style="box-shadow: none; border-radius: 50%" @click="close">
           <g-icon>clear</g-icon>
         </g-btn>
       </g-toolbar>
-      <g-simple-table fixed-header :class="tbLookup">
+      <g-simple-table fixed-header :class="tbLookup" ref="table">
         <thead>
         <tr>
           <th>Name</th>
@@ -26,19 +26,45 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="(product, i) in productNameQueryResults" :key="i" :class="[(selected && product._id === selected._id) && 'tr__selected']" @click="addToOrder(product)">
-          <td>{{product.name}}</td>
-          <td>{{product.barcode ? product.barcode : '-'}}</td>
-          <td>{{product.unit ? product.unit : '-s'}}</td>
-          <td>
-            <div v-if="product.attribute">
-              <span v-for="(val, attr) in product.attribute" class="td-attr">
-                {{attr}}: {{val}}
-              </span>
-            </div>
-            <div v-else>-</div>
-          </td>
-        </tr>
+        <template v-for="(product, i) in productList">
+          <tr :key="i"
+              :class="[(selected && product._id === selected._id) && 'tr__selected']"
+              @click="addToOrder(product)"
+              v-if="i < productList.length - 1"
+          >
+            <td>{{product.name}}</td>
+            <td>{{product.barcode ? product.barcode : '-'}}</td>
+            <td style="text-transform: capitalize">{{product.unit ? product.unit : '-s'}}</td>
+            <td>
+              <div v-if="product.attribute">
+                <span v-for="(val, attr) in product.attribute" :key="`${attr}_${val}`" class="td-attr">
+                  {{attr}}: {{val}}
+                </span>
+              </div>
+              <div v-else>-</div>
+            </td>
+          </tr>
+
+          <tr :key="i"
+              :class="[(selected && product._id === selected._id) && 'tr__selected']"
+              @click="addToOrder(product)"
+              v-if="i === productList.length - 1"
+              ref="lastRow"
+              v-intersect:[lastRowIntersectArgs]="lastRowIntersectValue"
+          >
+            <td>{{product.name}}</td>
+            <td>{{product.barcode ? product.barcode : '-'}}</td>
+            <td style="text-transform: capitalize">{{product.unit ? product.unit : '-s'}}</td>
+            <td>
+              <div v-if="product.attribute">
+                <span v-for="(val, attr) in product.attribute" :key="`${attr}_${val}`" class="td-attr">
+                  {{attr}}: {{val}}
+                </span>
+              </div>
+              <div v-else>-</div>
+            </td>
+          </tr>
+        </template>
         </tbody>
       </g-simple-table>
       <div v-show="showKeyboard" class="keyboard-wrapper">
@@ -51,6 +77,7 @@
 <script>
   import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';
   import { getInternalValue } from 'pos-vue-framework/src/mixins/getVModel';
+  import Intersect from 'pos-vue-framework/src/directives/intersect/intersect';
 
   export default {
     name: 'dialogProductLookup',
@@ -59,11 +86,17 @@
     props: {
       value: Boolean,
     },
+    directives: {
+      Intersect
+    },
     data() {
       return {
         showKeyboard: false,
         selected: null,
-        debouncedQuery: null
+        debouncedQuery: null,
+        productSliceLength: 15,
+        lastRowIntersectArgs: null,
+        lastRowIntersectValue: null,
       }
     },
     methods: {
@@ -73,9 +106,11 @@
       addToOrder(product) {
         this.addProductToOrder(product)
         this.selected = product
-        setTimeout(() => {
-          this.dialogProductLookup = false
-        }, 200)
+        setTimeout(this.close, 200)
+      },
+      close() {
+        this.dialogProductLookup = false
+        this.productNameQuery = ''
       }
     },
     setup() {
@@ -83,6 +118,9 @@
       return { dialogProductLookup };
     },
     computed: {
+      productList() {
+        return _.take(this.productNameQueryResults, this.productSliceLength)
+      },
       tbLookup() {
         return this.showKeyboard ? 'tbLookup' : 'tbLookup__full'
       },
@@ -95,6 +133,14 @@
         this.productNameQuery = e
         this.queryProductsByName()
       }, 300)
+
+      this.lastRowIntersectArgs = {
+        root: this.$el,
+        threshold: 0.1
+      }
+      this.lastRowIntersectValue = () => {
+        this.productSliceLength += 15
+      }
     }
   }
 </script>

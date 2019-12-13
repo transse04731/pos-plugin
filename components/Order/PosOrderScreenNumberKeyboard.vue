@@ -92,7 +92,7 @@
             style: 'grid-area: keyX; border: 1px solid #979797'
           },
           { content: ['C'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: () => '', style: 'grid-area: keyC; border: 1px solid #979797' },
-          { content: ['&crarr;'], classes: 'key-number white', type: 'enter', action: () => null, style: 'grid-area: Enter; border: 1px solid #979797' }
+          { img: 'delivery/key_enter', classes: 'key-number white', type: 'enter', action: () => null, style: 'grid-area: Enter; border: 1px solid #979797' }
         ]
       }
     },

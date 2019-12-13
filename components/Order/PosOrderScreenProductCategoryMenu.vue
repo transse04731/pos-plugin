@@ -1,7 +1,7 @@
 <template>
   <div area="menu">
     <g-btn :uppercase="false" v-for="(item, i) in menu" :key="i" elevation="0" background-color="#fff" text-color="#1d1d26" height="100%"
-           @click.stop="select(item)" :class="[item === activeCategory ? 'menu__active' : '']">
+           @click.stop="select(item)" :ref="`button_${item._id}`">
       {{item._id}}
     </g-btn>
   </div>
@@ -10,7 +10,6 @@
 <script>
   export default {
     name: 'PosOrderScreenProductCategoryMenu',
-    injectService: ['PosStore:(activeCategory,activeCategoryProducts,getActiveProducts,getAllCategories)'],
     data() {
       return {
         menu: [],
@@ -18,12 +17,35 @@
     },
     methods: {
       select(item) {
-        this.activeCategory = item;
-        this.getActiveProducts()
+        const posStore = this.$getService('PosStore')
+        posStore.changeCategory(item, posStore.activeCategory)
+        posStore.changeProductList(item, posStore.activeCategory)
+        posStore.activeCategory = item;
       },
     },
     created() {
-      this.menu = this.getAllCategories()
+      const posStore = this.$getService('PosStore');
+      this.menu = posStore.getAllCategories()
+
+      posStore.changeCategory = (newValue, oldValue) => {
+        if (newValue) {
+          const newCategory = newValue._id
+          const oldCategory = oldValue && oldValue._id
+          if (newCategory && this.$refs[`button_${newCategory}`]) {
+            this.$refs[`button_${newCategory}`][0].$el.classList.add('menu__active')
+          }
+
+          if (oldCategory) {
+            if (newCategory === oldCategory) return
+            const oldRef = this.$refs[`button_${oldCategory}`];
+            if (oldRef && oldRef.length > 0) {
+              oldRef[0].$el.classList.remove('menu__active')
+            }
+          }
+        }
+      }
+    },
+    mounted() {
       this.select(this.menu[0])
     }
   }

@@ -4,7 +4,7 @@
       <g-card-title>
         {{formattedQueryResults.length}} {{formattedQueryResults.length > 1 ? 'results' : 'result'}} for product id "{{productIdQuery}}"
         <g-spacer></g-spacer>
-        <g-btn :uppercase="false" @click="dialogProductSearch = false" icon>
+        <g-btn :uppercase="false" @click="closeDialog" icon>
           <g-icon>close</g-icon>
         </g-btn>
       </g-card-title>
@@ -34,11 +34,11 @@
               </div>
             </td>
             <td>
-              <div class="result-item result-item-unit" style="display: flex;">
+              <div class="result-item result-item-unit">
                 <div style="display: flex; justify-content: center; align-items: center;">
                   <g-item-group :items="product.unit" v-model="product.selectedUnit">
                     <template v-slot:item="{item, toggle, active}">
-                      <g-badge overlay v-model="active" badge-size="14">
+                      <g-badge overlay style="margin: 12px 12px 12px 0 !important" v-model="active" badge-size="14">
                         <template v-slot:badge>
                           <g-icon style="font-size: 13px ;font-weight: bold">done</g-icon>
                         </template>
@@ -51,7 +51,7 @@
                 </div>
               </div>
             </td>
-            <td>
+            <td style="width: 50%">
               <div class="result-item result-item-attribute" v-if="product.attributes">
                 <div class="result-item-attribute-row" v-for="(attributes, key) in product.attributes">
                   <div class="attribute-title">
@@ -63,7 +63,7 @@
                                 v-model="product.selectedAttributes[key]"
                   >
                     <template v-slot:item="{item, toggle, active}">
-                      <g-badge overlay style="margin: 12px" v-model="active" badge-size="14">
+                      <g-badge overlay style="margin: 12px 12px 12px 0 !important" v-model="active" badge-size="14">
                         <template v-slot:badge>
                           <g-icon style="font-size: 13px ;font-weight: bold">done</g-icon>
                         </template>
@@ -166,6 +166,11 @@
         _product.attributes = _.values(product.selectedAttributes)
         this.$getService('PosStore:addProductToOrder')(_product)
         this.dialogProductSearch = false
+        this.productIdQuery = ''
+      },
+      closeDialog() {
+        this.dialogProductSearch = false
+        this.productIdQuery = ''
       }
     }
   }
@@ -177,25 +182,32 @@
     transform: translate(calc(50% - 1px), calc(-50% + 1px)) !important;
   }
 
-  .result-item-attribute-row {
-    display: flex;
-    padding: 5px;
-  }
-
-  .active-attribute {
-    border: 2px solid #1E88E5;
-  }
-
-  .result-item-attribute {
-    padding-bottom: 12px;
-  }
-
-  .attribute-title {
-    padding-top: 12px;
-    width: 50px;
-    display: flex;
+  .result-item-unit {
     justify-content: center;
+  }
+
+  .result-item {
+    display: flex;
     align-items: center;
+    flex-wrap: wrap;
+
+    .result-item-attribute-row {
+      display: flex;
+      flex-basis: 100%;
+      padding: 5px;
+    }
+
+    .active-attribute {
+      border: 2px solid #1E88E5;
+    }
+
+    .attribute-title {
+      width: 50px;
+      display: flex;
+      flex-shrink: 0;
+      justify-content: center;
+      align-items: center;
+    }
   }
 
   .g-card-title {
@@ -208,7 +220,7 @@
   }
 
   .g-item-group {
-    display: inline-flex;
+    flex-wrap: wrap;
   }
 
   .g-card {
@@ -224,8 +236,12 @@
     line-height: 18px;
   }
 
-  ::v-deep .g-btn__disabled {
+  td {
+    text-transform: capitalize;
 
+    .g-btn {
+      text-transform: capitalize;
+    }
   }
 
   .g-badge-wrapper .g-btn {

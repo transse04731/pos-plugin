@@ -1,24 +1,43 @@
 <template>
   <div class="main">
-    <g-scroll-window area="window" :show-arrows="false" elevation="0" v-model="activeProductWindow">
-      <g-scroll-window-item v-for="(window, windowIndex) in productWindows" :key="windowIndex">
-        <g-btn :uppercase="false" v-for="(item, i) in window" :key="i"
-               flat
-               :background-color="item.layouts[0].color"
+    <scroll-window area="window" :show-arrows="false" elevation="0"
+                   v-for="(productsList, category) in scrollWindowProducts"
+                   style="display: none"
+                   :key="`window_${category}`"
+                   :ref="`window_${category}`"
+                   :value="activeProductWindows[category]"
+    >
+      <scroll-window-item v-for="(window, windowIndex) in productsList"
+                          :key="`${category}_window_item_${windowIndex}`"
+                          @input="activeProductWindows[category] = $event"
+      >
+        <g-btn :uppercase="false" flat
+               v-for="(item, i) in window"
+               :key="`btn_${i}`"
+               :background-color="(item.layouts.length > 0 && item.layouts[0].color)|| '#FFF'"
                height="100%"
-               @click="addProductToOrder(item)"
+               @click="addProduct(item)"
         >
           {{item.name}}
         </g-btn>
-      </g-scroll-window-item>
-    </g-scroll-window>
-    <g-item-group area="delimiter" :items="productWindows" v-model="activeProductWindow" :return-object="false" mandatory>
-      <template v-slot:default="{ toggle, active }">
-        <template v-for="(item, index) in productWindows">
-          <g-item :is-active="active(item)" :key="index">
-            <g-btn :uppercase="false" @click="toggle(item)" border-radius="50%"></g-btn>
-          </g-item>
-        </template>
+      </scroll-window-item>
+    </scroll-window>
+    <g-item-group area="delimiter"
+                  :return-object="false" mandatory
+                  v-for="(productsList, category) in scrollWindowProducts"
+                  v-model="activeProductWindows[category]"
+                  :key="`group_${category}`"
+                  :ref="`group_${category}`"
+                  :items="productsList"
+                  style="display: none"
+    >
+      <template #default="{ toggle, active }">
+        <g-item v-for="(item, index) in productsList"
+                :is-active="active(item)"
+                :key="`${category}_item_${index}`"
+        >
+          <g-btn :uppercase="false" @click="toggle(item)" border-radius="50%"></g-btn>
+        </g-item>
       </template>
     </g-item-group>
   </div>
@@ -26,30 +45,77 @@
 
 <script>
   import _ from 'lodash'
+  import GScrollWindow from 'pos-vue-framework/src/components/GWindow/GScrollWindow';
+  import GScrollWindowItem from 'pos-vue-framework/src/components/GWindow/GScrollWindowItem';
 
   export default {
     name: 'PosOrderScreenScrollWindow',
+    components: {
+      scrollWindow: {
+        name: 'ScrollWindow',
+        mixins: [GScrollWindow],
+        mounted() {
+          this.$forceUpdate = () => null
+        }
+      },
+      scrollWindowItem: {
+        name: 'ScrollWindowItem',
+        mixins: [GScrollWindowItem],
+        mounted() {
+          this.$forceUpdate = () => null
+        }
+      }
+    },
     props: {
       value: {
         type: Number,
         default: 0
       }
     },
-    injectService: ['PosStore:(activeCategoryProducts,addProductToOrder,getProductGridOrder)'],
+    injectService: ['PosStore:(addProductToOrder,scrollWindowProducts)'],
     data() {
       return {
-        activeProductWindow: 0,
+        activeProductWindows: {}
       }
     },
     computed: {
-      listProducts() {
-        return this.activeCategoryProducts.map(product => ({
-          ..._.omit(product, 'attributes'),
-          originalPrice: product.price
-        }))
-      },
       productWindows() {
         return _.chunk(this.listProducts, 28)
+      }
+    },
+    methods: {
+      addProduct(item) {
+        this.addProductToOrder(item)
+      }
+    },
+    created() {
+      const posStore = this.$getService('PosStore');
+
+      posStore.changeProductList = (newValue, oldValue) => {
+        if (newValue) {
+          const newCategory = newValue._id
+          const oldCategory = oldValue && oldValue._id
+          if (newCategory && this.$refs[`window_${newCategory}`]) {
+            this.$refs[`window_${newCategory}`][0].$el.style.display = 'flex'
+            this.$refs[`group_${newCategory}`][0].$el.style.display = 'flex'
+          }
+
+          if (oldCategory) {
+            if (newCategory === oldCategory) return
+            const oldRef = this.$refs[`window_${oldCategory}`];
+            if (oldRef && oldRef.length > 0) {
+              oldRef[0].$el.style.display = 'none'
+              this.$refs[`group_${oldCategory}`][0].$el.style.display = 'none'
+            }
+          }
+        }
+      }
+
+      if (this.scrollWindowProducts) {
+        this.activeProductWindows = Object.keys(this.scrollWindowProducts).reduce((obj, key) => {
+          this.$set(obj, key, 0)
+          return obj
+        }, {})
       }
     }
   }

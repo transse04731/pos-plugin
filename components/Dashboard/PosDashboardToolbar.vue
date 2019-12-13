@@ -20,8 +20,8 @@
     },
     methods: {
       updateTime() {
-        this.time = dayjs(new Date()).format('hh:mm A');
-        this.date = dayjs(new Date()).format('DD/MM/YYYY');
+        this.time = dayjs(new Date()).format('HH:mm');
+        this.date = dayjs(new Date()).format('MMM DD, YY');
       }
     },
     created() {

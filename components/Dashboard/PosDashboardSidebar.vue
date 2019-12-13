@@ -41,7 +41,7 @@
             ]
           }
         ],
-        sidebar: null
+        sidebar: "items.0.items.0"
       }
     },
     computed: {
