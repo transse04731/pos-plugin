@@ -341,6 +341,7 @@
         } else {
           this.orderHistoryFilters.unshift(filter);
         }
+        this.orderHistoryPagination.currentPage = 1;
       },
       async getOrderHistory() {
         const orderModel = cms.getModel('Order');
@@ -393,6 +394,7 @@
         } else {
           this.productFilters.unshift(filter);
         }
+        this.productPagination.currentPage = 1
       },
       async getListProducts() {
         const productModel = cms.getModel('Product');
@@ -422,6 +424,16 @@
         await this.getListProducts();
         await this.getTotalProducts();
         this.selectedProduct = [];
+      },
+      async createNewProduct(product) {
+        const productModel = cms.getModel('Product');
+        await productModel.create(product);
+        await this.getListProducts();
+        await this.getTotalProducts();
+      },
+      async getAllTaxCategory() {
+        const setting = await cms.getModel('PosSetting').findOne();
+        return setting.taxCategory;
       },
       //<!--</editor-fold>-->
 
@@ -711,6 +723,8 @@
         deleteSelectedProducts: this.deleteSelectedProducts,
         totalProducts: this.totalProducts,
         getTotalProducts: this.getTotalProducts,
+        createNewProduct: this.createNewProduct,
+        getAllTaxCategory: this.getAllTaxCategory,
         //payment view
         listPayments: this.listPayments,
         getListPayments: this.getListPayments,

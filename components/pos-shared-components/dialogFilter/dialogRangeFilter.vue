@@ -56,7 +56,12 @@
         this.$emit('submit', this.filter);
         this.internalValue = false;
       }
-    }
+    },
+		watch: {
+			internalValue: function() {
+				this.filter = [0, 0]
+			}
+		}
   }
 </script>
 

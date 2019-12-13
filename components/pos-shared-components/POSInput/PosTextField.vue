@@ -124,6 +124,7 @@
 
   .input-error {
     border-color: red !important;
+    box-shadow: 0 0 0 1px red;
   }
 
   .bs-tf-error-message {

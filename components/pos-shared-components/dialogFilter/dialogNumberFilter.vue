@@ -52,7 +52,12 @@
         this.$emit('submit', this.screenValue);
         this.internalValue = false;
       },
-    }
+    },
+		watch: {
+    	internalValue: function() {
+    		this.screenValue = ''
+			}
+		}
   }
 </script>
 

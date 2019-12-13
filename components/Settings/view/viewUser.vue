@@ -2,7 +2,7 @@
 	<fragment>
 		<g-grid-layout :layout="layout" style="height: 100%">
 			<div area="list">
-				<g-list :items="items" item-text="name" elevation="0" divider selectable return-object prepend-type="avatar" active-class="item__active" v-model="selectedUser" @click="label = 'Edit User'">
+				<g-list mandatory :items="items" item-text="name" elevation="0" divider selectable return-object prepend-type="avatar" active-class="item__active" v-model="selectedUser" @click="label = 'Edit User'">
 					<template v-slot:append>
 						<div></div>
 					</template>

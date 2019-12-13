@@ -155,6 +155,12 @@
           font-size: 13px;
         }
       }
+
+      ::v-deep .g-select {
+        input {
+          display: none;
+        }
+      }
     }
 
     .g-pagination-text {

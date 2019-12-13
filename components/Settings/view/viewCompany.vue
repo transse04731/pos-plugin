@@ -31,7 +31,7 @@
 			</div>
 			<div class="main__item">
 				<p class="item-label">Logo</p>
-				<g-file-input outlined filled dense prependInnerIcon="icon-upload" svg-icon v-model="file" @change="convertImg"></g-file-input>
+				<g-file-input outlined filled dense prependInnerIcon="icon-upload" svg-icon v-model="file" @change="convertImg" accept="image/*" placeholder="Upload"></g-file-input>
 			</div>
 			<div class="main__item">
 				<p class="item-label">Logo size</p>
@@ -212,7 +212,14 @@
 
 	.g-file-input {
 		&.g-tf-wrapper.g-tf__filled.g-tf__outlined ::v-deep .g-file-input--text {
-			padding: 12px 8px 4px;
+			padding: 8px;
+
+			p {
+				font-weight: 700;
+				color: #9E9E9E;
+				opacity: 1 !important;
+				font-size: 14px;
+			}
 		}
 
 		::v-deep .g-tf-prepend__outer {
@@ -220,7 +227,7 @@
 		}
 
 		::v-deep .g-tf-prepend__inner {
-			padding: 0;
+			padding: 0 !important;
 			margin: 0 0 0 16px;
 
 			.g-icon {

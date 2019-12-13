@@ -1,6 +1,6 @@
 <template>
   <div class="g-image-input__wrapper">
-    <input style="display: none" type="file" ref="fileInput" @change="changeImg"/>
+    <input style="display: none" type="file" ref="fileInput" @change="changeImg" accept="image/*"/>
     <div class="g-image-input__label">{{label}}</div>
     <div :class="['g-image-input', src ? 'no-bg' : 'default-bg']" @click="inputClick">
       <g-icon v-if="src" class="g-image-input__icon" @click.stop="clearImg">mdi-close</g-icon>
