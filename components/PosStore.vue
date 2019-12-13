@@ -34,7 +34,7 @@
             items: [
               { title: 'Articles', icon: 'radio_button_unchecked', iconType: 'small', isView: true },
               { title: 'Category', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/category' */ },
-              { title: 'Layout', icon: 'radio_button_unchecked', iconType: 'small' },
+              { title: 'Product Layout', icon: 'radio_button_unchecked', iconType: 'small', href: '/view/test-pos-article', appendIcon: 'open_in_new' },
             ]
           },
           { title: 'Reporting', icon: 'icon-bar_chart', svgIcon: true },
@@ -45,8 +45,7 @@
               { title: 'General', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/general'*/ },
               { title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small' },
               { title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small' },
-              { title: 'Menu Layout', icon: 'radio_button_unchecked', iconType: 'small' },
-              { title: 'Button Layout', icon: 'radio_button_unchecked', iconType: 'small' },
+              { title: 'Function Layout', icon: 'radio_button_unchecked', iconType: 'small', href: '/view/test-fn-button', appendIcon: 'open_in_new' },
             ]
           },
           {

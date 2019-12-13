@@ -46,6 +46,10 @@
     ::v-deep .g-sidebar {
       width: 100% !important;
 			max-width: none !important;
+
+      .g-treeview-children i:not(.g-treeview-icon__small) {
+        font-size: 16px !important;
+      }
     }
   }
 
