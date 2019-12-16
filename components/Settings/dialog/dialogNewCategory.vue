@@ -23,9 +23,9 @@
 </template>
 
 <script>
-  import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
+  /*import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
   import PosFileInput from '../../pos-shared-components/POSInput/PosFileInputImage';
-  import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';
+  import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';*/
 
   export default {
     name: 'dialogNewCategory',
@@ -34,7 +34,7 @@
       'PosStore:selectedCategory',
       'PosStore:updateCategory',
     ],
-    components: { PosKeyboardFull, PosFileInput, PosTextField },
+    //components: { PosKeyboardFull, PosFileInput, PosTextField },
     data() {
       return {
         name: '',

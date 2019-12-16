@@ -56,13 +56,13 @@
 </template>
 
 <script>
-  import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
-	import { convertToUnit } from 'pos-vue-framework/src/utils/helpers';
-	import DialogTextFilter from '../../pos-shared-components/dialogFilter/dialogTextFilter';
+  //import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
+	import { convertToUnit } from 'pos-vue-framework';
+	//import DialogTextFilter from '../../pos-shared-components/dialogFilter/dialogTextFilter';
 
   export default {
     name: 'viewCompany',
-    components: { DialogTextFilter, PosTextField },
+    //components: { DialogTextFilter, PosTextField },
 		injectService: [
 			'PosStore:companyInfo',
 			'PosStore:getCompanyInfo'

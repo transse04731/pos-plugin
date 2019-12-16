@@ -86,14 +86,14 @@
 </template>
 
 <script>
-  import PosSwitch from '../../pos-shared-components/PosSwitch';
+  //import PosSwitch from '../../pos-shared-components/PosSwitch';
   import layout from './layoutUserView';
-  import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
-  import DialogUserDetail from '../dialog/dialogUserDetail';
+  //import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
+  //import DialogUserDetail from '../dialog/dialogUserDetail';
 
   export default {
     name: 'StaffPermission',
-    components: { DialogUserDetail, PosTextField, PosSwitch },
+    //components: { DialogUserDetail, PosTextField, PosSwitch },
     data() {
       return {
         layout: layout,

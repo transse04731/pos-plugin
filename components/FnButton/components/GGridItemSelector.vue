@@ -7,7 +7,7 @@
 <script>
   import _ from 'lodash';
   import { computed, ref } from '@vue/composition-api';
-  import getVModel from 'pos-vue-framework/src/mixins/getVModel';
+  import getVModel from 'pos-vue-framework';
 
   export default {
     name: 'GGridItemSelector',

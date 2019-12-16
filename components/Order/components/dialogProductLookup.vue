@@ -49,12 +49,12 @@
 </template>
 
 <script>
-  import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';
-  import { getInternalValue } from 'pos-vue-framework/src/mixins/getVModel';
+  //import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';
+  import { getInternalValue } from 'pos-vue-framework';
 
   export default {
     name: 'dialogProductLookup',
-    components: { PosKeyboardFull },
+    //components: { PosKeyboardFull },
     injectService: ['PosStore:(productNameQuery,productNameQueryResults,queryProductsByName,addProductToOrder)'],
     props: {
       value: Boolean,

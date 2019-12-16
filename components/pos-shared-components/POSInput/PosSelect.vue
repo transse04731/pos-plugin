@@ -1,5 +1,5 @@
 <script>
-  import { GSelect } from 'pos-vue-framework/src/components';
+  import { GSelect } from 'pos-vue-framework';
 
   export default {
     name: 'PosSelect',

@@ -57,7 +57,7 @@
 </template>
 
 <script>
-  import { getExpansionModel } from 'pos-vue-framework/src/components/GExpansion/GExpansionFactory';
+  import { getExpansionModel } from 'pos-vue-framework';
   import { computed } from '@vue/composition-api'
 
   export default {

@@ -21,12 +21,12 @@
 </template>
 
 <script>
-  import PosTextField from '../POSInput/PosTextField';
-  import PosKeyboardFull from '../PosKeyboardFull';
+  //import PosTextField from '../POSInput/PosTextField';
+  //import PosKeyboardFull from '../PosKeyboardFull';
 
   export default {
     name: 'dialogTextFilter',
-    components: { PosKeyboardFull, PosTextField },
+    //components: { PosKeyboardFull, PosTextField },
     props: {
       label: String,
       value: null,

@@ -15,7 +15,7 @@
 
 <script>
   import { computed, ref, watch } from '@vue/composition-api';
-  import colorHandler from 'pos-vue-framework/src/utils/helpers';
+  import colorHandler from 'pos-vue-framework';
   import { isEqual } from 'lodash';
 
   export default {

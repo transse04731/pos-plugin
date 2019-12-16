@@ -22,11 +22,11 @@
 
 <script>
   import _ from 'lodash'
-  import GGridItemSelector from './GGridItemSelector';
+  //import GGridItemSelector from './GGridItemSelector';
 
   export default {
     name: 'GButtonMerger',
-    components: { GGridItemSelector },
+    //components: { GGridItemSelector },
     props: {
       value: null,
       items: {

@@ -1,5 +1,5 @@
 <script>
-  import { GTextFieldBs } from 'pos-vue-framework/src/components';
+  import { GTextFieldBs } from 'pos-vue-framework';
 
   export default {
     name: 'PosTextField',

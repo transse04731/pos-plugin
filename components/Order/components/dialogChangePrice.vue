@@ -56,11 +56,11 @@
 </template>
 
 <script>
-  import PosNumpad from '../../pos-shared-components/PosNumpad';
+  //import PosNumpad from '../../pos-shared-components/PosNumpad';
 
   export default {
     name: 'dialogChangePrice',
-    components: { PosNumpad },
+    //components: { PosNumpad },
     injectService: ['PosStore:(activeProduct,convertMoney,calculateNewPrice)'],
     props: {
       value: Boolean,

@@ -29,11 +29,11 @@
 <script>
   import loginSupportDialog from './loginSupportDialog'
 
-  import PosKeyboardFull from '../pos-shared-components/PosKeyboardFull';
+  //import PosKeyboardFull from '../pos-shared-components/PosKeyboardFull';
 
   export default {
     name: 'dialogLoginSupport',
-    components: { PosKeyboardFull },
+    //components: { PosKeyboardFull },
     props: {
       value: null
     },

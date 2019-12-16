@@ -73,10 +73,10 @@
 </template>
 
 <script>
-	import PosTablePagination from '../../pos-shared-components/PosTablePagination';
+	//import PosTablePagination from '../../pos-shared-components/PosTablePagination';
 	export default {
     name: 'viewArticle',
-		components: { PosTablePagination },
+		//components: { PosTablePagination },
 		injectService: [
 		  'PosStore:getListProducts',
 		  'PosStore:listProducts',

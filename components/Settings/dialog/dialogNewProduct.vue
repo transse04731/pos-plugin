@@ -89,14 +89,14 @@
 </template>
 
 <script>
-  import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';
+  /*import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';
   import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
   import PosSwitch from '../../pos-shared-components/PosSwitch';
-  import PosSelect from '../../pos-shared-components/POSInput/PosSelect';
+  import PosSelect from '../../pos-shared-components/POSInput/PosSelect';*/
 
   export default {
     name: 'dialogNewProduct',
-    components: { PosSelect, PosSwitch, PosTextField, PosKeyboardFull },
+    //components: { PosSelect, PosSwitch, PosTextField, PosKeyboardFull },
     data() {
       return {
         selected: null,
