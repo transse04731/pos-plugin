@@ -1,93 +1,130 @@
 <template>
-	<g-simple-table>
-		<tr>
-			<td>Barcode</td>
-			<td><g-switch v-model="barcode" @change="changeSetting"/></td>
-		</tr>
-		<tr>
-			<td>Favorite article</td>
-			<td><g-switch v-model="favoriteArticle" @change="changeSetting"/></td>
-		</tr>
-		<tr>
-			<td>Virtual keyboard</td>
-			<td><g-switch v-model="virtualKeyboard" @change="changeSetting"/></td>
-		</tr>
-		<tr>
-			<td>Cashdrawer opens automatically</td>
-			<td><g-switch v-model="automaticCashdrawer" @change="changeSetting"/></td>
-		</tr>
-	</g-simple-table>
+	<div class="row-flex pa-5" style="font-size: 13px; line-height: 16px">
+		<div class="col-5 px-3">
+			<div class="row-flex align-items-center justify-between">
+				<span>Barcode</span>
+				<g-switch v-model="barcode" @change="changeSetting"/>
+			</div>
+			<div class="row-flex align-items-center justify-between">
+				<span>Favorite article</span>
+				<g-switch v-model="favoriteArticle" @change="changeSetting"/>
+			</div>
+			<div class="row-flex align-items-center justify-between">
+				<span>Virtual keyboard</span>
+				<g-switch v-model="virtualKeyboard" @change="changeSetting"/>
+			</div>
+			<div class="row-flex align-items-center justify-between">
+				<span>Cashdrawer opens automatically</span>
+				<g-switch v-model="automaticCashdrawer" @change="changeSetting"/>
+			</div>
+		</div>
+		<div class="col-7">
+			<div class="row-flex align-items-center justify-center">
+				<span class="mr-2">Quick Function Rows</span>
+				<div :class="['btn-fn-row', quickFnRows === (i-1) && 'selected']" v-for="i in 3" :key="i" @click="updateFnRows(i-1)">
+					{{i-1}}
+				</div>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
   export default {
     name: 'viewGeneral',
-		injectService:[
-				'PosStore:generalSetting',
-				'PosStore:getGeneralSetting',
-				'PosStore:updateSetting',
-		],
-		computed: {
-			barcode: {
-				get() {
-					if(this.generalSetting)
-						return this.generalSetting.barcode;
+    injectService: [
+      'PosStore:generalSetting',
+      'PosStore:getGeneralSetting',
+      'PosStore:updateSetting',
+    ],
+    computed: {
+      barcode: {
+        get() {
+          if (this.generalSetting) {
+            return this.generalSetting.barcode;
+          }
+        },
+        set(val) {
+          this.generalSetting.barcode = val;
+        }
+      },
+      favoriteArticle: {
+        get() {
+          if (this.generalSetting) {
+            return this.generalSetting.favoriteArticle;
+          }
+        },
+        set(val) {
+          this.generalSetting.favoriteArticle = val;
+        }
+      },
+      virtualKeyboard: {
+        get() {
+          if (this.generalSetting) {
+            return this.generalSetting.virtualKeyboard;
+          }
+        },
+        set(val) {
+          this.generalSetting.virtualKeyboard = val;
+        }
+      },
+      automaticCashdrawer: {
+        get() {
+          if (this.generalSetting) {
+            return this.generalSetting.automaticCashdrawer;
+          }
+        },
+        set(val) {
+          this.generalSetting.automaticCashdrawer = val;
+        }
+      },
+			quickFnRows: {
+      	get() {
+      		if (this.generalSetting) {
+      			return this.generalSetting.quickFnRows;
+					}
 				},
 				set(val) {
-					this.generalSetting.barcode = val;
+					this.generalSetting.quickFnRows = val;
 				}
-			},
-			favoriteArticle: {
-				get() {
-					if(this.generalSetting)
-						return this.generalSetting.favoriteArticle;
-				},
-				set(val) {
-					this.generalSetting.favoriteArticle = val;
-				}
-			},
-			virtualKeyboard: {
-				get() {
-					if(this.generalSetting)
-						return this.generalSetting.virtualKeyboard;
-				},
-				set(val) {
-					this.generalSetting.virtualKeyboard = val;
-				}
-			},
-			automaticCashdrawer: {
-				get() {
-					if(this.generalSetting)
-						return this.generalSetting.automaticCashdrawer;
-				},
-				set(val) {
-					this.generalSetting.automaticCashdrawer = val;
-				}
-			},
-		},
-		methods: {
-    	async changeSetting() {
-				await this.updateSetting()
 			}
-		},
-		async created() {
-    	await this.getGeneralSetting();
-		}
-	}
+    },
+    methods: {
+      async changeSetting() {
+        await this.updateSetting()
+      },
+			async updateFnRows(number) {
+				this.quickFnRows = number;
+				await this.updateSetting();
+			}
+    },
+    async created() {
+      await this.getGeneralSetting();
+    }
+  }
 </script>
 
 <style scoped lang="scss">
-	.g-table {
-		::v-deep tr td {
-			padding: 0 32px;
-		}
+	.btn-fn-row {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 40px;
+		background: #F0F0F0;
+		border: 1px solid #C9C9C9;
+		border-radius: 2px;
+		font-size: 13px;
+		line-height: 16px;
+		color: #1D1D26;
+		margin-left: 8px;
 
-		::v-deep tr td:first-child {
-			width: 200px;
+		&.selected {
+			border-color: #1271FF;
 		}
+	}
 
-		::v-deep tr:not(:last-child) td {
-			border-bottom: 1px solid #D8D8D8;
-		}
+	span {
+		max-width: 150px;
 	}
 </style>

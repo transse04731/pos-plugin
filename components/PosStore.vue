@@ -46,6 +46,15 @@
               { title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small' },
               { title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small' },
               { title: 'Function Layout', icon: 'radio_button_unchecked', iconType: 'small', href: '/view/test-fn-button', appendIcon: 'open_in_new' },
+              {
+                title: 'Terminal 1', icon: 'radio_button_unchecked', iconType: 'small',
+                items: [
+                  { title: 'POS', icon: ' ' },
+                  { title: 'Thermal Printer', isView: true, icon: ' ' },
+                  { title: 'Customer Display', icon: ' '},
+                  { title: 'A4 Printer', icon: ' '},
+                ]
+              }
             ]
           },
           {

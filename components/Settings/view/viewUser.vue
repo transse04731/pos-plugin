@@ -16,7 +16,7 @@
 			</div>
 			<div area="edit">
 				<div area="title" class="row-flex align-items-center pl-4 fw-700">
-					{{label}}
+					Edit User
 				</div>
 				<div class="edit__item">
 					<pos-text-field label="Name" @click="editUsername" v-model="selectedUser.name">
@@ -91,6 +91,7 @@
 		</g-grid-layout>
 		<dialog-user-detail v-model="dialogUserDetail" :focusInput.sync="focusInput"/>
 		<dialog-select-avatar v-model="dialogSelectAvatar"/>
+		<dialog-new-user v-model="dialogNewUser"/>
 	</fragment>
 </template>
 
@@ -100,10 +101,11 @@
   import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
   import DialogUserDetail from '../dialog/dialogUserDetail';
 	import DialogSelectAvatar from '../dialog/dialogSelectAvatar';
+	import DialogNewUser from '../dialog/dialogNewUser';
 
   export default {
     name: 'StaffPermission',
-    components: { DialogSelectAvatar, DialogUserDetail, PosTextField, PosSwitch },
+    components: { DialogNewUser, DialogSelectAvatar, DialogUserDetail, PosTextField, PosSwitch },
 		injectService: [
 				'PosStore:selectedUser',
 				'PosStore:listUsers',
@@ -116,7 +118,7 @@
 				dialogUserDetail: false,
 				focusInput: null,
 				dialogSelectAvatar: false,
-				label: 'Edit User',
+				dialogNewUser: false
       }
     },
 		computed: {
@@ -137,11 +139,7 @@
 				this.dialogUserDetail = true;
 			},
 			addUser() {
-				this.selectedUser = {
-					name: '',
-					passcode: ''
-				};
-				this.label = 'Add New User';
+				this.dialogNewUser = true;
 			},
 			async save() {
 				await this.updateUser(this.selectedUser._id, this.selectedUser);

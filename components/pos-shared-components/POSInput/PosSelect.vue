@@ -18,6 +18,10 @@
     .g-tf-wrapper {
       margin: 32px 4px 12px;
       width: calc(100% - 10px);
+
+      fieldset {
+        border: 1px solid #ced4da;
+      }
     }
 
     .g-tf {
@@ -34,18 +38,18 @@
       display: flex;
     }
 
-    .g-tf-input.selections div {
+    .g-tf-input.selections {
       color: #1d1d26 !important;
-    }
-
-    .input {
-      height: 40px;
-      display: flex;
-      padding: 4px 16px;
-
       font-weight: bold;
       font-size: 14px;
       line-height: 18px;
+      align-items: center;
+    }
+
+    .input {
+      height: 36px;
+      display: flex;
+      padding: 4px 16px;
     }
 
     .g-tf-label {

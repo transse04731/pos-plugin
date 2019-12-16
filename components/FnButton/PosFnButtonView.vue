@@ -76,7 +76,7 @@
     </div>
 
     <div area="button-control" style="background-color: #EEEEEE; padding: 12px; position: relative; bottom: 0; display: flex;">
-      <g-btn :uppercase="false" background-color="white" class="mr-2" @click="$router.push({ path: '/view/test-pos-dashboard' })">
+      <g-btn :uppercase="false" background-color="white" class="mr-2" @click="$router.push({ path: '/view/test-pos-settings' })">
         <g-icon class="mr-2" svg>icon-back</g-icon>
         <span style="color: rgba(0, 0, 0, 0.87)">Back</span>
       </g-btn>

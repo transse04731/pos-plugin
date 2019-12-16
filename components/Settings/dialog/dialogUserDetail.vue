@@ -39,7 +39,6 @@
 			'PosStore:selectedUser',
 			'PosStore:updateUser',
 			'PosStore:listUsers',
-			'PosStore:getListUsers',
 		],
     computed: {
       dialogUserDetail: {
@@ -78,13 +77,6 @@
 			  this.selectedUser.name = this.name;
 			  this.selectedUser.passcode = this.passcode;
 			  await this.updateUser(this.selectedUser._id, this.selectedUser);
-			  if(!this.selectedUser._id) {
-          const newUser = this.listUsers[this.listUsers.length - 1];
-          this.selectedUser = {
-            ... newUser,
-            prepend: newUser.avatar,
-          }
-        }
 				this.dialogUserDetail = false;
 			}
 		},
@@ -117,14 +109,6 @@
         justify-content: flex-end;
         padding-top: 24px;
       }
-    }
-  }
-
-  .test {
-    background-color: #eee;
-
-    &:focus {
-      border: 1px solid red;
     }
   }
 </style>
