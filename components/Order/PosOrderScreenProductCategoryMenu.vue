@@ -1,8 +1,8 @@
 <template>
   <div area="menu">
     <g-btn :uppercase="false" v-for="(item, i) in menu" :key="i" elevation="0" background-color="#fff" text-color="#1d1d26" height="100%"
-           @click.stop="select(item)" :ref="`button_${item._id}`">
-      {{item._id}}
+           @click.stop="select(item)" :ref="`button_${item.name}`">
+      {{item.name}}
     </g-btn>
   </div>
 </template>
@@ -29,8 +29,8 @@
 
       posStore.changeCategory = (newValue, oldValue) => {
         if (newValue) {
-          const newCategory = newValue._id
-          const oldCategory = oldValue && oldValue._id
+          const newCategory = newValue.name
+          const oldCategory = oldValue && oldValue.name
           if (newCategory && this.$refs[`button_${newCategory}`]) {
             this.$refs[`button_${newCategory}`][0].$el.classList.add('menu__active')
           }

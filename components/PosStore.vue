@@ -139,7 +139,7 @@
       },
       scrollWindowProducts() {
         const products = {}
-        const groupedProducts = _.groupBy(cms.getList('Product'), 'category._id')
+        const groupedProducts = _.groupBy(cms.getList('Product'), 'category.name')
         if (groupedProducts) {
           for (const key in groupedProducts) {
             if (groupedProducts.hasOwnProperty(key)) {
@@ -195,7 +195,7 @@
       },
       getProductGridOrder(product, isFavourite = false) {
         const layout = product.layouts && product.layouts.find(layout =>
-          isFavourite || (this.activeCategory && this.activeCategory._id === 'Favourite')
+          isFavourite || (this.activeCategory && this.activeCategory.name === 'Favourite')
             ? layout.favourite
             : !layout.favourite
         );
@@ -405,17 +405,19 @@
         this.orderHistoryOrders.splice(index, 1);
         this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
       },
+      //<!--</editor-fold>-->
       // payment screen
 
       //setting screen
       //category view
-      async updateCategory(oldName, newName) {
+      async updateCategory(oldID, newName) {
         const categoryModel = cms.getModel('Category');
-        if (oldName) {
-          await categoryModel.deleteOne({ '_id': oldName });
-        }
-        if (newName) {
-          await categoryModel.create({ '_id': newName });
+        if (oldID && !newName) {
+          await categoryModel.deleteOne({ '_id': oldID });
+        } else if (!oldID && newName){
+          await categoryModel.create({ name: newName });
+        } else {
+          await categoryModel.findOneAndUpdate({ '_id': oldID }, { name: newName });
         }
         this.listCategories = await categoryModel.find();
       },
@@ -439,7 +441,7 @@
           id: p.id,
           name: p.name,
           price: p.price,
-          category: p.category._id,
+          category: p.category.name,
           plastic: p.plastic,
           barcode: p.barcode
         }))
@@ -468,7 +470,6 @@
         const setting = await cms.getModel('PosSetting').findOne();
         return setting.taxCategory;
       },
-      //<!--</editor-fold>-->
 
       //payment view
       async getListPayments() {

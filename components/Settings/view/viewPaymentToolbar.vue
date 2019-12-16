@@ -12,21 +12,31 @@
       </g-icon>
       Edit
     </g-btn>
-    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" @click="openDialogDeletePayment">
+    <g-btn :uppercase="false" background-color="white" :disabled="!selectedPayment" text-color="#1d1d26" @click="openDialogDelete">
       <g-icon class="mr-2" svg>
         icon-trash
       </g-icon>
       Delete
     </g-btn>
+    <dialog-confirm-delete type="payment" :label="selectedPayment ? selectedPayment.name : ''" v-model="dialogConfirmDelete" @submit="deletePayment"/>
   </fragment>
 </template>
 
 <script>
+  import DialogConfirmDelete from '../dialog/dialogConfirmDelete';
   export default {
     name: 'viewPaymentToolbar',
+    components: { DialogConfirmDelete },
     injectService:[
-      'PosStore:isEditPayment'
+      'PosStore:isEditPayment',
+      'PosStore:selectedPayment',
+      'PosStore:updatePayment'
     ],
+    data() {
+      return {
+        dialogConfirmDelete: false
+      }
+    },
     methods: {
       openDialogNewPayment() {
         this.isEditPayment = false;
@@ -36,8 +46,12 @@
         this.isEditPayment = true;
         this.$getService('dialogNewPayment:setActive')(true)
       },
-      openDialogDeletePayment() {
-        this.$getService('dialogDeletePayment:setActive')(true)
+      openDialogDelete() {
+        this.dialogConfirmDelete = true;
+      },
+      async deletePayment() {
+        await this.updatePayment(this.selectedPayment);
+        this.selectedPayment = null;
       }
     }
   }

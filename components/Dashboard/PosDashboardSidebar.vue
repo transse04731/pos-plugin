@@ -26,10 +26,6 @@
         type: String,
         default: 'Admin'
       },
-      srcImg: {
-        type: String,
-        default: 'https://carlisletheacarlisletheatre.org/images/person-icon-flat-7.png'
-      },
     },
     data() {
       return {
@@ -47,6 +43,9 @@
     computed: {
       userName() {
         return this.user ? this.user.name : ''
+      },
+      srcImg() {
+        return this.user ? this.user.avatar : ''
       }
     }
   }
@@ -65,7 +64,7 @@
     }
   }
 
-  .g-treeview-wrapper ::v-deep .g-treeview__active {
+  .g-treeview-wrapper ::v-deep .g-treeview-item.g-treeview__active {
     background: linear-gradient(9.78deg, #3949AB 0%, #4FC3F7 100%) !important;
     box-shadow: 0 1px 8px 1px rgba(28, 144, 196, 0.5);
     border-top-right-radius: 4px;

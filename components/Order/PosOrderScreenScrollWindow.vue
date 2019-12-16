@@ -15,6 +15,7 @@
                v-for="(item, i) in window"
                :key="`btn_${i}`"
                :background-color="(item.layouts.length > 0 && item.layouts[0].color)|| '#FFF'"
+               :style="[!item.layouts[0] || item.layouts[0].color === 'white' ? {border: '1px solid #979797'}: null]"
                height="100%"
                @click="addProduct(item)"
         >
@@ -93,8 +94,8 @@
 
       posStore.changeProductList = (newValue, oldValue) => {
         if (newValue) {
-          const newCategory = newValue._id
-          const oldCategory = oldValue && oldValue._id
+          const newCategory = newValue.name
+          const oldCategory = oldValue && oldValue.name
           if (newCategory && this.$refs[`window_${newCategory}`]) {
             this.$refs[`window_${newCategory}`][0].$el.style.display = 'flex'
             this.$refs[`group_${newCategory}`][0].$el.style.display = 'flex'

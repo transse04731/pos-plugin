@@ -9,7 +9,7 @@
           <p class="pa-2 fs-small fw-600">{{userName}}</p>
         </div>
       </template>
-      <g-side-bar-tree-view :data="sidebarData" v-model="internalValue"/>
+      <g-side-bar-tree-view :data="sidebarData" :auto-collapse="false" v-model="internalValue"/>
     </g-sidebar>
     <router-view class="flex-grow-1"></router-view>
   </div>
@@ -49,6 +49,10 @@
 
       .g-treeview-children i:not(.g-treeview-icon__small) {
         font-size: 16px !important;
+      }
+
+      &.g-sidebar__medium .g-treeview-title {
+        font-size: 14px;
       }
     }
   }

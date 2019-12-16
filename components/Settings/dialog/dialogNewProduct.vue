@@ -10,7 +10,7 @@
             <pos-text-field :key="'pName'+key" label="Name" placeholder="Fill your number" @click="openDialogDetail('name')" v-model="productName" required/>
             <pos-select :key="'taxCate'+key" label="Tax Category" :items="taxes" item-text="text" item-value="value" v-model="taxCategory" append-icon="mdi-chevron-down" required/>
             <pos-text-field label="Product ID" placeholder="Auto generate" disabled @click="openDialogDetail('id')" v-model="productID"/>
-            <pos-select :key="'pCate'+key" label="Product Category" :items="categories" item-text="_id" item-value="value" v-model="productCategory" append-icon="mdi-chevron-down" required/>
+            <pos-select :key="'pCate'+key" label="Product Category" :items="categories" item-text="name" item-value="value" return-object v-model="productCategory" append-icon="mdi-chevron-down" required/>
             <pos-select label="Unit" :items="units" v-model="unit" append-icon="mdi-chevron-down"/>
             <div></div>
             <div class="row-flex">
@@ -75,7 +75,7 @@
               </pos-text-field>
             </div>
             <div>
-              <pos-text-field ref="barcode" abel="Barcode/PLU" placeholder="Fill your number" v-model="barcode" @click="keyboardFocus = 'barcode'">
+              <pos-text-field ref="barcode" label="Barcode/PLU" placeholder="Fill your number" v-model="barcode" @click="keyboardFocus = 'barcode'">
                 <template v-slot:append>
                   <g-icon svg>icon-scanning_barcode</g-icon>
                 </template>
@@ -186,8 +186,8 @@
     },
     async created() {
       this.categories = (await this.getAllCategories()).map(c => ({
-        _id: c._id,
-        value: c._id
+        ...c,
+        value: c.name,
       }));
       this.taxes = (await this.getAllTaxCategory()).map(t => ({
 				text: t.name,
@@ -212,8 +212,8 @@
       async submit() {
         const product = {
           name: this.productName,
-          category: this.productCategory,
-          tax: parseFloat(this.taxCategory.substr(0, this.taxCategory.length - 1)),
+          category: this.productCategory._id,
+          tax: this.taxCategory,
           id: this.productID,
           price: parseFloat(this.productPrice),
           barcode: this.productBarcode,
@@ -224,7 +224,12 @@
             active: this.active,
             showOnOrderScreen: this.showOnOrderScreen,
             manualPrice: this.manualPrice,
-          }
+          },
+          layouts: [
+            {
+              'color': 'white'
+            }
+          ]
         }
         this.dialogNewProduct = false;
         await this.createNewProduct(product);

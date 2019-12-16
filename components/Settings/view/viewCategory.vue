@@ -4,7 +4,7 @@
 			<th>Name</th>
 		</tr>
 		<tr v-for="category in listCategories" :class="[(selectedCategory && selectedCategory._id === category._id) && 'bordered']" @click="select(category)">
-			<td>{{category._id}}</td>
+			<td>{{category.name}}</td>
 		</tr>
 	</g-simple-table>
 </template>

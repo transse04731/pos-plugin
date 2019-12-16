@@ -5,7 +5,7 @@
         Confirmation
       </g-card-title>
       <g-card-text>
-        Are you sure you want to delete payment <b>"{{selectedPayment && selectedPayment.name}}"</b>?
+        Are you sure you want to delete <span v-if="type">{{type}}</span> <b v-if="label">"{{label}}"</b>?
       </g-card-text>
       <g-card-actions>
         <g-btn :uppercase="false" flat background-color="#efefef" @click="dialog = false">Cancel</g-btn>
@@ -17,14 +17,12 @@
 
 <script>
   export default {
-    name: 'dialogDeletePayment',
+    name: 'dialogConfirmDelete',
     props: {
       value: Boolean,
+      type: String,
+      label: String,
     },
-		injectService: [
-				'PosStore:selectedPayment',
-				'PosStore:updatePayment'
-		],
     computed: {
       dialog: {
         get() {
@@ -36,12 +34,11 @@
       }
     },
     methods: {
-    	async submit() {
-    		await this.updatePayment(this.selectedPayment);
-    		this.selectedPayment = null;
-    		this.dialog = false;
-			}
-		}
+      submit() {
+        this.$emit('submit');
+        this.dialog = false;
+      }
+    }
   }
 </script>
 

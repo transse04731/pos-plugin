@@ -56,7 +56,7 @@
       computedName: {
         get() {
           if (this.isEditCategory && this.selectedCategory && !this.isParsedValue) {
-            this.name = this.selectedCategory._id;
+            this.name = this.selectedCategory.name;
             this.isParsedValue = true;
           }
           return this.name;
@@ -71,9 +71,9 @@
     methods: {
       async save() {
         if (this.computedName) {
-          let oldName;
-          if (this.isEditCategory) oldName = this.selectedCategory && this.selectedCategory._id;
-          await this.updateCategory(oldName, this.computedName);
+          let oldID;
+          if (this.isEditCategory) oldID = this.selectedCategory && this.selectedCategory._id;
+          await this.updateCategory(oldID, this.computedName);
         }
         this.computedName = '';
         this.selectedCategory = null;

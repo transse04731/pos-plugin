@@ -6,7 +6,7 @@
 			</g-icon>
 			Edit
 		</g-btn>
-		<g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-2" @click="deleteCategory">
+		<g-btn :uppercase="false" background-color="white" text-color="#1d1d26" :disabled="!selectedCategory" class="mr-2" @click="openDialogDelete">
 			<g-icon class="mr-2" svg>
 				icon-trash
 			</g-icon>
@@ -15,25 +15,35 @@
 		<g-btn :uppercase="false" flat background-color="green" text-color="white" @click="openDialogNewCategory">
 			+ Create new category
 		</g-btn>
+		<dialog-confirm-delete type="Category" :label="selectedCategory ? selectedCategory.name : ''" v-model="dialogConfirmDelete" @submit="deleteCategory"/>
 	</fragment>
 </template>
 
 <script>
-  export default {
+  import DialogConfirmDelete from '../dialog/dialogConfirmDelete';
+	export default {
     name: 'viewCategoryToolbar',
-    injectService: [
+		components: { DialogConfirmDelete },
+		injectService: [
       'PosStore:selectedCategory',
       'PosStore:updateCategory',
       'PosStore:isEditCategory',
     ],
+		data() {
+    	return {
+    		dialogConfirmDelete: false
+			}
+		},
     methods: {
       openDialogNewCategory() {
         this.isEditCategory = false;
         this.$getService('dialogNewCategory:setActive')(true)
       },
+			openDialogDelete() {
+      	this.dialogConfirmDelete = true;
+			},
       async deleteCategory() {
-        const name = this.selectedCategory._id;
-        await this.updateCategory(name);
+        await this.updateCategory(this.selectedCategory._id);
         this.selectedCategory = null;
       },
       openDialogEditCategory() {
