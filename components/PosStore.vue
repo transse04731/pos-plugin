@@ -471,6 +471,7 @@
         return setting.taxCategory;
       },
 
+      //article screen
       //payment view
       async getListPayments() {
         const setting = await cms.getModel('PosSetting').findOne({});
@@ -692,6 +693,29 @@
           }
         }
       },
+      //Fully reset layout of button
+      //Usage: resetLayoutFnBtn('leftFunctionButtons')
+      async resetLayoutFnBtn(dbButtonList) {
+        let posSettings = await cms.getModel('PosSetting').findOne();
+        //console.log('pos Settings Model', posSettings['leftFunctionButtons']);
+        if (posSettings[dbButtonList]) {
+          try {
+            for (let item of posSettings[dbButtonList]) {
+              console.log('item', item);
+              await cms.getModel('PosSetting').findOneAndUpdate({ [`${dbButtonList}._id`]: item._id }, {
+                '$set': {
+                  [`${dbButtonList}.$.rows`]: item.originalRows,
+                  [`${dbButtonList}.$.cols`]: item.originalCols,
+                  [`${dbButtonList}.$.containedButtons`]: []
+                }
+              });
+            }
+          } catch (e) {
+            console.log(e);
+          }
+        }
+
+      }
       //<!--</editor-fold>-->
     },
     created() {

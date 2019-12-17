@@ -132,7 +132,7 @@
           itemMergeCols.push(itemCol);
           itemMergeColsRaw.push(i.col);
           if (this.internalValue.indexOf(i) !== 0) {
-            mergedButtons.push(i.value);
+            mergedButtons.push(i.buttonId);
           }
         }
 
@@ -156,20 +156,20 @@
         if (mergedButtons.length > 0) {
           //for split buttons
           //if current mergeMap has the selected button then concat to its children
-          if (this.mergeMap.hasOwnProperty(this.internalValue[0].value)) {
-            this.mergeMap[this.internalValue[0].value] = this.mergeMap[this.internalValue[0].value].concat(mergedButtons);
+          if (this.mergeMap.hasOwnProperty(this.internalValue[0].buttonId)) {
+            this.mergeMap[this.internalValue[0].buttonId] = this.mergeMap[this.internalValue[0].buttonId].concat(mergedButtons);
             for (let item of mergedButtons) {
               if (this.mergeMap.hasOwnProperty(item)) {
-                this.mergeMap[this.internalValue[0].value] = this.mergeMap[this.internalValue[0].value].concat(this.mergeMap[item]);
+                this.mergeMap[this.internalValue[0].buttonId] = this.mergeMap[this.internalValue[0].buttonId].concat(this.mergeMap[item]);
                 delete this.mergeMap[item]
               }
             }
           } else {    //else its a new container button, add it as a new property //then remove merge map key:value that is in mergedButtons
-            this.mergeMap = { ...this.mergeMap, ...{ [this.internalValue[0].value]: mergedButtons } };
+            this.mergeMap = { ...this.mergeMap, ...{ [this.internalValue[0].buttonId]: mergedButtons } };
             //If the button is the children & in mergeMap too, remove it
             for (let item of mergedButtons) {
               if (this.mergeMap.hasOwnProperty(item)) {
-                this.mergeMap[this.internalValue[0].value] = this.mergeMap[this.internalValue[0].value].concat(this.mergeMap[item]);
+                this.mergeMap[this.internalValue[0].buttonId] = this.mergeMap[this.internalValue[0].buttonId].concat(this.mergeMap[item]);
                 delete this.mergeMap[item]
               }
             }
@@ -190,12 +190,12 @@
       },
       splitButtons() {
         let button = this.internalValue[0];
-        let childrenButtons = this.mergeMap[button.value];
+        let childrenButtons = this.mergeMap[button.buttonId];
         if (!button || !childrenButtons) {
           return
         }
         for (let item of this.items) {
-          if (item.value === this.internalValue[0].value) {
+          if (item.buttonId === this.internalValue[0].buttonId) {
             this.internalValue[0].col[0] = item.originalCol[0];
             this.internalValue[0].col[1] = item.originalCol[1];
             this.internalValue[0].row[0] = item.originalRow[0];
@@ -206,16 +206,16 @@
         //Reset styles for contained inside buttons
         for (let child of childrenButtons) {
           //reset its value in newItems by value in item
-          //let valueOfChild = child.value;
-          let originalItem = this.items.find(x => x.value === child);
-          let newItem = this.internalNewItems.find(x => x.value === child);
+          //let valueOfChild = child.buttonId;
+          let originalItem = this.items.find(x => x.buttonId === child);
+          let newItem = this.internalNewItems.find(x => x.buttonId === child);
           if (newItem && originalItem) {
             newItem.col[0] = originalItem.originalCol[0];
             newItem.col[1] = originalItem.originalCol[1];
             newItem.row[0] = originalItem.originalRow[0];
             newItem.row[1] = originalItem.originalRow[1];
 
-            delete this.mergeMap[button.value]
+            delete this.mergeMap[button.buttonId]
           }
         }
 

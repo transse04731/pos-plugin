@@ -10,7 +10,7 @@
     </div>
 
     <div area="button-action" style="padding: 45px 20px 20px 20px;" v-show="isButtonSelected && !isInConfigLayoutMode">
-      <g-btn :uppercase="false" :disabled="isClearBtnDisabled" @click="onClearButtonText" background-color="white" elevation="0" text-color="red">
+      <g-btn :disabled="isClearBtnDisabled" :uppercase="false" @click="onClearButtonText" background-color="white" elevation="0" text-color="red">
         <g-icon size="16" style="margin-right: 8px">mdi-minus-circle</g-icon>
         Clear
       </g-btn>
@@ -28,7 +28,7 @@
       </pos-select>
     </div>
 
-    <div area="function-action" style="padding: 3px;" v-show="isButtonSelected && !isInConfigLayoutMode && showFunctionValue">
+    <div area="function-action" style="padding: 1px;" v-show="isButtonSelected && !isInConfigLayoutMode && showFunctionValue">
       <pos-text-field :value="textFieldFunctionValue" @blur="updateBtnGrid" @input="(val) => updateButton(val, 'buttonFunctionValue')" label="Value" placeholder="Fill your value"></pos-text-field>
     </div>
 
@@ -36,14 +36,14 @@
       <p class="title">Color</p>
       <g-grid-select :grid="false" :items="buttonColors" return-object v-model="selectedColor">
         <template #default="{toggleSelect, item, index}">
-          <g-btn :uppercase="false" :key="index" :ripple="false" :style="{marginRight: '14px', boxShadow: 'none', borderRadius: '50%', width: '38px', minWidth: '38px',height: '38px', border: '1px solid #D2D2D2', backgroundColor: item.value }" @click="toggleSelect(item)"></g-btn>
+          <g-btn :key="index" :ripple="false" :style="{marginRight: '14px', boxShadow: 'none', borderRadius: '50%', width: '38px', minWidth: '38px',height: '38px', border: '1px solid #D2D2D2', backgroundColor: item.value }" :uppercase="false" @click="toggleSelect(item)"></g-btn>
         </template>
         <template #selected="{toggleSelect, item, index}">
           <g-badge :badge-size="12" overlay style="margin-right: 14px;">
             <template v-slot:badge>
               <g-icon>done</g-icon>
             </template>
-            <g-btn :uppercase="false" :ripple="false" :style="{boxShadow: 'none', borderRadius: '50%', width: '38px', minWidth: '38px', height: '38px', border: '2px solid #1271FF', backgroundColor: item.value}" @click="toggleSelect(item)">
+            <g-btn :ripple="false" :style="{boxShadow: 'none', borderRadius: '50%', width: '38px', minWidth: '38px', height: '38px', border: '2px solid #1271FF', backgroundColor: item.value}" :uppercase="false" @click="toggleSelect(item)">
               {{item.optionTitle}}
             </g-btn>
           </g-badge>
@@ -51,15 +51,15 @@
       </g-grid-select>
     </div>
 
-    <g-button-merger :items="buttonGroupItems" :received-merge-map="mergeMap" :received-merged-buttons="mergedButtons" :value="selectedButtons" @input="updateBtnGrid" @merged="setMergedButtons" area="button-chooser" class="pa-2" ref="merger">
+    <g-button-merger :cols="computedLeftBtnMergerCols" :items="buttonGroupItems" :received-merge-map="mergeMap" :received-merged-buttons="mergedButtons" :rows="computedLeftBtnMergerRows" :style="computedLeftBtnStyles" :value="selectedButtons" @input="updateBtnGrid" @merged="setMergedButtons" area="button-chooser" class="pa-2" ref="merger">
       <template #default="{toggleSelect, item, index}">
-        <g-btn :uppercase="false" :style="{ display: mergedButtons.indexOf(item.value) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, borderColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : '', border: '1px solid #979797'}" @click="toggleSelect(item)"
+        <g-btn :style="{ display: mergedButtons.indexOf(item.buttonId) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, borderColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : '', border: '1px solid #979797'}" :uppercase="false" @click="toggleSelect(item)"
                elevation="0" height="100%" width="100%">
           {{item.text}}
         </g-btn>
       </template>
       <template #selected="{toggleSelect, item, index}">
-        <g-btn :uppercase="false" :class="activeSelectedButton" :style="{ display: mergedButtons.indexOf(item.value) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : ''}" @click="toggleSelect(item)"
+        <g-btn :class="activeSelectedButton" :style="{ display: mergedButtons.indexOf(item.buttonId) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : ''}" :uppercase="false" @click="toggleSelect(item)"
                elevation="0" height="100%" width="100%">
           {{item.text}}
         </g-btn>
@@ -76,7 +76,7 @@
     </div>
 
     <div area="button-control" style="background-color: #EEEEEE; padding: 12px; position: relative; bottom: 0; display: flex;">
-      <g-btn :uppercase="false" background-color="white" class="mr-2" @click="$router.push({ path: '/view/test-pos-settings' })">
+      <g-btn :uppercase="false" @click="$router.push({ path: '/view/test-pos-settings' })" background-color="white" class="mr-2">
         <g-icon class="mr-2" svg>icon-back</g-icon>
         <span style="color: rgba(0, 0, 0, 0.87)">Back</span>
       </g-btn>
@@ -105,17 +105,17 @@
         </div>
       </g-menu>
       <g-spacer/>
-      <g-btn :uppercase="false" :disabled="selectedButtons.length <= 1" @click="onMerge" background-color="#1976D2" text-color="white" v-if="mergeMode">
+      <g-btn :disabled="selectedButtons.length <= 1" :uppercase="false" @click="onMerge" background-color="#1976D2" text-color="white" v-if="mergeMode">
         <g-icon style="margin-right: 5px;" svg>icon-merge</g-icon>
         Merge
       </g-btn>
-      <g-btn :uppercase="false" :disabled="validateSplit()" @click="onSplit" background-color="#1976D2" text-color="white" v-if="splitMode">
+      <g-btn :disabled="validateSplit()" :uppercase="false" @click="onSplit" background-color="#1976D2" text-color="white" v-if="splitMode">
         <g-icon style="margin-right: 5px" svg>icon-split</g-icon>
         Split
       </g-btn>
     </div>
     <div area="menu">
-      <g-btn :uppercase="false" :key="i" :style="item.style ? item.style : ''" background-color="#fff" elevation="0"
+      <g-btn :key="i" :style="item.style ? item.style : ''" :uppercase="false" background-color="#fff" elevation="0"
              height="100%" text-color="#1d1d26" v-for="(item, i) in menu">
         {{item.title}}
       </g-btn>
@@ -127,15 +127,15 @@
     <div area="main">
       <g-scroll-window :show-arrows="false" area="window" v-model="window">
         <g-scroll-window-item :key="i" v-for="(items, i) in listItems">
-          <g-btn :uppercase="false" :background-color="item.color" :key="i" flat height="100%" v-for="(item, i) in items">{{item.title}}</g-btn>
+          <g-btn :background-color="item.color" :key="i" :uppercase="false" flat height="100%" v-for="(item, i) in items">{{item.title}}</g-btn>
         </g-scroll-window-item>
       </g-scroll-window>
 
-      <g-item-group :items="listItems" :return-object="false" area="delimeter" mandatory v-model="window">
+      <g-item-group :items="listItems" :return-object="false" area="delimeter" mandatory>
         <template v-slot:default="{ toggle, active }">
           <template v-for="(item, index) in listItems">
             <g-item :is-active="active(item)" :key="index">
-              <g-btn :uppercase="false" @click="toggle(item)"></g-btn>
+              <g-btn :uppercase="false"></g-btn>
             </g-item>
           </template>
         </template>
@@ -146,24 +146,24 @@
 
     <div area="keyboard__overlay" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99;"></div>
 
-    <g-number-keyboard :items="numpadItems" @submit="dialogProductSearch = true" area="keyboard" v-model="number">
+    <g-number-keyboard :items="numpadItems" area="keyboard">
       <template v-slot:screen>
         <div class="number-key-show ba-thin bg-grey-lighten-3" style="height: calc(16.6667% - 4px)">
-          <input class="number-key-text col-12 self-center bg-transparent fs-large-2 fw-700 pl-2" id="number_key_output" style="border: none; outline: none" v-model="number">
+          <input class="number-key-text col-12 self-center bg-transparent fs-large-2 fw-700 pl-2" id="number_key_output" style="border: none; outline: none">
         </div>
       </template>
     </g-number-keyboard>
 
     <g-button-merger :items="sideButtonItems" :received-merge-map="mergeMap" :received-merged-buttons="mergedButtons" :value="selectedButtons" @input="updateBtnGrid" @merged="setMergedButtons" area="buttons" cols="1fr 1fr" ref="sideMerger" rows="1fr 1fr 1fr 1fr 1fr 1fr">
       <template #default="{toggleSelect, item, index}">
-        <g-btn :uppercase="false" :style="{ display: mergedButtons.indexOf(item.value) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, borderColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : '', border: '1px solid #979797'}"
+        <g-btn :style="{ display: mergedButtons.indexOf(item.buttonId) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, borderColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : '', border: '1px solid #979797'}" :uppercase="false"
                @click="toggleSelect(item)"
                elevation="0" height="100%" width="100%">
           {{item.text}}
         </g-btn>
       </template>
       <template #selected="{toggleSelect, item, index}">
-        <g-btn :uppercase="false" :class="activeSelectedButton" :style="{ display: mergedButtons.indexOf(item.value) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : ''}" @click="toggleSelect(item)"
+        <g-btn :class="activeSelectedButton" :style="{ display: mergedButtons.indexOf(item.buttonId) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : ''}" :uppercase="false" @click="toggleSelect(item)"
                elevation="0" height="100%" width="100%">
           {{item.text}}
         </g-btn>
@@ -175,17 +175,14 @@
 <script>
   import _ from 'lodash'
   import fnButtonLayout2 from './fnButtonLayout2'
-  //import PosSelect from '../pos-shared-components/POSInput/PosSelect';
-  //import PosTextField from '../pos-shared-components/POSInput/PosTextField';
-
   import cms from 'cms'
-  //import GButtonMerger from './components/GButtonMerger';
 
   export default {
     name: 'PosFnButtonView',
-    //components: { GButtonMerger, PosSelect, PosTextField },
     data: () => ({
       layout: fnButtonLayout2,
+      numberOfConfigBtn: 0,
+      quickFnRows: 0,
       mergeMode: false,
       splitMode: false,
       showMenu: false,
@@ -193,7 +190,6 @@
       textFieldFunctionValue: '',
       textFieldValue: '',
       selectedButton: null,
-      number: 0,
       selectedColor: null,
       posSettings: null,
       buttonGroupItems: [],
@@ -203,15 +199,15 @@
       selectedButtons: [],
       selectedFunction: null,
       items: [
-        { text: 'Discount single item (dialog)', value: 'Discount single item (dialog)', hasValue: false },
-        { text: 'Discount single item by %', value: 'Discount single item by %', hasValue: true },
-        { text: 'Discount single item by €', value: 'Discount single item by €', hasValue: true },
-        { text: 'Product Lookup', value: 'Product Lookup', hasValue: false },
-        { text: 'Change price', value: 'Change price', hasValue: true },
-        { text: 'Plastic refund', value: 'Plastic refund', hasValue: false },
-        { text: 'Quick Cash', value: 'Quick Cash', hasValue: false },
-        { text: 'Save order', value: 'Save order', hasValue: false },
-        { text: 'Pay', value: 'Pay', hasValue: false },
+        { text: 'Discount single item (dialog)', value: 'discountSingleItemDialog', hasValue: false },
+        { text: 'Discount single item by %', value: 'discountSingleItemByPercent', hasValue: true },
+        { text: 'Discount single item by €', value: 'discountSingleItemByAmount', hasValue: true },
+        { text: 'Product Lookup', value: 'productLookup', hasValue: false },
+        { text: 'Change price', value: 'changePrice', hasValue: true },
+        { text: 'Plastic refund', value: 'plasticRefund', hasValue: false },
+        { text: 'Quick Cash', value: 'quickCash', hasValue: false },
+        { text: 'Save order', value: 'saveOrder', hasValue: false },
+        { text: 'Pay', value: 'pay', hasValue: false },
       ],
       buttonColors: [
         {
@@ -417,10 +413,10 @@
           return
         }
 
-        let valueOfBtn = this.selectedButtons[0].value;
+        let valueOfBtn = this.selectedButtons[0].buttonId;
 
         let index = _.findIndex(this.buttonGroupItems, function (item) {
-          return valueOfBtn === item.value;
+          return valueOfBtn === item.buttonId;
         });
 
         if (index >= 0) {
@@ -434,7 +430,7 @@
         }
 
         let sideButtonIndex = _.findIndex(this.sideButtonItems, function (item) {
-          return valueOfBtn === item.value;
+          return valueOfBtn === item.buttonId;
         });
 
         if (sideButtonIndex >= 0) {
@@ -459,6 +455,21 @@
       }
     },
     computed: {
+      computedLeftBtnMergerRows() {
+        return `repeat(${this.quickFnRows}, 1fr)`;
+      },
+      computedLeftBtnMergerCols() {
+        return '1fr 1fr 1fr 1fr'
+      },
+      computedLeftBtnStyles() {
+        if (this.quickFnRows === 0) {
+          return { height: 0 }
+        } else if (this.quickFnRows === 1) {
+          return { height: '50%', marginTop: 'auto' }
+        } else {
+          return { height: '100%' }
+        }
+      },
       isClearBtnDisabled() {
         return !this.selectedButtons || (this.selectedButtons[0] && this.selectedButtons[0].text.length <= 0);
       },
@@ -473,7 +484,7 @@
         if (!this.selectedButtons[0]) {
           return false;
         }
-        let sideButtonIndex = this.sideButtonItems.findIndex((item) => this.selectedButtons[0].value === item.value);
+        let sideButtonIndex = this.sideButtonItems.findIndex((item) => this.selectedButtons[0].buttonId === item.buttonId);
         return sideButtonIndex >= 0;
       },
       isButtonSelected() {
@@ -545,39 +556,46 @@
         this.selectedButtons = []
       },
       async updateBtnList(buttonList, dbButtonList) {
-
-        await cms.getModel('PosSetting').findOneAndUpdate({ _id: this.posSettings._id },
-          {
-            [dbButtonList]: buttonList.map(item => ({
-              ...item,
-              rowStart: item.row[0],
-              rowEnd: item.row[1],
-              colStart: item.col[0],
-              colEnd: item.col[1],
-              originalRowStart: item.originalRow[0],
-              originalRowEnd: item.originalRow[1],
-              originalColStart: item.originalCol[0],
-              originalColEnd: item.originalCol[1],
-              backgroundColor: item.style.backgroundColor,
-              textColor: item.style.textColor,
-              containedButtons: this.mergeMap ? this.mergeMap[item.value] : []
-            }))
-          })
+        try {
+          for (let item of buttonList) {
+            await cms.getModel('PosSetting').findOneAndUpdate({ [`${dbButtonList}._id`]: item.buttonId }, {
+              '$set': {
+                [`${dbButtonList}.$.backgroundColor`]: item.style.backgroundColor,
+                [`${dbButtonList}.$.text`]: item.text,
+                [`${dbButtonList}.$.rows`]: item.row,
+                [`${dbButtonList}.$.cols`]: item.col,
+                [`${dbButtonList}.$.textColor`]: item.style.backgroundColor !== '#FFFFFF' ? 'white' : 'black',
+                [`${dbButtonList}.$.buttonFunction`]: item.buttonFunction,
+                [`${dbButtonList}.$.buttonFunctionValue`]: item.buttonFunctionValue,
+                [`${dbButtonList}.$.containedButtons`]: this.mergeMap && this.mergeMap[item.buttonId] ? this.mergeMap[item.buttonId] : []
+              }
+            });
+          }
+        } catch (e) {
+          console.log('Error updating updateBtnList', e);
+        }
       },
-      async updateBtnGrid() {
-        let valueOfBtn = this.selectedButtons[0].value;
-        let foundItem = this.buttonGroupItems.find((item) => item.value === valueOfBtn);
-        if(foundItem) {
-          foundItem = this.selectedButtons[0];
+      updateBtnGrid() {
+        let valueOfBtn = this.selectedButtons[0].buttonId;
+        let foundItem = this.buttonGroupItems.find((item) => item.buttonId === valueOfBtn);
+        if (foundItem) {
+          try {
+            foundItem = this.selectedButtons[0];
+            this.updateBtnList(this.buttonGroupItems, 'leftFunctionButtons')
+          } catch (e) {
+            console.log('Error updating: ', e);
+          }
         }
-        this.updateBtnList(this.buttonGroupItems,'leftFunctionButtons')
 
-        let foundSideItem = this.sideButtonItems.find((item) => item.value === valueOfBtn);
-        if(foundSideItem) {
-          foundSideItem = this.selectedButtons[0];
+        let foundSideItem = this.sideButtonItems.find((item) => item.buttonId === valueOfBtn);
+        if (foundSideItem) {
+          try {
+            foundItem = this.selectedButtons[0];
+            this.updateBtnList(this.sideButtonItems, 'rightFunctionButtons')
+          } catch (e) {
+            console.log('Error updating: ', e);
+          }
         }
-
-        this.updateBtnList(this.sideButtonItems,'rightFunctionButtons')
       },
       setMergedButtons(mergedButtons, mergeMap) {
         this.mergedButtons = mergedButtons;
@@ -585,8 +603,8 @@
       },
       validateSplit() {
         return this.selectedButtons[0]
-          ? ((!this.$refs.merger.mergeMap.hasOwnProperty(this.selectedButtons[0].value)
-            && !this.$refs.sideMerger.mergeMap.hasOwnProperty(this.selectedButtons[0].value))
+          ? ((!this.$refs.merger.mergeMap.hasOwnProperty(this.selectedButtons[0].buttonId)
+            && !this.$refs.sideMerger.mergeMap.hasOwnProperty(this.selectedButtons[0].buttonId))
             || this.selectedButtons.length !== 1)
           : true;
       },
@@ -605,33 +623,34 @@
           return null;
         }
 
-        return this.buttonGroupItems.find((x) => x.value === button.value) || this.sideButtonItems.find((x) => x.value === button.value);
+        return this.buttonGroupItems.find((x) => x.buttonId === button.buttonId) || this.sideButtonItems.find((x) => x.buttonId === button.buttonId);
       },
       computedFetchedButtons(buttonList, dataList) {
         for (let item of buttonList) {
           const {
-            backgroundColor, buttonFunction, buttonFunctionValue, colEnd, colStart, originalColEnd, originalColStart, originalRowEnd,
-            originalRowStart, rowEnd, rowStart, text, textColor, value, containedButtons
+            backgroundColor, buttonFunction, buttonFunctionValue, originalRows, originalCols,
+            text, textColor, value, containedButtons, _id, rows, cols
           } = item;
 
           dataList.push({
-            row: [rowStart, rowEnd],
-            col: [colStart, colEnd],
-            originalRow: [originalRowStart, originalRowEnd],
-            originalCol: [originalColStart, originalColEnd],
+            row: rows,
+            col: cols,
+            originalRow: originalRows,
+            originalCol: originalCols,
             text,
             value,
             style: { backgroundColor: backgroundColor, textColor: textColor },
             buttonFunction,
-            buttonFunctionValue
+            buttonFunctionValue,
+            buttonId: _id
           })
 
           this.mergedButtons = this.mergedButtons.concat(containedButtons);
           if (containedButtons.length > 0) {
             if (this.mergeMap) {
-              this.mergeMap = Object.assign(this.mergeMap, { [value]: containedButtons });
+              this.mergeMap = Object.assign(this.mergeMap, { [_id]: containedButtons });
             } else {
-              this.mergeMap = Object.assign({}, { [value]: containedButtons });
+              this.mergeMap = Object.assign({}, { [_id]: containedButtons });
             }
           }
         }
@@ -640,7 +659,9 @@
     async mounted() {
       this.posSettings = await cms.getModel('PosSetting').findOne()
       if (this.posSettings) {
-        this.computedFetchedButtons(this.posSettings['leftFunctionButtons'], this.buttonGroupItems);
+        this.quickFnRows = this.posSettings['generalSetting']['quickFnRows'] || 0;
+        this.numberOfConfigBtn = 4 * this.quickFnRows;
+        this.computedFetchedButtons(_.slice(this.posSettings['leftFunctionButtons'], 0, this.numberOfConfigBtn), this.buttonGroupItems);
         this.computedFetchedButtons(this.posSettings['rightFunctionButtons'], this.sideButtonItems);
       }
 
@@ -660,6 +681,12 @@
   .button-name {
     ::v-deep .bs-tf-wrapper {
       margin-left: 0;
+    }
+  }
+
+  .main {
+    ::v-deep .g-window {
+      box-shadow: none;
     }
   }
 
@@ -687,11 +714,17 @@
   }
 
   .function {
-    ::v-deep .g-select .g-menu--activator .g-tf {
-      border: 1px solid #ced4da !important;
+    .g-select {
+      ::v-deep .g-tf-wrapper {
+        fieldset {
+          .g-tf {
+            border: 1px solid #ced4da !important;
 
-      .inputGroup .input .g-tf-input {
-        font-size: 15px;
+            .inputGroup .input .g-tf-input {
+              font-size: 15px;
+            }
+          }
+        }
       }
     }
   }
@@ -772,5 +805,55 @@
     &.g-btn__text {
       border: 0;
     }
+  }
+
+  .main {
+    padding: 6px 6px 0 6px;
+    overflow: hidden;
+
+    ::v-deep .g-window {
+      width: 100%;
+
+      .g-window__container {
+        height: 100%;
+      }
+
+      .g-window-item,
+      .g-scroll-window-item {
+        height: 100%;
+        display: grid;
+        grid-template-rows: repeat(7, 1fr);
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 6px;
+        margin-right: 6px;
+      }
+    }
+
+    .g-item-group {
+      align-items: center;
+      justify-content: center;
+
+      .g-btn {
+        width: 8px !important;
+        height: 8px !important;
+        min-width: 0 !important;
+        padding: 0 !important;
+        margin: 0 6px;
+        box-shadow: none;
+        background-color: #E0E0E0 !important;
+      }
+
+      .g-item__active .g-btn {
+        background-color: #2196F3 !important;
+      }
+    }
+  }
+
+  .keyboard {
+    padding: 8px 0 8px 8px;
+  }
+
+  .buttons {
+    padding: 8px 8px 8px 0;
   }
 </style>
