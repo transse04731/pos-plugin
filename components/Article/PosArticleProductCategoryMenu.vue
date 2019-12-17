@@ -2,7 +2,7 @@
   <div area="menu">
     <g-btn :class="[item === activeCategory ? 'menu__active' : '']" :key="i" :uppercase="false" @click.stop="select(item)" background-color="#fff" elevation="0" height="100%"
            text-color="#1d1d26" v-for="(item, i) in menu">
-      {{item._id}}
+      {{item.name}}
     </g-btn>
   </div>
 </template>

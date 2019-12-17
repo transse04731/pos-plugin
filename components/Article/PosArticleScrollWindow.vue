@@ -1,11 +1,11 @@
 <template>
   <div class="main">
-    <g-scroll-window :show-arrows="false" area="window" elevation="0" v-model="activeWindow">
-      <g-scroll-window-item :key="windowIndex" v-for="(window, windowIndex) in productWindows">
-        <g-btn :uppercase="false" :active="articleSelectedProductButton && (articleSelectedProductButton._id === item._id)"
-               :active-class="productActive"
+    <g-scroll-window :show-arrows="false" v-model="activeWindow" area="window" elevation="0">
+      <g-scroll-window-item :key="windowIndex" v-for="(window, windowIndex) in productWindows" @input="updateActiveWindow(windowIndex)">
+        <g-btn :active="articleSelectedProductButton && (articleSelectedProductButton._id === item._id)" :active-class="productActive"
                :key="i"
                :style="{order: getProductGridOrder(item), backgroundColor: item.layouts[0].color}"
+               :uppercase="false"
                @click="selectArticle(item)"
                flat
                height="100%"
@@ -18,7 +18,7 @@
     <g-item-group :items="productWindows" :return-object="false" area="delimiter" mandatory v-model="activeWindow">
       <template v-slot:default="{ toggle, active }">
         <template v-for="(item, index) in productWindows">
-          <g-item :is-active="active(item)" :key="index" :item="item">
+          <g-item :is-active="active(item)" :item="item" :key="index">
             <g-btn :uppercase="false" @click="toggle(item)" border-radius="50%"></g-btn>
           </g-item>
         </template>
@@ -43,6 +43,11 @@
       return {
         activeProductWindow: 0,
         productActive: 'product-active',
+      }
+    },
+    methods: {
+      updateActiveWindow(value) {
+        this.activeWindow = value
       }
     },
     computed: {

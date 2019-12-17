@@ -24,6 +24,7 @@
                   itemValue="value"
                   placeholder="Select"
                   v-model="selectedFunction"
+                  @input="(val) => updateButtonFunction(val)"
       >
       </pos-select>
     </div>
@@ -36,14 +37,14 @@
       <p class="title">Color</p>
       <g-grid-select :grid="false" :items="buttonColors" return-object v-model="selectedColor">
         <template #default="{toggleSelect, item, index}">
-          <g-btn :key="index" :ripple="false" :style="{marginRight: '14px', boxShadow: 'none', borderRadius: '50%', width: '38px', minWidth: '38px',height: '38px', border: '1px solid #D2D2D2', backgroundColor: item.value }" :uppercase="false" @click="toggleSelect(item)"></g-btn>
+          <g-btn :key="index" :ripple="false" :style="{marginRight: '14px', boxShadow: 'none', borderRadius: '50%', width: '38px', minWidth: '38px',height: '38px', border: '1px solid #D2D2D2', backgroundColor: item.value }" :uppercase="false" @click="toggleSelect(item); updateBtnGrid();"></g-btn>
         </template>
         <template #selected="{toggleSelect, item, index}">
           <g-badge :badge-size="12" overlay style="margin-right: 14px;">
             <template v-slot:badge>
               <g-icon>done</g-icon>
             </template>
-            <g-btn :ripple="false" :style="{boxShadow: 'none', borderRadius: '50%', width: '38px', minWidth: '38px', height: '38px', border: '2px solid #1271FF', backgroundColor: item.value}" :uppercase="false" @click="toggleSelect(item)">
+            <g-btn :ripple="false" :style="{boxShadow: 'none', borderRadius: '50%', width: '38px', minWidth: '38px', height: '38px', border: '2px solid #1271FF', backgroundColor: item.value}" :uppercase="false">
               {{item.optionTitle}}
             </g-btn>
           </g-badge>
@@ -408,51 +409,6 @@
           this.selectedColor = null;
         }
       },
-      selectedColor: function () {
-        if (!this.selectedButtons[0]) {
-          return
-        }
-
-        let valueOfBtn = this.selectedButtons[0].buttonId;
-
-        let index = _.findIndex(this.buttonGroupItems, function (item) {
-          return valueOfBtn === item.buttonId;
-        });
-
-        if (index >= 0) {
-          if (this.selectedColor) {
-            this.buttonGroupItems[index].style.backgroundColor = this.selectedColor.value;
-            this.selectedButtons[0].style.backgroundColor = this.selectedColor.value;
-          } else {
-            this.buttonGroupItems[index].style.backgroundColor = '';
-            this.selectedButtons[0].style.backgroundColor = null;
-          }
-        }
-
-        let sideButtonIndex = _.findIndex(this.sideButtonItems, function (item) {
-          return valueOfBtn === item.buttonId;
-        });
-
-        if (sideButtonIndex >= 0) {
-          if (this.selectedColor) {
-            this.sideButtonItems[sideButtonIndex].style.backgroundColor = this.selectedColor.value;
-            this.selectedButtons[0].style.backgroundColor = this.selectedColor.value;
-          } else {
-            this.sideButtonItems[sideButtonIndex].style.backgroundColor = '';
-            this.selectedButtons[0].style.backgroundColor = null;
-          }
-        }
-
-        this.updateBtnGrid();
-      },
-      selectedFunction: function () {
-        if (!this.selectedButtons[0]) {
-          return
-        }
-
-        this.updateButton(this.selectedFunction, 'buttonFunction');
-        this.updateBtnGrid();
-      }
     },
     computed: {
       computedLeftBtnMergerRows() {
@@ -575,10 +531,16 @@
           console.log('Error updating updateBtnList', e);
         }
       },
+      updateButtonFunction(value) {
+        this.updateButton(value, 'buttonFunction');
+        this.updateBtnGrid();
+      },
       updateBtnGrid() {
         let valueOfBtn = this.selectedButtons[0].buttonId;
         let foundItem = this.buttonGroupItems.find((item) => item.buttonId === valueOfBtn);
         if (foundItem) {
+          foundItem.style.backgroundColor = this.selectedColor.value;
+          this.selectedButtons[0].style.backgroundColor = this.selectedColor.value;
           try {
             foundItem = this.selectedButtons[0];
             this.updateBtnList(this.buttonGroupItems, 'leftFunctionButtons')
@@ -589,6 +551,8 @@
 
         let foundSideItem = this.sideButtonItems.find((item) => item.buttonId === valueOfBtn);
         if (foundSideItem) {
+          foundSideItem.style.backgroundColor = this.selectedColor.value;
+          this.selectedButtons[0].style.backgroundColor = this.selectedColor.value;
           try {
             foundItem = this.selectedButtons[0];
             this.updateBtnList(this.sideButtonItems, 'rightFunctionButtons')

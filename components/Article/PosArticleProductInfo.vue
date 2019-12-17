@@ -1,7 +1,7 @@
 <template>
   <div class="article-wrapper" style="height: 226px">
     <p class="category-title" style="">Category</p>
-    <p class="category-content" v-if="activeCategory && activeCategory._id">{{ activeCategory._id }}</p>
+    <p class="category-content" v-if="activeCategory && activeCategory.name">{{ activeCategory.name }}</p>
     <p class="product-title">Product</p>
 
     <div class="product-content-left" v-if="articleSelectedProductButton">
