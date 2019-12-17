@@ -76,7 +76,7 @@
 
 <script>
   //import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';
-  import { getInternalValue } from 'pos-vue-framework';
+  import { getInternalValue, Intersect } from 'pos-vue-framework';
 
   export default {
     name: 'dialogProductLookup',

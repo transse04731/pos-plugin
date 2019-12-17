@@ -46,8 +46,7 @@
 
 <script>
   import _ from 'lodash'
-  import GScrollWindow from 'pos-vue-framework/src/components/GWindow/GScrollWindow';
-  import GScrollWindowItem from 'pos-vue-framework/src/components/GWindow/GScrollWindowItem';
+  import {GScrollWindow, GScrollWindowItem} from 'pos-vue-framework';
 
   export default {
     name: 'PosOrderScreenScrollWindow',

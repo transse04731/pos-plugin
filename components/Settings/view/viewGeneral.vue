@@ -30,11 +30,8 @@
 </template>
 
 <script>
-	import GSwitch from 'pos-vue-framework/src/components/GSwitch/GSwitch'
-
   export default {
     name: 'viewGeneral',
-		components: { GSwitch },
     injectService: [
       'PosStore:generalSetting',
       'PosStore:getGeneralSetting',
