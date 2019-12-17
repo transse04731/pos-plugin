@@ -61,4 +61,8 @@
       border: 0;
     }
   }
+
+  .buttons {
+    padding: 8px 8px 8px 0;
+  }
 </style>

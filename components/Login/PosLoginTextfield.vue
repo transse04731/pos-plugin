@@ -10,13 +10,13 @@
 </template>
 
 <script>
-  import { getInternalValue } from 'pos-vue-framework/src/mixins/getVModel';
+  import { getInternalValue } from 'pos-vue-framework';
 
   export default {
     name: 'PosLoginTextfield',
     props: {
       value: String,
-      //incorrectPasscode: Boolean
+      incorrectPasscode: Boolean
     },
     data() {
       return {

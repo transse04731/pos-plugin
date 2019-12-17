@@ -42,7 +42,7 @@
 					<div class="filter">
 						Filter
 						<div class="group-chip">
-							<g-chip v-for="filter in productFilters" label small background-color="white" close class="ma-1" @close="removeFilter(filter)">
+							<g-chip v-for="(filter, i) in productFilters" :key="filter.title+i" label small background-color="white" close class="ma-1" @close="removeFilter(filter)">
 								<div>
 									<span class="chip-title">{{filter.title}}: </span>
 									<span class="chip-content">{{filter.text}}</span>
@@ -53,7 +53,7 @@
 					</div>
 				</td>
 			</tr>
-			<tr v-for="product in products">
+			<tr v-for="(product, i) in products" :key="i">
 				<td>
 					<g-checkbox v-model="selectedProduct" :value="product._id"/>
 				</td>
@@ -73,10 +73,10 @@
 </template>
 
 <script>
-	import PosTablePagination from '../../pos-shared-components/PosTablePagination';
+	//import PosTablePagination from '../../pos-shared-components/PosTablePagination';
 	export default {
     name: 'viewArticle',
-		components: { PosTablePagination },
+		//components: { PosTablePagination },
 		injectService: [
 		  'PosStore:getListProducts',
 		  'PosStore:listProducts',

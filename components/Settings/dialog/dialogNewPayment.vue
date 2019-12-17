@@ -4,7 +4,7 @@
 			<div class="form">
 				<p class="ml-1 mb-3">{{ isEditPayment && selectedPayment ? 'Edit' : 'Create New' }} Payment</p>
 				<pos-text-field style="width: 268px" label="Name" placeholder="Payment name" v-model="computedName"/>
-				<pos-file-input label="Icon" v-model="computedSrc"/>
+				<pos-file-input-image label="Icon" v-model="computedSrc"/>
 			</div>
 			<div class="keyboard-wrapper">
 				<pos-keyboard-full v-model="computedName"/>
@@ -26,13 +26,13 @@
 </template>
 
 <script>
-	import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
+	/*import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
 	import PosFileInput from '../../pos-shared-components/POSInput/PosFileInputImage';
-	import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';
+	import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';*/
 
   export default {
     name: 'dialogNewPayment',
-    components: { PosKeyboardFull, PosFileInput, PosTextField },
+    //components: { PosKeyboardFull, PosFileInput, PosTextField },
 		injectService: [
 			'PosStore:isEditPayment',
 			'PosStore:selectedPayment',

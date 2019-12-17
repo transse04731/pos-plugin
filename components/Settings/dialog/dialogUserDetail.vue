@@ -19,12 +19,11 @@
 </template>
 
 <script>
-  import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
-  import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';
-
+  //import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
+  //import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';
   export default {
     name: 'dialogUserDetail',
-    components: { PosKeyboardFull, PosTextField },
+    //components: { PosKeyboardFull, PosTextField },
     props: {
       value: null,
 			focusInput: String,

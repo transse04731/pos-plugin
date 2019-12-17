@@ -26,7 +26,7 @@
           <div class="filter-list">
             <span class="ml-1">Filter</span>
             <div class="group-chip">
-              <g-chip v-for="filter in orderHistoryFilters" label small background-color="white" close class="ma-1" @close="removeFilter(filter)">
+              <g-chip v-for="filter in orderHistoryFilters" :key="filter.title" label small background-color="white" close class="ma-1" @close="removeFilter(filter)">
                 <div>
                   <span class="chip-title">{{filter.title}}: </span>
                   <span class="chip-content">{{filter.text}}</span>
@@ -40,7 +40,7 @@
           </div>
         </td>
       </tr>
-      <tr v-for="order in orderHistoryOrders" :class="[order._id === orderHistoryCurrentOrder._id && 'tr__active']" @click="chooseOrder(order)">
+      <tr v-for="(order, i) in orderHistoryOrders" :key="i" :class="[order._id === orderHistoryCurrentOrder._id && 'tr__active']" @click="chooseOrder(order)">
         <td class="ta-right">{{order.id}}</td>
         <td class="ta-center">{{order.dateTime}}</td>
         <td class="ta-center">{{order.barcode}}</td>
@@ -57,10 +57,10 @@
 </template>
 <script>
 
-  import PosTablePagination from '../pos-shared-components/PosTablePagination';
+  //import PosTablePagination from '../pos-shared-components/PosTablePagination';
   export default {
     name: 'OrderHistoryTable',
-    components: { PosTablePagination },
+    //components: { PosTablePagination },
     props: {
       value: null,
     },

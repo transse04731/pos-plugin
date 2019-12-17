@@ -127,12 +127,12 @@
 
 <script>
   import articleLayout from './articleLayout'
-  import PosFunctionSortComponent from './PosFunctionSortComponent';
+  //import PosFunctionSortComponent from './PosFunctionSortComponent';
 
   export default {
     name: 'PosArticleView',
     components: {
-      PosFunctionSortComponent,
+      //PosFunctionSortComponent,
     },
     data: () => ({
       layout: articleLayout,

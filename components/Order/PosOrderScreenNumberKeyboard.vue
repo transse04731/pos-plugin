@@ -114,5 +114,7 @@
 </script>
 
 <style scoped>
-
+ .keyboard {
+   padding: 8px 0 8px 8px;
+ }
 </style>
