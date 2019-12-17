@@ -18,15 +18,8 @@
 
 <script>
 
-
-  import GGridSelect from 'pos-vue-framework/src/components/GGridSelect/GGridSelect';
-  import GBtn from 'pos-vue-framework/src/components/GBtn/GBtn';
-  import GBadge from 'pos-vue-framework/src/components/GBadge/GBadge';
-  import GIcon from 'pos-vue-framework/src/components/GIcon/GIcon';
-
   export default {
     name: 'PosColorSelector',
-    components: { GIcon, GBadge, GBtn, GGridSelect },
     injectService: ['PosStore:(setSelectedArticleColor, articleSelectedColor, activeCategory )'],
     watch: {
       activeCategory: function (newVal, oldVal) {

@@ -96,16 +96,16 @@
 </template>
 
 <script>
-  import PosSwitch from '../../pos-shared-components/PosSwitch';
+  //import PosSwitch from '../../pos-shared-components/PosSwitch';
   import layout from './layoutUserView';
-  import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
-  import DialogUserDetail from '../dialog/dialogUserDetail';
-	import DialogSelectAvatar from '../dialog/dialogSelectAvatar';
-	import DialogNewUser from '../dialog/dialogNewUser';
+  //import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
+  //import DialogUserDetail from '../dialog/dialogUserDetail';
+	//import DialogSelectAvatar from '../dialog/dialogSelectAvatar';
+	//import DialogNewUser from '../dialog/dialogNewUser';
 
   export default {
     name: 'StaffPermission',
-    components: { DialogNewUser, DialogSelectAvatar, DialogUserDetail, PosTextField, PosSwitch },
+    //components: { DialogNewUser, DialogSelectAvatar, DialogUserDetail, PosTextField, PosSwitch },
 		injectService: [
 				'PosStore:selectedUser',
 				'PosStore:listUsers',

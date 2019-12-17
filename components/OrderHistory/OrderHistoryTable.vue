@@ -57,10 +57,10 @@
 </template>
 <script>
 
-  import PosTablePagination from '../pos-shared-components/PosTablePagination';
+  //import PosTablePagination from '../pos-shared-components/PosTablePagination';
   export default {
     name: 'OrderHistoryTable',
-    components: { PosTablePagination },
+    //components: { PosTablePagination },
     props: {
       value: null,
     },

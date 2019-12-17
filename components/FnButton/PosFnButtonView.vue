@@ -175,15 +175,15 @@
 <script>
   import _ from 'lodash'
   import fnButtonLayout2 from './fnButtonLayout2'
-  import PosSelect from '../pos-shared-components/POSInput/PosSelect';
-  import PosTextField from '../pos-shared-components/POSInput/PosTextField';
+  //import PosSelect from '../pos-shared-components/POSInput/PosSelect';
+  //import PosTextField from '../pos-shared-components/POSInput/PosTextField';
 
   import cms from 'cms'
-  import GButtonMerger from './components/GButtonMerger';
+  //import GButtonMerger from './components/GButtonMerger';
 
   export default {
     name: 'PosFnButtonView',
-    components: { GButtonMerger, PosSelect, PosTextField },
+    //components: { GButtonMerger, PosSelect, PosTextField },
     data: () => ({
       layout: fnButtonLayout2,
       mergeMode: false,

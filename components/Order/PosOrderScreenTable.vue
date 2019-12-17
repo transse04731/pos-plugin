@@ -26,11 +26,11 @@
 </template>
 
 <script>
-  import TableExpansionRow from './components/TableExpansionRow';
+  //import TableExpansionRow from './components/TableExpansionRow';
 
   export default {
     name: 'PosOrderScreenTable',
-    components: { TableExpansionRow },
+    //components: { TableExpansionRow },
     injectService: ['PosStore:(addItemQuantity,removeItemQuantity)'],
     data() {
       return {

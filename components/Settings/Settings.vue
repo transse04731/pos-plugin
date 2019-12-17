@@ -16,11 +16,8 @@
 </template>
 
 <script>
-  import {GBtn, GImg, GAvatar, GSidebar, GSideBarTreeView} from 'pos-vue-framework/src/components';
-
   export default {
     name: 'Settings',
-    components: { GBtn, GImg, GAvatar, GSidebar, GSideBarTreeView },
     data() {
       return {
         nav: null,
