@@ -51,8 +51,8 @@
                 items: [
                   { title: 'POS', icon: ' ' },
                   { title: 'Thermal Printer', isView: true, icon: ' ' },
-                  { title: 'Customer Display', icon: ' '},
-                  { title: 'A4 Printer', icon: ' '},
+                  { title: 'Customer Display', icon: ' ' },
+                  { title: 'A4 Printer', icon: ' ' },
                 ]
               }
             ]
@@ -148,12 +148,12 @@
               const isFavourite = key === 'Favourite'
               Object.assign(products, {
                 [key]: _.chunk(groupedProducts[key], 28).map(list =>
-                  list.sort((current, next) => {
-                    return this.getProductGridOrder(current, isFavourite) - this.getProductGridOrder(next, isFavourite)
-                  }).map(product => ({
-                    ..._.omit(product, 'attributes'),
-                    originalPrice: product.price
-                  })))
+                    list.sort((current, next) => {
+                      return this.getProductGridOrder(current, isFavourite) - this.getProductGridOrder(next, isFavourite)
+                    }).map(product => ({
+                      ..._.omit(product, 'attributes'),
+                      originalPrice: product.price
+                    })))
               })
             }
           }
@@ -197,9 +197,9 @@
       },
       getProductGridOrder(product, isFavourite = false) {
         const layout = product.layouts && product.layouts.find(layout =>
-          isFavourite || (this.activeCategory && this.activeCategory.name === 'Favourite')
-            ? layout.favourite
-            : !layout.favourite
+            isFavourite || (this.activeCategory && this.activeCategory.name === 'Favourite')
+                ? layout.favourite
+                : !layout.favourite
         );
         return layout ? layout.order : 0
       },
@@ -385,7 +385,7 @@
         const categoryModel = cms.getModel('Category');
         if (oldID && !newName) {
           await categoryModel.deleteOne({ '_id': oldID });
-        } else if (!oldID && newName){
+        } else if (!oldID && newName) {
           await categoryModel.create({ name: newName });
         } else {
           await categoryModel.findOneAndUpdate({ '_id': oldID }, { name: newName });
@@ -441,8 +441,17 @@
         const setting = await cms.getModel('PosSetting').findOne();
         return setting.taxCategory;
       },
-
-      //article screen
+      async getHighestProductOrder(categoryId) {
+        const listMaxOrder = await cms.getModel('Product').aggregate([
+          { $unwind: { path: '$layouts' } },
+          {
+            $group: {
+              _id: '$category',
+              maxOrder: { $max: '$layouts.order' }
+            }
+          }])
+        return listMaxOrder.find(o => o._id === categoryId).maxOrder;
+      },
       //payment view
       async getListPayments() {
         const setting = await cms.getModel('PosSetting').findOne({});
@@ -452,39 +461,39 @@
         const settingModel = cms.getModel('PosSetting');
         if (oldPayment && !newPayment) {
           await settingModel.findOneAndUpdate(
-            {},
-            {
-              $pull: {
-                payment: { _id: oldPayment._id }
+              {},
+              {
+                $pull: {
+                  payment: { _id: oldPayment._id }
+                }
               }
-            }
           )
         } else if (newPayment && !oldPayment) {
           await settingModel.findOneAndUpdate(
-            {},
-            {
-              $push: {
-                payment: {...newPayment}
+              {},
+              {
+                $push: {
+                  payment: { ...newPayment }
+                }
               }
-            }
           )
         } else {
           await settingModel.findOneAndUpdate(
-            {
-              "payment._id": oldPayment._id
-            },
-            {
-              $set: {
-                "payment.$": newPayment,
+              {
+                'payment._id': oldPayment._id
+              },
+              {
+                $set: {
+                  'payment.$': newPayment,
+                }
               }
-            }
           )
         }
         await this.getListPayments();
       },
       //general setting screen
       async getGeneralSetting() {
-        const setting = await cms.getModel('PosSetting').findOne({generalSetting: {$exists: true}});
+        const setting = await cms.getModel('PosSetting').findOne({ generalSetting: { $exists: true } });
         this.generalSetting = setting.generalSetting;
       },
       async updateSetting() {
@@ -516,33 +525,33 @@
       },
       async updateUser(oldUserId, newUser) {
         const settingModel = cms.getModel('PosSetting');
-        if(oldUserId && !newUser) {
+        if (oldUserId && !newUser) {
           await settingModel.findOneAndUpdate({}, {
             $pull: {
-              user: {_id : oldUserId}
+              user: { _id: oldUserId }
             }
           })
-        } else if(newUser && !oldUserId) {
+        } else if (newUser && !oldUserId) {
           await settingModel.findOneAndUpdate({}, {
             $push: {
-              user: {...newUser}
+              user: { ...newUser }
             }
           })
         } else {
           await settingModel.findOneAndUpdate(
               {
-                "user._id": oldUserId
+                'user._id': oldUserId
               },
               {
                 $set: {
-                  "user.$": newUser,
+                  'user.$': newUser,
                 }
               }
           )
         }
         await this.getListUsers();
         //update currentUser logged in if change
-        if(this.user._id === oldUserId) {
+        if (this.user._id === oldUserId) {
           this.user = this.listUsers.find(u => u._id === oldUserId);
         }
       },
@@ -662,8 +671,8 @@
       //Usage: resetLayoutFnBtn('leftFunctionButtons')
       async resetLayoutFnBtn(dbButtonList) {
         let posSettings = await cms.getModel('PosSetting').findOne();
-        if(dbButtonList === 'leftFunctionButtons') {
-          this.leftButtonsUpdate ++;
+        if (dbButtonList === 'leftFunctionButtons') {
+          this.leftButtonsUpdate++;
         }
         if (posSettings[dbButtonList]) {
           try {
@@ -743,7 +752,7 @@
         await this.savePaidOrder({type: 'Cash', value: this.lastPayment});
       },
       pay() {
-        this.$router.push({path: `/view/test-pos-payment`})
+        this.$router.push({ path: `/view/test-pos-payment` })
       },
     },
     created() {
@@ -818,6 +827,7 @@
         getTotalProducts: this.getTotalProducts,
         createNewProduct: this.createNewProduct,
         getAllTaxCategory: this.getAllTaxCategory,
+        getHighestProductOrder: this.getHighestProductOrder,
         //payment view
         listPayments: this.listPayments,
         getListPayments: this.getListPayments,

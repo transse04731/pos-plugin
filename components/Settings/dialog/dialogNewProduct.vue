@@ -108,6 +108,7 @@
       'PosStore:getAllCategories',
       'PosStore:createNewProduct',
       'PosStore:getAllTaxCategory',
+      'PosStore:getHighestProductOrder',
     ],
     data() {
       return {
@@ -210,6 +211,7 @@
         this.dialogNewProductDetail = false;
       },
       async submit() {
+        const maxOrder = await this.getHighestProductOrder(this.productCategory._id);
         const product = {
           name: this.productName,
           category: this.productCategory._id,
@@ -227,7 +229,8 @@
           },
           layouts: [
             {
-              'color': 'white'
+              'color': 'white',
+              'order': maxOrder+1
             }
           ]
         }
