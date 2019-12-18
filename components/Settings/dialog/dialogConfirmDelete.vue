@@ -8,7 +8,7 @@
         Are you sure you want to delete <span v-if="type">{{type}}</span> <b v-if="label">"{{label}}"</b>?
       </g-card-text>
       <g-card-actions>
-        <g-btn :uppercase="false" flat background-color="#efefef" @click="dialog = false">Cancel</g-btn>
+        <g-btn :uppercase="false" outlined @click="dialog = false">Cancel</g-btn>
         <g-btn :uppercase="false" flat background-color="red lighten 2" text-color="white" @click="submit">OK</g-btn>
       </g-card-actions>
     </g-card>
@@ -60,6 +60,11 @@
 
       .g-btn {
         min-width: 120px !important;
+      }
+
+      .g-btn__outlined {
+        border: 1px solid #979797;
+        color: #1d1d26;
       }
     }
   }

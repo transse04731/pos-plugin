@@ -11,11 +11,11 @@
     </div>
     <div area="info__right">
       <g-avatar size="36">
-        <g-icon svg>icon-avatar</g-icon>
+        <img :src="user.avatar"/>
       </g-avatar>
       <div class="pa-1" style="line-height: 16px">
-        <p class="ta-right fw-700 fs-small">Admin</p>
-        <p class="fs-small-2">16:45 &#8231; May 20, 19</p>
+        <p class="ta-right fw-700 fs-small">{{user.name}}</p>
+        <p class="fs-small-2">{{formattedDate}}</p>
       </div>
     </div>
   </div>
@@ -24,6 +24,31 @@
 <script>
   export default {
     name: 'PosPaymentScreenInfo',
+    injectService: [
+      'PosStore:user',
+    ],
+    data() {
+      return {
+        date: new Date(),
+        setDateInterval: null
+      }
+    },
+    computed: {
+      formattedDate: {
+        get() {
+          return dayjs(this.date).format(`HH:mm ‧ MMM DD, YY`)
+        },
+        set(value) {
+          this.date = value
+        }
+      },
+    },
+    created() {
+      this.setDateInterval = setInterval(() => this.date = new Date(), 60000)
+    },
+    beforeDestroy() {
+      this.setDateInterval && clearInterval(this.setDateInterval)
+    }
   }
 </script>
 

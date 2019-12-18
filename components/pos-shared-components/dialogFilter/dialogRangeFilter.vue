@@ -11,7 +11,7 @@
 				<span>€ {{max}}</span>
 			</div>
 			<div class="buttons">
-				<g-btn :uppercase="false" text @click="internalValue = false" backgroundColor="#EFEFEF" text-color="#757575" width="120" style="margin-right: 8px">Cancel</g-btn>
+				<g-btn :uppercase="false" text @click="internalValue = false" outlined width="120" style="margin-right: 8px">Cancel</g-btn>
 				<g-btn :uppercase="false" text @click="submit" backgroundColor="#2979FF" text-color="#FFFFFF" width="120">OK</g-btn>
 			</div>
 		</div>
@@ -93,5 +93,10 @@
 		align-items: center;
 		justify-content: flex-end;
 		padding: 16px;
+
+		.g-btn__outlined {
+			border: 1px solid #979797;
+			color: #1d1d26;
+		}
 	}
 </style>

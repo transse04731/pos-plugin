@@ -5,7 +5,7 @@
 			<div class="screen">
 				<pos-text-field v-model="screenValue" large :label="label" :rules="rules" readOnly/>
 				<div class="buttons">
-					<g-btn :uppercase="false" text @click="internalValue = false" backgroundColor="#EFEFEF" text-color="#757575" width="120" class="mr-2">
+					<g-btn :uppercase="false" text @click="internalValue = false" outlined width="120" class="mr-2">
 						Cancel
 					</g-btn>
 					<g-btn :uppercase="false" text @click="submit" backgroundColor="#2979FF" text-color="#FFFFFF" width="120">
@@ -88,6 +88,11 @@
 		align-items: center;
 		justify-content: flex-end;
 		padding: 0 4px;
+
+		.g-btn__outlined {
+			border: 1px solid #979797;
+			color: #1d1d26;
+		}
 	}
 
 	.keyboard {

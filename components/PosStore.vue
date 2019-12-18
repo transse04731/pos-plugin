@@ -295,11 +295,14 @@
           status: 'paid',
           items: orderItems.map(item => ({
             ...item,
-            product: item._id
+            product: item._id,
+            date: new Date()
           })),
           date: new Date(),
-          payment: [{ type: this.currentOrder.payment || paymentMethod }],
-          vSum: this.paymentTotal
+          payment: [paymentMethod ? paymentMethod : { ...this.currentOrder.payment, value: this.paymentTotal}],
+          vSum: this.paymentTotal,
+          receive: this.paymentAmountTendered,
+          cashback: this.convertMoney(this.paymentChange)
         }
         if (this.currentOrder.status === 'inProgress') {
           await orderModel.findOneAndUpdate({ _id: this.currentOrder._id }, order)
@@ -737,8 +740,7 @@
       },
       async quickCash() {
         this.lastPayment = +this.paymentTotal
-        //todo add to order history
-        await this.savePaidOrder('Cash')
+        await this.savePaidOrder({type: 'Cash', value: this.lastPayment});
       },
       pay() {
         this.$router.push({path: `/view/test-pos-payment`})
@@ -747,6 +749,11 @@
     created() {
       this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
       this.user = cms.getList('PosSetting')[0].user[0]
+    },
+    watch: {
+      currentOrder: function () {
+        this.paymentAmountTendered = 0;
+      }
     },
     provide() {
       return {

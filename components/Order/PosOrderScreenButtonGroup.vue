@@ -22,7 +22,7 @@
   export default {
     name: 'PosOrderScreenButtonGroup',
     injectService: [
-      'PosStore:(chooseFunction, activeTableProduct, getPosSetting)'
+      'PosStore:(chooseFunction, activeTableProduct, getPosSetting, currentOrder)'
     ],
     data() {
       return {
@@ -44,6 +44,8 @@
       hasActiveOrderProduct(btn) {
         if(btn.buttonFunction === 'changePrice' || btn.buttonFunction === 'discountSingleItemDialog')
           return !_.isNil(this.activeTableProduct)
+        if(btn.buttonFunction === 'pay' || btn.buttonFunction === 'quickCash' || btn.buttonFunction === 'saveOrder')
+          return this.currentOrder.items.length > 0
         return true;
       }
     },

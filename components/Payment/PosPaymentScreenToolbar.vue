@@ -8,10 +8,6 @@
       <g-icon class="mr-2" svg>icon-menu</g-icon>
       More
     </g-btn>
-    <g-btn :uppercase="false" background-color="white" @click="dialogSavedList = true">
-      <g-icon class="mr-2" svg>icon-cashier</g-icon>
-      Cashier drawer
-    </g-btn>
   </g-toolbar>
 </template>
 

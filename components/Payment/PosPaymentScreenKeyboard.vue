@@ -5,15 +5,11 @@
         <div></div>
       </template>
     </g-number-keyboard>
-    <div class="disabled"></div>
-    <div class="disabled"></div>
-    <div class="disabled"></div>
-    <div class="disabled"></div>
     <g-btn :uppercase="false" outlined height="100%" text-color="#979797">
-      <span style="color: #1c1c1c; font-size: 16px">Multiple Payment</span>
+      <g-icon class="mr-2" svg size="36">icon-cashier</g-icon>
+      <span style="font-size: 16px; color: #1D1D26">Cashier drawer</span>
     </g-btn>
-    <div class="disabled"></div>
-    <g-btn :uppercase="false" flat background-color="blue darken 1" text-color="white" height="100%" @click.stop="pay">
+    <g-btn :disabled="!paidable" :uppercase="false" flat background-color="blue darken 1" text-color="white" height="100%" @click.stop="pay">
       <span class="fs-large-2">Pay</span>
     </g-btn>
   </div>
@@ -23,7 +19,7 @@
   export default {
     name: 'PosPaymentScreenKeyboard',
     injectService: [
-      'PosStore:(paymentAmountTendered,savePaidOrder)'
+      'PosStore:(paymentAmountTendered,savePaidOrder,selectedPayment,paymentTotal)'
     ],
     data() {
       return {
@@ -56,12 +52,16 @@
         set(value) {
           this.paymentAmountTendered = +value
         }
+      },
+      paidable() {
+        return this.paymentAmountTendered >= this.paymentTotal
       }
     },
     methods: {
       async pay() {
         await this.savePaidOrder()
         await this.$router.push({ path: '/view/test-pos-order' })
+        this.selectedPayment = null
       }
     }
   }
@@ -76,19 +76,12 @@
         background: #FFFFFF;
         border: 1px solid #979797;
         box-sizing: border-box;
-        border-radius: 6px;
+        border-radius: 2px;
         box-shadow: none;
         font-size: 20px;
         font-weight: 700;
         font-family: "Muli", sans-serif;
       }
-    }
-
-    div.disabled {
-      background: #DFDFDF;
-      opacity: 0.5;
-      border: 1px solid #9B9B9B;
-      border-radius: 6px;
     }
   }
 </style>

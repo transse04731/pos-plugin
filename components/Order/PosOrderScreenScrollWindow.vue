@@ -141,6 +141,15 @@
 				grid-template-columns: repeat(4, 1fr);
 				grid-gap: 6px;
 				margin-right: 6px;
+
+        ::v-deep .g-btn {
+          white-space: normal;
+
+          .g-btn__content {
+            flex: 0 1 auto;
+            line-height: 0.9;
+          }
+        }
 			}
 		}
 
