@@ -96,6 +96,8 @@
         //article screen
         articleSelectedColor: null,
         articleSelectedProductButton: null,
+        leftButtonsUpdate: 0,
+        rightButtonsUpdate: 0,
       }
     },
     domain: 'PosStore',
@@ -275,35 +277,6 @@
         const orderModel = cms.getModel('Order')
         this.savedOrders = await orderModel.find({ status: 'inProgress' })
       },
-      async saveInProgressOrder() {
-        if (!this.currentOrder || !this.currentOrder.items.length) return
-        const orderModel = cms.getModel('Order')
-        const orderItems = this.compactOrder(this.currentOrder.items)
-
-        const order = {
-          status: 'inProgress',
-          items: orderItems.map(item => ({
-            ...item,
-            product: item._id
-          })),
-          date: new Date()
-        }
-        if (this.currentOrder._id) {
-          const existingOrder = await orderModel.findOne({ _id: this.currentOrder._id })
-          if (existingOrder) {
-            await orderModel.findOneAndUpdate({ _id: this.currentOrder._id }, order)
-          } else {
-            await orderModel.create(order)
-          }
-        } else {
-          await orderModel.create(order)
-        }
-        this.currentOrder = {
-          items: []
-        }
-        this.activeTableProduct = null
-        await this.getSavedOrders()
-      },
       async removeSavedOrder(order) {
         const orderModel = cms.getModel('Order')
         await orderModel.remove({ _id: order._id })
@@ -344,11 +317,6 @@
         } else {
           return 0
         }
-      },
-      async quickCash() {
-        this.lastPayment = +this.paymentTotal
-        //todo add to order history
-        await this.savePaidOrder('Cash')
       },
       compactOrder(products) {
         let resultArr = [];
@@ -408,7 +376,7 @@
       //<!--</editor-fold>-->
       // payment screen
 
-      //setting screen
+      //<!--<editor-fold desc="Setting screen">-->
       //category view
       async updateCategory(oldID, newName) {
         const categoryModel = cms.getModel('Category');
@@ -578,6 +546,8 @@
       async getListAvatar() {
         return await cms.getModel('Avatar').find();
       },
+      //<!--</editor-fold>-->
+
       //<!--<editor-fold desc="Article screen">-->
       selectArticle(item) {
         if (this.articleSelectedProductButton && item._id === this.articleSelectedProductButton._id) {
@@ -697,11 +667,12 @@
       //Usage: resetLayoutFnBtn('leftFunctionButtons')
       async resetLayoutFnBtn(dbButtonList) {
         let posSettings = await cms.getModel('PosSetting').findOne();
-        //console.log('pos Settings Model', posSettings['leftFunctionButtons']);
+        if(dbButtonList === 'leftFunctionButtons') {
+          this.leftButtonsUpdate ++;
+        }
         if (posSettings[dbButtonList]) {
           try {
             for (let item of posSettings[dbButtonList]) {
-              console.log('item', item);
               await cms.getModel('PosSetting').findOneAndUpdate({ [`${dbButtonList}._id`]: item._id }, {
                 '$set': {
                   [`${dbButtonList}.$.rows`]: item.originalRows,
@@ -715,8 +686,71 @@
           }
         }
 
-      }
+      },
+      async getPosSetting() {
+        return await cms.getModel('PosSetting').findOne();
+      },
       //<!--</editor-fold>-->
+
+      //list button function
+      chooseFunction(functionName) {
+        return this[functionName]
+      },
+      changePrice() {
+        this.$getService('dialogChangePrice:open')('new')
+      },
+      discountSingleItemDialog() {
+        this.$getService('dialogChangePrice:open')('percentage')
+      },
+      discountSingleItemByAmount(value) {
+
+      },
+      discountSingleItemByPercent(value) {
+
+      },
+      plasticRefund() {
+
+      },
+      productLookup() {
+        this.$getService('dialogProductLookup:setActive')(true)
+      },
+      async saveOrder() {
+        if (!this.currentOrder || !this.currentOrder.items.length) return
+        const orderModel = cms.getModel('Order')
+        const orderItems = this.compactOrder(this.currentOrder.items)
+
+        const order = {
+          status: 'inProgress',
+          items: orderItems.map(item => ({
+            ...item,
+            product: item._id
+          })),
+          date: new Date()
+        }
+        if (this.currentOrder._id) {
+          const existingOrder = await orderModel.findOne({ _id: this.currentOrder._id })
+          if (existingOrder) {
+            await orderModel.findOneAndUpdate({ _id: this.currentOrder._id }, order)
+          } else {
+            await orderModel.create(order)
+          }
+        } else {
+          await orderModel.create(order)
+        }
+        this.currentOrder = {
+          items: []
+        }
+        this.activeTableProduct = null
+        await this.getSavedOrders()
+      },
+      async quickCash() {
+        this.lastPayment = +this.paymentTotal
+        //todo add to order history
+        await this.savePaidOrder('Cash')
+      },
+      pay() {
+        this.$router.push({path: `/view/test-pos-payment`})
+      },
     },
     created() {
       this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
@@ -747,7 +781,6 @@
         currentOrder: this.currentOrder,
         calculateNewPrice: this.calculateNewPrice,
         savePaidOrder: this.savePaidOrder,
-        saveInProgressOrder: this.saveInProgressOrder,
         removeSavedOrder: this.removeSavedOrder,
         selectSavedOrder: this.selectSavedOrder,
         savedOrders: this.savedOrders,
@@ -757,6 +790,7 @@
         productNameQuery: this.productNameQuery,
         productNameQueryResults: this.productNameQueryResults,
         queryProductsByName: this.queryProductsByName,
+        chooseFunction: this.chooseFunction,
         //payment screen
         paymentTotal: this.paymentTotal,
         paymentAmountTendered: this.paymentAmountTendered,
@@ -821,6 +855,9 @@
         articleSelectedColor: this.articleSelectedColor,
         switchProductOrder: this.switchProductOrder,
         updateArticleOrders: this.updateArticleOrders,
+        getPosSetting: this.getPosSetting,
+        leftButtonsUpdate: this.leftButtonsUpdate,
+        rightButtonsUpdate: this.rightButtonsUpdate
       }
     }
   }

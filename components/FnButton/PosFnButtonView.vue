@@ -180,6 +180,10 @@
 
   export default {
     name: 'PosFnButtonView',
+    injectService: [
+      'PosStore:leftButtonsUpdate',
+      'PosStore:rightButtonsUpdate',
+    ],
     data: () => ({
       layout: fnButtonLayout2,
       numberOfConfigBtn: 0,
@@ -526,6 +530,12 @@
                 [`${dbButtonList}.$.containedButtons`]: this.mergeMap && this.mergeMap[item.buttonId] ? this.mergeMap[item.buttonId] : []
               }
             });
+          }
+          if(dbButtonList === 'leftFunctionButtons') {
+            this.leftButtonsUpdate ++;
+          }
+          if(dbButtonList === 'rightFunctionButtons') {
+            this.rightButtonsUpdate ++;
           }
         } catch (e) {
           console.log('Error updating updateBtnList', e);

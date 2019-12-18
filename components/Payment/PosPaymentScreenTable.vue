@@ -3,7 +3,7 @@
     <g-simple-table striped fixed-header style="height: 100%">
       <thead>
       <tr>
-        <th style="color: inherit; padding: 0">
+        <th style="color: inherit; padding: 0; background-color: white">
           <div class="row-flex" style="line-height: 1.75">
             <span class="flex-grow-1 pa-2 ta-left">Name</span>
             <span class="w-10 pa-2 ta-center">Unit</span>
@@ -68,6 +68,10 @@
       border: 1px solid #e8e8e8;
       border-radius: 6px;
       font-size: 13px;
+
+      ::v-deep .g-data-table__wrapper {
+        border-radius: inherit;
+      }
     }
 
     .g-data-table__striped {

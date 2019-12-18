@@ -36,6 +36,7 @@
       'PosStore:generalSetting',
       'PosStore:getGeneralSetting',
       'PosStore:updateSetting',
+      'PosStore:resetLayoutFnBtn',
     ],
     computed: {
       barcode: {
@@ -96,6 +97,7 @@
 			async updateFnRows(number) {
 				this.quickFnRows = number;
 				await this.updateSetting();
+				await this.resetLayoutFnBtn('leftFunctionButtons');
 			}
     },
     async created() {

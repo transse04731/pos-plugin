@@ -1,17 +1,17 @@
 <template>
   <div area="buttons">
-    <g-btn :uppercase="false" outlined height="100%">F1</g-btn>
-    <g-btn :uppercase="false" outlined height="100%" @click="openDialogChangePrice" :disabled="!hasActiveOrderProduct">Change Price</g-btn>
-    <g-btn :uppercase="false" outlined height="100%">Note</g-btn>
-    <g-btn :uppercase="false" outlined height="100%" @click="openDialogProductLookup">Product Lookup</g-btn>
-    <g-btn :uppercase="false" outlined height="100%" disabled>Disabled Button</g-btn>
-    <g-btn :uppercase="false" outlined height="100%" @click="openDialogDiscount" :disabled="!hasActiveOrderProduct">Discount</g-btn>
-    <g-btn :uppercase="false" outlined height="100%"></g-btn>
-    <g-btn :uppercase="false" outlined height="100%">Plastic Refund</g-btn>
-    <g-btn :uppercase="false" area="btn__big" text background-color="green lighten 1" text-color="white" height="100%" @click="quickCash">Quick Cash</g-btn>
-    <g-btn :uppercase="false" text background-color="orange lighten 1" text-color="white" height="100%" @click.stop="saveInProgressOrder">Save</g-btn>
-    <g-btn :uppercase="false" text background-color="blue darken 2" height="100%" @click.stop="routeToPayment">
-      <span class="text-white">Pay</span>
+    <g-btn :uppercase="false" height="100%" elevation="0"
+           v-for="(btn, i) in listBtn" :key="i"
+           :style="{
+              gridRow: btn.rows[0] + '/' + btn.rows[1],
+              gridColumn: btn.cols[0] + '/' + btn.cols[1],
+              backgroundColor: btn.backgroundColor,
+              color: btn.backgroundColor !== '#FFFFFF' ? btn.textColor : '#000d',
+              border: btn.backgroundColor && btn.backgroundColor !== '#FFFFFF' ? null : '1px solid #979797'
+            }"
+           :disabled="!hasActiveOrderProduct(btn)"
+           @click="chooseFunction(btn.buttonFunction)(btn.buttonFunctionValue)">
+      {{btn.text}}
     </g-btn>
   </div>
 </template>
@@ -22,27 +22,38 @@
   export default {
     name: 'PosOrderScreenButtonGroup',
     injectService: [
-      'PosStore:(quickCash,activeTableProduct,saveInProgressOrder)'
+      'PosStore:(chooseFunction, activeTableProduct, getPosSetting)'
     ],
-    computed: {
-      hasActiveOrderProduct() {
-        return !_.isNil(this.activeTableProduct)
+    data() {
+      return {
+        listBtn: []
       }
     },
     methods: {
-      openDialogChangePrice() {
-        this.$getService('dialogChangePrice:open')('new')
+      async generateTemplate() {
+        const setting = await this.getPosSetting();
+        this.listBtn = [];
+        const btns = setting.rightFunctionButtons;
+        const containedBtns = btns.reduce((acc, btn) => ([...acc, ...btn.containedButtons]), []);
+        for(const btn of btns) {
+          if(!containedBtns.includes(btn._id)) {
+            this.listBtn.push(btn);
+          }
+        }
       },
-      openDialogDiscount() {
-        this.$getService('dialogChangePrice:open')('percentage')
-      },
-      openDialogProductLookup() {
-        this.$getService('dialogProductLookup:setActive')(true)
-      },
-      routeToPayment() {
-        this.$router.push({path: `/view/test-pos-payment`})
+      hasActiveOrderProduct(btn) {
+        if(btn.buttonFunction === 'changePrice' || btn.buttonFunction === 'discountSingleItemDialog')
+          return !_.isNil(this.activeTableProduct)
+        return true;
       }
-    }
+    },
+    async mounted() {
+      const posStore = this.$getService('PosStore');
+      posStore.$watch('rightButtonsUpdate', async () => {
+        await this.generateTemplate()
+      }, { deep: true });
+      await this.generateTemplate();
+    },
   }
 </script>
 
