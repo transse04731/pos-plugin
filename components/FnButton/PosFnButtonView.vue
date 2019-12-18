@@ -554,6 +554,7 @@
         let foundSideItem = this.sideButtonItems.find((item) => item.buttonId === valueOfBtn);
         if (foundSideItem) {
           foundSideItem.style.backgroundColor = this.selectedColor.value;
+          this.selectedButtons[0].style.textColor = this.selectedColor.value !== '#FFFFFF' ? 'white' : 'black';
           this.selectedButtons[0].style.backgroundColor = this.selectedColor.value;
           try {
             foundItem = this.selectedButtons[0];
