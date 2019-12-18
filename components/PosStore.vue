@@ -175,8 +175,8 @@
             this.loginPassword = ''
             return this.$router.push({ path: `/view/test-pos-dashboard` })
           }
-        } catch(e) {
-          console.err(e)
+        } catch (e) {
+          console.error(e)
         }
         this.incorrectPasscode = true
       },
@@ -568,24 +568,21 @@
         return null;
       },
       async updateArticleOrders() {
-        let sortedOrderArticles = _.forEach(this.activeCategoryProducts, function (article, index) {
-          if (article.layouts[0].order !== index + 1) {
-            return article.layouts[0].order = index + 1;
-          }
-          return article.layouts[0].order;
-        });
-
         const productModel = cms.getModel('Product');
-        for (let item of sortedOrderArticles) {
-          await productModel.findOneAndUpdate({ 'layouts._id': item.layouts[0]._id }, {
-            '$set': {
-              'layouts.$.order': item.layouts[0].order
+        try {
+          _.forEach(this.activeCategoryProducts, async function (article, index) {
+            if (article.layouts[0].order !== index + 1) {
+              await productModel.findOneAndUpdate({ 'layouts._id': article.layouts[0]._id }, {
+                '$set': {
+                  'layouts.$.order': index + 1
+                }
+              });
+              return article.layouts[0].order = index + 1;
             }
-          }, function (err) {
-            if (err) {
-              console.log(err);
-            }
+            return article.layouts[0].order;
           });
+        } catch (e) {
+          console.error('Error reordering articles: ', e);
         }
       },
       async setSelectedArticleColor() {
@@ -599,18 +596,18 @@
         //Update current product
         let foundItem = this.activeCategoryProducts.find((item) => item._id === this.articleSelectedProductButton._id);
         if (foundItem) {
-          let updateColorResult = await productModel.findOneAndUpdate({ 'layouts._id': layoutID }, {
-            '$set': {
-              'layouts.$.color': this.articleSelectedColor
-            }
-          }, function (err, model) {
-            if (err) {
-              console.log(err);
-            }
-          });
+          try {
+            let updateColorResult = await productModel.findOneAndUpdate({ 'layouts._id': layoutID }, {
+              '$set': {
+                'layouts.$.color': this.articleSelectedColor
+              }
+            });
 
-          if (updateColorResult) {
-            foundItem.layouts[0].color = this.articleSelectedColor;
+            if (updateColorResult) {
+              foundItem.layouts[0].color = this.articleSelectedColor;
+            }
+          } catch (e) {
+            console.error(e)
           }
         }
       },
@@ -633,30 +630,25 @@
             const productModel = cms.getModel('Product')
             const nextProductLayoutID = foundNextItem.layouts[0]._id;
             const currentProductLayoutID = foundItem.layouts[0]._id;
+            try {
+              let currentItemResult = await productModel.findOneAndUpdate({ 'layouts._id': currentProductLayoutID }, {
+                '$set': {
+                  'layouts.$.order': foundNextItem.layouts[0].order
+                }
+              });
 
-            let currentItemResult = await productModel.findOneAndUpdate({ 'layouts._id': currentProductLayoutID }, {
-              '$set': {
-                'layouts.$.order': foundNextItem.layouts[0].order
-              }
-            }, function (err) {
-              if (err) {
-                console.log(err);
-              }
-            });
+              let nextItemResult = await productModel.findOneAndUpdate({ 'layouts._id': nextProductLayoutID }, {
+                '$set': {
+                  'layouts.$.order': foundItem.layouts[0].order
+                }
+              });
 
-            let nextItemResult = await productModel.findOneAndUpdate({ 'layouts._id': nextProductLayoutID }, {
-              '$set': {
-                'layouts.$.order': foundItem.layouts[0].order
+              if (nextItemResult && currentItemResult) {
+                foundNextItem.layouts[0].order = tempCurrItemOrder;
+                foundItem.layouts[0].order = tempNextItemOrder;
               }
-            }, function (err) {
-              if (err) {
-                console.log(err);
-              }
-            });
-
-            if (nextItemResult && currentItemResult) {
-              foundNextItem.layouts[0].order = tempCurrItemOrder;
-              foundItem.layouts[0].order = tempNextItemOrder;
+            } catch (e) {
+              console.error(e);
             }
 
             this.activeCategoryProducts = this.activeCategoryProducts.sort((current, next) => this.getProductGridOrder(current) - this.getProductGridOrder(next))
@@ -682,7 +674,7 @@
               });
             }
           } catch (e) {
-            console.log(e);
+            console.error(e);
           }
         }
 
