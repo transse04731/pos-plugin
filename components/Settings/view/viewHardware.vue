@@ -1,11 +1,11 @@
 <template>
-  <div class="row-flex h-100">
+  <div class="h-100 r">
     <div class="configuration">
       <div class="config">
         <p class="title mb-3">Thermal Printer</p>
         <div class="row-flex flex-wrap">
-          <div v-for="(printer, i) in printers" :key="i" :class="['printer', selectedPrinter === printer && 'printer__active']" @click="select(printer)">
-            {{printer.name}}
+          <div v-for="(type, i) in printerTypes" :key="i" :class="['printer', selectedPrinterType === type && 'printer__active']" @click="select(type)">
+            {{type.name}}
           </div>
           <div class="printer" @click="resetPrinter">
             Reset
@@ -13,15 +13,15 @@
         </div>
       </div>
       <g-divider inset/>
-      <div class="config">
+      <div v-if="selectedPrinterType && selectedPrinterType.value === 'ip'" class="config">
         <p class="title">IP Address</p>
         <div class="row-flex mx-2">
-          <g-text-field solo outlined dense v-model="ipAddress">
+          <g-text-field solo outlined dense v-model="ipAddress" @click="showKeyboard = true">
             <template v-slot:append-inner>
               <g-icon svg>icon-keyboard</g-icon>
             </template>
           </g-text-field>
-          <g-btn :uppercase="false" outlined height="auto" class="mt-3 mb-4">
+          <g-btn :uppercase="false" outlined height="auto" class="mt-3 mb-4" @click="setupPrinter">
             Setup Printer
           </g-btn>
         </div>
@@ -30,30 +30,82 @@
         </g-btn>
       </div>
     </div>
+    <div v-if="showKeyboard" class="keyboard">
+      <pos-keyboard-full v-model="ipAddress"/>
+    </div>
   </div>
 </template>
 
 <script>
+  import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';
   export default {
     name: 'viewHardware',
+    components: { PosKeyboardFull },
+    injectService: [
+      'PosStore:thermalPrinter',
+      'PosStore:getThermalPrinter',
+      'PosStore:updateThermalPrinter',
+    ],
     data() {
       return {
         hardware: null,
-        printers: [
-          { name: 'Network Printer' },
-          { name: 'Serial Port' },
-          { name: 'USB' }
+        printerTypes: [
+          { name: 'Network Printer', value: 'ip' },
+          { name: 'Serial Port', value: 'com' },
+          { name: 'USB', value: 'usb' }
         ],
-        selectedPrinter: null,
-        ipAddress: '192.168.0.101',
+        selectedPrinterType: null,
+        showKeyboard: false,
+      }
+    },
+    computed: {
+      ipAddress: {
+        get() {
+          if(this.thermalPrinter)
+            return this.thermalPrinter.ip
+          return ''
+        },
+        set(val) {
+          if(this.thermalPrinter) {
+            this.thermalPrinter.ip = val;
+          } else {
+            this.thermalPrinter = {
+              printerType: 'ip',
+              ip: val
+            }
+          }
+        }
       }
     },
     methods: {
-      select(printer) {
-        this.selectedPrinter = printer;
+      select(type) {
+        this.selectedPrinterType = type;
+        if(this.thermalPrinter) {
+          this.thermalPrinter.printerType = type.value;
+        } else {
+          this.thermalPrinter = {
+            printerType: type.value
+          }
+        }
       },
       resetPrinter() {
-        this.selectedPrinter = null;
+        this.selectedPrinterType = null;
+        if(this.thermalPrinter) {
+          this.thermalPrinter.printerType = null;
+        } else {
+          this.thermalPrinter = {
+            printerType: null
+          }
+        }
+      },
+      async setupPrinter() {
+        await this.updateThermalPrinter(this.thermalPrinter._id, this.thermalPrinter);
+      }
+    },
+    async created() {
+      await this.getThermalPrinter();
+      if(this.thermalPrinter) {
+        this.selectedPrinterType = this.printerTypes.find(t => t.value === this.thermalPrinter.printerType)
       }
     }
   }
@@ -161,5 +213,14 @@
         }
       }
     }
+  }
+
+  .keyboard {
+    position: absolute;
+    bottom: 0;
+    background-color: #efefef;
+    padding: 8px;
+    width: 100%;
+    box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.15);
   }
 </style>

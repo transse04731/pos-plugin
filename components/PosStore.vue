@@ -87,6 +87,8 @@
         //user view
         listUsers: [],
         selectedUser: {},
+        //printer view
+        thermalPrinter: null,
         //order history screen variables
         orderHistoryOrders: [],
         orderHistoryFilters: [],
@@ -558,6 +560,38 @@
       async getListAvatar() {
         return await cms.getModel('Avatar').find();
       },
+      //printer view
+      async getThermalPrinter() {
+        const terminalModel = cms.getModel('Terminal');
+        const terminal = await terminalModel.findOne({name: 'Terminal 1'})
+        this.thermalPrinter = terminal.thermalPrinters[0];
+      },
+      async updateThermalPrinter(oldPrinterId, newPrinter) {
+        const terminalModel = cms.getModel('Terminal');
+        if(!oldPrinterId) {
+          await terminalModel.findOneAndUpdate(
+              {name: 'Terminal 1'},
+              {
+                $push: {
+                  thermalPrinters: newPrinter
+                }
+              }
+          )
+          //update thermal printer with new _id
+          await this.getThermalPrinter();
+        } else {
+          await terminalModel.findOneAndUpdate(
+              {
+                'thermalPrinters._id': oldPrinterId
+              },
+              {
+                $set: {
+                  'thermalPrinters.$': newPrinter
+                }
+              }
+          )
+        }
+      },
       //<!--</editor-fold>-->
 
       //<!--<editor-fold desc="Article screen">-->
@@ -847,6 +881,10 @@
         getListUsers: this.getListUsers,
         updateUser: this.updateUser,
         getListAvatar: this.getListAvatar,
+        //printer view
+        thermalPrinter: this.thermalPrinter,
+        getThermalPrinter: this.getThermalPrinter,
+        updateThermalPrinter: this.updateThermalPrinter,
         //order history screen
         orderHistoryOrders: this.orderHistoryOrders,
         orderHistoryFilters: this.orderHistoryFilters,
