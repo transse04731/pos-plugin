@@ -19,18 +19,28 @@
     <div area="function" style="padding: 9px 12px 8px 13px" v-show="isButtonSelected && !isInConfigLayoutMode">
       <p class="title">Functions</p>
       <pos-select :items="items"
+                  @input="updateButtonFunction"
                   clearable
                   itemText="text"
                   itemValue="value"
                   placeholder="Select"
                   v-model="selectedFunction"
-                  @input="(val) => updateButtonFunction(val)"
       >
       </pos-select>
+      <pos-text-field :value="buybackProductName" label="Buyback" v-if="selectedFunction === 'buybackProduct'">
+        <template v-slot:append>
+          <dialog-fn-button-product-lookup @selectProduct="productLookup">
+            <template v-slot:activator="{open, close}">
+              <g-icon @click="open" color="red">fas fa-search</g-icon>
+            </template>
+          </dialog-fn-button-product-lookup>
+        </template>
+      </pos-text-field>
     </div>
 
-    <div area="function-action" style="padding: 1px;" v-show="isButtonSelected && !isInConfigLayoutMode && showFunctionValue">
-      <pos-text-field :value="textFieldFunctionValue" @blur="updateBtnGrid" @input="(val) => updateButton(val, 'buttonFunctionValue')" label="Value" placeholder="Fill your value"></pos-text-field>
+    <div area="function-action" style="padding: 1px; position: relative;">
+      <pos-text-field :value="textFieldFunctionValue" @blur="updateBtnGrid" @input="(val) => updateButton(val, 'buttonFunctionValue')" label="Value" placeholder="Fill your value" v-show="isButtonSelected && !isInConfigLayoutMode && showFunctionValue"></pos-text-field>
+      <pos-text-field v-model="buybackProductPrice" @blur="updateBtnGrid" label="Price" placeholder="Fill your value" style="position: absolute; bottom: 6px" v-if="isButtonSelected && !isInConfigLayoutMode && selectedFunction === 'buybackProduct'"></pos-text-field>
     </div>
 
     <div area="color" style="padding: 8px 8px 8px 13px" v-show="isButtonSelected && !isInConfigLayoutMode">
@@ -66,6 +76,7 @@
         </g-btn>
       </template>
     </g-button-merger>
+
 
     <div area="function-overlay" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99; display: flex; justify-content: center; align-items: center" v-show="selectedButtons.length >= 2 || isButtonSelected === false || mergeMode || splitMode">
       <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100;" v-show="!isButtonSelected || mergeMode || splitMode">
@@ -177,9 +188,12 @@
   import _ from 'lodash'
   import fnButtonLayout2 from './fnButtonLayout2'
   import cms from 'cms'
+  import PosTextField from '../pos-shared-components/POSInput/PosTextField';
+  import DialogFnButtonProductLookup from './components/dialogFnButtonProductLookup';
 
   export default {
     name: 'PosFnButtonView',
+    components: { DialogFnButtonProductLookup, PosTextField },
     injectService: [
       'PosStore:leftButtonsUpdate',
       'PosStore:rightButtonsUpdate',
@@ -187,6 +201,10 @@
     data: () => ({
       layout: fnButtonLayout2,
       numberOfConfigBtn: 0,
+      buybackProductName: '',
+      buybackProductUnit: null,
+      buybackProductPrice: null,
+      selectedBuybackProduct: null,
       quickFnRows: 0,
       mergeMode: false,
       splitMode: false,
@@ -194,7 +212,6 @@
       activeClass: 'color-select-active',
       textFieldFunctionValue: '',
       textFieldValue: '',
-      selectedButton: null,
       selectedColor: null,
       posSettings: null,
       buttonGroupItems: [],
@@ -213,6 +230,7 @@
         { text: 'Quick Cash', value: 'quickCash', hasValue: false },
         { text: 'Save order', value: 'saveOrder', hasValue: false },
         { text: 'Pay', value: 'pay', hasValue: false },
+        { text: 'Buyback Product', value: 'buybackProduct', hasValue: false },
       ],
       buttonColors: [
         {
@@ -398,6 +416,9 @@
           this.textFieldValue = newVal[0].text;
           this.textFieldFunctionValue = newVal[0].buttonFunctionValue || '';
           this.selectedFunction = newVal[0].buttonFunction || null;
+          this.buybackProductUnit = newVal[0].buyback.buybackProductUnit;
+          this.buybackProductPrice = newVal[0].buyback.buybackPrice;
+          this.buybackProductName = newVal[0].buyback.buybackProductName;
         }
         if (newVal.length > 0 && newVal[0].style && newVal[0].style.backgroundColor) {
 
@@ -456,6 +477,14 @@
       },
     },
     methods: {
+      productLookup(product) {
+        this.selectedBuybackProduct = product;
+        this.buybackProductUnit = product.unit;
+        this.buybackProductName = product.name;
+
+        this.updateButton({ buybackProductName: product.name, buybackProductUnit: product.unit, buybackPrice: null }, 'buyback');
+        this.updateBtnGrid();
+      },
       onClearButtonText() {
         this.updateButton('', 'text');
         this.textFieldValue = '';
@@ -527,15 +556,16 @@
                 [`${dbButtonList}.$.textColor`]: item.style.backgroundColor !== '#FFFFFF' ? 'white' : 'black',
                 [`${dbButtonList}.$.buttonFunction`]: item.buttonFunction,
                 [`${dbButtonList}.$.buttonFunctionValue`]: item.buttonFunctionValue,
+                [`${dbButtonList}.$.buyback`]: item.buyback,
                 [`${dbButtonList}.$.containedButtons`]: this.mergeMap && this.mergeMap[item.buttonId] ? this.mergeMap[item.buttonId] : []
               }
             });
           }
-          if(dbButtonList === 'leftFunctionButtons') {
-            this.leftButtonsUpdate ++;
+          if (dbButtonList === 'leftFunctionButtons') {
+            this.leftButtonsUpdate++;
           }
-          if(dbButtonList === 'rightFunctionButtons') {
-            this.rightButtonsUpdate ++;
+          if (dbButtonList === 'rightFunctionButtons') {
+            this.rightButtonsUpdate++;
           }
         } catch (e) {
           console.log('Error updating updateBtnList', e);
@@ -552,6 +582,7 @@
           foundItem.style.backgroundColor = this.selectedColor.value;
           this.selectedButtons[0].style.textColor = this.selectedColor.value !== '#FFFFFF' ? 'white' : 'black';
           this.selectedButtons[0].style.backgroundColor = this.selectedColor.value;
+          this.selectedButtons[0].buyback.buybackPrice = this.buybackProductPrice;
 
           try {
             foundItem = this.selectedButtons[0];
@@ -566,6 +597,8 @@
           foundSideItem.style.backgroundColor = this.selectedColor.value;
           this.selectedButtons[0].style.textColor = this.selectedColor.value !== '#FFFFFF' ? 'white' : 'black';
           this.selectedButtons[0].style.backgroundColor = this.selectedColor.value;
+          this.selectedButtons[0].buyback.buybackPrice = this.buybackProductPrice;
+
           try {
             foundItem = this.selectedButtons[0];
             this.updateBtnList(this.sideButtonItems, 'rightFunctionButtons')
@@ -606,7 +639,7 @@
         for (let item of buttonList) {
           const {
             backgroundColor, buttonFunction, buttonFunctionValue, originalRows, originalCols,
-            text, textColor, value, containedButtons, _id, rows, cols
+            text, textColor, containedButtons, _id, rows, cols, buyback
           } = item;
 
           dataList.push({
@@ -615,11 +648,15 @@
             originalRow: originalRows,
             originalCol: originalCols,
             text,
-            value,
             style: { backgroundColor: backgroundColor, textColor: textColor },
             buttonFunction,
             buttonFunctionValue,
-            buttonId: _id
+            buttonId: _id,
+            buyback: buyback ? buyback : {
+              buybackPrice: null,
+              buybackProductName: null,
+              buybackProductUnit: null
+            }
           })
 
           this.mergedButtons = this.mergedButtons.concat(containedButtons);
