@@ -22,6 +22,7 @@
     injectService: [
         'PosStore:getPosSetting',
         'PosStore:chooseFunction',
+        'PosStore:activeTableProduct',
     ],
     data() {
       return {
@@ -60,6 +61,8 @@
       hasActiveOrderProduct(btn) {
         if(btn.buttonFunction === 'changePrice' || btn.buttonFunction === 'discountSingleItemDialog')
           return !_.isNil(this.activeTableProduct)
+        if(btn.buttonFunction === 'pay' || btn.buttonFunction === 'quickCash' || btn.buttonFunction === 'saveOrder')
+          return this.currentOrder.items.length > 0
         return true;
       }
     }
