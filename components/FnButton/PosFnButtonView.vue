@@ -406,23 +406,27 @@
           return
         }
 
+        const selectedBtn = newVal[0]
         this.activeSelectedButton = 'active-selected'
 
         if (!this.isInConfigLayoutMode && newVal && newVal.length >= 2) {
           this.selectedButtons = [this.selectedButtons[this.selectedButtons.length - 1]];
         }
 
-        if (newVal[0]) {
-          this.textFieldValue = newVal[0].text;
-          this.textFieldFunctionValue = newVal[0].buttonFunctionValue || '';
-          this.selectedFunction = newVal[0].buttonFunction || null;
-          this.buybackProductUnit = newVal[0].buyback.buybackProductUnit;
-          this.buybackProductPrice = newVal[0].buyback.buybackPrice;
-          this.buybackProductName = newVal[0].buyback.buybackProductName;
+        if (selectedBtn) {
+          debugger
+          this.textFieldValue = selectedBtn.text;
+          this.textFieldFunctionValue = selectedBtn.buttonFunctionValue || '';
+          this.selectedFunction = selectedBtn.buttonFunction || null;
+          if (selectedBtn.buyback) {
+            this.buybackProductUnit = selectedBtn.buyback.unit;
+            this.buybackProductPrice = selectedBtn.buyback.price;
+            this.buybackProductName = selectedBtn.buyback.product.name;
+          }
         }
-        if (newVal.length > 0 && newVal[0].style && newVal[0].style.backgroundColor) {
+        if (newVal.length > 0 && selectedBtn.style && selectedBtn.style.backgroundColor) {
 
-          let selectedColorIndex = this.buttonColors.findIndex((x) => x.value === newVal[0].style.backgroundColor);
+          let selectedColorIndex = this.buttonColors.findIndex((x) => x.value === selectedBtn.style.backgroundColor);
           if (selectedColorIndex >= 0) {
             this.selectedColor = this.buttonColors[selectedColorIndex];
           } else {
@@ -430,7 +434,7 @@
           }
         }
 
-        if (newVal.length === 0 || (newVal[0] && !newVal[0].style.backgroundColor)) {
+        if (newVal.length === 0 || (selectedBtn && !selectedBtn.style.backgroundColor)) {
           this.selectedColor = null;
         }
       },
@@ -482,7 +486,7 @@
         this.buybackProductUnit = product.unit;
         this.buybackProductName = product.name;
 
-        this.updateButton({ buybackProductName: product.name, buybackProductUnit: product.unit, buybackPrice: null }, 'buyback');
+        this.updateButton({ product, unit: product.unit, price: product.price }, 'buyback');
         this.updateBtnGrid();
       },
       onClearButtonText() {
@@ -582,7 +586,7 @@
           foundItem.style.backgroundColor = this.selectedColor.value;
           this.selectedButtons[0].style.textColor = this.selectedColor.value !== '#FFFFFF' ? 'white' : 'black';
           this.selectedButtons[0].style.backgroundColor = this.selectedColor.value;
-          this.selectedButtons[0].buyback.buybackPrice = this.buybackProductPrice;
+          this.selectedButtons[0].buyback.price = this.buybackProductPrice;
 
           try {
             foundItem = this.selectedButtons[0];
@@ -597,7 +601,7 @@
           foundSideItem.style.backgroundColor = this.selectedColor.value;
           this.selectedButtons[0].style.textColor = this.selectedColor.value !== '#FFFFFF' ? 'white' : 'black';
           this.selectedButtons[0].style.backgroundColor = this.selectedColor.value;
-          this.selectedButtons[0].buyback.buybackPrice = this.buybackProductPrice;
+          this.selectedButtons[0].buyback.price = this.buybackProductPrice;
 
           try {
             foundItem = this.selectedButtons[0];

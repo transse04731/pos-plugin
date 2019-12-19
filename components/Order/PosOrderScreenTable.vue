@@ -15,10 +15,9 @@
     </thead>
     <table-expansion-row :items="orderItems"
                          @click:remove="removeItemQuantity"
-                         @click:add="addItemQuantity"
-    />
-    <template v-if="orderItems.length < emptyRows">
-      <tr v-for="(i, index) in (emptyRows - orderItems.length)" :key="`empty_${index}`" class="empty-row">
+                         @click:add="addItemQuantity"></table-expansion-row>
+    <template v-if="orderItems.length < viewportRows">
+      <tr v-for="(i, index) in (viewportRows - orderItems.length)" :key="`empty_${index}`" class="empty-row">
         <td></td>
       </tr>
     </template>
@@ -34,7 +33,7 @@
     injectService: ['PosStore:(addItemQuantity,removeItemQuantity)'],
     data() {
       return {
-        emptyRows: 0,
+        viewportRows: 0,
         orderItems: []
       }
     },
@@ -44,7 +43,7 @@
         if (this.$el) {
           const tableWrapper = this.$el.querySelector('.g-data-table__wrapper')
           if (items) {
-            tableWrapper.scrollTop = items.length > this.emptyRows
+            tableWrapper.scrollTop = items.length >= this.viewportRows
               ? tableWrapper.scrollHeight
               : 0
           }
@@ -53,7 +52,7 @@
       }, { deep: true })
 
       this.$nextTick(() => {
-        this.emptyRows = Math.floor(this.$refs.table.$el.clientHeight / 44)
+        this.viewportRows = Math.floor(this.$refs.table.$el.clientHeight / 44)
       })
     }
   }

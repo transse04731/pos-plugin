@@ -731,8 +731,26 @@
       //<!--</editor-fold>-->
 
       //list button function
+      isActiveFnBtn(btn) {
+        if (!btn || !btn.buttonFunction) return
+        if (btn.buttonFunction === 'changePrice' || btn.buttonFunction.includes('discount')) {
+          return !_.isNil(this.activeTableProduct)
+        }
+        if (['pay', 'quickCash', 'saveOrder'].includes(btn.buttonFunction)) {
+          return this.currentOrder.items.length > 0
+        }
+        return true;
+      },
       chooseFunction(functionName) {
+        if (!functionName) return () => null
         return this[functionName]
+      },
+      buybackProduct({price, product, unit}) {
+        this.addProductToOrder(Object.assign(product, {
+          price: -price,
+          originalPrice: -price,
+          tax: 0
+        }))
       },
       changePrice() {
         this.$getService('dialogChangePrice:open')('new')
@@ -741,10 +759,10 @@
         this.$getService('dialogChangePrice:open')('percentage')
       },
       discountSingleItemByAmount(value) {
-
+        this.calculateNewPrice('amount', value, true)
       },
       discountSingleItemByPercent(value) {
-
+        this.calculateNewPrice('percentage', value, true)
       },
       plasticRefund() {
 
@@ -833,6 +851,7 @@
         productNameQueryResults: this.productNameQueryResults,
         queryProductsByName: this.queryProductsByName,
         chooseFunction: this.chooseFunction,
+        isActiveFnBtn: this.isActiveFnBtn,
         //payment screen
         paymentTotal: this.paymentTotal,
         paymentAmountTendered: this.paymentAmountTendered,

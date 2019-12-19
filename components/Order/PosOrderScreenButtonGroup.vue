@@ -9,8 +9,8 @@
               color: btn.backgroundColor !== '#FFFFFF' ? btn.textColor : '#000d',
               border: btn.backgroundColor && btn.backgroundColor !== '#FFFFFF' ? null : '1px solid #979797'
             }"
-           :disabled="!hasActiveOrderProduct(btn)"
-           @click="chooseFunction(btn.buttonFunction)(btn.buttonFunctionValue)">
+           :disabled="!isActiveBtn(btn)"
+           @click="onClick(btn)">
       {{btn.text}}
     </g-btn>
   </div>
@@ -22,7 +22,7 @@
   export default {
     name: 'PosOrderScreenButtonGroup',
     injectService: [
-      'PosStore:(chooseFunction, activeTableProduct, getPosSetting, currentOrder)'
+      'PosStore:(chooseFunction,activeTableProduct,getPosSetting,currentOrder)'
     ],
     data() {
       return {
@@ -33,20 +33,20 @@
       async generateTemplate() {
         const setting = await this.getPosSetting();
         this.listBtn = [];
-        const btns = setting.rightFunctionButtons;
-        const containedBtns = btns.reduce((acc, btn) => ([...acc, ...btn.containedButtons]), []);
-        for(const btn of btns) {
-          if(!containedBtns.includes(btn._id)) {
+        const rightFunctionButtons = setting.rightFunctionButtons;
+        const containedBtns = rightFunctionButtons.reduce((acc, btn) => ([...acc, ...btn.containedButtons]), []);
+        for (const btn of rightFunctionButtons) {
+          if (!containedBtns.includes(btn._id)) {
             this.listBtn.push(btn);
           }
         }
       },
-      hasActiveOrderProduct(btn) {
-        if(btn.buttonFunction === 'changePrice' || btn.buttonFunction === 'discountSingleItemDialog')
-          return !_.isNil(this.activeTableProduct)
-        if(btn.buttonFunction === 'pay' || btn.buttonFunction === 'quickCash' || btn.buttonFunction === 'saveOrder')
-          return this.currentOrder.items.length > 0
-        return true;
+      isActiveBtn(btn) {
+        return this.$getService('PosStore:isActiveFnBtn')(btn)
+      },
+      onClick(btn) {
+        if (!btn || !btn.buttonFunction) return
+        this.$getService('PosStore:chooseFunction')(btn.buttonFunction)(btn.buttonFunctionValue)
       }
     },
     async mounted() {

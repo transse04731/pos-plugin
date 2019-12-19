@@ -17,17 +17,17 @@
       <tbody>
       <tr v-for="product in productList">
         <td style="color: inherit; padding: 0">
-          <div class="row-flex" style="line-height: 1.75">
+          <div style="line-height: 1.75"
+               :class="{'row-flex': true, ...product.edited ? {'text__edited': true} : null}"
+          >
             <div class="flex-grow-1 pa-2 ta-left" style="font-size: 15px">
               <p>{{product.name}}
-                <g-icon v-if="product.edited" small color="#f44336" style="margin-bottom: 5px">edit</g-icon>
-              </p>
               <p v-if="product.promotion" class="promotion">{{product.promotion}}</p>
             </div>
             <div class="w-10 pa-2 ta-center">{{product.unit}}</div>
             <div class="w-10 pa-2 ta-right">{{product.quantity}}</div>
             <div class="w-12 pa-2 ta-right">
-              <p :class="[product.edited && 'text__edited']">{{product.price}}</p>
+              <p>{{product.price}}</p>
               <p v-if="product.promotion && product.originalPrice" class="promotion-price">{{product.originalPrice}}</p>
             </div>
             <div class="w-12 pa-2 ta-right">
@@ -97,7 +97,7 @@
       }
 
       .text__edited {
-        color: #F44336;
+        color: #4CAF50;
       }
 
       .promotion {
