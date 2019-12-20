@@ -429,7 +429,7 @@
         if (this.selectedProduct && this.selectedProduct.length > 0) {
           await productModel.deleteMany({ '_id': { '$in': this.selectedProduct } });
         }
-        
+
         // reset related fn buttons
         const settingModel = cms.getModel('PosSetting');
         await settingModel.findOneAndUpdate(
@@ -460,7 +460,7 @@
                 'rightFunctionButtons.$.textColor': '#1D1D26',
               }
             });
-            
+
         // fetch data
         await this.getListProducts();
         await this.getTotalProducts();
@@ -472,8 +472,8 @@
         await this.getListProducts();
         await this.getTotalProducts();
       },
-      async getAllTaxCategory() {
-        const setting = await cms.getModel('PosSetting').findOne();
+      getAllTaxCategory() {
+        const setting = cms.getList('PosSetting')[0];
         return setting.taxCategory;
       },
       async getHighestProductOrder(categoryId) {
@@ -489,7 +489,7 @@
       },
       //payment view
       async getListPayments() {
-        const setting = await cms.getModel('PosSetting').findOne({});
+        const setting = await cms.getModel('PosSetting').findOne();
         this.listPayments = setting.payment;
       },
       async updatePayment(oldPayment, newPayment) {
@@ -527,8 +527,8 @@
         await this.getListPayments();
       },
       //general setting screen
-      async getGeneralSetting() {
-        const setting = await cms.getModel('PosSetting').findOne({ generalSetting: { $exists: true } });
+      getGeneralSetting() {
+        const setting = cms.getList('PosSetting')[0];
         this.generalSetting = setting.generalSetting;
       },
       async updateSetting() {
@@ -541,8 +541,8 @@
         )
       },
       //company info view
-      async getCompanyInfo() {
-        const setting = await cms.getModel('PosSetting').findOne();
+      getCompanyInfo() {
+        const setting = cms.getList('PosSetting')[0];
         this.companyInfo = setting.companyInfo;
       },
       async updateCompanyInfo() {
@@ -737,7 +737,7 @@
       //Fully reset layout of button
       //Usage: resetLayoutFnBtn('leftFunctionButtons')
       async resetLayoutFnBtn(dbButtonList) {
-        let posSettings = await cms.getModel('PosSetting').findOne();
+        const posSettings = cms.getList('PosSetting')[0];
         if (dbButtonList === 'leftFunctionButtons') {
           this.leftButtonsUpdate++;
         }

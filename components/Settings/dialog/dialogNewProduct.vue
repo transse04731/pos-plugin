@@ -190,7 +190,8 @@
         ...c,
         value: c.name,
       }));
-      this.taxes = (await this.getAllTaxCategory()).map(t => ({
+
+      this.taxes = this.getAllTaxCategory().map(t => ({
 				text: t.name,
 				value: t.value
 			}));
