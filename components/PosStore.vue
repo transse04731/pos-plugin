@@ -301,7 +301,7 @@
             date: new Date()
           })),
           date: new Date(),
-          payment: [paymentMethod ? paymentMethod : { ...this.currentOrder.payment, value: this.paymentTotal}],
+          payment: [paymentMethod ? paymentMethod : { ...this.currentOrder.payment, value: this.paymentTotal }],
           vSum: this.paymentTotal,
           receive: this.paymentAmountTendered,
           cashback: this.convertMoney(this.paymentChange)
@@ -429,6 +429,39 @@
         if (this.selectedProduct && this.selectedProduct.length > 0) {
           await productModel.deleteMany({ '_id': { '$in': this.selectedProduct } });
         }
+        
+        // reset related fn buttons
+        const settingModel = cms.getModel('PosSetting');
+        await settingModel.findOneAndUpdate(
+            {
+              'leftFunctionButtons.buyback.product': { '$in': this.selectedProduct }
+            },
+            {
+              $set: {
+                'leftFunctionButtons.$.text': null,
+                'leftFunctionButtons.$.buttonFunction': null,
+                'leftFunctionButtons.$.buttonFunctionValue': null,
+                'leftFunctionButtons.$.buyback': null,
+                'leftFunctionButtons.$.backgroundColor': '#FFFFFF',
+                'leftFunctionButtons.$.textColor': '#1D1D26',
+              }
+            });
+        await settingModel.findOneAndUpdate(
+            {
+              'rightFunctionButtons.buyback.product': { '$in': this.selectedProduct }
+            },
+            {
+              $set: {
+                'rightFunctionButtons.$.text': null,
+                'rightFunctionButtons.$.buttonFunction': null,
+                'rightFunctionButtons.$.buttonFunctionValue': null,
+                'rightFunctionButtons.$.buyback': null,
+                'rightFunctionButtons.$.backgroundColor': '#FFFFFF',
+                'rightFunctionButtons.$.textColor': '#1D1D26',
+              }
+            });
+            
+        // fetch data
         await this.getListProducts();
         await this.getTotalProducts();
         this.selectedProduct = [];
@@ -801,7 +834,7 @@
       },
       async quickCash() {
         this.lastPayment = +this.paymentTotal
-        await this.savePaidOrder({type: 'Cash', value: this.lastPayment});
+        await this.savePaidOrder({ type: 'Cash', value: this.lastPayment });
       },
       pay() {
         this.$router.push({ path: `/view/test-pos-payment` })
