@@ -110,7 +110,6 @@
       close() {
         this.dialogProductLookup = false
         this.productNameQuery = ''
-        this.productNameQueryResults = null
       }
     },
     setup() {

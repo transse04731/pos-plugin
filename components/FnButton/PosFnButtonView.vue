@@ -1,60 +1,80 @@
 <template>
   <g-grid-layout :layout="layout" style="height: 100%">
 
-    <div area="button-name" style="padding: 12px 10px 12px 13px;" v-show="isButtonSelected && !isInConfigLayoutMode">
-      <pos-text-field :value="textFieldValue" @blur="updateBtnGrid" @input="(val) => updateButton(val, 'text')" label="Button Name" placeholder="Fill your text">
+    <div area="button-name" v-show="isButtonSelected && !isInConfigLayoutMode">
+      <pos-text-field :value="textFieldValue"
+                      @change="updateButtonItems"
+                      @input="updateButton($event, 'text')"
+                      label="Button Name"
+                      placeholder="Fill your text">
         <template v-slot:append>
-          <g-icon color="red">mdi-keyboard</g-icon>
+          <g-icon color="#757575">mdi-keyboard</g-icon>
         </template>
       </pos-text-field>
     </div>
 
-    <div area="button-action" style="padding: 45px 20px 20px 20px;" v-show="isButtonSelected && !isInConfigLayoutMode">
-      <g-btn :disabled="isClearBtnDisabled" :uppercase="false" @click="onClearButtonText" background-color="white" elevation="0" text-color="red">
-        <g-icon size="16" style="margin-right: 8px">mdi-minus-circle</g-icon>
-        Clear
+    <div area="button-action">
+      <g-btn :uppercase="false" background-color="white" elevation="0" text-color="red" v-show="isButtonSelected && !isInConfigLayoutMode">
+        <g-icon @click="resetSelectedButton" size="16" style="margin-right: 8px">fas fa-undo</g-icon>
+        Clear button
       </g-btn>
     </div>
 
-    <div area="function" style="padding: 9px 12px 8px 13px" v-show="isButtonSelected && !isInConfigLayoutMode">
+    <div area="function" v-show="isButtonSelected && !isInConfigLayoutMode">
       <p class="title">Functions</p>
-      <pos-select :items="items"
+      <pos-select :items="listButtonFunctions"
                   @input="updateButtonFunction"
                   clearable
-                  itemText="text"
-                  itemValue="value"
+                  item-text="text"
+                  item-value="value"
                   placeholder="Select"
                   v-model="selectedFunction"
       >
       </pos-select>
-      <pos-text-field :value="buybackProductName" label="Buyback" v-if="selectedFunction === 'buybackProduct'">
-        <template v-slot:append>
-          <dialog-fn-button-product-lookup @selectProduct="productLookup">
-            <template v-slot:activator="{open, close}">
-              <g-icon @click="open" color="red">fas fa-search</g-icon>
+
+      <dialog-fn-button-product-lookup @selectProduct="productLookup">
+        <template v-slot:activator="{open, close}">
+          <pos-text-field :value="buybackProductName" @click="open" label="Buyback" read-only v-if="selectedFunction === 'buybackProduct'">
+            <template v-slot:append>
+              <g-icon color="#757575" size="16px">fas fa-search</g-icon>
             </template>
-          </dialog-fn-button-product-lookup>
+          </pos-text-field>
         </template>
-      </pos-text-field>
+      </dialog-fn-button-product-lookup>
+
     </div>
 
-    <div area="function-action" style="padding: 1px; position: relative;">
-      <pos-text-field :value="textFieldFunctionValue" @blur="updateBtnGrid" @input="(val) => updateButton(val, 'buttonFunctionValue')" label="Value" placeholder="Fill your value" v-show="isButtonSelected && !isInConfigLayoutMode && showFunctionValue"></pos-text-field>
-      <pos-text-field v-model="buybackProductPrice" @blur="updateBtnGrid" label="Price" placeholder="Fill your value" style="position: absolute; bottom: 6px" v-if="isButtonSelected && !isInConfigLayoutMode && selectedFunction === 'buybackProduct'"></pos-text-field>
+    <div area="function-action">
+      <pos-text-field :value="textFieldFunctionValue" @change="updateButtonItems"
+                      @input="updateButton($event, 'buttonFunctionValue')"
+                      label="Value"
+                      placeholder="Fill your value"
+                      v-show="isButtonSelected && !isInConfigLayoutMode && showFunctionValue"></pos-text-field>
+      <pos-text-field @change="updateButtonItems"
+                      label="Price"
+                      placeholder="Fill your value"
+                      style="position: absolute; bottom: 8px"
+                      v-if="isButtonSelected && !isInConfigLayoutMode && selectedFunction === 'buybackProduct'"
+                      v-model="buybackProductPrice"></pos-text-field>
     </div>
 
-    <div area="color" style="padding: 8px 8px 8px 13px" v-show="isButtonSelected && !isInConfigLayoutMode">
+    <div area="color" v-show="isButtonSelected && !isInConfigLayoutMode">
       <p class="title">Color</p>
       <g-grid-select :grid="false" :items="buttonColors" return-object v-model="selectedColor">
         <template #default="{toggleSelect, item, index}">
-          <g-btn :key="index" :ripple="false" :style="{marginRight: '14px', boxShadow: 'none', borderRadius: '50%', width: '38px', minWidth: '38px',height: '38px', border: '1px solid #D2D2D2', backgroundColor: item.value }" :uppercase="false" @click="toggleSelect(item); updateBtnGrid();"></g-btn>
+          <g-btn :key="index" :ripple="false"
+                 :style="calculateColorStyle(item)"
+                 :uppercase="false"
+                 @click="toggleSelect(item); updateButtonItems();"></g-btn>
         </template>
         <template #selected="{toggleSelect, item, index}">
           <g-badge :badge-size="12" overlay style="margin-right: 14px;">
             <template v-slot:badge>
               <g-icon>done</g-icon>
             </template>
-            <g-btn :ripple="false" :style="{boxShadow: 'none', borderRadius: '50%', width: '38px', minWidth: '38px', height: '38px', border: '2px solid #1271FF', backgroundColor: item.value}" :uppercase="false">
+            <g-btn :ripple="false"
+                   :style="calculateSelectedColorStyle(item)"
+                   :uppercase="false">
               {{item.optionTitle}}
             </g-btn>
           </g-badge>
@@ -62,15 +82,30 @@
       </g-grid-select>
     </div>
 
-    <g-button-merger :cols="computedLeftBtnMergerCols" :items="buttonGroupItems" :received-merge-map="mergeMap" :received-merged-buttons="mergedButtons" :rows="computedLeftBtnMergerRows" :style="computedLeftBtnStyles" :value="selectedButtons" @input="updateBtnGrid" @merged="setMergedButtons" area="button-chooser" class="pa-2" ref="merger">
+    <g-button-merger :cols="computedLeftBtnMergerCols"
+                     :items="buttonGroupItems"
+                     :received-merge-map="mergeMap"
+                     :received-merged-buttons="mergedButtons"
+                     :rows="computedLeftBtnMergerRows"
+                     :style="computedLeftBtnStyles"
+                     :value="selectedButtons"
+                     @input="updateButtonItems"
+                     @merged="setMergedButtons"
+                     area="button-chooser"
+                     class="pa-2"
+                     ref="merger">
       <template #default="{toggleSelect, item, index}">
-        <g-btn :style="{ display: mergedButtons.indexOf(item.buttonId) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, borderColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : '', border: '1px solid #979797'}" :uppercase="false" @click="toggleSelect(item)"
+        <g-btn :style="calculateButtonStyle(item)" :uppercase="false"
+               @click="toggleSelect(item)"
                elevation="0" height="100%" width="100%">
           {{item.text}}
         </g-btn>
       </template>
       <template #selected="{toggleSelect, item, index}">
-        <g-btn :class="activeSelectedButton" :style="{ display: mergedButtons.indexOf(item.buttonId) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : ''}" :uppercase="false" @click="toggleSelect(item)"
+        <g-btn :class="activeSelectedButton"
+               :style="calculateSelectedButtonStyle(item)"
+               :uppercase="false"
+               @click="toggleSelect(item)"
                elevation="0" height="100%" width="100%">
           {{item.text}}
         </g-btn>
@@ -78,8 +113,8 @@
     </g-button-merger>
 
 
-    <div area="function-overlay" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99; display: flex; justify-content: center; align-items: center" v-show="selectedButtons.length >= 2 || isButtonSelected === false || mergeMode || splitMode">
-      <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100;" v-show="!isButtonSelected || mergeMode || splitMode">
+    <div area="function-overlay" v-show="selectedButtons.length >= 2 || isButtonSelected === false || mergeMode || splitMode">
+      <div class="function-overlay-info" v-show="!isButtonSelected || mergeMode || splitMode">
         <g-icon size="62" svg>icon-info-green</g-icon>
         <p style="margin-top: 10px" v-if="!isInConfigLayoutMode && !isButtonSelected">Select a button to configure</p>
         <p style="margin-top: 10px" v-else-if="mergeMode">Select multiple buttons to merge</p>
@@ -87,7 +122,7 @@
       </div>
     </div>
 
-    <div area="button-control" style="background-color: #EEEEEE; padding: 12px; position: relative; bottom: 0; display: flex;">
+    <div area="button-control">
       <g-btn :uppercase="false" @click="$router.push({ path: '/view/test-pos-settings' })" background-color="white" class="mr-2">
         <g-icon class="mr-2" svg>icon-back</g-icon>
         <span style="color: rgba(0, 0, 0, 0.87)">Back</span>
@@ -133,19 +168,19 @@
       </g-btn>
     </div>
 
-    <div area="menu__overlay" class="menu-disabled" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99;">
+    <div area="menu__overlay" class="menu-disabled">
 
     </div>
     <div area="main">
       <g-scroll-window :show-arrows="false" area="window" v-model="window">
-        <g-scroll-window-item :key="i" v-for="(items, i) in listItems">
+        <g-scroll-window-item :key="i" v-for="(items, i) in listProducts">
           <g-btn :background-color="item.color" :key="i" :uppercase="false" flat height="100%" v-for="(item, i) in items">{{item.title}}</g-btn>
         </g-scroll-window-item>
       </g-scroll-window>
 
-      <g-item-group :items="listItems" :return-object="false" area="delimeter" mandatory>
+      <g-item-group :items="listProducts" :return-object="false" area="delimeter" mandatory>
         <template v-slot:default="{ toggle, active }">
-          <template v-for="(item, index) in listItems">
+          <template v-for="(item, index) in listProducts">
             <g-item :is-active="active(item)" :key="index">
               <g-btn :uppercase="false"></g-btn>
             </g-item>
@@ -154,9 +189,9 @@
       </g-item-group>
     </div>
 
-    <div area="main__overlay" class="menu-disabled" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99;"></div>
+    <div area="main__overlay" class="menu-disabled"></div>
 
-    <div area="keyboard__overlay" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99;"></div>
+    <div area="keyboard__overlay"></div>
 
     <g-number-keyboard :items="numpadItems" area="keyboard">
       <template v-slot:screen>
@@ -166,16 +201,19 @@
       </template>
     </g-number-keyboard>
 
-    <g-button-merger :items="sideButtonItems" :received-merge-map="mergeMap" :received-merged-buttons="mergedButtons" :value="selectedButtons" @input="updateBtnGrid" @merged="setMergedButtons" area="buttons" cols="1fr 1fr" ref="sideMerger" rows="1fr 1fr 1fr 1fr 1fr 1fr">
+    <g-button-merger :items="sideButtonItems" :received-merge-map="mergeMap" :received-merged-buttons="mergedButtons" :value="selectedButtons" @input="updateButtonItems" @merged="setMergedButtons" area="buttons" cols="1fr 1fr" ref="sideMerger" rows="1fr 1fr 1fr 1fr 1fr 1fr">
       <template #default="{toggleSelect, item, index}">
-        <g-btn :style="{ display: mergedButtons.indexOf(item.buttonId) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, borderColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : '', border: '1px solid #979797'}" :uppercase="false"
+        <g-btn :style="calculateButtonStyle(item)"
+               :uppercase="false"
                @click="toggleSelect(item)"
                elevation="0" height="100%" width="100%">
           {{item.text}}
         </g-btn>
       </template>
       <template #selected="{toggleSelect, item, index}">
-        <g-btn :class="activeSelectedButton" :style="{ display: mergedButtons.indexOf(item.buttonId) >= 0 ? 'none' : '', gridRow: item.row[0] + '/' + item.row[1], gridColumn: item.col[0] + '/' + item.col[1], backgroundColor: item.style.backgroundColor, color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : ''}" :uppercase="false" @click="toggleSelect(item)"
+        <g-btn :class="activeSelectedButton"
+               :style="calculateSelectedButtonStyle(item)"
+               :uppercase="false" @click="toggleSelect(item)"
                elevation="0" height="100%" width="100%">
           {{item.text}}
         </g-btn>
@@ -186,7 +224,7 @@
 
 <script>
   import _ from 'lodash'
-  import fnButtonLayout2 from './fnButtonLayout2'
+  import fnButtonLayout from './fnButtonLayout'
   import cms from 'cms'
   import PosTextField from '../pos-shared-components/POSInput/PosTextField';
   import DialogFnButtonProductLookup from './components/dialogFnButtonProductLookup';
@@ -199,7 +237,7 @@
       'PosStore:rightButtonsUpdate',
     ],
     data: () => ({
-      layout: fnButtonLayout2,
+      layout: fnButtonLayout,
       numberOfConfigBtn: 0,
       buybackProductName: '',
       buybackProductUnit: null,
@@ -220,13 +258,12 @@
       mergeMap: null,
       selectedButtons: [],
       selectedFunction: null,
-      items: [
+      listButtonFunctions: [
         { text: 'Discount single item (dialog)', value: 'discountSingleItemDialog', hasValue: false },
         { text: 'Discount single item by %', value: 'discountSingleItemByPercent', hasValue: true },
         { text: 'Discount single item by €', value: 'discountSingleItemByAmount', hasValue: true },
         { text: 'Product Lookup', value: 'productLookup', hasValue: false },
         { text: 'Change price', value: 'changePrice', hasValue: true },
-        { text: 'Plastic refund', value: 'plasticRefund', hasValue: false },
         { text: 'Quick Cash', value: 'quickCash', hasValue: false },
         { text: 'Save order', value: 'saveOrder', hasValue: false },
         { text: 'Pay', value: 'pay', hasValue: false },
@@ -290,7 +327,7 @@
         { content: ['C'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: () => '0', style: 'grid-area: keyC; border: 1px solid #979797' },
         { content: ['&crarr;'], classes: 'key-number white', type: 'enter', action: () => null, style: 'grid-area: Enter; border: 1px solid #979797; background-color: #eeeeee' }
       ],
-      listItems: [
+      listProducts: [
         [
           { title: 'Tiramisu', color: 'pink lighten 4' },
           { title: 'Tiramisu', color: 'teal accent 1' },
@@ -398,10 +435,10 @@
     created() {
       this.menuSelected = this.menu[0];
       this.window = 0;
-      this.delimiters = [...this.listItems.keys()];
+      this.delimiters = [...this.listProducts.keys()];
     },
     watch: {
-      selectedButtons: function (newVal, oldVal) {
+      selectedButtons: function (newVal) {
         if (!newVal[0]) {
           return
         }
@@ -414,7 +451,6 @@
         }
 
         if (selectedBtn) {
-          debugger
           this.textFieldValue = selectedBtn.text;
           this.textFieldFunctionValue = selectedBtn.buttonFunctionValue || '';
           this.selectedFunction = selectedBtn.buttonFunction || null;
@@ -426,7 +462,7 @@
         }
         if (newVal.length > 0 && selectedBtn.style && selectedBtn.style.backgroundColor) {
 
-          let selectedColorIndex = this.buttonColors.findIndex((x) => x.value === selectedBtn.style.backgroundColor);
+          const selectedColorIndex = this.buttonColors.findIndex((x) => x.value === selectedBtn.style.backgroundColor);
           if (selectedColorIndex >= 0) {
             this.selectedColor = this.buttonColors[selectedColorIndex];
           } else {
@@ -455,44 +491,84 @@
           return { height: '100%' }
         }
       },
-      isClearBtnDisabled() {
-        return !this.selectedButtons || (this.selectedButtons[0] && this.selectedButtons[0].text.length <= 0);
-      },
       showFunctionValue() {
-        if (!this.selectedFunction || !this.items) {
+        if (!this.selectedFunction || !this.listButtonFunctions) {
           return false;
         }
-        let showFunctionValue = this.items.filter((item) => item.value === this.selectedFunction);
+        const showFunctionValue = this.listButtonFunctions.filter((item) => item.value === this.selectedFunction);
         return showFunctionValue.length > 0 ? showFunctionValue[0].hasValue : false;
       },
       isSideMerger() {
         if (!this.selectedButtons[0]) {
           return false;
         }
-        let sideButtonIndex = this.sideButtonItems.findIndex((item) => this.selectedButtons[0].buttonId === item.buttonId);
+        const sideButtonIndex = this.sideButtonItems.findIndex((item) => this.selectedButtons[0].buttonId === item.buttonId);
         return sideButtonIndex >= 0;
       },
       isButtonSelected() {
         return this.selectedButtons.length > 0;
-      }
-      ,
+      },
       isInConfigLayoutMode() {
         return this.mergeMode || this.splitMode;
       },
     },
     methods: {
+      calculateSelectedButtonStyle(item) {
+        return {
+          display: this.mergedButtons.indexOf(item.buttonId) >= 0 ? 'none' : '',
+          gridRow: item.row[0] + '/' + item.row[1],
+          gridColumn: item.col[0] + '/' + item.col[1],
+          backgroundColor: item.style.backgroundColor,
+          color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : ''
+        }
+      },
+      calculateSelectedColorStyle(item) {
+        return {
+          boxShadow: 'none',
+          borderRadius: '50%',
+          width: '38px',
+          minWidth: '38px',
+          height: '38px',
+          border: '2px solid #1271FF',
+          backgroundColor: item.value
+        }
+      },
+      calculateColorStyle(item) {
+        return {
+          marginRight: '14px',
+          boxShadow: 'none',
+          borderRadius: '50%',
+          width: '38px',
+          minWidth: '38px',
+          height: '38px',
+          border: '1px solid #D2D2D2',
+          backgroundColor: item.value
+        }
+      },
+      calculateButtonStyle(item) {
+        return {
+          display: this.mergedButtons.indexOf(item.buttonId) >= 0 ? 'none' : '',
+          gridRow: item.row[0] + '/' + item.row[1],
+          gridColumn: item.col[0] + '/' + item.col[1],
+          backgroundColor: item.style.backgroundColor,
+          color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : '',
+          border: '1px solid #979797'
+        }
+      },
+      updateButtonFunction(value) {
+        this.updateButton(value, 'buttonFunction');
+        this.updateButtonItems();
+      },
+      resetSelectedButton() {
+        //TODO: reset btn
+      },
       productLookup(product) {
         this.selectedBuybackProduct = product;
         this.buybackProductUnit = product.unit;
         this.buybackProductName = product.name;
 
         this.updateButton({ product, unit: product.unit, price: product.price }, 'buyback');
-        this.updateBtnGrid();
-      },
-      onClearButtonText() {
-        this.updateButton('', 'text');
-        this.textFieldValue = '';
-        this.updateBtnGrid();
+        this.updateButtonItems();
       },
       toggleMode(mode) {
         switch (mode) {
@@ -548,7 +624,7 @@
         this.splitMode = false;
         this.selectedButtons = []
       },
-      async updateBtnList(buttonList, dbButtonList) {
+      async updateToDatabase(buttonList, dbButtonList) {
         try {
           for (let item of buttonList) {
             await cms.getModel('PosSetting').findOneAndUpdate({ [`${dbButtonList}._id`]: item.buttonId }, {
@@ -572,40 +648,38 @@
             this.rightButtonsUpdate++;
           }
         } catch (e) {
-          console.log('Error updating updateBtnList', e);
+          console.log('Error updating updateToDatabase', e);
         }
       },
-      updateButtonFunction(value) {
-        this.updateButton(value, 'buttonFunction');
-        this.updateBtnGrid();
+      updateSelectedBtnStyle() {
+        this.selectedButtons[0].style.textColor = this.selectedColor.value !== '#FFFFFF' ? 'white' : 'black';
+        this.selectedButtons[0].style.backgroundColor = this.selectedColor.value;
+        if (this.selectedButtons[0].buyback) {
+          this.selectedButtons[0].buyback.price = this.buybackProductPrice;
+        }
       },
-      updateBtnGrid() {
-        let valueOfBtn = this.selectedButtons[0].buttonId;
-        let foundItem = this.buttonGroupItems.find((item) => item.buttonId === valueOfBtn);
+      updateButtonItems() {
+        const selectedBtnId = this.selectedButtons[0].buttonId;
+        let foundItem = this.buttonGroupItems.find((item) => item.buttonId === selectedBtnId);
         if (foundItem) {
           foundItem.style.backgroundColor = this.selectedColor.value;
-          this.selectedButtons[0].style.textColor = this.selectedColor.value !== '#FFFFFF' ? 'white' : 'black';
-          this.selectedButtons[0].style.backgroundColor = this.selectedColor.value;
-          this.selectedButtons[0].buyback.price = this.buybackProductPrice;
-
+          this.updateSelectedBtnStyle();
           try {
             foundItem = this.selectedButtons[0];
-            this.updateBtnList(this.buttonGroupItems, 'leftFunctionButtons')
+            this.updateToDatabase(this.buttonGroupItems, 'leftFunctionButtons')
           } catch (e) {
             console.log('Error updating: ', e);
           }
         }
 
-        let foundSideItem = this.sideButtonItems.find((item) => item.buttonId === valueOfBtn);
+        const foundSideItem = this.sideButtonItems.find((item) => item.buttonId === selectedBtnId);
         if (foundSideItem) {
           foundSideItem.style.backgroundColor = this.selectedColor.value;
-          this.selectedButtons[0].style.textColor = this.selectedColor.value !== '#FFFFFF' ? 'white' : 'black';
-          this.selectedButtons[0].style.backgroundColor = this.selectedColor.value;
-          this.selectedButtons[0].buyback.price = this.buybackProductPrice;
+          this.updateSelectedBtnStyle();
 
           try {
             foundItem = this.selectedButtons[0];
-            this.updateBtnList(this.sideButtonItems, 'rightFunctionButtons')
+            this.updateToDatabase(this.sideButtonItems, 'rightFunctionButtons')
           } catch (e) {
             console.log('Error updating: ', e);
           }
@@ -626,7 +700,7 @@
         if (this.selectedButtons[0]) {
           this.selectedButtons[0][updatedField] = newVal;
 
-          let item = this.findSelectedButton(this.selectedButtons[0]);
+          const item = this.findSelectedButton(this.selectedButtons[0]);
           if (item) {
             item[updatedField] = newVal;
           }
@@ -639,7 +713,7 @@
 
         return this.buttonGroupItems.find((x) => x.buttonId === button.buttonId) || this.sideButtonItems.find((x) => x.buttonId === button.buttonId);
       },
-      computedFetchedButtons(buttonList, dataList) {
+      mapFetchedButtons(buttonList, dataList) {
         for (let item of buttonList) {
           const {
             backgroundColor, buttonFunction, buttonFunctionValue, originalRows, originalCols,
@@ -656,11 +730,7 @@
             buttonFunction,
             buttonFunctionValue,
             buttonId: _id,
-            buyback: buyback ? buyback : {
-              buybackPrice: null,
-              buybackProductName: null,
-              buybackProductUnit: null
-            }
+            buyback
           })
 
           this.mergedButtons = this.mergedButtons.concat(containedButtons);
@@ -675,12 +745,12 @@
       }
     },
     async mounted() {
-      this.posSettings = await cms.getModel('PosSetting').findOne()
+      this.posSettings = await cms.getList('PosSetting')[0];
       if (this.posSettings) {
         this.quickFnRows = this.posSettings['generalSetting']['quickFnRows'] || 0;
         this.numberOfConfigBtn = 4 * this.quickFnRows;
-        this.computedFetchedButtons(_.slice(this.posSettings['leftFunctionButtons'], 0, this.numberOfConfigBtn), this.buttonGroupItems);
-        this.computedFetchedButtons(this.posSettings['rightFunctionButtons'], this.sideButtonItems);
+        this.mapFetchedButtons(_.slice(this.posSettings['leftFunctionButtons'], 0, this.numberOfConfigBtn), this.buttonGroupItems);
+        this.mapFetchedButtons(this.posSettings['rightFunctionButtons'], this.sideButtonItems);
       }
 
     }
@@ -696,9 +766,40 @@
     border: 2px solid darkred !important;
   }
 
+  .menu__overlay, .main__overlay, .keyboard__overlay {
+    background-color: rgba(255, 255, 255, 0.54);
+    z-index: 99;
+  }
+
+  .function-overlay {
+    .function-overlay-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    background-color: rgba(255, 255, 255, 0.54);
+    z-index: 99;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .button-control {
+    background-color: #EEEEEE;
+    padding: 12px;
+    position: relative;
+    bottom: 0;
+    display: flex;
+  }
+
   .button-name {
+    padding: 12px;
+
     ::v-deep .bs-tf-wrapper {
-      margin-left: 0;
+      margin: 0;
     }
   }
 
@@ -714,6 +815,13 @@
     }
   }
 
+  .button-action {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 42px;
+  }
+
   .title {
     font-size: 13px;
     line-height: 16px;
@@ -726,18 +834,20 @@
   }
 
   .color {
+    padding: 8px 8px 8px 13px;
+
     ::v-deep .g-row {
       margin-top: 20px;
     }
   }
 
   .function {
+    padding: 13px 12px 8px 13px;
+
     .g-select {
       ::v-deep .g-tf-wrapper {
         fieldset {
           .g-tf {
-            border: 1px solid #ced4da !important;
-
             .inputGroup .input .g-tf-input {
               font-size: 15px;
             }
@@ -761,8 +871,13 @@
   }
 
   .function-action {
+    padding: 8px;
+    position: relative;
+
     .bs-tf-wrapper {
+      width: 100%;
       padding-right: 23px;
+      margin: 0;
     }
   }
 
@@ -807,6 +922,10 @@
   .function {
     ::v-deep .g-select .g-tf-wrapper {
       margin: 8px 0 24px 0;
+    }
+
+    ::v-deep .bs-tf-wrapper {
+      margin: 0;
     }
   }
 

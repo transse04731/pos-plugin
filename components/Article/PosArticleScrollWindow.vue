@@ -2,14 +2,15 @@
   <div class="main">
     <g-scroll-window :show-arrows="false" v-model="activeWindow" area="window" elevation="0">
       <g-scroll-window-item :key="windowIndex" v-for="(window, windowIndex) in productWindows" @input="updateActiveWindow(windowIndex)">
-        <g-btn :active="articleSelectedProductButton && (articleSelectedProductButton._id === item._id)" :active-class="productActive"
+        <g-btn v-for="(item, i) in window"
+               :active="articleSelectedProductButton && (articleSelectedProductButton._id === item._id)"
+               :active-class="productActive"
                :key="i"
-               :style="{order: getProductGridOrder(item), backgroundColor: item.layouts[0].color}"
+               :style="getBtnStyle(item)"
                :uppercase="false"
                @click="selectArticle(item)"
                flat
                height="100%"
-               v-for="(item, i) in window"
         >
           {{item.name}}
         </g-btn>
@@ -38,7 +39,7 @@
         default: 0
       }
     },
-    injectService: ['PosStore:(activeCategoryProducts, getProductGridOrder, selectArticle, articleSelectedProductButton)'],
+    injectService: ['PosStore:(activeCategory, activeCategoryProducts, getProductGridOrder, selectArticle, articleSelectedProductButton)'],
     data() {
       return {
         activeProductWindow: 0,
@@ -48,17 +49,33 @@
     methods: {
       updateActiveWindow(value) {
         this.activeWindow = value
+      },
+      getBtnStyle(item) {
+        const layout = item.layouts && item.layouts.find(layout => this.isFavouriteCategory
+          ? layout.favourite
+          : !layout.favourite)
+
+        return layout
+          ? {
+            order: this.getProductGridOrder(item, this.isFavouriteCategory),
+            backgroundColor: layout.color
+          }
+          : null
       }
     },
     computed: {
       productWindows() {
         return _.chunk(this.activeCategoryProducts, 28)
       },
+      isFavouriteCategory() {
+        return this.activeCategory && this.activeCategory.name === 'Favourite'
+      },
       activeWindow: {
         get() {
           if (this.articleSelectedProductButton) {
             return this.productWindows.findIndex(v => {
-              return v.some((item) => this.getProductGridOrder(item) === this.getProductGridOrder(this.articleSelectedProductButton))
+              return v.some((item) =>
+                this.getProductGridOrder(item, this.isFavouriteCategory) === this.getProductGridOrder(this.articleSelectedProductButton, this.isFavouriteCategory))
             })
           }
           return this.activeProductWindow
