@@ -49,7 +49,7 @@
         await this.$getService('PosStore:deleteSelectedProducts')()
       },
       back() {
-        this.$router.push({ path: '/view/test-pos-dashboard' })
+        this.$router.push({ path: '/view/pos-dashboard' })
       }
     }
   }

@@ -60,7 +60,7 @@
     methods: {
       async pay() {
         await this.savePaidOrder()
-        await this.$router.push({ path: '/view/test-pos-order' })
+        await this.$router.push({ path: '/view/pos-order' })
         this.selectedPayment = null
       }
     }

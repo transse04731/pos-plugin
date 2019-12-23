@@ -16,7 +16,7 @@
     name: 'PosPaymentScreenToolbar',
     methods: {
       back() {
-        this.$router.push({path: '/view/test-pos-order'})
+        this.$router.push({path: '/view/pos-order'})
       }
     }
   }

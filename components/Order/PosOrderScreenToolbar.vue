@@ -34,7 +34,7 @@
         this.$getService('dialogSavedList:setActive')(true)
       },
       back() {
-        this.$router.push({path: '/view/test-pos-dashboard'})
+        this.$router.push({path: '/view/pos-dashboard'})
       }
     },
     async mounted() {

@@ -22,7 +22,7 @@
           >
             <div class="flex-grow-1 pa-2 ta-left" style="font-size: 15px">
               <p>{{product.name}}
-              <p v-if="product.promotion" class="promotion">{{product.promotion}}</p>
+              <p v-if="product.attributes" class="promotion">{{product.attributes}}</p>
             </div>
             <div class="w-10 pa-2 ta-center">{{product.unit}}</div>
             <div class="w-10 pa-2 ta-right">{{product.quantity}}</div>
@@ -51,10 +51,18 @@
     computed: {
       productList() {
         return this.currentOrder.items.map(product => ({
-          ...product,
+          ..._.omit(product, 'attributes'),
+          attributes: this.getAttributes(product),
           edited: product.price !== product.originalPrice
         }))
       }
+    },
+    methods: {
+      getAttributes: item => {
+        if (!item.attributes) return
+        const attrStringArr = item.attributes.map(attr => `${attr.key}: ${attr.value}`)
+        return attrStringArr.join(', ')
+      },
     }
   }
 </script>
@@ -101,8 +109,8 @@
       }
 
       .promotion {
+        text-transform: capitalize;
         color: #979797;
-        margin-left: 8px;
         line-height: 1;
 
         &-price {

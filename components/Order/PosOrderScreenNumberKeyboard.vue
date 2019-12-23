@@ -101,8 +101,11 @@
         if (this.productIdQuery.trim()) {
           await this.queryProductsById()
           if (this.productIdQueryResults.length === 1) {
-            this.addProductToOrder(this.productIdQueryResults[0])
-          } else {
+            const onlyResult = this.productIdQueryResults[0];
+            if (onlyResult.attributes.keys().length === onlyResult.attributes.length) {
+              this.addProductToOrder(onlyResult)
+              return
+            }
             this.$nextTick(() => {
               this.$getService('dialogProductSearchResult:setActive')(true)
             })
@@ -114,7 +117,7 @@
 </script>
 
 <style scoped>
- .keyboard {
-   padding: 8px 0 8px 8px;
- }
+  .keyboard {
+    padding: 8px 0 8px 8px;
+  }
 </style>

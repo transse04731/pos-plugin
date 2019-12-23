@@ -34,7 +34,7 @@
             items: [
               { title: 'Articles', icon: 'radio_button_unchecked', iconType: 'small', isView: true },
               { title: 'Category', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/category' */ },
-              { title: 'Product Layout', icon: 'radio_button_unchecked', iconType: 'small', href: '/view/test-pos-article', appendIcon: 'open_in_new' },
+              { title: 'Product Layout', icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-article', appendIcon: 'open_in_new' },
             ]
           },
           { title: 'Reporting', icon: 'icon-bar_chart', svgIcon: true },
@@ -175,7 +175,7 @@
           this.user = _.find(cms.getList('PosSetting')[0].user, user => user.passcode === this.loginPassword)
           if (this.user) {
             this.loginPassword = ''
-            return this.$router.push({ path: `/view/test-pos-dashboard` })
+            return this.$router.push({ path: `/view/pos-dashboard` })
           }
         } catch (e) {
           console.error(e)
@@ -276,13 +276,22 @@
         })))
       },
       async getSavedOrders() {
-        const orderModel = cms.getModel('Order')
-        this.savedOrders = await orderModel.find({ status: 'inProgress' })
+        try {
+          const orderModel = cms.getModel('Order')
+          this.savedOrders = await orderModel.find({ status: 'inProgress' })
+        } catch (e) {
+          console.error(e)
+        }
       },
       async removeSavedOrder(order) {
-        const orderModel = cms.getModel('Order')
-        await orderModel.remove({ _id: order._id })
-        await this.getSavedOrders()
+        try {
+          const orderModel = cms.getModel('Order')
+          await orderModel.findOneAndUpdate({ '_id': order._id }, { status: 'cancelled' });
+          const index = this.savedOrders.findIndex(o => o._id === order._id);
+          this.savedOrders.splice(index, 1);
+        } catch (e) {
+          console.error(e)
+        }
       },
       async selectSavedOrder(order) {
         const orderModel = cms.getModel('Order')
@@ -353,7 +362,7 @@
         const orderModel = cms.getModel('Order');
         const condition = this.orderHistoryFilters.reduce((acc, filter) => ({ ...acc, ...filter['condition'] }), { status: 'paid' });
         const { limit, currentPage } = this.orderHistoryPagination;
-        const orders = await orderModel.find(condition).skip(limit * (currentPage - 1)).limit(limit);
+        const orders = await orderModel.find(condition).sort({ date: -1 }).skip(limit * (currentPage - 1)).limit(limit);
         this.orderHistoryOrders = orders.map(order => ({
           ...order,
           info: order.note,
@@ -372,11 +381,15 @@
         this.totalOrders = await orderModel.countDocuments(condition);
       },
       async deleteOrder() {
-        const orderModel = cms.getModel('Order');
-        await orderModel.deleteOne({ '_id': this.orderHistoryCurrentOrder._id });
-        const index = this.orderHistoryOrders.findIndex(o => o._id === this.orderHistoryCurrentOrder._id);
-        this.orderHistoryOrders.splice(index, 1);
-        this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
+        try {
+          const orderModel = cms.getModel('Order');
+          await orderModel.findOneAndUpdate({ '_id': this.orderHistoryCurrentOrder._id }, { status: 'cancelled' });
+          const index = this.orderHistoryOrders.findIndex(o => o._id === this.orderHistoryCurrentOrder._id);
+          this.orderHistoryOrders.splice(index, 1);
+          this.orderHistoryCurrentOrder = null;
+        } catch (e) {
+          console.error(e)
+        }
       },
       //<!--</editor-fold>-->
       // payment screen
@@ -837,16 +850,21 @@
         await this.savePaidOrder({ type: 'Cash', value: this.lastPayment });
       },
       pay() {
-        this.$router.push({ path: `/view/test-pos-payment` })
+        this.$router.push({ path: `/view/pos-payment` })
       },
     },
     created() {
+      const cachedPageSize = localStorage.getItem('orderHistoryPageSize')
+      if (cachedPageSize) this.orderHistoryPagination.limit = parseInt(cachedPageSize)
       this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
       this.user = cms.getList('PosSetting')[0].user[0]
     },
     watch: {
-      currentOrder: function () {
+      currentOrder() {
         this.paymentAmountTendered = 0;
+      },
+      'orderHistoryPagination.limit'(newVal) {
+        localStorage.setItem('orderHistoryPageSize', newVal)
       }
     },
     provide() {

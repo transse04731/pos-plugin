@@ -10,7 +10,9 @@
     </template>
     <g-side-bar-tree-view :data="sideBardata" v-model="sidebar"></g-side-bar-tree-view>
     <g-spacer></g-spacer>
-    <g-btn :uppercase="false" large text background-color="white" text-color="#424242" width="100%">
+    <g-btn :uppercase="false" large text background-color="white" text-color="#424242" width="100%"
+           @click.stop="logout"
+    >
       <g-icon svg>icon-logout</g-icon>
       <span class="ml-2">Log Out</span>
     </g-btn>
@@ -46,6 +48,12 @@
       },
       srcImg() {
         return this.user ? this.user.avatar : ''
+      }
+    },
+    methods: {
+      logout() {
+        this.$router.push('/view/pos-login')
+        this.user = null
       }
     }
   }

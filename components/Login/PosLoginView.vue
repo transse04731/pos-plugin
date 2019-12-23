@@ -62,13 +62,8 @@
 </template>
 
 <script>
-  //import loginSupportDialog from './loginSupportDialog'
-  //import PosKeyboardFull from '../pos-shared-components/PosKeyboardFull';
-  //import PosLoginKeyboard from '../pos-shared-components/POSInput/PosLoginKeyboard';
-
   export default {
     name: 'PosLoginView',
-    //components: { PosLoginKeyboard, PosKeyboardFull },
     data: () => ({
       password: '',
       keyboardOn: false,

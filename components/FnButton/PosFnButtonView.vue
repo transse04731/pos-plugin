@@ -123,7 +123,7 @@
     </div>
 
     <div area="button-control">
-      <g-btn :uppercase="false" @click="$router.push({ path: '/view/test-pos-settings' })" background-color="white" class="mr-2">
+      <g-btn :uppercase="false" @click="$router.push({ path: '/view/pos-settings' })" background-color="white" class="mr-2">
         <g-icon class="mr-2" svg>icon-back</g-icon>
         <span style="color: rgba(0, 0, 0, 0.87)">Back</span>
       </g-btn>
