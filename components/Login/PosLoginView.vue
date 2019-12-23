@@ -32,7 +32,7 @@
       </div>
     </div>
     <!--    keyboard dialog-->
-    <g-dialog lazy persistent v-model="keyboardOn" width="100%">
+    <g-dialog lazy persistent v-model="keyboardOn" width="100%" eager>
       <g-card height="650px" width="100%">
         <div class="dialog-content-wrapper">
           <g-grid-layout :layout="loginSupportDialog" style="height: 100%;">

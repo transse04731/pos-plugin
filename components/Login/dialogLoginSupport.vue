@@ -1,5 +1,5 @@
 <template>
-  <g-dialog v-model="dialogLoginSupport" width="100%">
+  <g-dialog v-model="dialogLoginSupport" width="100%" eager>
     <g-card width="100%" height="585px">
       <g-grid-layout :layout="layout" style="height: 100%; width: 100%">
         <p area="version" class="support-item"><b>Version: </b>{{this.version}}</p>

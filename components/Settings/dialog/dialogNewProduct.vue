@@ -1,6 +1,6 @@
 <template>
   <div>
-    <g-dialog v-model="dialogNewProduct" fullscreen scrollable lazy>
+    <g-dialog v-model="dialogNewProduct" fullscreen scrollable eager>
       <div class="dialog-product w-100">
         <div class="form">
           <div class="title">
@@ -57,7 +57,7 @@
         </g-toolbar>
       </div>
     </g-dialog>
-    <g-dialog v-model="dialogNewProductDetail" overlay-color="#6b6f82" overlay-opacity="0.95" width="90%" lazy>
+    <g-dialog v-model="dialogNewProductDetail" overlay-color="#6b6f82" overlay-opacity="0.95" width="90%" eager>
       <div class="dialog-product w-100">
         <div class="form__detail">
           <div class="input__detail">

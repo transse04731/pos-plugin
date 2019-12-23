@@ -1,5 +1,5 @@
 <template>
-	<g-dialog v-model="internalValue" width="70%">
+	<g-dialog v-model="internalValue" width="70%" eager>
 		<div class="wrapper">
 			<div class="header">
 				<span>{{label}}</span>

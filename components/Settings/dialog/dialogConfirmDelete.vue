@@ -1,5 +1,5 @@
 <template>
-  <g-dialog v-model="dialog" overlay-color="#6b6f82" overlay-opacity="0.95" width="40%" lazy>
+  <g-dialog v-model="dialog" overlay-color="#6b6f82" overlay-opacity="0.95" width="40%" eager>
     <g-card class="w-100">
       <g-card-title>
         Confirmation

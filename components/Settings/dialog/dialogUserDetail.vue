@@ -1,5 +1,5 @@
 <template>
-  <g-dialog v-model="dialogUserDetail" overlay-color="#6b6f82" overlay-opacity="0.95" width="90%" lazy>
+  <g-dialog v-model="dialogUserDetail" overlay-color="#6b6f82" overlay-opacity="0.95" width="90%" eager>
     <div class="dialog-user w-100">
       <div class="form">
         <div class="input">

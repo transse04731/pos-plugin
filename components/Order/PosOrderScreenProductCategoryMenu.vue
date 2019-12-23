@@ -1,7 +1,7 @@
 <template>
   <div area="menu">
     <g-btn :uppercase="false" v-for="(item, i) in menu" :key="i" elevation="0" background-color="#fff" text-color="#1d1d26" height="100%"
-           @click.stop="select(item)" :ref="`button_${item.name}`">
+           @click.native.stop="select(item)" :ref="`button_${item.name}`">
       {{item.name}}
     </g-btn>
   </div>

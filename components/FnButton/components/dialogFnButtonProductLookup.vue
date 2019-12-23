@@ -1,7 +1,7 @@
 <template>
   <div>
     <slot name="activator" :open="open" :close="close"></slot>
-    <g-dialog v-model="dialogProductLookup" fullscreen ref="dialog" domain="TestDialog2"lazy>
+    <g-dialog v-model="dialogProductLookup" fullscreen ref="dialog" domain="TestDialog2" eager>
       <div class="dialog-lookup w-100">
         <g-toolbar class="header" color="grey lighten 3" elevation="0">
           <g-text-field outlined clearable class="w-50"

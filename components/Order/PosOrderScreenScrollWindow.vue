@@ -1,46 +1,43 @@
 <template>
   <div class="main">
-    <scroll-window area="window" :show-arrows="false" elevation="0"
-                   v-for="(productsList, category) in scrollWindowProducts"
-                   style="display: none"
-                   :key="`window_${category}`"
-                   :ref="`window_${category}`"
-                   :value="activeProductWindows[category]"
-    >
-      <scroll-window-item v-for="(window, windowIndex) in productsList"
-                          :key="`${category}_window_item_${windowIndex}`"
-                          @input="activeProductWindows[category] = $event"
+    <div v-for="(productsList, category) in scrollWindowProducts" :key="category" :ref="`window_${category}`" style="z-index: -1">
+      <scroll-window area="window" :show-arrows="false"
+                     elevation="0"
+                     :key="`window_${category}`"
+                     :value="activeProductWindows[category]"
       >
-        <g-btn :uppercase="false" flat
-               v-for="(item, i) in window"
-               :key="`btn_${i}`"
-               :background-color="(item.layouts.length > 0 && item.layouts[0].color)|| '#FFF'"
-               :style="[!item.layouts[0] || item.layouts[0].color === 'white' ? {border: '1px solid #979797'}: null]"
-               height="100%"
-               @click="addProduct(item)"
+        <scroll-window-item v-for="(window, windowIndex) in productsList"
+                            :key="`${category}_window_item_${windowIndex}`"
+                            @input="activeProductWindows[category] = $event"
         >
-          {{item.name}}
-        </g-btn>
-      </scroll-window-item>
-    </scroll-window>
-    <g-item-group area="delimiter"
-                  :return-object="false" mandatory
-                  v-for="(productsList, category) in scrollWindowProducts"
-                  v-model="activeProductWindows[category]"
-                  :key="`group_${category}`"
-                  :ref="`group_${category}`"
-                  :items="productsList"
-                  style="display: none"
-    >
-      <template #default="{ toggle, active }">
-        <g-item v-for="(item, index) in productsList"
-                :is-active="active(item)"
-                :key="`${category}_item_${index}`"
-        >
-          <g-btn :uppercase="false" @click="toggle(item)" border-radius="50%"></g-btn>
-        </g-item>
-      </template>
-    </g-item-group>
+          <g-btn :uppercase="false" flat
+                 v-for="(item, i) in window"
+                 :key="`btn_${i}`"
+                 :background-color="(item.layouts.length > 0 && item.layouts[0].color)|| '#FFF'"
+                 :style="[!item.layouts[0] || item.layouts[0].color === 'white' ? {border: '1px solid #979797'}: null]"
+                 height="100%"
+                 @click.native.stop="addProduct(item)"
+          >
+            {{item.name}}
+          </g-btn>
+        </scroll-window-item>
+      </scroll-window>
+      <g-item-group area="delimiter"
+                    :return-object="false" mandatory
+                    v-model="activeProductWindows[category]"
+                    :key="`group_${category}`"
+                    :items="productsList"
+      >
+        <template #default="{ toggle, active }">
+          <g-item v-for="(item, index) in productsList"
+                  :is-active="active(item)"
+                  :key="`${category}_item_${index}`"
+          >
+            <g-btn :uppercase="false" @click.native.stop="toggle(item)" border-radius="50%"></g-btn>
+          </g-item>
+        </template>
+      </g-item-group>
+    </div>
   </div>
 </template>
 
@@ -95,17 +92,17 @@
         if (newValue) {
           const newCategory = newValue.name
           const oldCategory = oldValue && oldValue.name
+
           if (newCategory && this.$refs[`window_${newCategory}`]) {
-            this.$refs[`window_${newCategory}`][0].$el.style.display = 'flex'
-            this.$refs[`group_${newCategory}`][0].$el.style.display = 'flex'
+            this.$refs[`window_${newCategory}`][0].style.zIndex = '1'
           }
 
           if (oldCategory) {
             if (newCategory === oldCategory) return
             const oldRef = this.$refs[`window_${oldCategory}`];
+
             if (oldRef && oldRef.length > 0) {
-              oldRef[0].$el.style.display = 'none'
-              this.$refs[`group_${oldCategory}`][0].$el.style.display = 'none'
+              oldRef[0].style.zIndex = '-1'
             }
           }
         }
@@ -123,13 +120,18 @@
 
 <style scoped lang="scss">
 	.main {
-		padding: 6px 6px 0 6px;
 		overflow: hidden;
+    position: relative;
+    background-color: #fff;
 
 		.g-window {
+      padding: 6px 6px 0 6px;
 			width: 100%;
+      position: absolute;
+      top: 0;
+      bottom: 12px;
 
-			.g-window__container {
+			::v-deep .g-window__container {
 				height: 100%;
 			}
 
@@ -156,6 +158,11 @@
 		.g-item-group {
 			align-items: center;
 			justify-content: center;
+      position: absolute;
+      bottom: 0;
+      height: 12px;
+      left: 50%;
+      transform: translateX(-50%);
 
 			.g-btn {
 				width: 8px !important;

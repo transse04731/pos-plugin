@@ -1,6 +1,6 @@
 <template>
   <div>
-    <g-dialog v-model="dialogSavedList" overlay-color="#6b6f82" overlay-opacity="0.95" bottom max-width="100%" width="100%" lazy>
+    <g-dialog v-model="dialogSavedList" overlay-color="#6b6f82" overlay-opacity="0.95" bottom max-width="100%" width="100%" eager>
       <div class="w-100">
         <g-simple-table striped fixed-header style="font-size: 14px;">
           <thead>
@@ -39,7 +39,7 @@
         </g-toolbar>
       </div>
     </g-dialog>
-    <g-dialog v-model="dialogDeleteSave" overlay-color="#6b6f82" overlay-opacity="0.95" width="40%" lazy>
+    <g-dialog v-model="dialogDeleteSave" overlay-color="#6b6f82" overlay-opacity="0.95" width="40%" eager>
       <g-card class="w-100">
         <g-card-title>
           Confirmation

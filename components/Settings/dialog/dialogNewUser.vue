@@ -1,5 +1,5 @@
 <template>
-  <g-dialog v-model="dialogNewUser" overlay-color="#6b6f82" overlay-opacity="0.95" width="90%" lazy>
+  <g-dialog v-model="dialogNewUser" overlay-color="#6b6f82" overlay-opacity="0.95" width="90%" eager>
     <div class="dialog-new-user w-100">
       <div class="header">
         <span>Add New User</span>

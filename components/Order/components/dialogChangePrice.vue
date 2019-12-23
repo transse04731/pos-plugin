@@ -1,5 +1,5 @@
 <template>
-  <g-dialog v-model="dialogChangePrice" overlay-color="#6b6f82" overlay-opacity="0.95" width="65%">
+  <g-dialog v-model="dialogChangePrice" overlay-color="#6b6f82" overlay-opacity="0.95" width="65%" eager>
     <div class="dialog-change w-100" :style="[{background: showKeyboard ? 'white' : 'transparent'}]">
       <div class="dialog-change-content">
         <div class="header">

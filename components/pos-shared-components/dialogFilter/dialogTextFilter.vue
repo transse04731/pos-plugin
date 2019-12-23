@@ -1,5 +1,5 @@
 <template>
-	<g-dialog v-model="internalValue" width="90%" lazy>
+	<g-dialog v-model="internalValue" width="90%" eager>
 		<div class="wrapper">
 			<g-icon @click="internalValue = false" svg size="20" class="icon">icon-close</g-icon>
 			<div class="screen">

@@ -1,5 +1,5 @@
 <template>
-  <g-dialog v-model="internalValue" width="900px">
+  <g-dialog v-model="internalValue" width="900px" eager>
     <div class="wrapper">
       <div class="dialog-title">
         <span>Datetime Selection</span>

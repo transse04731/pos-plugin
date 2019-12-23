@@ -1,5 +1,5 @@
 <template>
-  <g-dialog v-model="dialogSelectAvatar" overlay-color="#6b6f82" overlay-opacity="0.95" width="90%" lazy>
+  <g-dialog v-model="dialogSelectAvatar" overlay-color="#6b6f82" overlay-opacity="0.95" width="90%" eager>
     <div class="dialog-select-avatar">
       <div class="header">
         <span>Select User Avatar</span>

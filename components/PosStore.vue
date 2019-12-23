@@ -758,8 +758,8 @@
         }
 
       },
-      async getPosSetting() {
-        return await cms.getModel('PosSetting').findOne();
+      getPosSetting() {
+        return cms.getList('PosSetting')[0]
       },
       //<!--</editor-fold>-->
 

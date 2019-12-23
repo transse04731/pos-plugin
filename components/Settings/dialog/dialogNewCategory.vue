@@ -1,5 +1,5 @@
 <template>
-	<g-dialog v-model="dialogNewCategory" width="90%">
+	<g-dialog v-model="dialogNewCategory" width="90%" eager>
 		<div class="dialog-payment w-100">
 			<div class="form">
 				<p class="ml-1 mb-3">

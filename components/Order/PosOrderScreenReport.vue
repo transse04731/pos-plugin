@@ -1,17 +1,19 @@
 <template>
-  <div>
-    <div class="report-column">
-      <span>Discount (€)</span>
-      <span class="number">{{convertMoney(paymentDiscount)}}</span>
-      <span>Tax (€)</span>
-      <span class="number">{{convertMoney(paymentTax)}}</span>
-    </div>
-    <g-divider inset vertical color="#979797"/>
-    <div class="report-column">
-      <span>Sub Total (€)</span>
-      <span class="number">{{convertMoney(paymentSubTotal)}}</span>
-      <span>Total (€)</span>
-      <span class="number__important">{{convertMoney(paymentTotal)}}</span>
+  <div style="position:relative;">
+    <div style="position:absolute; contain:content; width:100%; height:100%; display:flex;">
+      <div class="report-column">
+        <span>Discount (€)</span>
+        <span class="number">{{convertMoney(paymentDiscount)}}</span>
+        <span>Tax (€)</span>
+        <span class="number">{{convertMoney(paymentTax)}}</span>
+      </div>
+      <g-divider inset vertical color="#979797"></g-divider>
+      <div class="report-column">
+        <span>Sub Total (€)</span>
+        <span class="number">{{convertMoney(paymentSubTotal)}}</span>
+        <span>Total (€)</span>
+        <span class="number__important">{{convertMoney(paymentTotal)}}</span>
+      </div>
     </div>
   </div>
 </template>

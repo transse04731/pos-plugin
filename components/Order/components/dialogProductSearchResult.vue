@@ -1,5 +1,5 @@
 <template>
-  <g-dialog v-model="dialogProductSearch">
+  <g-dialog v-model="dialogProductSearch"  eager>
     <g-card style="height: 568px">
       <g-card-title>
         {{formattedQueryResults.length}} {{formattedQueryResults.length > 1 ? 'results' : 'result'}} for product id "{{productIdQuery}}"
