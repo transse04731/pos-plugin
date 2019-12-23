@@ -14,8 +14,8 @@
     </div>
 
     <div area="button-action">
-      <g-btn :uppercase="false" background-color="white" elevation="0" text-color="red" v-show="isButtonSelected && !isInConfigLayoutMode">
-        <g-icon @click="resetSelectedButton" size="16" style="margin-right: 8px">fas fa-undo</g-icon>
+      <g-btn :uppercase="false" @click="resetSelectedButton" background-color="white" elevation="0" text-color="red" v-show="isButtonSelected && !isInConfigLayoutMode">
+        <g-icon size="16" style="margin-right: 8px">fas fa-undo</g-icon>
         Clear button
       </g-btn>
     </div>
@@ -162,27 +162,25 @@
       </g-btn>
     </div>
     <div area="menu">
-      <g-btn :key="i" :style="item.style ? item.style : ''" :uppercase="false" background-color="#fff" elevation="0"
-             height="100%" text-color="#1d1d26" v-for="(item, i) in menu">
-        {{item.title}}
-      </g-btn>
+      <g-btn :key="i" :uppercase="false" background-color="#fff" elevation="0"
+             height="100%" text-color="#1d1d26" v-for="i in 8"></g-btn>
     </div>
 
     <div area="menu__overlay" class="menu-disabled">
 
     </div>
     <div area="main">
-      <g-scroll-window :show-arrows="false" area="window" v-model="window">
-        <g-scroll-window-item :key="i" v-for="(items, i) in listProducts">
-          <g-btn :background-color="item.color" :key="i" :uppercase="false" flat height="100%" v-for="(item, i) in items">{{item.title}}</g-btn>
+      <g-scroll-window :show-arrows="false" area="window">
+        <g-scroll-window-item>
+          <g-btn :uppercase="false" background-color="#9F9F9F " flat height="100%" v-for="item in 28"></g-btn>
         </g-scroll-window-item>
       </g-scroll-window>
 
-      <g-item-group :items="listProducts" :return-object="false" area="delimeter" mandatory>
+      <g-item-group area="delimeter" mandatory>
         <template v-slot:default="{ toggle, active }">
-          <template v-for="(item, index) in listProducts">
-            <g-item :is-active="active(item)" :key="index">
-              <g-btn :uppercase="false"></g-btn>
+          <template v-for="(item, index) in 3">
+            <g-item :key="index">
+              <g-btn></g-btn>
             </g-item>
           </template>
         </template>
@@ -327,116 +325,9 @@
         { content: ['C'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: () => '0', style: 'grid-area: keyC; border: 1px solid #979797' },
         { content: ['&crarr;'], classes: 'key-number white', type: 'enter', action: () => null, style: 'grid-area: Enter; border: 1px solid #979797; background-color: #eeeeee' }
       ],
-      listProducts: [
-        [
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'teal accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'teal accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'teal accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'teal accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'teal accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'teal accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'teal accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-        ],
-        [
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'teal accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'teal accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'teal accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'teal accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'red accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'teal accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'green accent 1' },
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'teal accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-        ],
-        [
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'green accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'teal accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-          { title: 'Tiramisu', color: 'brown lighten 4' },
-          { title: 'Tiramisu', color: 'teal accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'teal accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'teal accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'teal accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-          { title: 'Tiramisu', color: 'pink lighten 4' },
-          { title: 'Tiramisu', color: 'teal accent 1' },
-          { title: 'Tiramisu', color: 'blue lighten 3' },
-          { title: 'Tiramisu', color: 'yellow accent 1' },
-        ],
-      ],
       menuSelected: null,
-      menu: [
-        { title: 'Favorite' },
-        { title: 'Drink' },
-        { title: 'Sport' },
-        { title: 'Material' },
-        { title: 'Wine' },
-        { title: 'Electronic' },
-        { title: 'Other 1' },
-        { title: 'Other 2' },
-      ],
       activeSelectedButton: 'active-selected'
     }),
-    created() {
-      this.menuSelected = this.menu[0];
-      this.window = 0;
-      this.delimiters = [...this.listProducts.keys()];
-    },
     watch: {
       selectedButtons: function (newVal) {
         if (!newVal[0]) {
@@ -560,7 +451,48 @@
         this.updateButtonItems();
       },
       resetSelectedButton() {
-        //TODO: reset btn
+        if (this.selectedButtons[0].length < 0) {
+          return;
+        }
+        this.selectedButtons[0] = Object.assign(this.selectedButtons[0], {
+          style: {
+            backgroundColor: '#FFFFFF',
+            textColor: 'black'
+          },
+          buyback: null,
+          buttonFunction: null,
+          buttonFunctionValue: null,
+          rows: this.selectedButtons[0].originalRow,
+          cols: this.selectedButtons[0].originalCol,
+          text: ''
+        })
+
+        this.buybackProductName = null;
+        this.selectedColor = this.buttonColors.find((color) => color.value === '#FFFFFF');
+        this.buybackProductUnit = null;
+        this.buybackProductPrice = null;
+        this.selectedFunction = null;
+        this.textFieldValue = null;
+
+        let resetButton = this.buttonGroupItems.find((btn) => btn.buttonId === this.selectedButtons[0].buttonId);
+        if (resetButton) {
+          try {
+            resetButton = this.selectedButtons[0];
+            this.updatePosSettings(this.buttonGroupItems, 'leftFunctionButtons')
+          } catch (e) {
+            console.log('Error updating: ', e);
+          }
+        }
+
+        let resetSideButton = this.sideButtonItems.find((btn) => btn.buttonId === this.selectedButtons[0].buttonId);
+        if (resetSideButton) {
+          try {
+            resetSideButton = this.selectedButtons[0];
+            this.updatePosSettings(this.sideButtonItems, 'rightFunctionButtons')
+          } catch (e) {
+            console.log('Error updating: ', e);
+          }
+        }
       },
       productLookup(product) {
         this.selectedBuybackProduct = product;
@@ -624,7 +556,7 @@
         this.splitMode = false;
         this.selectedButtons = []
       },
-      async updateToDatabase(buttonList, dbButtonList) {
+      async updatePosSettings(buttonList, dbButtonList) {
         try {
           for (let item of buttonList) {
             await cms.getModel('PosSetting').findOneAndUpdate({ [`${dbButtonList}._id`]: item.buttonId }, {
@@ -648,7 +580,7 @@
             this.rightButtonsUpdate++;
           }
         } catch (e) {
-          console.log('Error updating updateToDatabase', e);
+          console.log('Error updating updatePosSettings', e);
         }
       },
       updateSelectedBtnStyle() {
@@ -666,7 +598,7 @@
           this.updateSelectedBtnStyle();
           try {
             foundItem = this.selectedButtons[0];
-            this.updateToDatabase(this.buttonGroupItems, 'leftFunctionButtons')
+            this.updatePosSettings(this.buttonGroupItems, 'leftFunctionButtons')
           } catch (e) {
             console.log('Error updating: ', e);
           }
@@ -679,7 +611,7 @@
 
           try {
             foundItem = this.selectedButtons[0];
-            this.updateToDatabase(this.sideButtonItems, 'rightFunctionButtons')
+            this.updatePosSettings(this.sideButtonItems, 'rightFunctionButtons')
           } catch (e) {
             console.log('Error updating: ', e);
           }
