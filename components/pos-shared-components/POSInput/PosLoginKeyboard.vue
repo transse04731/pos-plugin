@@ -42,7 +42,7 @@
       keyboardLogin() {
         if(!this.value) return '';
         this.$emit('login', this.internalValue);
-        return this.internalValue;
+        return ''
       },
       clear() {
         this.$emit('clear');

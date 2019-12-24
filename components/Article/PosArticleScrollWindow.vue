@@ -58,7 +58,8 @@
         return layout
           ? {
             order: this.getProductGridOrder(item, this.isFavouriteCategory),
-            backgroundColor: layout.color
+            backgroundColor: layout.color,
+            border: !layout.color || layout.color === '#FFFFFF' || layout.color === 'white' ? '1px solid rgb(151, 151, 151)' : ''
           }
           : null
       }
