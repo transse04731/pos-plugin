@@ -11,10 +11,8 @@
 </template>
 
 <script>
-  // import DialogConfirmDelete from '../dialog/dialogConfirmDelete';
   export default {
     name: 'viewUserToolbar',
-    // components: { DialogConfirmDelete },
     injectService: [
       'PosStore:selectedUser',
       'PosStore:updateUser',

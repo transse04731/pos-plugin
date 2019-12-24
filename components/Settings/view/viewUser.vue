@@ -63,7 +63,7 @@
 					<pos-switch style="max-width: 200px" dense label="Allow Item Cancellation after reactivate paid Table" v-model="selectedUser.itemCancellationReactivePaidTable" @change="save"/>
 				</div>
 				<div class="edit__item">
-					<pos-text-field label="Postcode" @click="editPasscode" v-model="selectedUser.passcode">
+					<pos-text-field label="Passcode" @click="editPasscode" v-model="selectedUser.passcode">
 						<template v-slot:append>
 							<g-icon svg>icon-keyboard</g-icon>
 						</template>
@@ -96,16 +96,9 @@
 </template>
 
 <script>
-  //import PosSwitch from '../../pos-shared-components/PosSwitch';
   import layout from './layoutUserView';
-  //import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
-  //import DialogUserDetail from '../dialog/dialogUserDetail';
-	//import DialogSelectAvatar from '../dialog/dialogSelectAvatar';
-	//import DialogNewUser from '../dialog/dialogNewUser';
-
   export default {
     name: 'StaffPermission',
-    //components: { DialogNewUser, DialogSelectAvatar, DialogUserDetail, PosTextField, PosSwitch },
 		injectService: [
 				'PosStore:selectedUser',
 				'PosStore:listUsers',

@@ -39,7 +39,7 @@
             ]
           }
         ],
-        sidebar: "items.0.items.0"
+        sidebar: ''
       }
     },
     computed: {
@@ -55,6 +55,9 @@
         this.$router.push('/view/pos-login')
         this.user = null
       }
+    },
+    mounted() {
+      this.sidebar = "items.0.items.0";
     }
   }
 </script>

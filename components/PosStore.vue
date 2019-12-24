@@ -45,7 +45,7 @@
               { title: 'General', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/general'*/ },
               { title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small' },
               { title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small' },
-              { title: 'Function Layout', icon: 'radio_button_unchecked', iconType: 'small', href: '/view/test-fn-button', appendIcon: 'open_in_new' },
+              { title: 'Function Layout', icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-fn-button', appendIcon: 'open_in_new' },
               {
                 title: 'Terminal 1', icon: 'radio_button_unchecked', iconType: 'small',
                 items: [
