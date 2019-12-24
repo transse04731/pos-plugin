@@ -37,10 +37,8 @@
 </template>
 
 <script>
-  import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';
   export default {
     name: 'viewHardware',
-    components: { PosKeyboardFull },
     injectService: [
       'PosStore:thermalPrinter',
       'PosStore:getThermalPrinter',

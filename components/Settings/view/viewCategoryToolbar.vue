@@ -20,10 +20,8 @@
 </template>
 
 <script>
-  // import DialogConfirmDelete from '../dialog/dialogConfirmDelete';
 	export default {
     name: 'viewCategoryToolbar',
-		// components: { DialogConfirmDelete },
 		injectService: [
       'PosStore:selectedCategory',
       'PosStore:updateCategory',

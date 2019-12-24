@@ -96,16 +96,9 @@
 </template>
 
 <script>
-  //import PosSwitch from '../../pos-shared-components/PosSwitch';
   import layout from './layoutUserView';
-  //import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
-  //import DialogUserDetail from '../dialog/dialogUserDetail';
-  //import DialogSelectAvatar from '../dialog/dialogSelectAvatar';
-  //import DialogNewUser from '../dialog/dialogNewUser';
-
   export default {
     name: 'StaffPermission',
-    //components: { DialogNewUser, DialogSelectAvatar, DialogUserDetail, PosTextField, PosSwitch },
     injectService: [
       'PosStore:user',
       'PosStore:selectedUser',
@@ -113,18 +106,13 @@
       'PosStore:getListUsers',
       'PosStore:updateUser',
     ],
-    beforeRouteEnter (to, from, next) {
-     next(vm => {
-       console.log(vm);
-     })
-    },
     data() {
       return {
         layout: layout,
-        dialogUserDetail: false,
-        focusInput: null,
-        dialogSelectAvatar: false,
-        dialogNewUser: false
+				dialogUserDetail: false,
+				focusInput: null,
+				dialogSelectAvatar: false,
+				dialogNewUser: false
       }
     },
     computed: {
@@ -185,59 +173,59 @@
 </script>
 
 <style lang="scss" scoped>
-  .list {
-    overflow-y: auto;
-    border-right: 1px solid rgba(0, 0, 0, 0.12);
+	.list {
+		overflow-y: auto;
+		border-right: 1px solid rgba(0, 0, 0, 0.12);
 
-    .g-list {
-      border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+		.g-list {
+			border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 
-      ::v-deep .g-list-item-text {
-        font-size: 13px;
-        line-height: 16px;
-        color: #4D4D4E;
-      }
+			::v-deep .g-list-item-text {
+				font-size: 13px;
+				line-height: 16px;
+				color: #4D4D4E;
+			}
 
-      ::v-deep .g-image-content {
-        background-size: contain !important;
-      }
+			::v-deep .g-image-content {
+				background-size: contain !important;
+			}
 
-      ::v-deep .g-list-item__active:hover {
-        background: rgba(242, 242, 242, 0.5);
-      }
+			::v-deep .g-list-item__active:hover {
+				background: rgba(242, 242, 242, 0.5);
+			}
 
-      ::v-deep .item__active {
-        border-right: 5px solid #1271ff;
-        background: rgba(242, 242, 242, 0.5);
-        transition: none;
+			::v-deep .item__active {
+				border-right: 5px solid #1271ff;
+				background: rgba(242, 242, 242, 0.5);
+				transition: none;
 
-        &::before {
-          background: rgba(242, 242, 242, 0.5);
-        }
+				&::before {
+					background: rgba(242, 242, 242, 0.5);
+				}
 
-        .g-list-item-text {
-          color: #1271ff;
-        }
-      }
-    }
-  }
+				.g-list-item-text {
+					color: #1271ff;
+				}
+			}
+		}
+	}
 
-  .edit__item {
-    padding: 0 16px;
-    font-size: 13px;
-    line-height: 16px;
+	.edit__item {
+		padding: 0 16px;
+		font-size: 13px;
+		line-height: 16px;
 
-    &:nth-child(even) {
-      border-right: 1px solid rgba(0, 0, 0, 0.12);
-    }
+		&:nth-child(even) {
+			border-right: 1px solid rgba(0, 0, 0, 0.12);
+		}
 
-    .link-change {
-      font-weight: 700;
-      font-size: 14px;
-      line-height: 18px;
-      color: #1471FF;
-      cursor: pointer;
-    }
-  }
+		.link-change {
+			font-weight: 700;
+			font-size: 14px;
+			line-height: 18px;
+			color: #1471FF;
+			cursor: pointer;
+		}
+	}
 
 </style>

@@ -26,12 +26,11 @@
 </template>
 
 <script>
-  // import DialogConfirmDelete from '../dialog/dialogConfirmDelete';
   export default {
     name: 'viewArticleToolbar',
-    // components: { DialogConfirmDelete },
     injectService: [
-        'PosStore:selectedProduct'
+        'PosStore:selectedProduct',
+        'PosStore:deleteSelectedProducts'
     ],
     data() {
       return {
@@ -40,16 +39,16 @@
     },
     methods: {
       openDialogNewProduct() {
-        this.$getService('dialogNewProduct:setActive')(true)
+        this.$getService('dialogNewProduct:setActive')(true);
       },
       openDialogDelete() {
         this.dialogConfirmDelete = true;
       },
       async deleteProducts() {
-        await this.$getService('PosStore:deleteSelectedProducts')()
+        await this.deleteSelectedProducts();
       },
       back() {
-        this.$router.push({ path: '/view/pos-dashboard' })
+        this.$router.push({ path: '/view/pos-dashboard' });
       }
     }
   }

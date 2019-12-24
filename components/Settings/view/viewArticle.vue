@@ -73,10 +73,8 @@
 </template>
 
 <script>
-	//import PosTablePagination from '../../pos-shared-components/PosTablePagination';
 	export default {
     name: 'viewArticle',
-		//components: { PosTablePagination },
 		injectService: [
 		  'PosStore:getListProducts',
 		  'PosStore:listProducts',
@@ -163,6 +161,7 @@
 <style scoped lang="scss">
   .g-table {
 		height: calc(100% - 64px);
+		margin-left: 1px;
 
 		thead tr th {
 			font-size: 14px;
