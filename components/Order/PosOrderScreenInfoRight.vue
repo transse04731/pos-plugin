@@ -1,7 +1,7 @@
 <template>
   <div>
     <g-avatar size="36">
-      <img :src="user.avatar"/>
+      <img :src="user ? user.avatar : ''"/>
     </g-avatar>
     <div class="pa-1" style="line-height: 16px">
       <p class="ta-right fw-700 fs-small">{{userName}}</p>

@@ -28,6 +28,7 @@
     },
     computed: {
       isCurrentUser() {
+        if(!this.user ||! this.selectedUser) return false;
         return this.user._id === this.selectedUser._id || !this.selectedUser;
       }
     },
