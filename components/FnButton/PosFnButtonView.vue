@@ -674,17 +674,27 @@
             }
           }
         }
+      },
+      refreshData() {
+        this.posSettings = cms.getList('PosSetting')[0];
+
+        if (this.posSettings) {
+          this.quickFnRows = this.posSettings['generalSetting']['quickFnRows'] || 0;
+          this.numberOfConfigBtn = 4 * this.quickFnRows;
+
+          this.buttonGroupItems = [];
+          this.sideButtonItems = [];
+
+          this.mapFetchedButtons(_.slice(this.posSettings['leftFunctionButtons'], 0, this.numberOfConfigBtn), this.buttonGroupItems);
+          this.mapFetchedButtons(this.posSettings['rightFunctionButtons'], this.sideButtonItems);
+        }
       }
     },
-    async mounted() {
-      this.posSettings = await cms.getList('PosSetting')[0];
-      if (this.posSettings) {
-        this.quickFnRows = this.posSettings['generalSetting']['quickFnRows'] || 0;
-        this.numberOfConfigBtn = 4 * this.quickFnRows;
-        this.mapFetchedButtons(_.slice(this.posSettings['leftFunctionButtons'], 0, this.numberOfConfigBtn), this.buttonGroupItems);
-        this.mapFetchedButtons(this.posSettings['rightFunctionButtons'], this.sideButtonItems);
-      }
-
+    mounted() {
+      this.refreshData();
+    },
+    activated() {
+      this.refreshData();
     }
   }
 </script>
