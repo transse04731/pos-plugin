@@ -14,7 +14,7 @@
     </div>
 
     <div area="button-action">
-      <g-btn :uppercase="false" @click="resetSelectedButton" background-color="white" elevation="0" text-color="red" v-show="isButtonSelected && !isInConfigLayoutMode">
+      <g-btn :uppercase="false" @click="resetSelectedButton" background-color="white" elevation="0" height="100%" text-color="red" v-show="isButtonSelected && !isInConfigLayoutMode">
         <g-icon size="16" style="margin-right: 8px">fas fa-undo</g-icon>
         Clear button
       </g-btn>
@@ -53,7 +53,7 @@
       <pos-text-field @change="updateButtonItems"
                       label="Price"
                       placeholder="Fill your value"
-                      style="position: absolute; bottom: 8px"
+                      style="height: fit-content; margin-top: auto;"
                       v-if="isButtonSelected && !isInConfigLayoutMode && selectedFunction === 'buybackProduct'"
                       v-model="buybackProductPrice"></pos-text-field>
     </div>
@@ -735,6 +735,10 @@
     position: relative;
     bottom: 0;
     display: flex;
+
+    .g-btn {
+      min-width: 0 !important;
+    }
   }
 
   .button-name {
@@ -759,9 +763,10 @@
 
   .button-action {
     width: 100%;
+    padding: 12px;
     display: flex;
     justify-content: center;
-    margin-top: 42px;
+    margin-top: 26px;
   }
 
   .title {
@@ -773,6 +778,11 @@
     ::v-deep .g-row .g-col {
       padding: 2.5px !important;
     }
+
+    .g-btn {
+      min-width: 0 !important;
+    }
+
   }
 
   .color {
@@ -814,7 +824,7 @@
 
   .function-action {
     padding: 8px;
-    position: relative;
+    display: flex;
 
     .bs-tf-wrapper {
       width: 100%;
