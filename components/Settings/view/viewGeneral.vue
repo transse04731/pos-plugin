@@ -18,21 +18,30 @@
 				<g-switch v-model="automaticCashdrawer" @change="changeSetting"/>
 			</div>
 		</div>
-		<div class="col-7">
-			<div class="row-flex align-items-center justify-center">
-				<span class="mr-2">Quick Function Rows</span>
+		<div class="col-5 offset-1">
+			<div class="row-flex align-items-center justify-center mb-3">
+				<span class="mr-4">Quick Function Rows</span>
 				<div :class="['btn-fn-row', quickFnRows === (i-1) && 'selected']" v-for="i in 3" :key="i" @click="updateFnRows(i-1)">
 					{{i-1}}
 				</div>
+			</div>
+			<div class="row-flex align-items-center justify-center">
+				<pos-time-picker label="New day starts at" v-model="beginHour" @change="changeSetting">
+					<template v-slot:append>
+						<g-icon>access_time</g-icon>
+					</template>
+				</pos-time-picker>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
-  export default {
+  import PosTimePicker from '../../pos-shared-components/POSInput/PosTimePicker';
+	export default {
     name: 'viewGeneral',
-    injectService: [
+		components: { PosTimePicker },
+		injectService: [
       'PosStore:generalSetting',
       'PosStore:getGeneralSetting',
       'PosStore:updateSetting',
@@ -46,7 +55,7 @@
           }
         },
         set(val) {
-          this.generalSetting.barcode = val;
+					this.$set(this.generalSetting, 'barcode', val)
         }
       },
       favoriteArticle: {
@@ -56,7 +65,7 @@
           }
         },
         set(val) {
-          this.generalSetting.favoriteArticle = val;
+					this.$set(this.generalSetting, 'favoriteArticle', val)
         }
       },
       virtualKeyboard: {
@@ -66,8 +75,8 @@
           }
         },
         set(val) {
-          this.generalSetting.virtualKeyboard = val;
-        }
+					this.$set(this.generalSetting, 'virtualKeyboard', val)
+				}
       },
       automaticCashdrawer: {
         get() {
@@ -76,8 +85,8 @@
           }
         },
         set(val) {
-          this.generalSetting.automaticCashdrawer = val;
-        }
+					this.$set(this.generalSetting, 'automaticCashdrawer', val)
+				}
       },
 			quickFnRows: {
       	get() {
@@ -86,7 +95,15 @@
 					}
 				},
 				set(val) {
-					this.generalSetting.quickFnRows = val;
+					this.$set(this.generalSetting, 'quickFnRows', val)
+				}
+			},
+			beginHour: {
+      	get() {
+      		return (this.generalSetting && this.generalSetting.beginHour) || '00:00'
+				},
+				set(val) {
+      		this.$set(this.generalSetting, 'beginHour', val)
 				}
 			}
     },
@@ -124,6 +141,10 @@
 		&.selected {
 			border-color: #1271FF;
 		}
+	}
+
+	.btn-fn-row:first-of-type {
+		margin-left: 4px;
 	}
 
 	span {
