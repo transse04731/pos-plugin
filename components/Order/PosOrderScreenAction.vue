@@ -27,11 +27,11 @@
         listBtn: []
       }
     },
-    async mounted() {
-      const posStore = this.$getService('PosStore');
-      posStore.$watch('leftButtonsUpdate', async () => {
-        await this.generateTemplate()
-      }, { deep: true });
+    async activated() {
+      // const posStore = this.$getService('PosStore');
+      // posStore.$watch('leftButtonsUpdate', async () => {
+      //   await this.generateTemplate()
+      // }, { deep: true });
       await this.generateTemplate();
     },
     methods: {

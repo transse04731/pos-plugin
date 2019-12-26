@@ -230,10 +230,10 @@
   export default {
     name: 'PosFnButtonView',
     components: { DialogFnButtonProductLookup, PosTextField },
-    injectService: [
-      'PosStore:leftButtonsUpdate',
-      'PosStore:rightButtonsUpdate',
-    ],
+    // injectService: [
+    //   'PosStore:leftButtonsUpdate',
+    //   'PosStore:rightButtonsUpdate',
+    // ],
     data: () => ({
       layout: fnButtonLayout,
       numberOfConfigBtn: 0,
@@ -573,12 +573,12 @@
               }
             });
           }
-          if (dbButtonList === 'leftFunctionButtons') {
-            this.leftButtonsUpdate++;
-          }
-          if (dbButtonList === 'rightFunctionButtons') {
-            this.rightButtonsUpdate++;
-          }
+          // if (dbButtonList === 'leftFunctionButtons') {
+          //   this.leftButtonsUpdate++;
+          // }
+          // if (dbButtonList === 'rightFunctionButtons') {
+          //   this.rightButtonsUpdate++;
+          // }
         } catch (e) {
           console.log('Error updating updatePosSettings', e);
         }

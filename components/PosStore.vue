@@ -98,8 +98,8 @@
         //article screen
         articleSelectedColor: null,
         articleSelectedProductButton: null,
-        leftButtonsUpdate: 0,
-        rightButtonsUpdate: 0,
+        // leftButtonsUpdate: 0,
+        // rightButtonsUpdate: 0,
       }
     },
     domain: 'PosStore',
@@ -765,9 +765,9 @@
       //Usage: resetLayoutFnBtn('leftFunctionButtons')
       async resetLayoutFnBtn(dbButtonList) {
         const posSettings = cms.getList('PosSetting')[0];
-        if (dbButtonList === 'leftFunctionButtons') {
-          this.leftButtonsUpdate++;
-        }
+        // if (dbButtonList === 'leftFunctionButtons') {
+        //   this.leftButtonsUpdate++;
+        // }
         if (posSettings[dbButtonList]) {
           try {
             for (let item of posSettings[dbButtonList]) {
@@ -1015,8 +1015,8 @@
         switchProductOrder: this.switchProductOrder,
         updateArticleOrders: this.updateArticleOrders,
         getPosSetting: this.getPosSetting,
-        leftButtonsUpdate: this.leftButtonsUpdate,
-        rightButtonsUpdate: this.rightButtonsUpdate
+        // leftButtonsUpdate: this.leftButtonsUpdate,
+        // rightButtonsUpdate: this.rightButtonsUpdate
       }
     }
   }

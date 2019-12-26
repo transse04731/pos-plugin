@@ -49,11 +49,11 @@
         this.$getService('PosStore:chooseFunction')(btn.buttonFunction)(btn.buttonFunctionValue)
       }
     },
-    async mounted() {
-      const posStore = this.$getService('PosStore');
-      posStore.$watch('rightButtonsUpdate', async () => {
-        await this.generateTemplate()
-      }, { deep: true });
+    async activated() {
+      // const posStore = this.$getService('PosStore');
+      // posStore.$watch('rightButtonsUpdate', async () => {
+      //   await this.generateTemplate()
+      // }, { deep: true });
       await this.generateTemplate();
     },
   }
