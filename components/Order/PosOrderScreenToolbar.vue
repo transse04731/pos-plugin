@@ -34,6 +34,7 @@
         this.$getService('dialogSavedList:setActive')(true)
       },
       back() {
+        this.$getService('PosStore:resetOrderData')()
         this.$router.push({path: '/view/pos-dashboard'})
       }
     },

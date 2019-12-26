@@ -118,11 +118,10 @@
         }
         return 0
       },
-      paymentSubTotal() {
+      paymentTotal() {
         if (this.currentOrder) {
           return this.currentOrder.items.reduce((acc, cur) => {
-            const price = cur.price * cur.quantity
-            return acc + price
+            return acc + cur.price * cur.quantity
           }, 0)
         }
         return 0
@@ -130,13 +129,13 @@
       paymentTax() {
         if (this.currentOrder) {
           return this.currentOrder.items.reduce((acc, cur) => {
-            return acc + (cur.price * cur.tax / 100) * cur.quantity
+            return acc + this.getComputedTax(cur) * cur.quantity
           }, 0)
         }
         return 0
       },
-      paymentTotal() {
-        return this.paymentSubTotal + this.paymentTax
+      paymentSubTotal() {
+        return this.paymentTotal - this.paymentTax
       },
       activeProducts() {
         return _.groupBy(cms.getList('Product'), 'category._id')
@@ -294,33 +293,44 @@
         }
       },
       async selectSavedOrder(order) {
+        await this.resetOrderData()
         const orderModel = cms.getModel('Order')
         this.currentOrder = await orderModel.findOne({ _id: order._id })
+      },
+      async resetOrderData() {
+        this.activeTableProduct = null
+        this.currentOrder = { items: [] }
+        this.paymentAmountTendered = 0
+        await this.getSavedOrders()
       },
       async savePaidOrder(paymentMethod) {
         try {
           if (!this.currentOrder || !this.currentOrder.items.length) return
           const orderModel = cms.getModel('Order')
-          const orderItems = this.compactOrder(this.currentOrder.items)
           const orderDateTime = new Date()
-          const id = await this.getLatestOrderId() + 1
+          const beginHour = cms.getList('PosSetting')[0].generalSetting.beginHour || '00:00'
+          const id = await this.getLatestOrderId()
+          const taxGroups = _.groupBy(this.currentOrder.items, 'tax')
+          const vTaxGroups = _.map(taxGroups, (val, key) => ({
+            taxType: key,
+            tax: val.reduce((acc, cur) => acc + this.getComputedTax(cur) * cur.quantity, 0),
+            sum: val.reduce((acc,cur) => acc + cur.price * cur.quantity, 0)
+          }))
 
           const order = {
             id,
             status: 'paid',
-            items: orderItems.map(item => ({
-              ...item,
-              product: item._id,
-              date: orderDateTime
-            })),
+            items: this.getComputedOrderItems(this.currentOrder.items ,orderDateTime),
             user: this.currentOrder.user
               ? [...this.currentOrder.user, {name: this.user.name, date: orderDateTime}]
               : [{name: this.user.name, date: orderDateTime}],
             date: orderDateTime,
-            vDate: this.getVDate(orderDateTime),
+            vDate: this.getVDate(orderDateTime, beginHour),
             bookingNumber: this.getBookingNumber(orderDateTime),
-            payment: [paymentMethod ? paymentMethod : { ...this.currentOrder.payment, value: this.paymentTotal }],
+            payment: [paymentMethod || { ...this.currentOrder.payment, value: this.paymentTotal }],
             vSum: this.paymentTotal,
+            vTax: this.paymentTax,
+            vTaxGroups,
             receive: this.paymentAmountTendered,
             cashback: this.paymentChange
           }
@@ -334,10 +344,7 @@
           console.error(e)
           return
         }
-        this.activeTableProduct = null
-        this.currentOrder = { items: [] }
-        this.paymentAmountTendered = 0
-        await this.getSavedOrders()
+        await this.resetOrderData();
       },
       // order/payment
       convertMoney(val) {
@@ -830,19 +837,13 @@
       async saveOrder() {
         if (!this.currentOrder || !this.currentOrder.items.length) return
         const orderModel = cms.getModel('Order')
-        const orderItems = this.compactOrder(this.currentOrder.items)
         const date = new Date();
 
         const order = {
           status: 'inProgress',
-          items: orderItems.map(item => ({
-            ...item,
-            product: item._id
-          })),
+          items: this.getComputedOrderItems(this.currentOrder.items, date),
           date,
-          user: [
-            { name: this.user.name || '', date }
-          ]
+          user: [{ name: this.user.name || '', date }]
         }
         if (this.currentOrder._id) {
           const existingOrder = await orderModel.findOne({ _id: this.currentOrder._id })
@@ -857,8 +858,7 @@
         this.currentOrder = {
           items: []
         }
-        this.activeTableProduct = null
-        await this.getSavedOrders()
+        this.resetOrderData()
       },
       async quickCash() {
         this.lastPayment = +this.paymentTotal
@@ -871,10 +871,23 @@
       //<!--</editor-fold>-->
 
       //<!--<editor-fold desc="Helpers">-->
+      getComputedOrderItems(orderItems, date) {
+        const compactItems = this.compactOrder(orderItems)
+
+        return compactItems.map(item => ({
+          ..._.omit(item, 'category'),
+          product: item._id,
+          category: item.category.name,
+          date
+        }))
+      },
+      getComputedTax(product) {
+        return product.price * (1 - 1 / (1 + product.tax / 100))
+      },
       async getLatestOrderId() {
         try {
           const orderWithHighestId = await cms.getModel('Order').findOne().sort('-id');
-          return (orderWithHighestId && orderWithHighestId.id) || 0
+          return ((orderWithHighestId && orderWithHighestId.id) || 0) + 1
         } catch (e) {
           console.error(e)
         }
@@ -882,8 +895,7 @@
       getBookingNumber(dateTime) {
         return dayjs(dateTime).format('YYMMDDHHmmssms')
       },
-      getVDate(dateTime) {
-        const beginHour = cms.getList('PosSetting')[0].generalSetting.beginHour || '00:00'
+      getVDate(dateTime, beginHour) {
         const [hour, minutes] = beginHour.split(':')
         const beginDateTime = dayjs(dateTime).clone().hour(parseInt(hour)).minute(parseInt(minutes))
 
@@ -902,9 +914,6 @@
       this.user = cms.getList('PosSetting')[0].user[0]
     },
     watch: {
-      currentOrder() {
-        this.paymentAmountTendered = 0;
-      },
       'orderHistoryPagination.limit'(newVal) {
         localStorage.setItem('orderHistoryPageSize', newVal)
       }
@@ -933,6 +942,7 @@
         activeCategoryProducts: this.activeCategoryProducts,
         currentOrder: this.currentOrder,
         calculateNewPrice: this.calculateNewPrice,
+        resetOrderData: this.resetOrderData,
         savePaidOrder: this.savePaidOrder,
         removeSavedOrder: this.removeSavedOrder,
         selectSavedOrder: this.selectSavedOrder,

@@ -50,10 +50,9 @@
       }
     },
     async activated() {
-      // const posStore = this.$getService('PosStore');
-      // posStore.$watch('rightButtonsUpdate', async () => {
-      //   await this.generateTemplate()
-      // }, { deep: true });
+      await this.generateTemplate();
+    },
+    async mounted() {
       await this.generateTemplate();
     },
   }

@@ -49,7 +49,7 @@
                       @input="updateButton($event, 'buttonFunctionValue')"
                       label="Value"
                       placeholder="Fill your value"
-                      v-show="isButtonSelected && !isInConfigLayoutMode && showFunctionValue"></pos-text-field>
+                      v-if="isButtonSelected && !isInConfigLayoutMode && showFunctionValue"></pos-text-field>
       <pos-text-field @change="updateButtonItems"
                       label="Price"
                       placeholder="Fill your value"
@@ -230,10 +230,6 @@
   export default {
     name: 'PosFnButtonView',
     components: { DialogFnButtonProductLookup, PosTextField },
-    // injectService: [
-    //   'PosStore:leftButtonsUpdate',
-    //   'PosStore:rightButtonsUpdate',
-    // ],
     data: () => ({
       layout: fnButtonLayout,
       numberOfConfigBtn: 0,
@@ -573,12 +569,6 @@
               }
             });
           }
-          // if (dbButtonList === 'leftFunctionButtons') {
-          //   this.leftButtonsUpdate++;
-          // }
-          // if (dbButtonList === 'rightFunctionButtons') {
-          //   this.rightButtonsUpdate++;
-          // }
         } catch (e) {
           console.log('Error updating updatePosSettings', e);
         }
