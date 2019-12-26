@@ -6,7 +6,7 @@
       </g-icon>
       Add
     </g-btn>
-    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-2" @click="openDialogEditPayment">
+    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-2" :disabled="selectedPayment && !selectedPayment.editable" @click="openDialogEditPayment">
       <g-icon class="mr-2" color="red">
         edit
       </g-icon>

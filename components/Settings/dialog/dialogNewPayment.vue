@@ -4,13 +4,14 @@
 			<div class="form">
 				<p class="ml-1 mb-3">{{ isEditPayment && selectedPayment ? 'Edit' : 'Create New' }} Payment</p>
 				<pos-text-field style="width: 268px" label="Name" placeholder="Payment name" v-model="computedName"/>
+				<pos-switch dense label="Editable" v-model="computedEditable"></pos-switch>
 				<pos-file-input-image label="Icon" v-model="computedSrc"/>
 			</div>
 			<div class="keyboard-wrapper">
 				<pos-keyboard-full v-model="computedName"/>
 			</div>
 			<g-toolbar bottom color="grey lighten 3">
-				<g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="ma-2" @click="dialogNewPayment = false">
+				<g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="ma-2" @click="back">
 					<g-icon class="mr-2" svg>
 						icon-back
 					</g-icon>
@@ -26,13 +27,8 @@
 </template>
 
 <script>
-	/*import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
-	import PosFileInput from '../../pos-shared-components/POSInput/PosFileInputImage';
-	import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';*/
-
   export default {
     name: 'dialogNewPayment',
-    //components: { PosKeyboardFull, PosFileInput, PosTextField },
 		injectService: [
 			'PosStore:isEditPayment',
 			'PosStore:selectedPayment',
@@ -42,8 +38,10 @@
       return {
 				name: '',
 				src: null,
+				editable: true,
 				isParsedName: false,
 				isParsedIcon: false,
+				isParsedEditable: true,
       }
     },
     props: {
@@ -81,25 +79,47 @@
 				set(val) {
 					this.src = val;
 				}
+			},
+			computedEditable: {
+				get() {
+					if (this.isEditPayment && this.selectedPayment && !this.isParsedEditable) {
+						this.editable = this.selectedPayment.editable;
+						this.isParsedEditable = true;
+					}
+					return this.editable;
+				},
+				set(val) {
+					this.editable = val;
+				}
 			}
     },
 		methods: {
+    	resetData() {
+				this.name = '';
+				this.src = '';
+				this.editable = true;
+				this.selectedPayment = null;
+				this.isParsedName = false;
+				this.isParsedIcon = false;
+				this.isParsedEditable = false;
+				this.isEditPayment = false;
+			},
+			back() {
+    		this.resetData();
+				this.dialogNewPayment = false;
+			},
 			async save() {
 				if(this.computedName) {
 					const payment = {
-						name: this.computedName,
+						name: this.computedName.toLowerCase(),
 						icon: this.computedSrc,
+						editable: this.computedEditable,
 					}
 					let oldPayment;
 					if(this.isEditPayment) oldPayment = this.selectedPayment;
 					await this.updatePayment(oldPayment, payment);
 				}
-				this.name = '';
-				this.src = '';
-				this.selectedPayment = null;
-				this.isParsedName = false;
-				this.isParsedIcon = false;
-				this.dialogNewPayment = false;
+				this.back();
 			},
 		},
   }
@@ -115,12 +135,23 @@
 			padding: 32px 32px 0;
 			color: #1d1d26;
 			font-weight: 700;
+
+			.g-switch-wrapper {
+				margin-top: 24px;
+
+				::v-deep .g-switch-label {
+					font-size: 13px;
+					line-height: 16px;
+					font-weight: 400;
+				}
+			}
+
 		}
 
 		::v-deep .keyboard-wrapper {
 			position: absolute;
 			bottom: 64px;
-			height: 35%;
+			height: 30%;
 			width: 100%;
 			padding: 16px;
 			background-color: #BDBDBD;

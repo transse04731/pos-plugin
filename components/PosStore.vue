@@ -863,7 +863,7 @@
       async quickCash() {
         this.lastPayment = +this.paymentTotal
         this.paymentAmountTendered = this.paymentTotal
-        await this.savePaidOrder({ type: 'Cash', value: this.lastPayment });
+        await this.savePaidOrder({ type: 'cash', value: this.lastPayment });
       },
       pay() {
         this.$router.push({ path: `/view/pos-payment` })

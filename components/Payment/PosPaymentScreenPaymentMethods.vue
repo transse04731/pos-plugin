@@ -16,7 +16,7 @@
                :class="[index > 0 ? 'ml-3' : null]"
         >
           <img :src="item.icon" style="width: 20px; height: 20px"/>
-          <span class="ml-2">{{item.name}}</span>
+          <span class="ml-2">{{item.name | capitalize}}</span>
         </g-btn>
       </template>
     </g-grid-select>
@@ -32,6 +32,13 @@
       'PosStore:getListPayments',
       'PosStore:selectedPayment',
     ],
+    filters: {
+      capitalize: function (value) {
+        if (!value) return ''
+        value = value.toString()
+        return value.charAt(0).toUpperCase() + value.slice(1)
+      }
+    },
     data() {
       return {
       }
