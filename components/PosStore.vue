@@ -390,10 +390,10 @@
         this.orderHistoryOrders = orders.map(order => ({
           ...order,
           info: order.note,
-          tax: order.items.reduce((acc, item) => (acc + item.tax / 100 * item.quantity * item.price), 0),
+          tax: order.items.reduce((acc, item) => (acc + this.getComputedTax(item) * item.quantity), 0),
           dateTime: dayjs(order.date).format('DD.MM HH:mm'),
-          amount: order.vSum ? order.vSum : order.items.reduce((acc, item) => (acc + item.price * item.quantity * (1 + item.tax / 100)), 0),
-          staff: '',
+          amount: order.vSum ? order.vSum : order.items.reduce((acc, item) => (acc + item.price * item.quantity), 0),
+          staff: order.user,
           barcode: '',
           promotions: [],
         }));

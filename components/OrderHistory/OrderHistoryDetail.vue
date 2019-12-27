@@ -33,7 +33,7 @@
     <g-divider/>
     <div class="total">
       <span>Total </span>
-      <span class="total__important">€ {{(subTotal + orderHistoryCurrentOrder.tax).toFixed(2)}}</span>
+      <span class="total__important">€ {{orderHistoryCurrentOrder.amount.toFixed(2)}}</span>
     </div>
     <g-divider/>
   </div>
@@ -55,7 +55,7 @@
         return this.orderHistoryCurrentOrder && this.orderHistoryCurrentOrder.promotions.reduce((acc, val) => (acc + val.amount), 0);
       },
       subTotal() {
-        return this.orderHistoryCurrentOrder && this.orderHistoryCurrentOrder.items.reduce((acc, val) => (acc + val.price * val.quantity), 0) - this.promotionTotal;
+        return this.orderHistoryCurrentOrder && this.orderHistoryCurrentOrder.amount - this.promotionTotal - this.orderHistoryCurrentOrder.tax;
       }
     }
   }

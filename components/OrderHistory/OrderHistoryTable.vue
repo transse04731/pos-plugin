@@ -41,11 +41,11 @@
         </td>
       </tr>
       <tr v-for="(order, i) in orderHistoryOrders" :key="i" :class="[order._id === orderHistoryCurrentOrder._id && 'tr__active']" @click="chooseOrder(order)">
-        <td class="ta-right">{{order.id}}</td>
+        <td class="ta-center">{{order.id}}</td>
         <td class="ta-center">{{order.dateTime}}</td>
         <td class="ta-center">{{order.barcode}}</td>
         <td class="ta-right">€ {{+order.amount.toFixed(2)}}</td>
-        <td>{{order.staff}}</td>
+        <td>{{getStaffName(order.staff)}}</td>
         <td class="ta-center">{{order.info}}</td>
       </tr>
     </g-simple-table>
@@ -128,6 +128,9 @@
       },
       async updatePagination() {
         await this.getOrderHistory();
+      },
+      getStaffName(staffs) {
+        return staffs.map(s => s.name).join(', ')
       }
     },
     async created() {
