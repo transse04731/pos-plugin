@@ -37,7 +37,12 @@
         const containedBtns = rightFunctionButtons.reduce((acc, btn) => ([...acc, ...btn.containedButtons]), []);
         for (const btn of rightFunctionButtons) {
           if (!containedBtns.includes(btn._id)) {
-            this.listBtn.push(btn);
+            this.listBtn.push(
+              btn.buttonFunction === 'buybackProduct'
+                ? Object.assign(btn, {
+                  buttonFunctionValue: btn.buyback
+                })
+                : btn);
           }
         }
       },

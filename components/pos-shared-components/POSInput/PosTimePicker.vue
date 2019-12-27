@@ -29,9 +29,6 @@
         }
       }
     },
-    watch: {
-      value: val => this.lazyValue = val
-    },
     mounted() {
       this.value && (this.lazyValue = this.value)
     }

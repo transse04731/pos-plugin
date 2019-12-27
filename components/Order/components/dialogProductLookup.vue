@@ -1,15 +1,13 @@
 <template>
   <g-dialog v-model="dialogProductLookup" fullscreen ref="dialog" domain="TestDialog2" eager>
-    <div class="dialog-lookup w-100">
+    <div class="dialog-lookup w-100" ref="dialogContent">
       <g-toolbar class="header" color="grey lighten 3" elevation="0">
-        <g-text-field outlined clearable class="w-50"
-                      style="color: #1d1d26" clear-icon="cancel"
+        <g-text-field outlined clearable class="w-50" clear-icon="cancel"
+                      style="color: #1d1d26"
                       :value="productNameQuery"
-                      @focus="showKeyboard = true"
                       @enter="queryProductsByName"
                       @change="queryProductsByName"
-                      @blur="showKeyboard = false"
-                      @input="debouncedQuery"
+                      @input="query"
         ></g-text-field>
         <g-spacer></g-spacer>
         <g-btn :uppercase="false" icon style="box-shadow: none; border-radius: 50%" @click="close">
@@ -68,19 +66,18 @@
         </tbody>
       </g-simple-table>
       <div v-show="showKeyboard" class="keyboard-wrapper">
-        <pos-keyboard-full v-model="productNameQuery"/>
+        <pos-keyboard-full :value="productNameQuery"
+                           @input="query"/>
       </div>
     </div>
   </g-dialog>
 </template>
 
 <script>
-  //import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';
   import { getInternalValue, Intersect } from 'pos-vue-framework';
 
   export default {
     name: 'dialogProductLookup',
-    //components: { PosKeyboardFull },
     injectService: ['PosStore:(productNameQuery,productNameQueryResults,queryProductsByName,addProductToOrder)'],
     props: {
       value: Boolean,
@@ -90,9 +87,9 @@
     },
     data() {
       return {
-        showKeyboard: false,
+        showKeyboard: true,
         selected: null,
-        debouncedQuery: null,
+        query: null,
         productSliceLength: 15,
         lastRowIntersectArgs: null,
         lastRowIntersectValue: null,
@@ -125,20 +122,31 @@
       },
     },
     created() {
-      this.productNameQuery = ''
-      this.queryProductsByName()
-
-      this.debouncedQuery = _.debounce((e) => {
+      this.query = (e) => {
         this.productNameQuery = e
         this.queryProductsByName()
-      }, 300)
-
-      this.lastRowIntersectArgs = {
-        root: this.$el,
-        threshold: 0.1
       }
-      this.lastRowIntersectValue = () => {
-        this.productSliceLength += 15
+
+      this.query('')
+      this.lastRowIntersectArgs = { root: this.$el, threshold: 0.1 }
+      this.lastRowIntersectValue = () => this.productSliceLength += 15
+    },
+    watch: {
+      dialogProductLookup(newVal) {
+        const listener = e => {
+          e.stopPropagation()
+          const elements = [
+            this.$refs.dialogContent.querySelector('.g-tf-wrapper'),
+            this.$refs.dialogContent.querySelector('.keyboard-wrapper')
+          ]
+          this.showKeyboard = elements.some(el => el.contains(e.target));
+        }
+
+        if (newVal) {
+          this.showKeyboard = true
+          this.$refs.dialogContent.addEventListener('click', listener)
+        }
+        !newVal && this.$refs.dialogContent.removeEventListener('click', listener)
       }
     }
   }
@@ -146,7 +154,7 @@
 
 <style scoped lang="scss">
   .dialog-lookup {
-    min-height: 100%;
+    height: 100vh;
     background-color: white;
     display: flex;
     flex-direction: column;
