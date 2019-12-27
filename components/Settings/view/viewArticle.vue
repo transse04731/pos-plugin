@@ -12,17 +12,13 @@
 					Name
 					<g-icon size="12">mdi-filter</g-icon>
 				</th>
-				<th @click="openPriceFilters">
+				<th class="ta-right" @click="openPriceFilters">
 					Price
 					<g-icon size="12">mdi-filter</g-icon>
 				</th>
 				<th @click="openCategoryFilters">
 					Category
 					<g-icon size="12">mdi-magnify</g-icon>
-				</th>
-				<th @click="openPlasticFilters">
-					Plastic (€)
-					<g-icon size="12">mdi-filter</g-icon>
 				</th>
 				<th @click="openBarcodeFilters">
 					Bar Code
@@ -32,7 +28,7 @@
 			</thead>
 			<tr class="sticky">
 				<td class="bg-grey-lighten-1">
-					<g-checkbox v-model="selectedProduct" :value="listIDs" multiple>
+					<g-checkbox v-model="selectedProductIDs" :value="listIDs" multiple>
 						<template v-slot:label>
 							<g-icon size="16" class="mb-1">fas fa-caret-down</g-icon>
 						</template>
@@ -55,14 +51,13 @@
 			</tr>
 			<tr v-for="(product, i) in products" :key="i">
 				<td>
-					<g-checkbox v-model="selectedProduct" :value="product._id"/>
+					<g-checkbox v-model="selectedProductIDs" :value="product._id" @change="getFirstSelectedProduct"/>
 				</td>
-				<td class="ta-center">{{product.id}}</td>
-				<td>{{product.name}}</td>
-				<td class="ta-right">€ {{product.price.toFixed(2)}}</td>
-				<td class="ta-center">{{product.category}}</td>
-				<td class="ta-center">{{product.plastic ? product.plastic : '-'}}</td>
-				<td class="ta-center">{{product.barcode}}</td>
+				<td class="ta-center" @click.stop="selectProduct(product)">{{product.id}}</td>
+				<td @click.stop="selectProduct(product)">{{product.name}}</td>
+				<td class="ta-right" @click.stop="selectProduct(product)">€ {{product.price.toFixed(2)}}</td>
+				<td class="ta-center" @click.stop="selectProduct(product)">{{product.category.name}}</td>
+				<td class="ta-center" @click.stop="selectProduct(product)">{{product.barcode}}</td>
 			</tr>
 		</g-simple-table>
 		<pos-table-pagination @execQueryByPage="updatePagination"
@@ -79,10 +74,11 @@
 		  'PosStore:getListProducts',
 		  'PosStore:listProducts',
 		  'PosStore:productFilters',
-		  'PosStore:selectedProduct',
+		  'PosStore:selectedProductIDs',
 		  'PosStore:totalProducts',
 		  'PosStore:getTotalProducts',
 		  'PosStore:productPagination',
+		  'PosStore:selectedProduct',
 		],
 		data () {
 			return {
@@ -141,11 +137,23 @@
       openCategoryFilters() {
         this.$getService('dialogProductCategoryFilter:setActive')(true);
 			},
-      openPlasticFilters() {
-        this.$getService('dialogProductPlasticFilter:setActive')(true);
-			},
 			async updatePagination() {
 				await this.getListProducts();
+			},
+			selectProduct(product) {
+      	const index = this.selectedProductIDs.findIndex(p => p === product._id);
+      	if(index === -1)
+					this.selectedProductIDs.push(product._id);
+      	else
+      		this.selectedProductIDs.splice(index, 1);
+				this.getFirstSelectedProduct()
+			},
+			getFirstSelectedProduct() {
+      	if(this.selectedProductIDs.length > 0){
+      		this.selectedProduct = this.listProducts.find(p => p._id === this.selectedProductIDs[0])
+				} else {
+					this.selectedProduct = null;
+				}
 			}
 		},
 		async created() {
@@ -153,7 +161,7 @@
       await this.getListProducts();
 		},
 		beforeDestroy() {
-      this.selectedProduct = [];
+      this.selectedProductIDs = [];
     }
   }
 </script>
@@ -181,6 +189,27 @@
 		tr td:first-child,
 		tr th:first-child {
 			padding-right: 0;
+		}
+
+		tr {
+			td:nth-child(1) {
+				width: 10%;
+			}
+			td:nth-child(2) {
+				width: 15%;
+			}
+			td:nth-child(3) {
+				width: 20%;
+			}
+			td:nth-child(4) {
+				width: 15%;
+			}
+			td:nth-child(5) {
+				width: 20%;
+			}
+			td:nth-child(6) {
+				width: 20%;
+			}
 		}
 
 		.sticky {

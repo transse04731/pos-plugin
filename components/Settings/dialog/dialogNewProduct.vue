@@ -1,35 +1,37 @@
 <template>
   <div>
-    <g-dialog v-model="dialogNewProduct" fullscreen scrollable eager>
+    <g-dialog v-model="dialogNewProduct" fullscreen scrollable eager :key="'dialogNewProduct'+key">
       <div class="dialog-product w-100">
         <div class="form">
           <div class="title">
             Create New Product
           </div>
           <div class="input">
-            <pos-text-field :key="'pName'+key" label="Name" placeholder="Fill your number" @click="openDialogDetail('name')" v-model="productName" required/>
-            <pos-select :key="'taxCate'+key" label="Tax Category" :items="taxes" item-text="text" item-value="value" v-model="taxCategory" append-icon="mdi-chevron-down" required/>
-            <pos-text-field label="Product ID" placeholder="Auto generate" disabled @click="openDialogDetail('id')" v-model="productID"/>
-            <pos-select :key="'pCate'+key" label="Product Category" :items="categories" item-text="name" item-value="value" return-object v-model="productCategory" append-icon="mdi-chevron-down" required/>
-            <pos-select label="Unit" :items="units" v-model="unit" append-icon="mdi-chevron-down"/>
-            <div></div>
-            <div class="row-flex">
-              <div class="col-6">
-                <pos-text-field :key="'pPrice'+key" label="Price" placeholder="Fill your number" @click="openDialogDetail('price')" v-model="productPrice" required>
-                  <template v-slot:append>
-                    <span style="color: #1471ff">€</span>
-                  </template>
-                </pos-text-field>
-              </div>
-              <div class="col-6">
-                <pos-text-field label="Barcode/PLU" placeholder="Fill your number" @click="openDialogDetail('barcode')" v-model="productBarcode">
-                  <template v-slot:append>
-                    <g-icon svg>icon-scanning_barcode</g-icon>
-                  </template>
-                </pos-text-field>
+            <pos-text-field label="Name" placeholder="Fill your number" @click="openDialogDetail('name')" v-model="productName" required/>
+            <div class="input__tax">
+              <p class="label">Tax <span class="text-red">*</span></p>
+              <div class="row-flex">
+                <div v-for="(tax, i) in taxes" :key="i"
+                     :class="['tax', taxCategory && tax.value === taxCategory.value && 'selected__tax']"
+                     @click="selectTax(tax)">
+                  {{tax.name}}
+                </div>
               </div>
             </div>
+            <pos-text-field label="Product ID" placeholder="Auto generate" disabled @click="openDialogDetail('id')" v-model="productID"/>
+            <pos-select label="Product Category" :items="categories" item-text="name" item-value="value" return-object v-model="productCategory" append-icon="mdi-chevron-down" required/>
+            <pos-select label="Unit" :items="units" v-model="unit" append-icon="mdi-chevron-down"/>
             <div></div>
+            <pos-text-field :key="'pPrice'+key" label="Price" placeholder="Fill your number" @click="openDialogDetail('price')" v-model="productPrice" required>
+              <template v-slot:append>
+                <span style="color: #1471ff">€</span>
+              </template>
+            </pos-text-field>
+            <pos-text-field label="Barcode/PLU" placeholder="Fill your number" @click="openDialogDetail('barcode')" v-model="productBarcode">
+              <template v-slot:append>
+                <g-icon svg>icon-scanning_barcode</g-icon>
+              </template>
+            </pos-text-field>
             <div></div>
             <div class="row-flex">
               <div class="col-6">
@@ -57,18 +59,18 @@
         </g-toolbar>
       </div>
     </g-dialog>
-    <g-dialog v-model="dialogNewProductDetail" overlay-color="#6b6f82" overlay-opacity="0.95" width="90%" eager>
+    <g-dialog v-model="dialogNewProductDetail" overlay-color="#6b6f82" overlay-opacity="0.95" width="90%" eager :key="'dialogNewProductDetail'+key">
       <div class="dialog-product w-100">
         <div class="form__detail">
           <div class="input__detail">
             <div>
-              <pos-text-field :key="'name'+key" ref="name" label="Name" required placeholder="Fill your number" :rules="[rules.required]" v-model="name" @click="keyboardFocus = 'name'"/>
+              <pos-text-field ref="name" label="Name" required placeholder="Fill your number" :rules="[rules.required]" v-model="name" @click="keyboardFocus = 'name'"/>
             </div>
             <div>
               <pos-text-field ref="productID" label="Product ID" placeholder="Auto generate" v-model="productID" @click="keyboardFocus = 'id'"/>
             </div>
             <div>
-              <pos-text-field :key="'price'+key" ref="price" label="Price" required placeholder="Fill your number" :rules="[rules.number, rules.required]" v-model="price" @click="keyboardFocus = 'price'">
+              <pos-text-field ref="price" label="Price" required placeholder="Fill your number" :rules="[rules.number, rules.required]" v-model="price" @click="keyboardFocus = 'price'">
                 <template v-slot:append>
                   <span style="color: #1471ff">€</span>
                 </template>
@@ -96,19 +98,17 @@
 </template>
 
 <script>
-  /*import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';
-  import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
-  import PosSwitch from '../../pos-shared-components/PosSwitch';
-  import PosSelect from '../../pos-shared-components/POSInput/PosSelect';*/
 
   export default {
     name: 'dialogNewProduct',
-    //components: { PosSelect, PosSwitch, PosTextField, PosKeyboardFull },
     injectService: [
       'PosStore:getAllCategories',
       'PosStore:createNewProduct',
       'PosStore:getAllTaxCategory',
       'PosStore:getHighestProductOrder',
+      'PosStore:selectedProduct',
+      'PosStore:isEditProduct',
+      'PosStore:updateProduct',
     ],
     data() {
       return {
@@ -117,7 +117,7 @@
         productCategory: null,
         categories: [],
         unit: null,
-        units: ['Box', 'Pack'],
+        units: ['box', 'pack'],
         productName: '',
         productID: '',
         productPrice: '',
@@ -191,12 +191,12 @@
         value: c.name,
       }));
 
-      this.taxes = this.getAllTaxCategory().map(t => ({
-				text: t.name,
-				value: t.value
-			}));
+      this.taxes = this.getAllTaxCategory().sort((a,b) => (a.value - b.value))
     },
     methods: {
+      selectTax(tax) {
+        this.taxCategory = tax;
+      },
       openDialogDetail(textfield) {
         this.keyboardFocus = textfield;
         this.dialogNewProductDetail = true;
@@ -231,12 +231,16 @@
           layouts: [
             {
               'color': 'white',
-              'order': maxOrder+1
+              'order': maxOrder + 1
             }
           ]
         }
         this.dialogNewProduct = false;
-        await this.createNewProduct(product);
+        if (this.isEditProduct) {
+          await this.updateProduct({ ...product, _id: this.selectedProduct._id })
+        } else {
+          await this.createNewProduct(product);
+        }
       }
     },
     watch: {
@@ -269,6 +273,29 @@
           this.price = '';
           this.barcode = '';
           this.key++;
+          this.isEditProduct = false;
+        } else {
+          if (this.isEditProduct && this.selectedProduct) {
+            const p = this.selectedProduct;
+            //update new dialog
+            this.productName = p.name;
+            this.productCategory = this.categories.find(c => c._id === p.category._id);
+            this.taxCategory = this.taxes.find(t => t.value === p.tax);
+            this.productID = p.id;
+            this.productPrice = '' + p.price;
+            this.productBarcode = p.barcode;
+            this.unit = p.unit;
+            this.favorite = p.option && p.option.favorite;
+            this.nonRefundable = p.option && p.option.nonRefundable;
+            this.active = p.option && p.option.active;
+            this.showOnOrderScreen = p.option && p.option.showOnOrderScreen;
+            this.manualPrice = p.option && p.option.manualPrice;
+            //update detail dialog
+            this.name = this.productName;
+            this.id = this.productID;
+            this.price = this.productPrice;
+            this.barcode = this.productBarcode;
+          }
         }
       }
     }
@@ -303,6 +330,56 @@
 
         .g-switch-wrapper {
           margin-top: 0;
+        }
+
+        &__tax {
+          padding: 4px 4px 8px;
+
+          .label {
+            font-size: 13px;
+            line-height: 16px;
+            font-weight: 400;
+            margin-top: 5px;
+          }
+
+          .tax {
+            background: #F0F0F0;
+            border: 1px solid #C9C9C9;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 36px;
+            margin: 8px;
+            flex-grow: 1;
+
+            &:first-child {
+              margin-left: 0;
+            }
+
+            &:last-child {
+              margin-right: 0;
+            }
+          }
+
+          .selected__tax {
+            position: relative;
+            border-color: #1976D2;
+            background: #E0F1FF;
+
+            &:before {
+              position: absolute;
+              content: '\F12C';
+              font-family: "Material Design Icons", sans-serif;
+              top: 0;
+              right: 0;
+              color: #fff;
+              transform: translate(50%, -50%);
+              border-radius: 50%;
+              background-color: #1976D2;
+              line-height: 1;
+            }
+          }
         }
       }
 
@@ -352,5 +429,11 @@
       border: 1px solid #979797;
       color: #1d1d26;
     }
+  }
+</style>
+
+<style lang="scss">
+  .g-dialog-content {
+    display: flex;
   }
 </style>

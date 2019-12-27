@@ -73,9 +73,11 @@
         //article view
         productFilters: [],
         listProducts: [],
-        selectedProduct: [],
+        selectedProductIDs: [],
         totalProducts: null,
         productPagination: { limit: 10, currentPage: 1 },
+        selectedProduct: null,
+        isEditProduct: false,
         //payment view
         listPayments: [],
         isEditPayment: false,
@@ -448,9 +450,11 @@
           id: p.id,
           name: p.name,
           price: p.price,
-          category: p.category.name,
-          plastic: p.plastic,
-          barcode: p.barcode
+          category: p.category,
+          barcode: p.barcode,
+          tax: p.tax,
+          option: p.option,
+          unit: p.unit,
         }))
       },
       async getTotalProducts() {
@@ -460,15 +464,15 @@
       },
       async deleteSelectedProducts() {
         const productModel = cms.getModel('Product');
-        if (this.selectedProduct && this.selectedProduct.length > 0) {
-          await productModel.deleteMany({ '_id': { '$in': this.selectedProduct } });
+        if (this.selectedProductIDs && this.selectedProductIDs.length > 0) {
+          await productModel.deleteMany({ '_id': { '$in': this.selectedProductIDs } });
         }
 
         // reset related fn buttons
         const settingModel = cms.getModel('PosSetting');
         await settingModel.findOneAndUpdate(
             {
-              'leftFunctionButtons.buyback.product': { '$in': this.selectedProduct }
+              'leftFunctionButtons.buyback.product': { '$in': this.selectedProductIDs }
             },
             {
               $set: {
@@ -482,7 +486,7 @@
             });
         await settingModel.findOneAndUpdate(
             {
-              'rightFunctionButtons.buyback.product': { '$in': this.selectedProduct }
+              'rightFunctionButtons.buyback.product': { '$in': this.selectedProductIDs }
             },
             {
               $set: {
@@ -498,11 +502,22 @@
         // fetch data
         await this.getListProducts();
         await this.getTotalProducts();
-        this.selectedProduct = [];
+        this.selectedProductIDs = [];
       },
       async createNewProduct(product) {
         const productModel = cms.getModel('Product');
         await productModel.create(product);
+        await this.getListProducts();
+        await this.getTotalProducts();
+      },
+      async updateProduct(product) {
+        const productModel = cms.getModel('Product');
+        await productModel.findOneAndUpdate(
+            {
+              _id: product._id
+            },
+            product
+        )
         await this.getListProducts();
         await this.getTotalProducts();
       },
@@ -977,13 +992,16 @@
         listProducts: this.listProducts,
         productFilters: this.productFilters,
         updateProductFilters: this.updateProductFilters,
-        selectedProduct: this.selectedProduct,
+        selectedProductIDs: this.selectedProductIDs,
         deleteSelectedProducts: this.deleteSelectedProducts,
         totalProducts: this.totalProducts,
         getTotalProducts: this.getTotalProducts,
         createNewProduct: this.createNewProduct,
         getAllTaxCategory: this.getAllTaxCategory,
         getHighestProductOrder: this.getHighestProductOrder,
+        selectedProduct: this.selectedProduct,
+        isEditProduct: this.isEditProduct,
+        updateProduct: this.updateProduct,
         //payment view
         listPayments: this.listPayments,
         getListPayments: this.getListPayments,
