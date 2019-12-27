@@ -176,12 +176,12 @@
       }
 
       .g-tf-wrapper.g-tf__outlined.g-tf__solo {
-        border-radius: 2px;
         box-shadow: none;
         margin-right: 16px;
 
         ::v-deep fieldset {
           border-color: #979797;
+          border-radius: 2px;
 
           &:focus-within {
             border-width: 1px;

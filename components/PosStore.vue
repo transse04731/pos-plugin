@@ -62,6 +62,7 @@
             items: [
               { title: 'Company Info', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/company'*/ },
               { title: 'Payment', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/payment'*/ },
+              { title: 'Tax', icon: 'radio_button_unchecked', iconType: 'small', isView: true },
               { title: 'License', icon: 'radio_button_unchecked', iconType: 'small' },
             ]
           },
@@ -69,7 +70,6 @@
         //category view
         listCategories: [],
         selectedCategory: null,
-        isEditCategory: false,
         //article view
         productFilters: [],
         listProducts: [],
@@ -77,10 +77,8 @@
         totalProducts: null,
         productPagination: { limit: 10, currentPage: 1 },
         selectedProduct: null,
-        isEditProduct: false,
         //payment view
         listPayments: [],
-        isEditPayment: false,
         selectedPayment: null,
         //general setting
         generalSetting: null,
@@ -91,6 +89,9 @@
         selectedUser: {},
         //printer view
         thermalPrinter: null,
+        //tax category view
+        selectedTaxCategory: null,
+        listTaxCategories: [],
         //order history screen variables
         orderHistoryOrders: [],
         orderHistoryFilters: [],
@@ -100,8 +101,6 @@
         //article screen
         articleSelectedColor: null,
         articleSelectedProductButton: null,
-        // leftButtonsUpdate: 0,
-        // rightButtonsUpdate: 0,
       }
     },
     domain: 'PosStore',
@@ -535,6 +534,42 @@
             }
           }])
         return listMaxOrder.find(o => o._id === categoryId).maxOrder;
+      },
+      //tax category view
+      async updateTaxCategory(oldTaxId, newTaxCategory) {
+        const settingModel = cms.getModel('PosSetting');
+        if(oldTaxId && !newTaxCategory) {
+          await settingModel.findOneAndUpdate(
+              {},
+              {
+                $pull: {
+                  taxCategory: { _id: oldTaxId}
+                }
+              }
+          )
+        } else if (newTaxCategory && !oldTaxId){
+          await settingModel.findOneAndUpdate(
+              {},
+              {
+                $push: {
+                  taxCategory: { ...newTaxCategory }
+                }
+              }
+          )
+        } else {
+          await settingModel.findOneAndUpdate(
+              {
+                'taxCategory._id': oldTaxId
+              },
+              {
+                $set: {
+                  'taxCategory.$': newTaxCategory,
+                }
+              }
+          )
+        }
+        const setting = await settingModel.findOne();
+        this.listTaxCategories = setting.taxCategory;
       },
       //payment view
       async getListPayments() {
@@ -985,7 +1020,6 @@
         //category view
         listCategories: this.listCategories,
         selectedCategory: this.selectedCategory,
-        isEditCategory: this.isEditCategory,
         updateCategory: this.updateCategory,
         //article view
         getListProducts: this.getListProducts,
@@ -1025,6 +1059,10 @@
         thermalPrinter: this.thermalPrinter,
         getThermalPrinter: this.getThermalPrinter,
         updateThermalPrinter: this.updateThermalPrinter,
+        //tax category view
+        selectedTaxCategory: this.selectedTaxCategory,
+        listTaxCategories: this.listTaxCategories,
+        updateTaxCategory: this.updateTaxCategory,
         //order history screen
         orderHistoryOrders: this.orderHistoryOrders,
         orderHistoryFilters: this.orderHistoryFilters,
@@ -1043,8 +1081,6 @@
         switchProductOrder: this.switchProductOrder,
         updateArticleOrders: this.updateArticleOrders,
         getPosSetting: this.getPosSetting,
-        // leftButtonsUpdate: this.leftButtonsUpdate,
-        // rightButtonsUpdate: this.rightButtonsUpdate
       }
     }
   }

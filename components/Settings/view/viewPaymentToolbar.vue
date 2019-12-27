@@ -6,7 +6,7 @@
       </g-icon>
       Add
     </g-btn>
-    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-2" :disabled="selectedPayment && !selectedPayment.editable" @click="openDialogEditPayment">
+    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-2" :disabled="!selectedPayment || !selectedPayment.editable" @click="openDialogEditPayment">
       <g-icon class="mr-2" color="red">
         edit
       </g-icon>
@@ -26,7 +26,6 @@
   export default {
     name: 'viewPaymentToolbar',
     injectService:[
-      'PosStore:isEditPayment',
       'PosStore:selectedPayment',
       'PosStore:updatePayment'
     ],
@@ -37,12 +36,10 @@
     },
     methods: {
       openDialogNewPayment() {
-        this.isEditPayment = false;
-        this.$getService('dialogNewPayment:setActive')(true)
+        this.$getService('dialogNewPayment:open')(false)
       },
       openDialogEditPayment() {
-        this.isEditPayment = true;
-        this.$getService('dialogNewPayment:setActive')(true)
+        this.$getService('dialogNewPayment:open')(true)
       },
       openDialogDelete() {
         this.dialogConfirmDelete = true;

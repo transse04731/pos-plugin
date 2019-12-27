@@ -37,7 +37,6 @@
     injectService: [
         'PosStore:selectedProductIDs',
         'PosStore:deleteSelectedProducts',
-        'PosStore:isEditProduct'
     ],
     data() {
       return {
@@ -46,11 +45,10 @@
     },
     methods: {
       openDialogEditProduct() {
-        this.isEditProduct = true;
-        this.$getService('dialogNewProduct:setActive')(true);
+        this.$getService('dialogNewProduct:open')(true);
       },
       openDialogNewProduct() {
-        this.$getService('dialogNewProduct:setActive')(true);
+        this.$getService('dialogNewProduct:open')(false);
       },
       openDialogDelete() {
         this.dialogConfirmDelete = true;

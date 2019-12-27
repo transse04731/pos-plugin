@@ -116,7 +116,6 @@
   .dialog-new-user {
     width: 100%;
     background: #fff;
-    border-radius: 8px;
 
     .header {
       display: flex;

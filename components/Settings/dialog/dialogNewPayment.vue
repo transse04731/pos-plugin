@@ -3,12 +3,12 @@
 		<div class="dialog-payment w-100">
 			<div class="form">
 				<p class="ml-1 mb-3">{{ isEditPayment && selectedPayment ? 'Edit' : 'Create New' }} Payment</p>
-				<pos-text-field style="width: 268px" label="Name" placeholder="Payment name" v-model="computedName"/>
-				<pos-switch dense label="Editable" v-model="computedEditable"></pos-switch>
-				<pos-file-input-image label="Icon" v-model="computedSrc"/>
+				<pos-text-field style="width: 268px" label="Name" placeholder="Payment name" v-model="name"/>
+				<pos-switch dense label="Editable" v-model="editable"></pos-switch>
+				<pos-file-input-image label="Icon" v-model="src"/>
 			</div>
 			<div class="keyboard-wrapper">
-				<pos-keyboard-full v-model="computedName"/>
+				<pos-keyboard-full v-model="name"/>
 			</div>
 			<g-toolbar bottom color="grey lighten 3">
 				<g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="ma-2" @click="back">
@@ -30,7 +30,6 @@
   export default {
     name: 'dialogNewPayment',
 		injectService: [
-			'PosStore:isEditPayment',
 			'PosStore:selectedPayment',
 			'PosStore:updatePayment',
 		],
@@ -39,9 +38,8 @@
 				name: '',
 				src: null,
 				editable: true,
-				isParsedName: false,
-				isParsedIcon: false,
-				isParsedEditable: true,
+				isEditPayment: false,
+				internalValue: false,
       }
     },
     props: {
@@ -50,58 +48,32 @@
     computed: {
       dialogNewPayment: {
         get() {
-          return this.value;
+          return this.internalValue;
         },
         set(val) {
-          this.$emit('input', val);
+          this.internalValue = val;
         }
       },
-			computedName: {
-				get() {
-					if (this.isEditPayment && this.selectedPayment && !this.isParsedName) {
-						this.name = this.selectedPayment.name;
-						this.isParsedName = true;
-					}
-					return this.name;
-				},
-				set(val) {
-					this.name = val;
-				}
-			},
-			computedSrc: {
-				get() {
-					if (this.isEditPayment && this.selectedPayment && !this.isParsedIcon) {
-						this.src = this.selectedPayment.icon;
-						this.isParsedIcon = true;
-					}
-					return this.src;
-				},
-				set(val) {
-					this.src = val;
-				}
-			},
-			computedEditable: {
-				get() {
-					if (this.isEditPayment && this.selectedPayment && !this.isParsedEditable) {
-						this.editable = this.selectedPayment.editable;
-						this.isParsedEditable = true;
-					}
-					return this.editable;
-				},
-				set(val) {
-					this.editable = val;
-				}
-			}
     },
 		methods: {
+    	open(isEdit) {
+    		this.isEditPayment = isEdit;
+				if (this.isEditPayment && this.selectedPayment) {
+					this.name = this.selectedPayment.name;
+					this.src = this.selectedPayment.icon;
+					this.editable = this.selectedPayment.editable;
+				} else {
+					this.name = '';
+					this.src = '';
+					this.editable = true;
+				}
+    		this.dialogNewPayment = true;
+			},
     	resetData() {
 				this.name = '';
 				this.src = '';
 				this.editable = true;
 				this.selectedPayment = null;
-				this.isParsedName = false;
-				this.isParsedIcon = false;
-				this.isParsedEditable = false;
 				this.isEditPayment = false;
 			},
 			back() {
@@ -109,11 +81,11 @@
 				this.dialogNewPayment = false;
 			},
 			async save() {
-				if(this.computedName) {
+				if(this.name) {
 					const payment = {
-						name: this.computedName.toLowerCase(),
-						icon: this.computedSrc,
-						editable: this.computedEditable,
+						name: this.name.toLowerCase(),
+						icon: this.src,
+						editable: this.editable,
 					}
 					let oldPayment;
 					if(this.isEditPayment) oldPayment = this.selectedPayment;

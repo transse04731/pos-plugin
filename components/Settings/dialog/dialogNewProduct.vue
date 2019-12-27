@@ -54,7 +54,7 @@
         </div>
         <g-toolbar absolute bottom color="grey lighten 3">
           <g-spacer/>
-          <g-btn :uppercase="false" outlined class="mr-2" width="120" @click="dialogNewProduct = false">Cancel</g-btn>
+          <g-btn :uppercase="false" outlined class="mr-2" width="120" @click="back()">Cancel</g-btn>
           <g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" width="120" :disabled="!valid" @click="submit">Submit</g-btn>
         </g-toolbar>
       </div>
@@ -107,7 +107,6 @@
       'PosStore:getAllTaxCategory',
       'PosStore:getHighestProductOrder',
       'PosStore:selectedProduct',
-      'PosStore:isEditProduct',
       'PosStore:updateProduct',
     ],
     data() {
@@ -144,6 +143,8 @@
         price: '',
         barcode: '',
         key: 0,
+        isEditProduct: false,
+        internalValue: false,
       }
     },
     props: {
@@ -152,10 +153,10 @@
     computed: {
       dialogNewProduct: {
         get() {
-          return this.value
+          return this.internalValue
         },
         set(val) {
-          this.$emit('input', val);
+          this.internalValue = val;
         }
       },
       keyboard: {
@@ -194,6 +195,53 @@
       this.taxes = this.getAllTaxCategory().sort((a,b) => (a.value - b.value))
     },
     methods: {
+      open(isEdit) {
+        this.isEditProduct = isEdit;
+        if (this.isEditProduct && this.selectedProduct) {
+          const p = this.selectedProduct;
+          //update new dialog
+          this.productName = p.name;
+          this.productCategory = this.categories.find(c => c._id === p.category._id);
+          this.taxCategory = this.taxes.find(t => t.value === p.tax);
+          this.productID = p.id;
+          this.productPrice = '' + p.price;
+          this.productBarcode = p.barcode;
+          this.unit = p.unit;
+          this.favorite = p.option && p.option.favorite;
+          this.nonRefundable = p.option && p.option.nonRefundable;
+          this.active = p.option && p.option.active;
+          this.showOnOrderScreen = p.option && p.option.showOnOrderScreen;
+          this.manualPrice = p.option && p.option.manualPrice;
+          //update detail dialog
+          this.name = this.productName;
+          this.id = this.productID;
+          this.price = this.productPrice;
+          this.barcode = this.productBarcode;
+        } else {
+          this.productName = '';
+          this.productCategory = null;
+          this.taxCategory = null;
+          this.productID = '';
+          this.productPrice = '';
+          this.productBarcode = '';
+          this.unit = null;
+          this.favorite = null;
+          this.nonRefundable = null;
+          this.active = null;
+          this.showOnOrderScreen = null;
+          this.manualPrice = null;
+          this.name = '';
+          this.id = '';
+          this.price = '';
+          this.barcode = '';
+        }
+        this.key++;
+        this.keyboardFocus = null;
+        this.dialogNewProduct = true;
+      },
+      back() {
+        this.dialogNewProduct = false;
+      },
       selectTax(tax) {
         this.taxCategory = tax;
       },
@@ -253,51 +301,6 @@
           this.key++;
         }
       },
-      dialogNewProduct: function (val) {
-        if (!val) {
-          this.taxCategory = null;
-          this.productCategory = null;
-          this.unit = null;
-          this.productName = '';
-          this.productID = '';
-          this.productPrice = '';
-          this.productBarcode = '';
-          this.favorite = null;
-          this.nonRefundable = null;
-          this.active = null;
-          this.showOnOrderScreen = null;
-          this.manualPrice = null;
-          this.keyboardFocus = null;
-          this.name = '';
-          this.id = '';
-          this.price = '';
-          this.barcode = '';
-          this.key++;
-          this.isEditProduct = false;
-        } else {
-          if (this.isEditProduct && this.selectedProduct) {
-            const p = this.selectedProduct;
-            //update new dialog
-            this.productName = p.name;
-            this.productCategory = this.categories.find(c => c._id === p.category._id);
-            this.taxCategory = this.taxes.find(t => t.value === p.tax);
-            this.productID = p.id;
-            this.productPrice = '' + p.price;
-            this.productBarcode = p.barcode;
-            this.unit = p.unit;
-            this.favorite = p.option && p.option.favorite;
-            this.nonRefundable = p.option && p.option.nonRefundable;
-            this.active = p.option && p.option.active;
-            this.showOnOrderScreen = p.option && p.option.showOnOrderScreen;
-            this.manualPrice = p.option && p.option.manualPrice;
-            //update detail dialog
-            this.name = this.productName;
-            this.id = this.productID;
-            this.price = this.productPrice;
-            this.barcode = this.productBarcode;
-          }
-        }
-      }
     }
   }
 </script>

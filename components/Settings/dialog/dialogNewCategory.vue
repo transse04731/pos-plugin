@@ -5,18 +5,18 @@
 				<p class="ml-1 mb-3">
 					{{ isEditCategory && selectedCategory ? 'Edit' : 'Create New' }}
 					Category</p>
-				<pos-text-field style="width: 268px" label="Name" placeholder="Category name" v-model="computedName"/>
+				<pos-text-field style="width: 268px" label="Name" placeholder="Category name" v-model="name"/>
 				<div class="row-flex justify-end py-5">
 					<g-btn :uppercase="false" outlined class="mr-3" width="120" @click="dialogNewCategory = false">
 						Cancel
 					</g-btn>
-					<g-btn :uppercase="false" flat background-color="blue accent 3" width="120" text-color="white" @click="save">
+					<g-btn :uppercase="false" flat background-color="blue accent 3" width="120" text-color="white" :disabled="!name" @click="save">
 						OK
 					</g-btn>
 				</div>
 			</div>
 			<div class="keyboard-wrapper">
-				<pos-keyboard-full v-model="computedName"/>
+				<pos-keyboard-full v-model="name"/>
 			</div>
 		</div>
 	</g-dialog>
@@ -30,7 +30,6 @@
   export default {
     name: 'dialogNewCategory',
     injectService: [
-      'PosStore:isEditCategory',
       'PosStore:selectedCategory',
       'PosStore:updateCategory',
     ],
@@ -38,7 +37,8 @@
     data() {
       return {
         name: '',
-        isParsedValue: false
+				isEditCategory: false,
+				internalValue: false,
       }
     },
     props: {
@@ -47,38 +47,32 @@
     computed: {
       dialogNewCategory: {
         get() {
-          return this.value;
+          return this.internalValue;
         },
         set(val) {
-          this.$emit('input', val);
+          this.internalValue = val;
         }
       },
-      computedName: {
-        get() {
-          if (this.isEditCategory && this.selectedCategory && !this.isParsedValue) {
-            this.name = this.selectedCategory.name;
-            this.isParsedValue = true;
-          }
-          return this.name;
-        },
-        set(val) {
-          this.name = val;
-        }
-      }
-    },
-    created() {
     },
     methods: {
+    	open(isEdit) {
+    		this.isEditCategory = isEdit;
+				if (this.isEditCategory && this.selectedCategory) {
+					this.name = this.selectedCategory.name;
+				} else {
+					this.name = '';
+				}
+    		this.dialogNewCategory = true;
+			},
       async save() {
-        if (this.computedName) {
+        if (this.name) {
           let oldID;
           if (this.isEditCategory) oldID = this.selectedCategory && this.selectedCategory._id;
-          await this.updateCategory(oldID, this.computedName);
+          await this.updateCategory(oldID, this.name);
         }
-        this.computedName = '';
+        this.name = '';
         this.selectedCategory = null;
         this.dialogNewCategory = false;
-				this.isParsedValue = false;
       },
     }
   }
