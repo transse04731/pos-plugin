@@ -857,11 +857,6 @@
       //<!--<editor-fold desc="End-of-day Report">-->
       async getEodReports(from, to) {
         try {
-          const beginHour = cms.getList('PosSetting')[0].generalSetting.beginHour || '00:00'
-          const [hour, minutes] = beginHour.split(':')
-          from = dayjs(from).startOf('day').hour(parseInt(hour)).minute(parseInt(minutes)).toDate()
-          to = dayjs(to).startOf('day').hour(parseInt(hour)).minute(parseInt(minutes)).toDate()
-
           let result = await cms.processData('OrderEODCalendar', { from, to });
           result = jsonfn.clone(result, true, true);
           return result.ordersByDate
