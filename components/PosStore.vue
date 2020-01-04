@@ -4,11 +4,15 @@
 
 <script>
   import _ from 'lodash'
+  import isBetween from 'dayjs/plugin/isBetween'
+  import * as jsonfn from 'json-fn';
+
+  dayjs.extend(isBetween)
 
   export default {
     name: 'PosStore',
     props: {},
-    data: function () {
+    data() {
       return {
         user: null,
         loginPassword: '',
@@ -101,6 +105,9 @@
         //article screen
         articleSelectedColor: null,
         articleSelectedProductButton: null,
+        //End of day report screen
+        selectedReportDate: null,
+        listOfDatesWithReports: [],
       }
     },
     domain: 'PosStore',
@@ -166,7 +173,7 @@
         if (this.currentOrder.items && !_.isNil(this.activeTableProduct)) {
           return this.currentOrder.items[this.activeTableProduct]
         }
-      }
+      },
     },
     methods: {
       //<!--<editor-fold desc="Login screen">-->
@@ -309,7 +316,6 @@
           if (!this.currentOrder || !this.currentOrder.items.length) return
           const orderModel = cms.getModel('Order')
           const orderDateTime = new Date()
-          const beginHour = cms.getList('PosSetting')[0].generalSetting.beginHour || '00:00'
           const id = await this.getLatestOrderId()
           const taxGroups = _.groupBy(this.currentOrder.items, 'tax')
           const vTaxGroups = _.map(taxGroups, (val, key) => ({
@@ -326,12 +332,13 @@
               ? [...this.currentOrder.user, {name: this.user.name, date: orderDateTime}]
               : [{name: this.user.name, date: orderDateTime}],
             date: orderDateTime,
-            vDate: this.getVDate(orderDateTime, beginHour),
+            vDate: this.getVDate(orderDateTime),
             bookingNumber: this.getBookingNumber(orderDateTime),
             payment: [paymentMethod || { ...this.currentOrder.payment, value: this.paymentTotal }],
             vSum: this.paymentTotal,
             vTax: this.paymentTax,
             vTaxGroups,
+            vDiscount: this.paymentDiscount,
             receive: this.paymentAmountTendered,
             cashback: this.paymentChange
           }
@@ -847,6 +854,103 @@
       },
       //<!--</editor-fold>-->
 
+      //<!--<editor-fold desc="End-of-day Report">-->
+      async getEodReports(from, to) {
+        try {
+          const beginHour = cms.getList('PosSetting')[0].generalSetting.beginHour || '00:00'
+          const [hour, minutes] = beginHour.split(':')
+          from = dayjs(from).startOf('day').hour(parseInt(hour)).minute(parseInt(minutes)).toDate()
+          to = dayjs(to).startOf('day').hour(parseInt(hour)).minute(parseInt(minutes)).toDate()
+
+          let result = await cms.processData('OrderEODCalendar', { from, to });
+          result = jsonfn.clone(result, true, true);
+          return result.ordersByDate
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      async getDatesWithReports(month) {
+        let eventDates = []
+
+        if (month) {
+          let currentDate = dayjs(month).startOf('month')
+          const endDate = currentDate.add(1, 'month')
+
+          const dates = await this.getEodReports(currentDate, endDate)
+          eventDates = _.map(dates, (value, key) => {
+            const color = Object.keys(value).includes('') ? '#00E676' : '#EF9A9A'
+            return {
+              date: dayjs(key).format('YYYY-MM-DD'),
+              color
+            }
+          })
+        }
+
+        this.listOfDatesWithReports = eventDates
+        return eventDates
+      },
+      async getDailyReports(date) {
+        try {
+          const dateObj = dayjs(date);
+          const reports = await this.getEodReports(dateObj, dateObj.add(1, 'day').toDate())
+
+          return _.map(reports[dateObj.toISOString()], (value, key) => ({
+            z: key ? key : this.getHighestZNumber(),
+            begin: value.from,
+            end: value.to,
+            sum: value.vSum,
+            pending: !key
+          })).sort((cur, next) => cur.begin - next.begin)
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      async getOldestPendingReport() {
+        try {
+          const pendingOrder = await cms.getModel('Order').findOne({ z: { $exists: false }, status: 'paid' }).sort('date')
+          if (pendingOrder) {
+            const fromDate = dayjs(pendingOrder.vDate);
+            let eodData = await this.getEodReports(fromDate.toDate(), fromDate.add(1, 'day').toDate())
+            eodData = jsonfn.clone(eodData, true, true)
+            const reports = _.map(eodData, (val,key) => ({ date: dayjs(key), reports: val }))
+            return reports.find(i => i.reports[''])
+          }
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      async finalizeReport(reports) {
+        if (!reports || !reports.length) return
+        const report = Object.assign(reports.find(i => i.pending))
+
+        try {
+          const orderModel = cms.getModel('Order')
+          let vDateOrders = await orderModel.find({status: 'paid', vDate: dayjs(report.begin).startOf('day').toDate()})
+          vDateOrders = jsonfn.clone(vDateOrders, true, true)
+
+          const ordersToUpdate = vDateOrders.filter(order => report.begin <= order.date && order.date <= report.end).map(i => i._id)
+
+          await orderModel.updateMany({ _id: { $in: ordersToUpdate} }, { $set: { z: report.z } })
+          await cms.getModel('EndOfDay').create(report)
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      async getXReport(date) {
+        try {
+          const beginHour = cms.getList('PosSetting')[0].generalSetting.beginHour || '00:00'
+          const [hour, minutes] = beginHour.split(':')
+          const from = dayjs(date).startOf('day').hour(parseInt(hour)).minute(parseInt(minutes)).toDate()
+          const to = dayjs(from).add(1, 'day').toDate()
+
+          const xReport = await cms.processData('OrderXReport', { from, to })
+          return xReport.dayReport[dayjs(date).format('DD-MM-YYYY')]
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      //<!--</editor-fold>-->
+
       //<!--<editor-fold desc="Button functions">-->
       isActiveFnBtn(btn) {
         if (!btn || !btn.buttonFunction) return
@@ -893,6 +997,7 @@
           status: 'inProgress',
           items: this.getComputedOrderItems(this.currentOrder.items, date),
           date,
+          vDate: this.getVDate(date),
           user: [{ name: this.user.name || '', date }]
         }
         if (this.currentOrder._id) {
@@ -943,17 +1048,22 @@
         }
       },
       getBookingNumber(dateTime) {
-        return dayjs(dateTime).format('YYMMDDHHmmssms')
+        return dayjs(dateTime).format('YYMMDDHHmmssSSS')
       },
-      getVDate(dateTime, beginHour) {
+      getVDate(dateTime) {
+        const beginHour = cms.getList('PosSetting')[0].generalSetting.beginHour || '00:00'
         const [hour, minutes] = beginHour.split(':')
         const beginDateTime = dayjs(dateTime).clone().hour(parseInt(hour)).minute(parseInt(minutes))
 
         if (dayjs(dateTime).isBefore(beginDateTime)) {
-          return beginDateTime.subtract(1, 'day').startOf('day').toDate()
+          return beginDateTime.startOf('day').subtract(1, 'day').toDate()
         }
 
         return beginDateTime.startOf('day').toDate()
+      },
+      getHighestZNumber() {
+        const reportWithHighestZ = cms.getList('EndOfDay').sort((cur, next) => next.z - cur.z)[0]
+        return reportWithHighestZ ? reportWithHighestZ.z + 1 : 1
       }
       //<!--</editor-fold>-->
     },
@@ -1081,6 +1191,14 @@
         switchProductOrder: this.switchProductOrder,
         updateArticleOrders: this.updateArticleOrders,
         getPosSetting: this.getPosSetting,
+        //End of day report
+        selectedReportDate: this.selectedReportDate,
+        listOfDatesWithReports: this.listOfDatesWithReports,
+        getDatesWithReports: this.getDatesWithReports,
+        getDailyReports: this.getDailyReports,
+        getOldestPendingReport: this.getOldestPendingReport,
+        finalizeReport: this.finalizeReport,
+        getXReport: this.getXReport,
       }
     }
   }
