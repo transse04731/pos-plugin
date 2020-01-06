@@ -13,31 +13,14 @@
 <script>
   export default {
     name: 'PosOrderScreenInfoRight',
-    injectService: ['PosStore:user'],
-    data() {
-      return {
-        date: new Date(),
-        setDateInterval: null
-      }
-    },
+    injectService: ['PosStore:(user,systemDate)'],
     computed: {
       userName() {
         return this.user ? this.user.name : ''
       },
-      formattedDate: {
-        get() {
-          return dayjs(this.date).format(`HH:mm ‧ MMM DD, YY`)
-        },
-        set(value) {
-          this.date = value
-        }
+      formattedDate() {
+        return dayjs(this.systemDate).format(`HH:mm ‧ MMM DD, YY`)
       },
-      created() {
-        this.setDateInterval = setInterval(() => this.date = new Date(), 60000)
-      },
-      beforeDestroy() {
-        this.setDateInterval && clearInterval(this.setDateInterval)
-      }
     }
   }
 </script>
