@@ -1,8 +1,8 @@
 <template>
   <div class="main-container">
     <div class="header-container">
-      <div class="card">
-        <div class="store-name text-center">
+      <div class="card text-center">
+        <div class="store-name">
           <span>{{companyName}}</span>
         </div>
 
@@ -16,131 +16,105 @@
 
     <div class="body-container">
       <div class="col col-12 text-center">
-        <span class="invoice-title">Invoice</span>
+        <span class="invoice-title">Z-Report</span>
       </div>
 
       <div class="col col-12 invoice-id">
-        <p>Date: {{orderDate}}</p>
-        <p>Time: {{orderTime}}</p>
-        <p>Invoice No: {{orderNumber}}</p>
+        <p>Report Date: {{reportDate}}</p>
+        <p>Z-Number: {{z}}</p>
+        <p>First Order: {{firstOrderDateString}}</p>
+        <p>Last Order: {{lastOrderDateString}}</p>
       </div>
 
-      <div class="col col-12 invoice-products">
-        <table>
-          <thead>
-          <tr>
-            <th width="45%">Item</th>
-            <th width="5%" style="text-align: right">Q.ty</th>
-            <th width="20%" style="text-align: right">Unit price</th>
-            <th width="20%" style="text-align: right">Total</th>
-          </tr>
-          <tr class="divider-row">
-            <th colspan="4">
-              <div class="divider divider-dashed"/>
-            </th>
-          </tr>
-          </thead>
+      <div class="divider divider-dashed"/>
 
-          <tbody>
-          <tr v-for="(item, index) in orderProductList" :key="index">
-            <td :style="index === orderProductList.length - 1 ? 'padding-bottom: 0' : ''"
-                height="28" width="45%">{{item.name}}
-            </td>
-            <td :style="index === orderProductList.length - 1 ? 'padding-bottom: 0' : ''"
-                height="28" width="5%" style="text-align: right">{{item.quantity}}
-            </td>
-            <td :style="index === orderProductList.length - 1 ? 'padding-bottom: 0' : ''"
-                height="28" width="20%" style="text-align: right">{{(item.price).toFixed(2)}}
-            </td>
-            <td :style="index === orderProductList.length - 1 ? 'padding-bottom: 0' : ''"
-                height="28" width="20%" style="text-align: right">{{(item.quantity * item.price).toFixed(2)}}
-            </td>
-          </tr>
-          <tr class="divider-row">
-            <td colspan="4">
-              <div class="divider divider-dashed"/>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="col col-12 summary">
+      <div class="col col-12 sales">
         <div>
-          <span>Subtotal</span>
-          <span class="float-right">{{(orderSum - orderTax).toFixed(2)}}</span>
+          <span style="font-weight: bolder">Sales</span>
         </div>
         <div style="margin: 12px 0;">
-          <span>Discount</span>
-          <span class="float-right">(0.00)</span>
-        </div>
-        <div v-for="(taxGroup, index) in orderTaxGroups" :key="index"
-             :style="index !== (orderTaxGroups.length - 1) ? 'margin: 12px 0;' : ''">
-          <span v-if="taxGroup.taxType > 0">Tax ({{taxGroup.taxType}}%)</span>
-          <span v-if="taxGroup.taxType > 0" class="float-right">{{taxGroup.tax.toFixed(2)}}</span>
-        </div>
-        <div class="divider divider-dashed"/>
-        <div class="total">
           <span>Total</span>
-          <span class="float-right">${{orderSum.toFixed(2)}}</span>
+          <span class="float-right">{{(sumTotal).toFixed(2)}}</span>
         </div>
         <div style="margin: 12px 0;">
-          <span>Cash tend</span>
-          <span class="float-right">${{orderCashReceived}}</span>
+          <span>Sub-total</span>
+          <span class="float-right">{{(subTotal).toFixed(2)}}</span>
         </div>
-        <div class="divider divider-dashed"/>
-        <div class="due" style="margin: 12px 0;">
-          <span>Change due</span>
-          <span class="float-right">${{orderCashback.toFixed(2)}}</span>
+        <div>
+          <span>Tax</span>
+          <span class="float-right">{{(taxTotal).toFixed(2)}}</span>
         </div>
       </div>
 
-      <div class="col col-12 checkout-details payment-method">
-        <span>Payment method: {{orderPaymentType}}</span>
-      </div>
-    </div>
+      <div class="divider divider-dashed"/>
 
-    <div class="justify-content-center footer-container">
-      <div class="full-width text-center">
-        <barcode :value="orderBookingNumber" :width="3.5" :height="80" font="Verdana"
-                 :font-size="23" :text-margin="8" :text="`Invoice ID: ${orderBookingNumber}`"/>
+      <div class="col col-12 tax-and-discount">
+        <div v-for="(value, name) in reportGroups" style="margin-bottom: 50px">
+          <div>
+            <span>Tax {{name}}%</span>
+          </div>
+          <div style="margin: 12px 0;">
+            <span>Total</span>
+            <span class="float-right">{{value[`sum${name}`].toFixed(2)}}</span>
+          </div>
+          <div style="margin: 12px 0;">
+            <span>Sub-total</span>
+            <span class="float-right">{{value[`net${name}`].toFixed(2)}}</span>
+          </div>
+          <div>
+            <span>Tax</span>
+            <span class="float-right">{{value[`tax${name}`].toFixed(2)}}</span>
+          </div>
+        </div>
+
+        <div>
+          <span>Discount</span>
+          <span class="float-right">{{discount.toFixed(2)}}</span>
+        </div>
       </div>
-      <div class="text-center thankyou-message full-width">
-        <span>Thank you for choosing {{companyName}}</span>
+
+      <div class="divider divider-dashed"/>
+
+      <div class="col col-12 sales">
+        <div v-for="(value, name) in reportByPayment">
+          <span>{{capitalize(name)}}: {{value}}</span>
+        </div>
+        <!--        <div>-->
+        <!--          <span>Returns Total: 100</span>-->
+        <!--        </div>-->
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  import Barcode from './barcode';
-
   export default {
-    name: "OrderReport.vue",
-    components: {
-      Barcode
-    },
+    name: "ZReport.vue",
     props: {
       companyName: String,
       companyAddress: String,
       companyTel: String,
       companyVatNumber: String || Number,
-      orderDate: String,
-      orderTime: String,
-      orderNumber: Number,
-      orderProductList: Array,
-      orderSum: Number,
-      orderTax: Number,
-      orderTaxGroups: Array,
-      orderCashReceived: Number,
-      orderCashback: Number,
-      orderPaymentType: String,
-      orderBookingNumber: String,
+      reportDate: String,
+      firstOrderDateString: String,
+      lastOrderDateString: String,
+      subTotal: Number,
+      taxTotal: Number,
+      sumTotal: Number,
+      discount: Number,
+      reportByPayment: Object,
+      reportGroups: Object,
+      z: Number,
+    },
+    methods: {
+      capitalize(text) {
+        return text.charAt(0).toUpperCase() + text.slice(1);
+      }
     }
   }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
   body {
     margin: 0;
     width: 100%;
@@ -248,12 +222,19 @@
     }
 
     .invoice-id {
-      font-weight: lighter;
       font-size: 25px;
       line-height: 30px;
 
       p:not(:last-child) {
         margin-bottom: 10px;
+      }
+
+      P:not(:first-child) {
+        font-weight: lighter;
+      }
+
+      p:first-child {
+        font-weight: bolder;
       }
     }
 
@@ -313,7 +294,7 @@
       }
     }
 
-    .checkout-details {
+    .sales, .tax-and-discount, .summary {
       padding-top: 0;
 
       div {
@@ -323,6 +304,10 @@
             font-size: 24px;
             line-height: 29px;
           }
+        }
+
+        &:not(:last-child) {
+          margin: 12px 0;
         }
       }
 

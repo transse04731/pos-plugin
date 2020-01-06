@@ -4,71 +4,164 @@ const vueRuntimeHelpers = require('vue-runtime-helpers');
 const PhantomUtil = require('./phantom-util');
 const phantomUtil = new PhantomUtil();
 const EscPrinter = require("./node-thermal-printer");
-const renderer = require('vue-server-renderer').createRenderer({
-  template: fs.readFileSync(`${__dirname}/template.html`, 'utf-8')
-});
+const dayjs = require('dayjs')
+const _ = require('lodash')
 
 vueRuntimeHelpers.createInjector = vueRuntimeHelpers.createInjectorSSR;
 global['vue'] = Vue;
 global['vue-runtime-helpers'] = vueRuntimeHelpers;
 
-module.exports = async (cms) => {
+module.exports = async function (cms) {
   cms.socket.on('connect', socket => {
-    socket.on('printReport', handler)
+    socket.on('printReport', reportHandler)
   })
 
-  async function handler(orderId, callback) {
+  async function reportHandler(reportType, args, callback) {
+    if (reportType === 'OrderReport') {
+      await orderReportHandler(args, callback)
+    } else if (reportType === 'ZReport') {
+      await zReportHandler(args, callback)
+    }
+  }
+
+  async function orderReportHandler({orderId}, callback) {
     const posSetting = await cms.getModel('PosSetting').findOne({})
     const order = await cms.getModel('Order').findById(orderId)
+    const renderer = require('vue-server-renderer').createRenderer({
+      template: fs.readFileSync(`${__dirname}/order-report-template.html`, 'utf-8')
+    });
 
-    if (!order) return
+    if (!order) {
+      callback('Order ID not found')
+      return
+    }
 
-    const timeLocale = 'de-DE'
-
-    const companyName = posSetting.companyInfo.name
-    const companyAddress = posSetting.companyInfo.address
-    const companyTel = posSetting.companyInfo.telephone
-    const companyVatNumber = posSetting.companyInfo.taxNumber
-
-    const orderDate = order.date.toLocaleDateString(timeLocale)
-    const orderTime = order.date.toLocaleTimeString(timeLocale)
+    const {name: companyName, address: companyAddress, telephone: companyTel, taxNumber: companyVatNumber} = posSetting.companyInfo
+    const orderDate = dayjs(order.date).format('DD.MM.YYYY')
+    const orderTime = dayjs(order.date).format('HH:mm:ss')
     const orderNumber = order.id
     const orderProductList = order.items
+    const {
+      vSum: orderSum,
+      vTax: orderTax,
+      vTaxGroups: orderTaxGroups,
+      receive: orderCashReceived,
+      cashback: orderCashback,
+      bookingNumber: orderBookingNumber,
+      payment
+    } = order
+    const orderPaymentType = payment[0].type
     // TODO: discount
-    const orderSum = order.vSum
-    const orderTax = order.vTax
-    const orderTaxGroups = order.vTaxGroups
-    const orderCashReceived = order.receive
-    const orderCashback = order.cashback
-    const orderPaymentType = order.payment[0].type
-    const orderBookingNumber = order.bookingNumber
 
     const props = {
       companyName, companyAddress, companyTel, companyVatNumber, orderDate, orderTime, orderNumber, orderProductList,
       orderSum, orderTax, orderTaxGroups, orderCashReceived, orderCashback, orderPaymentType, orderBookingNumber
     }
 
-    const ReportTest = require('../../dist/OrderReport.vue')
-
+    const OrderReport = require('../../dist/OrderReport.vue')
     const component = new Vue({
-      components: {ReportTest},
+      components: {OrderReport},
       render(h) {
-        return h('ReportTest', {props})
+        return h('OrderReport', {props})
       }
     })
 
     renderer.renderToString(component, {}, async (err, html) => {
-      if (err) callback(err)
-
-      fs.writeFile(`${__dirname}/test.html`, html, 'utf-8', console.log);
-      const png = await phantomUtil.render(html); //TODO: remove fs.writeFile in render when testing is done
-
-      const printer = new EscPrinter({
-        printerType: 'ip',
-        ip: '192.168.10.60', //TODO: extract ip as constant
-      });
-      printer.printPng(png);
-      await printer.print();
+      if (err) {
+        callback(err)
+        return
+      }
+      await print(html)
     })
+  }
+
+  async function zReportHandler({z}, callback) {
+    const posSetting = await cms.getModel('PosSetting').findOne({})
+    const {begin} = await cms.getModel('EndOfDay').findOne({z})
+    const renderer = require('vue-server-renderer').createRenderer({
+      template: fs.readFileSync(`${__dirname}/z-report-template.html`, 'utf-8')
+    });
+
+    let reportData
+    try {
+      reportData = await new Promise((resolve, reject) => {
+        cms.api.processData('OrderEOD', {z}, result => {
+          if (result === 'string') reject(result)
+          else resolve(result)
+        })
+      })
+    } catch (e) {
+      callback(e)
+      return
+    }
+
+    const sortedOrders = _.sortBy(reportData.paidOrders, 'date')
+    const firstOrderDate = _.first(sortedOrders).date
+    const lastOrderDate = _.last(sortedOrders).date
+
+    const {name: companyName, address: companyAddress, telephone: companyTel, taxNumber: companyVatNumber} = posSetting.companyInfo
+    const reportDate = dayjs(begin).format('DD.MM.YYYY')
+    const firstOrderDateString = dayjs(firstOrderDate).format('DD.MM.YYYY HH:mm')
+    const lastOrderDateString = dayjs(lastOrderDate).format('DD.MM.YYYY HH:mm')
+    const {net: subTotal, tax: taxTotal, sum: sumTotal, discount} = reportData.report
+    const {reportByPayment} = reportData
+
+    const reportGroups = _.groupBy(Object.keys(reportData.report), key => {
+      const taxGroup2Chars = key.slice(key.length - 2, key.length) // 2 characters tax - for example 23%
+      const taxGroup1Char = key.slice(key.length - 1, key.length) // 1 character tax - for example 5%
+
+      if (!isNaN(Number.parseInt(taxGroup2Chars))) return taxGroup2Chars
+      if (!isNaN(Number.parseInt(taxGroup1Char))) return taxGroup1Char
+      else return 'other'
+    })
+
+    delete reportGroups.other
+
+    // put sum, net, total in groups (for example: 0%, 7%, 19%)
+    Object.keys(reportGroups).forEach(percentage => {
+      if (_.isNil(percentage)) return
+
+      const obj = {}
+      reportGroups[percentage].forEach(data => {
+        // data is sum, net, total, ...
+        obj[data] = _.get(reportData.report, data)
+      })
+
+      reportGroups[percentage] = obj
+    })
+
+    const props = {
+      companyName, companyAddress, companyTel, companyVatNumber, reportDate, firstOrderDateString, lastOrderDateString,
+      subTotal, taxTotal, sumTotal, discount: discount || 0, reportByPayment, reportGroups, z
+    }
+
+    const ZReport = require('../../dist/ZReport.vue')
+    const component = new Vue({
+      components: {ZReport},
+      render(h) {
+        return h('ZReport', {props})
+      }
+    })
+
+    renderer.renderToString(component, {}, async (err, html) => {
+      if (err) {
+        callback(err)
+        return
+      }
+      await print(html)
+    })
+  }
+
+  async function print(html) {
+    const png = await phantomUtil.render(html); //TODO: remove fs.writeFile in render when testing is done
+    const terminalSettings = await cms.getModel('Terminal').findOne({})
+    const printerIp = terminalSettings.thermalPrinters[0].ip
+
+    const printer = new EscPrinter({
+      printerType: 'ip',
+      ip: printerIp,
+    });
+    printer.printPng(png);
+    await printer.print();
   }
 }
