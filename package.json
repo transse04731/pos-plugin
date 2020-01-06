@@ -17,6 +17,13 @@
   },
   "homepage": "https://github.com/gigasource/pos-plugin#readme",
   "dependencies": {
-    "dayjs": "^1.8.17"
+    "clone-buffer": "^1.0.0",
+    "dayjs": "^1.8.17",
+    "node-thermal-printer": "^1.0.3",
+    "phantom": "^6.3.0",
+    "pngjs": "^3.4.0",
+    "q": "^1.5.1",
+    "queue": "^6.0.1",
+    "uuid": "^3.3.3"
   }
 }
