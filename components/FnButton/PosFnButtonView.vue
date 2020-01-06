@@ -172,7 +172,7 @@
     <div area="main">
       <g-scroll-window :show-arrows="false" area="window">
         <g-scroll-window-item>
-          <g-btn :uppercase="false" background-color="#9F9F9F " flat height="100%" v-for="item in 28"></g-btn>
+          <g-btn :uppercase="false" background-color="#9F9F9F " flat height="100%" v-for="(item, index) in 28" :key="index"></g-btn>
         </g-scroll-window-item>
       </g-scroll-window>
 
@@ -265,42 +265,34 @@
       ],
       buttonColors: [
         {
-          id: 1,
           text: '#FFFFFF',
           value: '#FFFFFF'
         },
         {
-          id: 2,
           text: '#FFA726',
           value: '#FFA726'
         },
         {
-          id: 3,
           text: '#FF87E9',
           value: '#FF87E9'
         },
         {
-          id: 4,
           text: '#73F8F8',
           value: '#73F8F8'
         },
         {
-          id: 5,
           text: '#66BB6A',
           value: '#66BB6A'
         },
         {
-          id: 6,
           text: '#1976D2',
           value: '#1976D2'
         },
         {
-          id: 7,
           text: '#7575FF',
           value: '#7575FF'
         },
         {
-          id: 8,
           text: '#F6787C',
           value: '#F6787C'
         },
@@ -348,13 +340,7 @@
           }
         }
         if (newVal.length > 0 && selectedBtn.style && selectedBtn.style.backgroundColor) {
-
-          const selectedColorIndex = this.buttonColors.findIndex((x) => x.value === selectedBtn.style.backgroundColor);
-          if (selectedColorIndex >= 0) {
-            this.selectedColor = this.buttonColors[selectedColorIndex];
-          } else {
-            this.selectedColor = null;
-          }
+          this.selectedColor = this.buttonColors.find((x) => x.value === selectedBtn.style.backgroundColor);
         }
 
         if (newVal.length === 0 || (selectedBtn && !selectedBtn.style.backgroundColor)) {
@@ -458,8 +444,6 @@
           buyback: null,
           buttonFunction: null,
           buttonFunctionValue: null,
-          rows: this.selectedButtons[0].originalRow,
-          cols: this.selectedButtons[0].originalCol,
           text: ''
         })
 
@@ -470,21 +454,21 @@
         this.selectedFunction = null;
         this.textFieldValue = null;
 
-        let resetButton = this.buttonGroupItems.find((btn) => btn.buttonId === this.selectedButtons[0].buttonId);
+        let resetButton = this.buttonGroupItems.find((item) => item.buttonId === this.selectedButtons[0].buttonId);
         if (resetButton) {
           try {
-            resetButton = this.selectedButtons[0];
-            this.updatePosSettings(this.buttonGroupItems, 'leftFunctionButtons')
+            resetButton = Object.assign(resetButton, this.selectedButtons[0]);
+            this.updatePosSettings(resetButton, 'leftFunctionButtons')
           } catch (e) {
             console.log('Error updating: ', e);
           }
         }
 
-        let resetSideButton = this.sideButtonItems.find((btn) => btn.buttonId === this.selectedButtons[0].buttonId);
+        let resetSideButton = this.sideButtonItems.find((item) => item.buttonId === this.selectedButtons[0].buttonId);
         if (resetSideButton) {
           try {
-            resetSideButton = this.selectedButtons[0];
-            this.updatePosSettings(this.sideButtonItems, 'rightFunctionButtons')
+            resetButton = Object.assign(resetSideButton, this.selectedButtons[0]);
+            this.updatePosSettings(resetSideButton, 'rightFunctionButtons')
           } catch (e) {
             console.log('Error updating: ', e);
           }
@@ -552,29 +536,27 @@
         this.splitMode = false;
         this.selectedButtons = []
       },
-      async updatePosSettings(buttonList, dbButtonList) {
+      async updatePosSettings(item, dbButtonList) {
         try {
-          for (let item of buttonList) {
             await cms.getModel('PosSetting').findOneAndUpdate({ [`${dbButtonList}._id`]: item.buttonId }, {
               '$set': {
                 [`${dbButtonList}.$.backgroundColor`]: item.style.backgroundColor,
                 [`${dbButtonList}.$.text`]: item.text,
                 [`${dbButtonList}.$.rows`]: item.row,
                 [`${dbButtonList}.$.cols`]: item.col,
-                [`${dbButtonList}.$.textColor`]: item.style.backgroundColor !== '#FFFFFF' ? 'white' : 'black',
+                [`${dbButtonList}.$.textColor`]: item.style.backgroundColor !== '#FFFFFF' ? '#FFFFFF' : '#000000',
                 [`${dbButtonList}.$.buttonFunction`]: item.buttonFunction,
                 [`${dbButtonList}.$.buttonFunctionValue`]: item.buttonFunctionValue,
                 [`${dbButtonList}.$.buyback`]: item.buyback,
                 [`${dbButtonList}.$.containedButtons`]: this.mergeMap && this.mergeMap[item.buttonId] ? this.mergeMap[item.buttonId] : []
               }
             });
-          }
         } catch (e) {
           console.log('Error updating updatePosSettings', e);
         }
       },
       updateSelectedBtnStyle() {
-        this.selectedButtons[0].style.textColor = this.selectedColor.value !== '#FFFFFF' ? 'white' : 'black';
+        this.selectedButtons[0].style.textColor = this.selectedColor.value !== '#FFFFFF' ? '#FFFFFF' : '#000000';
         this.selectedButtons[0].style.backgroundColor = this.selectedColor.value;
         if (this.selectedButtons[0].buyback) {
           this.selectedButtons[0].buyback.price = this.buybackProductPrice;
@@ -584,24 +566,21 @@
         const selectedBtnId = this.selectedButtons[0].buttonId;
         let foundItem = this.buttonGroupItems.find((item) => item.buttonId === selectedBtnId);
         if (foundItem) {
-          foundItem.style.backgroundColor = this.selectedColor.value;
           this.updateSelectedBtnStyle();
           try {
-            foundItem = this.selectedButtons[0];
-            this.updatePosSettings(this.buttonGroupItems, 'leftFunctionButtons')
+            foundItem = Object.assign(foundItem, this.selectedButtons[0]);
+            this.updatePosSettings(foundItem, 'leftFunctionButtons')
           } catch (e) {
             console.log('Error updating: ', e);
           }
         }
 
-        const foundSideItem = this.sideButtonItems.find((item) => item.buttonId === selectedBtnId);
+        let foundSideItem = this.sideButtonItems.find((item) => item.buttonId === selectedBtnId);
         if (foundSideItem) {
-          foundSideItem.style.backgroundColor = this.selectedColor.value;
           this.updateSelectedBtnStyle();
-
           try {
-            foundItem = this.selectedButtons[0];
-            this.updatePosSettings(this.sideButtonItems, 'rightFunctionButtons')
+            foundSideItem = Object.assign(foundSideItem, this.selectedButtons[0]);
+            this.updatePosSettings(foundSideItem, 'rightFunctionButtons')
           } catch (e) {
             console.log('Error updating: ', e);
           }
@@ -667,7 +646,6 @@
       },
       refreshData() {
         this.posSettings = cms.getList('PosSetting')[0];
-
         if (this.posSettings) {
           this.quickFnRows = this.posSettings['generalSetting']['quickFnRows'] || 0;
           this.numberOfConfigBtn = 4 * this.quickFnRows;
