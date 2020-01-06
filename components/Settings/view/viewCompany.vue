@@ -137,8 +137,8 @@
 				}
 			}
 		},
-		created() {
-			this.getCompanyInfo();
+		async created() {
+			await this.getCompanyInfo();
 		},
 		methods: {
 			convertImg() {

@@ -13,12 +13,12 @@
         <span class="w-10 pa-2 ta-right">{{quantity}}</span>
         <div :class="{'w-12 pa-2 ta-right': true, ...price !== originalPrice && {'text__editted': true}}">
           <p>{{price}}</p>
-          <p class="promotion-price" v-if="discount > 0">{{originalPrice}}</p>
+          <p class="promotion-price" v-if="vDiscount > 0">{{originalPrice}}</p>
         </div>
         <div :class="{'w-12 pa-2 ta-right': true,
           ...price !== originalPrice && {'text-light-green': true}}">
           <p class="fw-700">{{total}}</p>
-          <p class="promotion-price" v-if="discount > 0">{{originalTotal}}</p>
+          <p class="promotion-price" v-if="vDiscount > 0">{{originalTotal}}</p>
         </div>
       </div>
 
@@ -63,7 +63,7 @@
       originalPrice: [Number, String],
       total: [Number, String],
       originalTotal: [Number, String],
-      discount: [Number, String],
+      vDiscount: [Number, String],
     },
     setup(props, context) {
       const onDecreaseQuantityClick = (remove = false) => context.emit(`click:remove`, remove)

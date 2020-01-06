@@ -56,11 +56,8 @@
   </div>
 </template>
 <script>
-
-  //import PosTablePagination from '../pos-shared-components/PosTablePagination';
   export default {
     name: 'OrderHistoryTable',
-    //components: { PosTablePagination },
     props: {
       value: null,
     },
@@ -134,6 +131,10 @@
       }
     },
     async created() {
+      await this.getOrderHistory();
+      await this.getTotalOrders();
+    },
+    async activated() {
       await this.getOrderHistory();
       await this.getTotalOrders();
     }

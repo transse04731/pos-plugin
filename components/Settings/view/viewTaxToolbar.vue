@@ -18,7 +18,7 @@
       </g-icon>
       Delete
     </g-btn>
-    <dialog-confirm-delete type="tax category" :label="selectedTaxCategory ? selectedTaxCategory.name : ''" v-model="dialogConfirmDelete" @submit="deleteTaxCategory"/>
+    <dialog-confirm-delete type="tax category" :label="selectedTaxCategory ? selectedTaxCategory.value + '%' : ''" v-model="dialogConfirmDelete" @submit="deleteTaxCategory"/>
   </fragment>
 </template>
 

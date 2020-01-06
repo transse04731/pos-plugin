@@ -4,17 +4,15 @@
       <template #default="{toggleSelect, item, index}">
         <g-btn :uppercase="false" x-large outlined text-color="#1271ff"
                @click.stop="toggleSelect(item)"
-               :class="[index > 0 ? 'ml-3' : null]"
-        >
+               style="flex-basis: 30%; margin: 0 0 12px 12px">
           <img :src="item.icon" style="width: 20px; height: 20px"/>
-          <span class="ml-2 text-black">{{item.name}}</span>
+          <span class="ml-2 text-black">{{item.name | capitalize}}</span>
         </g-btn>
       </template>
       <template #selected="{toggleSelect, item, index}">
         <g-btn :uppercase="false" x-large flat background-color="blue accent 3" text-color="white"
                @click.stop="toggleSelect(item)"
-               :class="[index > 0 ? 'ml-3' : null]"
-        >
+               style="flex-basis: 30%; margin: 0 0 12px 12px">
           <img :src="item.icon" style="width: 20px; height: 20px"/>
           <span class="ml-2">{{item.name | capitalize}}</span>
         </g-btn>
@@ -47,6 +45,9 @@
       await this.getListPayments();
       this.activePaymentMethod = this.listPayments[0]
     },
+    async activated(){
+      this.activePaymentMethod = this.listPayments[0]
+    },
     computed: {
       activePaymentMethod: {
         get() {
@@ -54,19 +55,24 @@
         },
         set(val) {
           this.selectedPayment = val
-          this.currentOrder.payment = { type: this.selectedPayment.name }
+          if(this.selectedPayment)
+            this.currentOrder.payment = { type: this.selectedPayment.name }
         }
       }
     }
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .main {
+    display: flex;
     flex-grow: 1;
     flex-basis: 0;
-    padding: 12px;
-    display: flex;
+    padding: 12px 0;
+
+    .g-row {
+      align-content: flex-start;
+    }
   }
 </style>
 

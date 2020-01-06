@@ -44,11 +44,11 @@
       }
     },
     methods: {
-      openDialogEditProduct() {
-        this.$getService('dialogNewProduct:open')(true);
+      async openDialogEditProduct() {
+        await this.$getService('dialogNewProduct:open')(true);
       },
-      openDialogNewProduct() {
-        this.$getService('dialogNewProduct:open')(false);
+      async openDialogNewProduct() {
+        await this.$getService('dialogNewProduct:open')(false);
       },
       openDialogDelete() {
         this.dialogConfirmDelete = true;

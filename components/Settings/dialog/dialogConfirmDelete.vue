@@ -5,7 +5,7 @@
         Confirmation
       </g-card-title>
       <g-card-text>
-        Are you sure you want to delete <span v-if="type">{{type}}</span> <b v-if="label">"{{label}}"</b>?
+        Are you sure you want to delete <span v-if="computedType">{{computedType}}</span> <b v-if="computedLabel">"{{computedLabel}}"</b>?
       </g-card-text>
       <g-card-actions>
         <g-btn :uppercase="false" outlined @click="dialog = false">Cancel</g-btn>
@@ -23,20 +23,59 @@
       type: String,
       label: String,
     },
+    data() {
+      return {
+        //for open method
+        internalType: null,
+        internalLabel: null,
+        internalValue: null,
+      }
+    },
     computed: {
       dialog: {
         get() {
-          return this.value;
+          if(this.value)
+            return this.value;
+          else
+            return this.internalValue
         },
         set(val) {
+          if(!val) {
+            this.internalType = null;
+            this.internalLabel = null;
+          }
           this.$emit('input', val);
+          this.internalValue = val;
         }
+      },
+      computedType() {
+        if (this.type) {
+          return this.type
+        }
+        if (this.internalType) {
+          return this.internalType
+        }
+        return null
+      },
+      computedLabel() {
+        if (this.label) {
+          return this.label
+        }
+        if (this.internalLabel) {
+          return this.internalLabel
+        }
+        return null
       }
     },
     methods: {
       submit() {
         this.$emit('submit');
         this.dialog = false;
+      },
+      open(type, label) {
+        this.internalType = type;
+        this.internalLabel = label;
+        this.dialog = true;
       }
     }
   }

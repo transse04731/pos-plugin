@@ -27,12 +27,12 @@
             <div class="w-10 pa-2 ta-center">{{product.unit}}</div>
             <div class="w-10 pa-2 ta-right">{{product.quantity}}</div>
             <div class="w-12 pa-2 ta-right">
-              <p>{{product.price}}</p>
-              <p v-if="product.promotion && product.originalPrice" class="promotion-price">{{product.originalPrice}}</p>
+              <p>{{product.price | formatNumber}}</p>
+              <p v-if="product.vDiscount > 0" class="promotion-price">{{product.originalPrice}}</p>
             </div>
             <div class="w-12 pa-2 ta-right">
-              <p :class="[product.edited && 'text__edited']">{{product.price * product.quantity}}</p>
-              <p v-if="product.promotion && product.originalPrice" class="promotion-price">{{product.originalPrice * product.quantity}}</p>
+              <p :class="[product.edited && 'text__edited']">{{(product.price * product.quantity) | formatNumber}}</p>
+              <p v-if="product.vDiscount > 0" class="promotion-price">{{product.originalPrice * product.quantity}}</p>
             </div>
           </div>
         </td>
@@ -46,11 +46,13 @@
   export default {
     name: 'PosPaymentScreenTable',
     injectService: [
-      'PosStore:currentOrder'
+      'PosStore:currentOrder',
+      'PosStore:compactOrder',
     ],
     computed: {
       productList() {
-        return this.currentOrder.items.map(product => ({
+        const items = this.compactOrder(this.currentOrder.items);
+        return items.map(product => ({
           ..._.omit(product, 'attributes'),
           attributes: this.getAttributes(product),
           edited: product.price !== product.originalPrice

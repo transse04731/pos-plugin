@@ -9,6 +9,53 @@
 
   dayjs.extend(isBetween)
 
+  const orderUtil = {
+    calItemTotal(item) {
+      return +(item.quantity * item.price).toFixed(2);
+    },
+    calTax(price, tax) {
+      return price * (1 - 1 / (1 + tax / 100))
+    },
+    calItemTax(item) {
+      return +(orderUtil.calTax(item.price, item.tax) * item.quantity).toFixed(2);
+    },
+    calOrderTax(items) {
+      return _.sumBy(items, orderUtil.calItemTax);
+    },
+    calOrderTotal(items) {
+      return _.sumBy(items, orderUtil.calItemTotal);
+    },
+    calItemDiscount(item) {
+      return item.vDiscount ? (item.vDiscount * item.quantity) : 0
+    },
+    calOrderDiscount(items) {
+      return _.sumBy(items, orderUtil.calItemDiscount)
+    },
+    applyDiscountForOrder(items, { difference, value }) {
+      const resistanceValue = items.filter(i => i.discountResistance).reduce((acc, item) => (acc + this.calItemTotal(item)), 0);
+      const totalWithoutDiscountResist = difference + value - resistanceValue;
+      const percent =  difference / totalWithoutDiscountResist * 100;
+      let sumDiscount = 0;
+      const lastDiscountableItemIndex = _.findLastIndex(items, item => !item.discountResistance);
+      for(let i = 0; i < items.length; i++) {
+        let item = items[i];
+        if(!item.discountResistance) {
+          if(i < lastDiscountableItemIndex) {
+            item.price = +(item.originalPrice * (100 - percent) / 100).toFixed(2);
+            item.discountUnit = 'percent';
+            item.vDiscount = +(item.originalPrice - item.price).toFixed(2);
+            sumDiscount += this.calItemDiscount(item);
+          } else {
+            item.discountUnit = 'amount';
+            item.vDiscount = (difference - sumDiscount)/item.quantity;
+            item.price = item.originalPrice - item.vDiscount;
+          }
+        }
+      }
+      return items;
+    }
+  }
+
   export default {
     name: 'PosStore',
     props: {},
@@ -79,7 +126,7 @@
         listProducts: [],
         selectedProductIDs: [],
         totalProducts: null,
-        productPagination: { limit: 10, currentPage: 1 },
+        productPagination: { limit: 15, currentPage: 1 },
         selectedProduct: null,
         //payment view
         listPayments: [],
@@ -101,7 +148,7 @@
         orderHistoryFilters: [],
         orderHistoryCurrentOrder: null,
         totalOrders: null,
-        orderHistoryPagination: { limit: 10, currentPage: 1 },
+        orderHistoryPagination: { limit: 15, currentPage: 1 },
         //article screen
         articleSelectedColor: null,
         articleSelectedProductButton: null,
@@ -115,9 +162,7 @@
       // order screen
       paymentDiscount() {
         if (this.currentOrder.items) {
-          return this.currentOrder.items.reduce((acc, cur) => {
-            return cur.discount ? acc + (cur.discount * cur.quantity) : acc;
-          }, 0)
+          return orderUtil.calOrderDiscount(this.currentOrder.items);
         }
       },
       paymentChange() {
@@ -128,17 +173,13 @@
       },
       paymentTotal() {
         if (this.currentOrder) {
-          return this.currentOrder.items.reduce((acc, cur) => {
-            return acc + cur.price * cur.quantity
-          }, 0)
+          return orderUtil.calOrderTotal(this.currentOrder.items);
         }
         return 0
       },
       paymentTax() {
         if (this.currentOrder) {
-          return this.currentOrder.items.reduce((acc, cur) => {
-            return acc + this.getComputedTax(cur) * cur.quantity
-          }, 0)
+          return orderUtil.calOrderTax(this.currentOrder.items);
         }
         return 0
       },
@@ -156,13 +197,12 @@
             if (groupedProducts.hasOwnProperty(key)) {
               const isFavourite = key === 'Favourite'
               Object.assign(products, {
-                [key]: _.chunk(groupedProducts[key], 28).map(list =>
-                    list.sort((current, next) => {
-                      return this.getProductGridOrder(current, isFavourite) - this.getProductGridOrder(next, isFavourite)
-                    }).map(product => ({
-                      ..._.omit(product, 'attributes'),
-                      originalPrice: product.price
-                    })))
+                [key]: _.chunk(groupedProducts[key].sort((current, next) => {
+                  return this.getProductGridOrder(current, isFavourite) - this.getProductGridOrder(next, isFavourite)
+                }).map(product => ({
+                  ..._.omit(product, 'attributes'),
+                  originalPrice: product.price
+                })), 28)
               })
             }
           }
@@ -221,7 +261,9 @@
           if (_.isEqual(_.omit(latestProduct, 'quantity'), _.omit(product, 'quantity'))) {
             latestProduct.quantity = latestProduct.quantity + (product.quantity || 1);
           } else {
-            this.currentOrder.items.push(Object.assign({}, { quantity: 1 }, product))
+            // this.currentOrder.items.push(Object.assign({}, { quantity: 1 }, product))
+            // replace (instead of mutate) to get old value in watcher for scrolling in order table
+            this.currentOrder.items = [...this.currentOrder.items, Object.assign({}, { quantity: 1 }, product)]
           }
         } else {
           this.currentOrder = { items: [Object.assign({}, { quantity: 1 }, product)] }
@@ -250,13 +292,21 @@
           if (changeType === 'amount') newPrice = originalPrice - amount
           if (changeType === 'new') newPrice = amount
 
+          newPrice = +newPrice.toFixed(2)
+
           if (update) {
             this.$set(this.activeProduct, 'price', newPrice)
-            this.$set(this.activeProduct, 'discount', changeType === 'new' ? originalPrice - newPrice : amount)
             this.$set(this.activeProduct, 'discountUnit', changeType === 'percentage' ? 'percent' : 'amount')
             this.$set(this.activeProduct, 'vDiscount', originalPrice - newPrice)
           }
           return newPrice
+        }
+      },
+      updateNewPrice({ difference, type, value }) {
+        if (this.activeProduct) {
+          this.$set(this.activeProduct, 'price', value)
+          this.$set(this.activeProduct, 'discountUnit', type === 'percentage' ? 'percent' : 'amount')
+          this.$set(this.activeProduct, 'vDiscount', difference)
         }
       },
       queryProductsById() {
@@ -309,6 +359,7 @@
         this.activeTableProduct = null
         this.currentOrder = { items: [] }
         this.paymentAmountTendered = 0
+        this.productIdQuery = ''
         await this.getSavedOrders()
       },
       async savePaidOrder(paymentMethod) {
@@ -320,17 +371,17 @@
           const taxGroups = _.groupBy(this.currentOrder.items, 'tax')
           const vTaxGroups = _.map(taxGroups, (val, key) => ({
             taxType: key,
-            tax: val.reduce((acc, cur) => acc + this.getComputedTax(cur) * cur.quantity, 0),
-            sum: val.reduce((acc,cur) => acc + cur.price * cur.quantity, 0)
+            tax: orderUtil.calOrderTax(val),
+            sum: orderUtil.calOrderTotal(val)
           }))
 
           const order = {
             id,
             status: 'paid',
-            items: this.getComputedOrderItems(this.currentOrder.items ,orderDateTime),
+            items: this.getComputedOrderItems(this.currentOrder.items, orderDateTime),
             user: this.currentOrder.user
-              ? [...this.currentOrder.user, {name: this.user.name, date: orderDateTime}]
-              : [{name: this.user.name, date: orderDateTime}],
+                ? [...this.currentOrder.user, { name: this.user.name, date: orderDateTime }]
+                : [{ name: this.user.name, date: orderDateTime }],
             date: orderDateTime,
             vDate: this.getVDate(orderDateTime),
             bookingNumber: this.getBookingNumber(orderDateTime),
@@ -355,13 +406,6 @@
         await this.resetOrderData();
       },
       // order/payment
-      convertMoney(val) {
-        if (val && typeof (val) === 'number') {
-          return val.toFixed(2)
-        } else {
-          return 0
-        }
-      },
       compactOrder(products) {
         let resultArr = [];
         products.forEach(product => {
@@ -375,6 +419,10 @@
           }
         })
         return resultArr
+      },
+      discountCurrentOrder(change) {
+        this.$set(this.currentOrder, 'items', orderUtil.applyDiscountForOrder(this.compactOrder(this.currentOrder.items), change));
+        this.$set(this.currentOrder, 'isDiscountInTotal', true);
       },
       //<!--</editor-fold>-->
 
@@ -396,9 +444,9 @@
         this.orderHistoryOrders = orders.map(order => ({
           ...order,
           info: order.note,
-          tax: order.items.reduce((acc, item) => (acc + this.getComputedTax(item) * item.quantity), 0),
+          tax: order.vTax ? order.vTax : orderUtil.calOrderTax(order.items),
           dateTime: dayjs(order.date).format('DD.MM HH:mm'),
-          amount: order.vSum ? order.vSum : order.items.reduce((acc, item) => (acc + item.price * item.quantity), 0),
+          amount: order.vSum ? order.vSum : orderUtil.calOrderTotal(order.items),
           staff: order.user,
           barcode: '',
           promotions: [],
@@ -408,7 +456,7 @@
       async getTotalOrders() {
         const orderModel = cms.getModel('Order');
         const condition = this.orderHistoryFilters.reduce((acc, filter) => ({ ...acc, ...filter['condition'] }), { status: 'paid' });
-        this.totalOrders = await orderModel.countDocuments(condition);
+        this.totalOrders = await orderModel.count(condition);
       },
       async deleteOrder() {
         try {
@@ -416,7 +464,7 @@
           await orderModel.findOneAndUpdate({ '_id': this.orderHistoryCurrentOrder._id }, { status: 'cancelled' });
           const index = this.orderHistoryOrders.findIndex(o => o._id === this.orderHistoryCurrentOrder._id);
           this.orderHistoryOrders.splice(index, 1);
-          this.orderHistoryCurrentOrder = null;
+          this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
         } catch (e) {
           console.error(e)
         }
@@ -466,7 +514,7 @@
       async getTotalProducts() {
         const productModel = cms.getModel('Product');
         const condition = this.productFilters.reduce((acc, filter) => ({ ...acc, ...filter['condition'] }), {});
-        this.totalProducts = await productModel.countDocuments(condition);
+        this.totalProducts = await productModel.count(condition);
       },
       async deleteSelectedProducts() {
         const productModel = cms.getModel('Product');
@@ -526,9 +574,11 @@
         )
         await this.getListProducts();
         await this.getTotalProducts();
+        this.selectedProduct = null;
+        this.selectedProductIDs = [];
       },
-      getAllTaxCategory() {
-        const setting = cms.getList('PosSetting')[0];
+      async getAllTaxCategory() {
+        const setting = await cms.getModel('PosSetting').findOne();
         return setting.taxCategory;
       },
       async getHighestProductOrder(categoryId) {
@@ -545,16 +595,16 @@
       //tax category view
       async updateTaxCategory(oldTaxId, newTaxCategory) {
         const settingModel = cms.getModel('PosSetting');
-        if(oldTaxId && !newTaxCategory) {
+        if (oldTaxId && !newTaxCategory) {
           await settingModel.findOneAndUpdate(
               {},
               {
                 $pull: {
-                  taxCategory: { _id: oldTaxId}
+                  taxCategory: { _id: oldTaxId }
                 }
               }
           )
-        } else if (newTaxCategory && !oldTaxId){
+        } else if (newTaxCategory && !oldTaxId) {
           await settingModel.findOneAndUpdate(
               {},
               {
@@ -632,8 +682,8 @@
         )
       },
       //company info view
-      getCompanyInfo() {
-        const setting = cms.getList('PosSetting')[0];
+      async getCompanyInfo() {
+        const setting = await cms.getModel('PosSetting').findOne();
         this.companyInfo = setting.companyInfo;
       },
       async updateCompanyInfo() {
@@ -687,14 +737,14 @@
       //printer view
       async getThermalPrinter() {
         const terminalModel = cms.getModel('Terminal');
-        const terminal = await terminalModel.findOne({name: 'Terminal 1'})
+        const terminal = await terminalModel.findOne({ name: 'Terminal 1' })
         this.thermalPrinter = terminal.thermalPrinters[0];
       },
       async updateThermalPrinter(oldPrinterId, newPrinter) {
         const terminalModel = cms.getModel('Terminal');
-        if(!oldPrinterId) {
+        if (!oldPrinterId) {
           await terminalModel.findOneAndUpdate(
-              {name: 'Terminal 1'},
+              { name: 'Terminal 1' },
               {
                 $push: {
                   thermalPrinters: newPrinter
@@ -950,7 +1000,7 @@
       isActiveFnBtn(btn) {
         if (!btn || !btn.buttonFunction) return
         if (btn.buttonFunction === 'changePrice' || btn.buttonFunction.includes('discount')) {
-          return !_.isNil(this.activeTableProduct)
+          return !_.isNil(this.activeTableProduct) && !this.activeTableProduct.discountResistance
         }
         if (['pay', 'quickCash', 'saveOrder'].includes(btn.buttonFunction)) {
           return this.currentOrder.items.length > 0
@@ -961,18 +1011,19 @@
         if (!functionName) return () => null
         return this[functionName]
       },
-      buybackProduct({price, product, unit}) {
+      buybackProduct({ price, product, unit }) {
         this.addProductToOrder(Object.assign(_.omit(product, 'attributes'), {
           price: -price,
           originalPrice: -price,
-          tax: 0
+          tax: 0,
+          discountResistance: true
         }))
       },
       changePrice() {
-        this.$getService('dialogChangePrice:open')('new')
+        this.$getService('dialogChangePrice:open')('new', this.activeProduct ? this.activeProduct.originalPrice : 0)
       },
       discountSingleItemDialog() {
-        this.$getService('dialogChangePrice:open')('percentage')
+        this.$getService('dialogChangePrice:open')('percentage', this.activeProduct ? this.activeProduct.originalPrice : 0)
       },
       discountSingleItemByAmount(value) {
         this.calculateNewPrice('amount', value, true)
@@ -1027,12 +1078,9 @@
         return compactItems.map(item => ({
           ..._.omit(item, 'category'),
           product: item._id,
-          category: item.category.name,
+          category: item.category.name ? item.category.name : item.category, // saved order then pay have a string category
           date
         }))
-      },
-      getComputedTax(product) {
-        return product.price * (1 - 1 / (1 + product.tax / 100))
       },
       async getLatestOrderId() {
         try {
@@ -1065,13 +1113,18 @@
     created() {
       const cachedPageSize = localStorage.getItem('orderHistoryPageSize')
       if (cachedPageSize) this.orderHistoryPagination.limit = parseInt(cachedPageSize)
+      const cachedArticlePageSize = localStorage.getItem('viewArticlePageSize');
+      if (cachedArticlePageSize) this.productPagination.limite = parseInt(cachedArticlePageSize);
       this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
       this.user = cms.getList('PosSetting')[0].user[0]
     },
     watch: {
       'orderHistoryPagination.limit'(newVal) {
         localStorage.setItem('orderHistoryPageSize', newVal)
-      }
+      },
+      'productPagination.limit'(newVal) {
+        localStorage.setItem('viewArticlePageSize', newVal)
+      },
     },
     provide() {
       return {
@@ -1087,7 +1140,6 @@
         activeProducts: this.activeProducts,
         scrollWindowProducts: this.scrollWindowProducts,
         activeProduct: this.activeProduct,
-        convertMoney: this.convertMoney,
         getProductGridOrder: this.getProductGridOrder,
         getAllCategories: this.getAllCategories,
         getActiveProducts: this.getActiveProducts,
@@ -1110,6 +1162,9 @@
         queryProductsByName: this.queryProductsByName,
         chooseFunction: this.chooseFunction,
         isActiveFnBtn: this.isActiveFnBtn,
+        compactOrder: this.compactOrder,
+        updateNewPrice: this.updateNewPrice,
+        discountCurrentOrder: this.discountCurrentOrder,
         //payment screen
         paymentTotal: this.paymentTotal,
         paymentAmountTendered: this.paymentAmountTendered,

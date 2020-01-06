@@ -5,7 +5,7 @@
         <g-avatar :size="40">
             <g-img :src="user ? user.avatar: ''"/>
         </g-avatar>
-        <p class="pa-2 fs-small fw-600">{{userName}}</p>
+        <p class="pa-2 fs-small fw-600" style="word-break: break-all">{{userName}}</p>
       </div>
     </template>
     <g-side-bar-tree-view :data="sidebarData" :auto-collapse="false" v-model="internalValue"/>

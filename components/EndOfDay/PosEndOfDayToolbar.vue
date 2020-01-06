@@ -55,7 +55,7 @@
     },
     computed: {
       hasDateReports() {
-        return this.selectedReportDate && this.selectedReportDate.reports
+        return this.selectedReportDate && this.selectedReportDate.reports && this.selectedReportDate.reports.length > 0
       },
       showRunEndOfDay() {
         return this.hasDateReports && this.selectedReportDate.reports.some(report => report.pending)

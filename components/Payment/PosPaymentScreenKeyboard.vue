@@ -5,12 +5,20 @@
         <div></div>
       </template>
     </g-number-keyboard>
-    <g-btn :uppercase="false" outlined height="100%" text-color="#979797">
-      <g-icon class="mr-2" svg size="36">icon-cashier</g-icon>
-      <span style="font-size: 16px; color: #1D1D26">Cashier drawer</span>
-    </g-btn>
-    <g-btn :disabled="!paidable" :uppercase="false" flat background-color="blue darken 1" text-color="white" height="100%" @click.stop="pay">
-      <span class="fs-large-2">Pay</span>
+    <g-btn :uppercase="false" height="100%" elevation="0"
+           v-for="(btn, i) in listBtn" :key="i"
+           :style="{
+              fontSize: '20px',
+              gridRow: btn.rows[0] + '/' + btn.rows[1],
+              gridColumn: btn.cols[0] + '/' + btn.cols[1],
+              backgroundColor: btn.backgroundColor,
+              color: btn.backgroundColor !== '#FFFFFF' ? btn.textColor : '#000d',
+              border: btn.backgroundColor && btn.backgroundColor !== '#FFFFFF' ? null : '1px solid #979797'
+            }"
+           :disabled="!isActiveBtn(btn)"
+           @click="onClickBtn(btn)">
+      <g-icon v-if="btn.buttonFunction === 'cashDrawer'" class="mr-2" svg size="36">icon-cashier</g-icon>
+      {{btn.text}}
     </g-btn>
   </div>
 </template>
@@ -19,7 +27,7 @@
   export default {
     name: 'PosPaymentScreenKeyboard',
     injectService: [
-      'PosStore:(paymentAmountTendered,savePaidOrder,selectedPayment,paymentTotal)'
+      'PosStore:(paymentAmountTendered,savePaidOrder,selectedPayment,paymentTotal,getPosSetting,currentOrder)'
     ],
     data() {
       return {
@@ -27,21 +35,18 @@
           { content: ['7'], style: 'grid-area: key7', action: (value, append) => (value + append) },
           { content: ['8'], style: 'grid-area: key8', action: (value, append) => (value + append) },
           { content: ['9'], style: 'grid-area: key9', action: (value, append) => (value + append) },
-          { content: ['€ 100'], style: 'grid-area: key100', action: (value) => (+value + 100) },
           { content: ['4'], style: 'grid-area: key4', action: (value, append) => (value + append) },
           { content: ['5'], style: 'grid-area: key5', action: (value, append) => (value + append) },
           { content: ['6'], style: 'grid-area: key6', action: (value, append) => (value + append) },
-          { content: ['€ 50'], style: 'grid-area: key50', action: (value) => (+value + 50) },
           { content: ['1'], style: 'grid-area: key1', action: (value, append) => (value + append) },
           { content: ['2'], style: 'grid-area: key2', action: (value, append) => (value + append) },
           { content: ['3'], style: 'grid-area: key3', action: (value, append) => (value + append) },
-          { content: ['€ 20'], style: 'grid-area: key20', action: (value) => (+value + 20) },
           { content: ['0'], style: 'grid-area: key0', action: (value, append) => (value + append) },
           { content: [','], style: 'grid-area: keyC', action: (value, append) => (value + append) },
           { img: 'delivery/key_delete', style: 'grid-area: keyD', action: (value) => (value && value.substring(0, value.length - 1)) },
-          { content: ['€ 10'], style: 'grid-area: key10', action: (value) => (+value + 10) },
         ],
-        template: 'grid-template-areas: "key7 key8 key9 key100" "key4 key5 key6 key50" "key1 key2 key3 key20" "key0 keyC keyD key10"; grid-auto-rows: 1fr; grid-auto-columns: 1fr; grid-gap: 6px'
+        template: 'grid-template-areas: "key7 key8 key9" "key4 key5 key6" "key1 key2 key3" "key0 keyC keyD"; grid-auto-rows: 1fr; grid-auto-columns: 1fr; grid-gap: 6px',
+        listBtn: []
       }
     },
     computed: {
@@ -53,16 +58,54 @@
           this.paymentAmountTendered = +value
         }
       },
-      paidable() {
-        return this.paymentAmountTendered >= this.paymentTotal
-      }
     },
     methods: {
+      isActiveBtn(btn) {
+        if (btn.buttonFunction === 'pay') {
+          return this.paymentAmountTendered >= this.paymentTotal
+        }
+        return true;
+      },
+      onClickBtn(btn) {
+        if(btn.buttonFunction)
+          this[btn.buttonFunction](btn.buttonFunctionValue);
+      },
       async pay() {
-        await this.savePaidOrder()
         await this.$router.push({ path: '/view/pos-order' })
+        await this.savePaidOrder()
         this.selectedPayment = null
+      },
+      cashDrawer() {
+
+      },
+      banknote(value) {
+        this.paymentAmountTendered += +value;
+      },
+      discount() {
+        if(this.currentOrder.items.find(i => i.vDiscount > 0) && !this.currentOrder.isDiscountInTotal) {
+          this.$getService('alertDiscount:setActive')(true);
+        } else {
+          const originalTotal = this.currentOrder.items.reduce((acc, item) => (acc + item.quantity * item.originalPrice), 0);
+          this.$getService('dialogDiscount:open')('percentage', originalTotal);
+        }
+      },
+      async generateTemplate() {
+        const setting = await this.getPosSetting();
+        this.listBtn = [];
+        const paymentBtns = setting.paymentFunctionButtons;
+        const containedBtns = paymentBtns.reduce((acc, btn) => ([...acc, ...btn.containedButtons]), []);
+        for(const btn of paymentBtns) {
+          if(!containedBtns.includes(btn._id)) {
+            this.listBtn.push(btn);
+          }
+        }
       }
+    },
+    async mounted() {
+      await this.generateTemplate();
+    },
+    async activated() {
+      await this.generateTemplate();
     }
   }
 </script>

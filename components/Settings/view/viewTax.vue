@@ -7,7 +7,7 @@
       </tr>
       <tr v-for="(tax, i) in listTaxCategories" :key="i" @click="select(tax)"
           :class="[selectedTaxCategory && selectedTaxCategory._id === tax._id && 'bordered']">
-        <td>{{tax.name }}</td>
+        <td>{{tax.value}}%</td>
         <td>{{tax.invoiceLetter}}</td>
       </tr>
     </g-simple-table>
@@ -27,8 +27,8 @@
         this.selectedTaxCategory = tax;
       }
     },
-    created() {
-      this.listTaxCategories = this.getAllTaxCategory();
+    async created() {
+      this.listTaxCategories = await this.getAllTaxCategory();
     },
     beforeDestroy() {
       this.selectedTaxCategory = null

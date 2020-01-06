@@ -6,11 +6,11 @@
     </div>
     <div>Change</div>
     <div class="input two-head">
-      <p class="balance">€ {{convertMoney(paymentTotal)}}</p>
+      <p class="balance">€ {{paymentTotal | formatNumber}}</p>
       <p class="amount">€ {{paymentAmountTendered}}</p>
     </div>
     <div class="input change">
-      € {{convertMoney(paymentChange)}}
+      € {{paymentChange | formatNumber}}
     </div>
     <div>
       Tip
@@ -23,7 +23,6 @@
   export default {
     name: 'PosPaymentScreenBalance',
     injectService: [
-      'PosStore:convertMoney',
       'PosStore:paymentTotal',
       'PosStore:paymentAmountTendered',
       'PosStore:paymentTip',

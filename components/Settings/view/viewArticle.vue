@@ -28,13 +28,14 @@
 			</thead>
 			<tr class="sticky">
 				<td class="bg-grey-lighten-1">
-					<g-checkbox v-model="selectedProductIDs" :value="listIDs" multiple>
+					<g-checkbox v-if="products && products.length !== 0" v-model="selectedProductIDs" :value="listIDs" multiple>
 						<template v-slot:label>
 							<g-icon size="16" class="mb-1">fas fa-caret-down</g-icon>
 						</template>
 					</g-checkbox>
+					<g-checkbox v-else/>
 				</td>
-				<td colspan="6" class="bg-grey-lighten-1" style="height: 48px">
+				<td colspan="6" class="filter-wrapper" style="height: 48px">
 					<div class="filter">
 						Filter
 						<div class="group-chip">
@@ -192,22 +193,28 @@
 		}
 
 		tr {
-			td:nth-child(1) {
+			td:nth-child(1),
+			th:nth-child(1)  {
 				width: 10%;
 			}
-			td:nth-child(2) {
+			td:nth-child(2):not(.filter-wrapper),
+			th:nth-child(2)  {
 				width: 15%;
 			}
-			td:nth-child(3) {
+			td:nth-child(3),
+			th:nth-child(3)  {
 				width: 20%;
 			}
-			td:nth-child(4) {
+			td:nth-child(4),
+			th:nth-child(4)  {
 				width: 15%;
 			}
-			td:nth-child(5) {
+			td:nth-child(5),
+			th:nth-child(5)  {
 				width: 20%;
 			}
-			td:nth-child(6) {
+			td:nth-child(6),
+			th:nth-child(6)  {
 				width: 20%;
 			}
 		}
@@ -220,39 +227,43 @@
 			}
 		}
 
-		.filter {
-			color: #1d1d26;
-			font-size: 13px;
-			line-height: 16px;
-			font-weight: 700;
-			display: flex;
-			align-items: center;
-			padding-left: 12px;
+		.filter-wrapper {
+			background-color: #bdbdbd;
 
-			.group-chip {
+			.filter {
+				color: #1d1d26;
+				font-size: 13px;
+				line-height: 16px;
+				font-weight: 700;
 				display: flex;
-				flex-wrap: nowrap;
-				overflow: auto;
-				margin: 0 4px;
+				align-items: center;
+				padding-left: 12px;
 
-				&::-webkit-scrollbar {
-					display: none;
-				}
+				.group-chip {
+					display: flex;
+					flex-wrap: nowrap;
+					overflow: auto;
+					margin: 0 4px;
 
-				::v-deep .g-chip {
-					overflow: visible;
-				}
+					&::-webkit-scrollbar {
+						display: none;
+					}
 
-				.chip-title {
-					color: #97A3B4;
-					font-weight: 400;
-					font-size: 11px;
-				}
+					::v-deep .g-chip {
+						overflow: visible;
+					}
 
-				.chip-content {
-					color: #1D1D26;
-					font-weight: 700;
-					font-size: 12px;
+					.chip-title {
+						color: #97A3B4;
+						font-weight: 400;
+						font-size: 11px;
+					}
+
+					.chip-content {
+						color: #1D1D26;
+						font-weight: 700;
+						font-size: 12px;
+					}
 				}
 			}
 		}

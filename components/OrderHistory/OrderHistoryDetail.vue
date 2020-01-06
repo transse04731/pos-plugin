@@ -8,32 +8,28 @@
       <tr v-for="product in orderHistoryCurrentOrder.items">
         <td>{{product.quantity}}x</td>
         <td>{{product.name}}</td>
-        <td class="ta-right">€ {{product.price}}</td>
+        <td class="ta-right">€ {{product.originalPrice | formatNumber}}</td>
       </tr>
     </g-simple-table>
     <g-divider/>
-    <div class="order-info mt-3">
+    <div class="order-info my-2">
       <span class="fw-700">Promotional
         Applied </span>
-      <span class="order-info-number__big">-{{promotionTotal > 0 ? (' € ' + promotionTotal) : ''}}</span>
-    </div>
-    <div class="order-info order-info__sub" v-for="promotion in orderHistoryCurrentOrder.promotions">
-      <span class="order-info__important">{{promotion.name}}</span>
-      <span class="order-info__important order-info-number">- € {{promotion.amount}}</span>
+      <span class="order-info-number">-{{promotionTotal > 0 ? (' € ' + promotionTotal) : ''}}</span>
     </div>
     <g-divider/>
     <div class="order-info mt-2">
       <span>Sub Total</span>
-      <span class="order-info-number">€ {{subTotal.toFixed(2)}}</span>
+      <span class="order-info-number">€ {{subTotal | formatNumber}}</span>
     </div>
     <div class="order-info mb-2">
       <span>Tax</span>
-      <span class="order-info-number">€ {{orderHistoryCurrentOrder.tax.toFixed(2)}}</span>
+      <span class="order-info-number">€ {{orderHistoryCurrentOrder.tax | formatNumber}}</span>
     </div>
     <g-divider/>
     <div class="total">
       <span>Total </span>
-      <span class="total__important">€ {{orderHistoryCurrentOrder.amount.toFixed(2)}}</span>
+      <span class="total__important">€ {{orderHistoryCurrentOrder.amount | formatNumber}}</span>
     </div>
     <g-divider/>
   </div>
@@ -52,10 +48,10 @@
     },
     computed: {
       promotionTotal() {
-        return this.orderHistoryCurrentOrder && this.orderHistoryCurrentOrder.promotions.reduce((acc, val) => (acc + val.amount), 0);
+        return this.orderHistoryCurrentOrder && this.orderHistoryCurrentOrder.vDiscount;
       },
       subTotal() {
-        return this.orderHistoryCurrentOrder && this.orderHistoryCurrentOrder.amount - this.promotionTotal - this.orderHistoryCurrentOrder.tax;
+        return this.orderHistoryCurrentOrder && this.orderHistoryCurrentOrder.amount - this.orderHistoryCurrentOrder.tax;
       }
     }
   }

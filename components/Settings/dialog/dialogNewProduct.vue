@@ -14,7 +14,7 @@
                 <div v-for="(tax, i) in taxes" :key="i"
                      :class="['tax', taxCategory && tax.value === taxCategory.value && 'selected__tax']"
                      @click="selectTax(tax)">
-                  {{tax.name}}
+                  {{tax.value}}%
                 </div>
               </div>
             </div>
@@ -102,7 +102,6 @@
   export default {
     name: 'dialogNewProduct',
     injectService: [
-      'PosStore:getAllCategories',
       'PosStore:createNewProduct',
       'PosStore:getAllTaxCategory',
       'PosStore:getHighestProductOrder',
@@ -186,17 +185,17 @@
         return true
       }
     },
-    async created() {
-      this.categories = (await this.getAllCategories()).map(c => ({
-        ...c,
-        value: c.name,
-      }));
-
-      this.taxes = this.getAllTaxCategory().sort((a,b) => (a.value - b.value))
-    },
     methods: {
-      open(isEdit) {
+      async loadData() {
+        this.categories = (await cms.getModel('Category').find()).map(c => ({
+          ...c,
+          value: c.name,
+        }));
+        this.taxes = (await this.getAllTaxCategory()).sort((a, b) => (a.value - b.value))
+      },
+      async open(isEdit) {
         this.isEditProduct = isEdit;
+        await this.loadData();
         if (this.isEditProduct && this.selectedProduct) {
           const p = this.selectedProduct;
           //update new dialog
@@ -264,7 +263,7 @@
         const product = {
           name: this.productName,
           category: this.productCategory._id,
-          tax: this.taxCategory,
+          tax: this.taxCategory.value,
           id: this.productID,
           price: parseFloat(this.productPrice),
           barcode: this.productBarcode,
@@ -276,12 +275,9 @@
             showOnOrderScreen: this.showOnOrderScreen,
             manualPrice: this.manualPrice,
           },
-          layouts: [
-            {
-              'color': 'white',
-              'order': maxOrder + 1
-            }
-          ]
+          layouts: this.isEditProduct
+              ? this.selectedProduct.layouts
+              : [{'color': 'white', 'order': maxOrder + 1}]
         }
         this.dialogNewProduct = false;
         if (this.isEditProduct) {

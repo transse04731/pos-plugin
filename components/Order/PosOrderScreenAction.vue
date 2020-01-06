@@ -58,7 +58,7 @@
           if (!containedBtns.includes(btn._id)) {
             this.listBtn.push(
               btn.buttonFunction === 'buybackProduct'
-                ? Object.assign(btn, {
+                ? Object.assign({}, btn, {
                   buttonFunctionValue: btn.buyback
                 })
                 : btn);

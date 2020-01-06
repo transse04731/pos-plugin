@@ -3,16 +3,16 @@
     <div style="position:absolute; contain:content; width:100%; height:100%; display:flex;">
       <div class="report-column">
         <span>Discount (€)</span>
-        <span class="number">{{convertMoney(paymentDiscount)}}</span>
+        <span class="number">{{paymentDiscount | formatNumber}}</span>
         <span>Tax (€)</span>
-        <span class="number">{{convertMoney(paymentTax)}}</span>
+        <span class="number">{{paymentTax | formatNumber}}</span>
       </div>
       <g-divider inset vertical color="#979797"></g-divider>
       <div class="report-column">
         <span>Sub Total (€)</span>
-        <span class="number">{{convertMoney(paymentSubTotal)}}</span>
+        <span class="number">{{paymentSubTotal | formatNumber}}</span>
         <span>Total (€)</span>
-        <span class="number__important">{{convertMoney(paymentTotal)}}</span>
+        <span class="number__important">{{paymentTotal | formatNumber}}</span>
       </div>
     </div>
   </div>
@@ -21,8 +21,16 @@
 <script>
   export default {
     name: 'PosOrderScreenReport',
+    filters: {
+      formatNumber: (val) => {
+        if (val && typeof (val) === 'number') {
+          return val.toFixed(2)
+        } else {
+          return 0
+        }
+      },
+    },
     injectService: [
-      'PosStore:convertMoney',
       'PosStore:paymentTax',
       'PosStore:paymentTotal',
       'PosStore:paymentSubTotal',

@@ -3,8 +3,8 @@
     <g-avatar size="36">
       <img :src="user ? user.avatar : ''"/>
     </g-avatar>
-    <div class="pa-1" style="line-height: 16px">
-      <p class="ta-right fw-700 fs-small">{{userName}}</p>
+    <div class="ta-right pa-1" style="line-height: 16px">
+      <p class="fw-700 fs-small" style="word-break: break-all">{{userName}}</p>
       <p class="fs-small-2">{{formattedDate}}</p>
     </div>
   </div>

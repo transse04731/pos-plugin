@@ -14,7 +14,6 @@
     name: 'viewCategory',
     injectService: [
       'PosStore:listCategories',
-      'PosStore:getAllCategories',
       'PosStore:selectedCategory',
     ],
     data() {
@@ -22,9 +21,12 @@
 
 			}
 		},
-    async mounted() {
-      this.listCategories = await this.getAllCategories();
+    async created() {
+      this.listCategories = await cms.getModel('Category').find();
     },
+		beforeDestroy() {
+    	this.selectedCategory = null;
+		},
     methods: {
       select(category) {
         this.selectedCategory = category;

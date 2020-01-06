@@ -14,7 +14,7 @@
         <img :src="user ? user.avatar : ''"/>
       </g-avatar>
       <div class="pa-1" style="line-height: 16px">
-        <p class="ta-right fw-700 fs-small">{{user.name}}</p>
+        <p class="ta-right fw-700 fs-small">{{user ? user.name : ''}}</p>
         <p class="fs-small-2">{{formattedDate}}</p>
       </div>
     </div>
