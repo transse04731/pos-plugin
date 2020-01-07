@@ -32,7 +32,7 @@ module.exports = async function (cms) {
     });
 
     if (!order) {
-      callback('Order ID not found')
+      callbackWithError(callback, `Order with ID ${orderId} not found`)
       return
     }
 
@@ -68,16 +68,25 @@ module.exports = async function (cms) {
 
     renderer.renderToString(component, {}, async (err, html) => {
       if (err) {
-        callback(err)
+        callbackWithError(callback, err)
         return
       }
       await print(html)
+      callback({success: true})
     })
   }
 
   async function zReportHandler({z}, callback) {
     const posSetting = await cms.getModel('PosSetting').findOne({})
-    const {begin} = await cms.getModel('EndOfDay').findOne({z})
+    const endOfDayReport = await cms.getModel('EndOfDay').findOne({z})
+
+    if (!endOfDayReport) {
+      callbackWithError(callback, `z report number ${z} not found`)
+      return
+    }
+
+    const {begin} = endOfDayReport
+
     const renderer = require('vue-server-renderer').createRenderer({
       template: fs.readFileSync(`${__dirname}/z-report-template.html`, 'utf-8')
     });
@@ -90,8 +99,8 @@ module.exports = async function (cms) {
           else resolve(result)
         })
       })
-    } catch (e) {
-      callback(e)
+    } catch (err) {
+      callbackWithError(callback, err)
       return
     }
 
@@ -145,10 +154,11 @@ module.exports = async function (cms) {
 
     renderer.renderToString(component, {}, async (err, html) => {
       if (err) {
-        callback(err)
+        callbackWithError(callback, err)
         return
       }
       await print(html)
+      callback({success: true})
     })
   }
 
@@ -163,5 +173,12 @@ module.exports = async function (cms) {
     });
     printer.printPng(png);
     await printer.print();
+  }
+
+  function callbackWithError(callback, error) {
+    callback({
+      success: false,
+      message: error
+    })
   }
 }
