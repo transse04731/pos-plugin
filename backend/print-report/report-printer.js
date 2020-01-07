@@ -1,15 +1,14 @@
 const fs = require('fs');
 const Vue = require('vue');
-const vueRuntimeHelpers = require('vue-runtime-helpers');
 const PhantomUtil = require('./phantom-util');
 const phantomUtil = new PhantomUtil();
 const EscPrinter = require("./node-thermal-printer");
 const dayjs = require('dayjs')
 const _ = require('lodash')
 
-vueRuntimeHelpers.createInjector = vueRuntimeHelpers.createInjectorSSR;
-global['vue'] = Vue;
-global['vue-runtime-helpers'] = vueRuntimeHelpers;
+const renderer = require('vue-server-renderer').createRenderer({
+  template: fs.readFileSync(`${__dirname}/print-template.html`, 'utf-8')
+});
 
 module.exports = async function (cms) {
   cms.socket.on('connect', socket => {
@@ -27,9 +26,6 @@ module.exports = async function (cms) {
   async function orderReportHandler({orderId}, callback) {
     const posSetting = await cms.getModel('PosSetting').findOne({})
     const order = await cms.getModel('Order').findById(orderId)
-    const renderer = require('vue-server-renderer').createRenderer({
-      template: fs.readFileSync(`${__dirname}/order-report-template.html`, 'utf-8')
-    });
 
     if (!order) {
       callbackWithError(callback, `Order with ID ${orderId} not found`)
@@ -101,10 +97,6 @@ module.exports = async function (cms) {
     }
 
     const {begin} = endOfDayReport
-
-    const renderer = require('vue-server-renderer').createRenderer({
-      template: fs.readFileSync(`${__dirname}/z-report-template.html`, 'utf-8')
-    });
 
     let reportData
     try {

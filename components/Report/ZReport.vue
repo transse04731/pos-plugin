@@ -1,5 +1,5 @@
 <template>
-  <div class="main-container">
+  <div class="z-report-main-container">
     <div class="header-container">
       <div class="card text-center">
         <div class="store-name">
@@ -115,226 +115,223 @@
 </script>
 
 <style lang="scss">
-  body {
-    margin: 0;
-    width: 100%;
+  .z-report-main-container {
+    width: calc(100% + 16px);
+    padding: 0;
+    margin: -8px;
     background-color: #ffffff;
     font-family: Verdana;
     font-style: normal;
     box-sizing: border-box;
-  }
 
-  p {
-    margin: 0;
-  }
-
-  .full-width {
-    width: 100%;
-  }
-
-  .float-left {
-    float: left;
-  }
-
-  .float-right {
-    float: right;
-  }
-
-  .col {
-    padding: 12px;
-
-    &-12 {
-      flex: 0 0 100%;
-      max-width: 100%;
+    p {
+      margin: 0;
     }
-  }
 
-  .card {
-    width: 100%;
-
-    div {
+    .full-width {
       width: 100%;
     }
-  }
 
-  .spacer {
-    flex-grow: 1;
-    visibility: hidden;
-  }
-
-  .jusify-content-center {
-    justify-content: center;
-  }
-
-  .m {
-    &t-4 {
-      margin-top: 1.5rem;
+    .float-left {
+      float: left;
     }
 
-    &y-4 {
-      margin-top: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-  }
-
-  .text-center {
-    text-align: center;
-  }
-
-  .divider {
-    border-width: 1px;
-    margin: 12px 0;
-    align-self: center;
-    width: 100%;
-
-    &-dashed {
-      border-style: dashed;
-    }
-  }
-
-  .main-container {
-    width: 100%;
-    padding: 0;
-  }
-
-  .header-container {
-    .store-name {
-      font-weight: bolder;
-      font-size: 30px;
-      line-height: 36px;
-      margin-bottom: 10px;
+    .float-right {
+      float: right;
     }
 
-    .store-details {
-      font-weight: lighter;
-      font-size: 20px;
-      line-height: 24px;
-      margin: 0 auto 12px;
-      max-width: 75%;
-    }
-  }
+    .col {
+      padding: 12px;
 
-  .body-container {
-    .invoice-title {
-      font-weight: bolder;
-      font-size: 40px;
-      line-height: 49px;
-    }
-
-    .invoice-id {
-      font-size: 25px;
-      line-height: 30px;
-
-      p:not(:last-child) {
-        margin-bottom: 10px;
-      }
-
-      P:not(:first-child) {
-        font-weight: lighter;
-      }
-
-      p:first-child {
-        font-weight: bolder;
+      &-12 {
+        flex: 0 0 100%;
+        max-width: 100%;
       }
     }
 
-    .invoice-products {
-      padding: 12px 0 0;
-
-      table {
-        text-align: left;
-        width: 100%;
-        border: none;
-        border-spacing: 0;
-
-        thead, tbody, tr {
-          width: 100%;
-        }
-
-        .divider-row {
-          td, th {
-            height: auto;
-          }
-        }
-
-        thead {
-          th {
-            font-weight: bolder;
-            font-size: 24px;
-            line-height: 29px;
-            text-align: left;
-            padding: 0 12px;
-          }
-        }
-
-        tbody {
-          tr:not(:last-child) {
-            td {
-              padding-bottom: 12px;
-            }
-          }
-
-          td {
-            word-break: break-all;
-            font-weight: lighter;
-            font-size: 24px;
-            line-height: 24px;
-            padding: 0;
-            vertical-align: top;
-
-            &:first-child {
-              padding-left: 12px;
-            }
-
-            &:last-child {
-              padding-right: 12px;
-            }
-          }
-        }
-      }
-    }
-
-    .sales, .tax-and-discount, .summary {
-      padding-top: 0;
+    .card {
+      width: 100%;
 
       div {
-        &:not(.total):not(.due) {
-          span {
-            font-weight: lighter;
-            font-size: 24px;
-            line-height: 29px;
-          }
-        }
+        width: 100%;
+      }
+    }
 
-        &:not(:last-child) {
-          margin: 12px 0;
-        }
+    .spacer {
+      flex-grow: 1;
+      visibility: hidden;
+    }
+
+    .jusify-content-center {
+      justify-content: center;
+    }
+
+    .m {
+      &t-4 {
+        margin-top: 1.5rem;
       }
 
-      .total, .due {
+      &y-4 {
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .divider {
+      border-width: 1px;
+      margin: 12px 0;
+      align-self: center;
+      width: 100%;
+
+      &-dashed {
+        border-style: dashed;
+      }
+    }
+
+    .header-container {
+      .store-name {
         font-weight: bolder;
         font-size: 30px;
         line-height: 36px;
+        margin-bottom: 10px;
+      }
+
+      .store-details {
+        font-weight: lighter;
+        font-size: 20px;
+        line-height: 24px;
+        margin: 0 auto 12px;
+        max-width: 75%;
       }
     }
 
-    .payment-method {
-      font-weight: lighter;
-      font-size: 25px;
-      line-height: 30px;
-      padding-bottom: 0;
+    .body-container {
+      .invoice-title {
+        font-weight: bolder;
+        font-size: 40px;
+        line-height: 49px;
+      }
+
+      .invoice-id {
+        font-size: 25px;
+        line-height: 30px;
+
+        p:not(:last-child) {
+          margin-bottom: 10px;
+        }
+
+        P:not(:first-child) {
+          font-weight: lighter;
+        }
+
+        p:first-child {
+          font-weight: bolder;
+        }
+      }
+
+      .invoice-products {
+        padding: 12px 0 0;
+
+        table {
+          text-align: left;
+          width: 100%;
+          border: none;
+          border-spacing: 0;
+
+          thead, tbody, tr {
+            width: 100%;
+          }
+
+          .divider-row {
+            td, th {
+              height: auto;
+            }
+          }
+
+          thead {
+            th {
+              font-weight: bolder;
+              font-size: 24px;
+              line-height: 29px;
+              text-align: left;
+              padding: 0 12px;
+            }
+          }
+
+          tbody {
+            tr:not(:last-child) {
+              td {
+                padding-bottom: 12px;
+              }
+            }
+
+            td {
+              word-break: break-all;
+              font-weight: lighter;
+              font-size: 24px;
+              line-height: 24px;
+              padding: 0;
+              vertical-align: top;
+
+              &:first-child {
+                padding-left: 12px;
+              }
+
+              &:last-child {
+                padding-right: 12px;
+              }
+            }
+          }
+        }
+      }
+
+      .sales, .tax-and-discount, .summary {
+        text-transform: capitalize;
+        padding-top: 0;
+
+        div {
+          &:not(.total):not(.due) {
+            span {
+              font-weight: lighter;
+              font-size: 24px;
+              line-height: 29px;
+            }
+          }
+
+          &:not(:last-child) {
+            margin: 12px 0;
+          }
+        }
+
+        .total, .due {
+          font-weight: bolder;
+          font-size: 30px;
+          line-height: 36px;
+        }
+      }
+
+      .payment-method {
+        font-weight: lighter;
+        font-size: 25px;
+        line-height: 30px;
+        padding-bottom: 0;
+      }
     }
-  }
 
-  .footer-container {
-    margin-top: 30px;
-    margin-bottom: 10px;
+    .footer-container {
+      margin-top: 30px;
+      margin-bottom: 10px;
 
-    .thankyou-message {
-      font-weight: bolder;
-      font-size: 25px;
-      line-height: 30px;
-      margin-top: 20px;
+      .thankyou-message {
+        font-weight: bolder;
+        font-size: 25px;
+        line-height: 30px;
+        margin-top: 20px;
+      }
     }
   }
 </style>
