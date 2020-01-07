@@ -48,14 +48,29 @@ module.exports = async function (cms) {
       receive: orderCashReceived,
       cashback: orderCashback,
       bookingNumber: orderBookingNumber,
-      payment
+      payment,
+      vDiscount: discount
     } = order
     const orderPaymentType = payment[0].type
     // TODO: discount
 
     const props = {
-      companyName, companyAddress, companyTel, companyVatNumber, orderDate, orderTime, orderNumber, orderProductList,
-      orderSum, orderTax, orderTaxGroups, orderCashReceived, orderCashback, orderPaymentType, orderBookingNumber
+      companyName,
+      companyAddress,
+      companyTel,
+      companyVatNumber,
+      orderDate,
+      orderTime,
+      orderNumber,
+      orderProductList,
+      orderSum,
+      orderTax,
+      orderTaxGroups,
+      orderCashReceived,
+      orderCashback,
+      orderPaymentType,
+      orderBookingNumber,
+      discount
     }
 
     const OrderReport = require('../../dist/OrderReport.vue')

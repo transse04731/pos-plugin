@@ -65,14 +65,14 @@
         </table>
       </div>
 
-      <div class="col col-12 summary">
+      <div class="col col-12 checkout-details">
         <div>
           <span>Subtotal</span>
           <span class="float-right">{{(orderSum - orderTax).toFixed(2)}}</span>
         </div>
         <div style="margin: 12px 0;">
           <span>Discount</span>
-          <span class="float-right">(0.00)</span>
+          <span class="float-right">({{discount.toFixed(2)}})</span>
         </div>
         <div v-for="(taxGroup, index) in orderTaxGroups" :key="index"
              :style="index !== (orderTaxGroups.length - 1) ? 'margin: 12px 0;' : ''">
@@ -136,6 +136,7 @@
       orderCashback: Number,
       orderPaymentType: String,
       orderBookingNumber: String,
+      discount: Number,
     }
   }
 </script>
