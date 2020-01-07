@@ -15,7 +15,7 @@
     <div class="order-info my-2">
       <span class="fw-700">Promotional
         Applied </span>
-      <span class="order-info-number">-{{promotionTotal > 0 ? (' € ' + promotionTotal) : ''}}</span>
+      <span class="order-info-number">-{{promotionTotal > 0 ? (' € ' + promotionTotal) : '' | formatNumber}}</span>
     </div>
     <g-divider/>
     <div class="order-info mt-2">
@@ -43,9 +43,6 @@
     injectService: [
       'PosStore:orderHistoryCurrentOrder'
     ],
-    data() {
-      return {}
-    },
     computed: {
       promotionTotal() {
         return this.orderHistoryCurrentOrder && this.orderHistoryCurrentOrder.vDiscount;

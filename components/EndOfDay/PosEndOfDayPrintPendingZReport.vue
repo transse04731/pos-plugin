@@ -1,7 +1,7 @@
 <template>
   <div>
     <slot :close="close" :open="open" name="activator"></slot>
-    <g-dialog persistent eager v-model="dialog" width="45%" overlay-color="#6B6F82" overlay-opacity="0.95">
+    <g-dialog eager v-model="dialog" width="45%" overlay-color="#6B6F82" overlay-opacity="0.95">
       <div class="print-confirm-dialog">
         <p class="title">Notification</p>
         <div class="confirmation-content">
@@ -14,7 +14,6 @@
         </div>
       </div>
     </g-dialog>
-
   </div>
 </template>
 

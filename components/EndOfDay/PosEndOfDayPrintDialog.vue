@@ -1,7 +1,7 @@
 <template>
   <div>
     <slot :close="close" :open="open" name="activator"></slot>
-    <g-dialog eager overlay-color="#6B6F82" overlay-opacity="0.95" persistent v-model="dialog" width="70%">
+    <g-dialog eager overlay-color="#6B6F82" overlay-opacity="0.95" v-model="dialog" width="70%">
       <div style="width: 100%; background-color: #fff; position: relative; height: 75vh">
         <p class="eod-header">X-Report</p>
         <div style="height: calc(100% - 145px); overflow-y: auto;">

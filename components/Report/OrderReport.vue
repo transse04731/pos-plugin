@@ -29,10 +29,10 @@
         <table>
           <thead>
           <tr>
-            <th width="45%">Item</th>
+            <th width="40%">Item</th>
             <th width="5%" style="text-align: right">Q.ty</th>
             <th width="20%" style="text-align: right">Unit price</th>
-            <th width="20%" style="text-align: right">Total</th>
+            <th width="25%" style="text-align: right">Total</th>
           </tr>
           <tr class="divider-row">
             <th colspan="4">
@@ -44,16 +44,16 @@
           <tbody>
           <tr v-for="(item, index) in orderProductList" :key="index">
             <td :style="index === orderProductList.length - 1 ? 'padding-bottom: 0' : ''"
-                height="28" width="45%">{{item.name}}
+                height="28" width="40%">{{item.name}}
             </td>
             <td :style="index === orderProductList.length - 1 ? 'padding-bottom: 0' : ''"
                 height="28" width="5%" style="text-align: right">{{item.quantity}}
             </td>
             <td :style="index === orderProductList.length - 1 ? 'padding-bottom: 0' : ''"
-                height="28" width="20%" style="text-align: right">{{(item.price).toFixed(2)}}
+                height="28" width="20%" style="text-align: right">{{(item.originalPrice) | convertMoney}}
             </td>
             <td :style="index === orderProductList.length - 1 ? 'padding-bottom: 0' : ''"
-                height="28" width="20%" style="text-align: right">{{(item.quantity * item.price).toFixed(2)}}
+                height="28" width="25%" style="text-align: right">{{(item.quantity * item.originalPrice) | convertMoney}}
             </td>
           </tr>
           <tr class="divider-row">
@@ -68,30 +68,30 @@
       <div class="col col-12 checkout-details">
         <div>
           <span>Subtotal</span>
-          <span class="float-right">{{(orderSum - orderTax).toFixed(2)}}</span>
+          <span class="float-right">{{(orderSum - orderTax) | convertMoney}}</span>
         </div>
         <div style="margin: 12px 0;">
           <span>Discount</span>
-          <span class="float-right">({{discount.toFixed(2)}})</span>
+          <span class="float-right">({{discount | convertMoney}})</span>
         </div>
         <div v-for="(taxGroup, index) in orderTaxGroups" :key="index"
              :style="index !== (orderTaxGroups.length - 1) ? 'margin: 12px 0;' : ''">
           <span v-if="taxGroup.taxType > 0">Tax ({{taxGroup.taxType}}%)</span>
-          <span v-if="taxGroup.taxType > 0" class="float-right">{{taxGroup.tax.toFixed(2)}}</span>
+          <span v-if="taxGroup.taxType > 0" class="float-right">{{taxGroup.tax | convertMoney}}</span>
         </div>
         <div class="divider divider-dashed"/>
         <div class="total">
           <span>Total</span>
-          <span class="float-right">${{orderSum.toFixed(2)}}</span>
+          <span class="float-right">${{orderSum | convertMoney}}</span>
         </div>
         <div style="margin: 12px 0;">
           <span>Cash tend</span>
-          <span class="float-right">${{orderCashReceived}}</span>
+          <span class="float-right">${{orderCashReceived | convertMoney}}</span>
         </div>
         <div class="divider divider-dashed"/>
         <div class="due" style="margin: 12px 0;">
           <span>Change due</span>
-          <span class="float-right">${{orderCashback.toFixed(2)}}</span>
+          <span class="float-right">${{orderCashback | convertMoney}}</span>
         </div>
       </div>
 
@@ -119,6 +119,11 @@
     name: "OrderReport.vue",
     components: {
       Barcode
+    },
+    filters: {
+      convertMoney(value) {
+        return value.toFixed(2)
+      }
     },
     props: {
       companyName: String,

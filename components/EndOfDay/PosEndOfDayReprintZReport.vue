@@ -7,7 +7,9 @@
         <div class="printed-list">
           <div :key="index" class="report-item" style="display: flex" v-for="(item, index) in reports">
             <p>{{item.begin}} - {{item.end}} : Z-Number {{item.z}}</p>
-            <g-btn :uppercase="false" background-color="#2979FF" flat style="margin-left: auto" text-color="#fff" height="40px">
+            <g-btn :uppercase="false" background-color="#2979FF" flat style="margin-left: auto" text-color="#fff" height="40px"
+                   @click.stop="print(item.z)"
+            >
               <g-icon class="mr-2" svg>
                 icon-print2
               </g-icon>
@@ -42,6 +44,9 @@
         if (confirmed) {
           this.$emit('confirmed')
         }
+      },
+      async print(z) {
+        await this.$getService('PosStore:printZReport')(z)
       }
     },
     setup() {

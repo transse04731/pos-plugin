@@ -469,6 +469,16 @@
           console.error(e)
         }
       },
+      printOrderReport(orderId) {
+        return new Promise((resolve, reject) => {
+          debugger
+          if (_.isNil(orderId)) reject()
+          cms.socket.emit('printReport', 'OrderReport', { orderId }, ({ success, message }) => {
+            if (success) resolve()
+            reject(message)
+          })
+        })
+      },
       //<!--</editor-fold>-->
 
       //<!--<editor-fold desc="Settings screen">-->
@@ -977,9 +987,20 @@
 
           await orderModel.updateMany({ _id: { $in: ordersToUpdate} }, { $set: { z: report.z } })
           await cms.getModel('EndOfDay').create(report)
+          await this.printZReport(report.z)
         } catch (e) {
           console.error(e)
         }
+      },
+      printZReport(z) {
+        return new Promise((resolve, reject) => {
+          if (_.isNil(z)) reject()
+          cms.socket.emit('printReport', 'ZReport', { z: parseInt(z) }, ({ success, message }) => {
+            if (success) resolve()
+            reject(message)
+          })
+
+        })
       },
       async getXReport(date) {
         try {
@@ -1233,6 +1254,7 @@
         totalOrders: this.totalOrders,
         orderHistoryPagination: this.orderHistoryPagination,
         getTotalOrders: this.getTotalOrders,
+        printOrderReport: this.printOrderReport,
         //article screen
         selectArticle: this.selectArticle,
         articleSelectedProductButton: this.articleSelectedProductButton,
@@ -1248,6 +1270,7 @@
         getDailyReports: this.getDailyReports,
         getOldestPendingReport: this.getOldestPendingReport,
         finalizeReport: this.finalizeReport,
+        printZReport: this.printZReport,
         getXReport: this.getXReport,
       }
     }

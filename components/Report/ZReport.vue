@@ -34,15 +34,15 @@
         </div>
         <div style="margin: 12px 0;">
           <span>Total</span>
-          <span class="float-right">{{(sumTotal).toFixed(2)}}</span>
+          <span class="float-right">{{(sumTotal) | convertMoney}}</span>
         </div>
         <div style="margin: 12px 0;">
           <span>Sub-total</span>
-          <span class="float-right">{{(subTotal).toFixed(2)}}</span>
+          <span class="float-right">{{(subTotal) | convertMoney}}</span>
         </div>
         <div>
           <span>Tax</span>
-          <span class="float-right">{{(taxTotal).toFixed(2)}}</span>
+          <span class="float-right">{{(taxTotal) | convertMoney}}</span>
         </div>
       </div>
 
@@ -55,21 +55,21 @@
           </div>
           <div style="margin: 12px 0;">
             <span>Total</span>
-            <span class="float-right">{{value[`sum${name}`].toFixed(2)}}</span>
+            <span class="float-right">{{value[`sum${name}`] | convertMoney}}</span>
           </div>
           <div style="margin: 12px 0;">
             <span>Sub-total</span>
-            <span class="float-right">{{value[`net${name}`].toFixed(2)}}</span>
+            <span class="float-right">{{value[`net${name}`] | convertMoney}}</span>
           </div>
           <div>
             <span>Tax</span>
-            <span class="float-right">{{value[`tax${name}`].toFixed(2)}}</span>
+            <span class="float-right">{{value[`tax${name}`] | convertMoney}}</span>
           </div>
         </div>
 
         <div>
           <span>Discount</span>
-          <span class="float-right">{{discount.toFixed(2)}}</span>
+          <span class="float-right">{{discount | convertMoney}}</span>
         </div>
       </div>
 
@@ -77,7 +77,7 @@
 
       <div class="col col-12 sales">
         <div v-for="(value, name) in reportByPayment">
-          <span>{{capitalize(name)}}: {{value}}</span>
+          <span>{{name}}: {{value | convertMoney}}</span>
         </div>
         <!--        <div>-->
         <!--          <span>Returns Total: 100</span>-->
@@ -90,6 +90,11 @@
 <script>
   export default {
     name: "ZReport.vue",
+    filters: {
+      convertMoney(value) {
+        return value.toFixed(2)
+      }
+    },
     props: {
       companyName: String,
       companyAddress: String,
@@ -105,11 +110,6 @@
       reportByPayment: Object,
       reportGroups: Object,
       z: Number,
-    },
-    methods: {
-      capitalize(text) {
-        return text.charAt(0).toUpperCase() + text.slice(1);
-      }
     }
   }
 </script>
