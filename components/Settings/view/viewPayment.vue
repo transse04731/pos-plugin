@@ -8,7 +8,7 @@
         </tr>
         <tr v-for="payment in listPayments" @click="select(payment)"
             :class="[selectedPayment && selectedPayment._id === payment._id && 'bordered']">
-          <td>{{payment.name | capitalize}}</td>
+          <td style="text-transform: capitalize">{{payment.name}}</td>
           <td>
             <img class="payment-icon" :src="payment.icon"/>
           </td>
@@ -26,13 +26,6 @@
       'PosStore:getListPayments',
       'PosStore:selectedPayment',
     ],
-    filters: {
-      capitalize: function (value) {
-        if (!value) return ''
-        value = value.toString()
-        return value.charAt(0).toUpperCase() + value.slice(1)
-      }
-    },
     data() {
       return {}
     },

@@ -5,7 +5,7 @@
         <g-avatar :size="40">
             <g-img :src="user ? user.avatar: ''"/>
         </g-avatar>
-        <p class="pa-2 fs-small fw-600" style="word-break: break-all">{{userName}}</p>
+        <p class="username">{{userName}}</p>
       </div>
     </template>
     <g-side-bar-tree-view :data="sidebarData" :auto-collapse="false" v-model="internalValue"/>
@@ -39,6 +39,17 @@
   .g-sidebar-wrapper {
     width: 100% !important;
     max-width: none !important;
+
+    .username {
+      word-break: break-all;
+      -webkit-line-clamp: 2;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-size: 14px;
+      font-weight: 600;
+      padding-left: 8px;
+    }
 
     ::v-deep .g-sidebar {
       width: 100% !important;

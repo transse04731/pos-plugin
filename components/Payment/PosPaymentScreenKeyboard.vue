@@ -24,6 +24,12 @@
 </template>
 
 <script>
+  const keyboardFunction = {
+    number: (value, number) => value.charAt(value.length - 3) === '.' ? value : (value + number), //cant input > 2 digits after fixed-point
+    dot: value => value.includes('.') ? value : (value + '.'), // only 1 fixed-point
+    delete:(value) => (value && value.substring(0, value.length - 1))
+  }
+
   export default {
     name: 'PosPaymentScreenKeyboard',
     injectService: [
@@ -32,18 +38,18 @@
     data() {
       return {
         keyboard: [
-          { content: ['7'], style: 'grid-area: key7', action: (value, append) => (value + append) },
-          { content: ['8'], style: 'grid-area: key8', action: (value, append) => (value + append) },
-          { content: ['9'], style: 'grid-area: key9', action: (value, append) => (value + append) },
-          { content: ['4'], style: 'grid-area: key4', action: (value, append) => (value + append) },
-          { content: ['5'], style: 'grid-area: key5', action: (value, append) => (value + append) },
-          { content: ['6'], style: 'grid-area: key6', action: (value, append) => (value + append) },
-          { content: ['1'], style: 'grid-area: key1', action: (value, append) => (value + append) },
-          { content: ['2'], style: 'grid-area: key2', action: (value, append) => (value + append) },
-          { content: ['3'], style: 'grid-area: key3', action: (value, append) => (value + append) },
-          { content: ['0'], style: 'grid-area: key0', action: (value, append) => (value + append) },
-          { content: [','], style: 'grid-area: keyC', action: (value, append) => (value + append) },
-          { img: 'delivery/key_delete', style: 'grid-area: keyD', action: (value) => (value && value.substring(0, value.length - 1)) },
+          { content: ['7'], style: 'grid-area: key7', action: keyboardFunction.number },
+          { content: ['8'], style: 'grid-area: key8', action: keyboardFunction.number },
+          { content: ['9'], style: 'grid-area: key9', action: keyboardFunction.number },
+          { content: ['4'], style: 'grid-area: key4', action: keyboardFunction.number },
+          { content: ['5'], style: 'grid-area: key5', action: keyboardFunction.number },
+          { content: ['6'], style: 'grid-area: key6', action: keyboardFunction.number },
+          { content: ['1'], style: 'grid-area: key1', action: keyboardFunction.number },
+          { content: ['2'], style: 'grid-area: key2', action: keyboardFunction.number },
+          { content: ['3'], style: 'grid-area: key3', action: keyboardFunction.number },
+          { content: ['0'], style: 'grid-area: key0', action: keyboardFunction.number },
+          { content: [','], style: 'grid-area: keyC', action: keyboardFunction.dot },
+          { img: 'delivery/key_delete', style: 'grid-area: keyD', action: keyboardFunction.delete },
         ],
         template: 'grid-template-areas: "key7 key8 key9" "key4 key5 key6" "key1 key2 key3" "key0 keyC keyD"; grid-auto-rows: 1fr; grid-auto-columns: 1fr; grid-gap: 6px',
         listBtn: []
@@ -52,10 +58,10 @@
     computed: {
       keyboardValue: {
         get() {
-          return '' + this.paymentAmountTendered
+          return this.paymentAmountTendered
         },
         set(value) {
-          this.paymentAmountTendered = +value
+          this.paymentAmountTendered = value.includes('.') ? value : parseFloat('0' + value).toString()
         }
       },
     },
@@ -79,13 +85,13 @@
 
       },
       banknote(value) {
-        this.paymentAmountTendered += +value;
+        this.paymentAmountTendered = (+value + parseFloat('0' + this.paymentAmountTendered)).toString();
       },
       discount() {
         if(this.currentOrder.items.find(i => i.vDiscount > 0) && !this.currentOrder.isDiscountInTotal) {
           this.$getService('alertDiscount:setActive')(true);
         } else {
-          const originalTotal = this.currentOrder.items.reduce((acc, item) => (acc + item.quantity * item.originalPrice), 0);
+          const originalTotal = this.currentOrder.items.reduce((acc, item) => (acc + (item.discountResistance ? 0 : item.quantity * item.originalPrice)), 0);
           this.$getService('dialogDiscount:open')('percentage', originalTotal);
         }
       },

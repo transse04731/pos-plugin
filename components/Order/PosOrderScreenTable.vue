@@ -10,7 +10,7 @@
               <span class="w-10 pa-2 ta-center">Unit</span>
               <span class="w-10 pa-2 ta-right">Qty</span>
               <span class="w-12 pa-2 ta-right">Each(€)</span>
-              <span class="W-12 pa-2 ta-right">Total(€)</span>
+              <span class="pa-2 ta-right" style="width: 15%; max-width: 15%">Total(€)</span>
             </div>
           </th>
         </tr>

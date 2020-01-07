@@ -749,6 +749,7 @@
 
     .g-btn {
       min-width: 0 !important;
+      padding: 0 !important;
     }
 
   }
@@ -850,6 +851,13 @@
   }
 
   .g-btn {
+    white-space: normal;
+
+    ::v-deep .g-btn__content {
+      flex: 0 1 auto;
+      line-height: 0.9;
+    }
+
     &.g-btn__outlined {
       border: 1px solid #979797;
       background-color: #fafafa;
@@ -912,5 +920,9 @@
 
   .buttons {
     padding: 8px 8px 8px 0;
+
+    .g-btn {
+      padding: 0 !important;
+    }
   }
 </style>

@@ -8,14 +8,14 @@
       <tr v-for="product in orderHistoryCurrentOrder.items">
         <td>{{product.quantity}}x</td>
         <td>{{product.name}}</td>
-        <td class="ta-right">€ {{product.originalPrice | formatNumber}}</td>
+        <td class="ta-right">€ {{product.originalPrice.toFixed(2)}}</td>
       </tr>
     </g-simple-table>
     <g-divider/>
     <div class="order-info my-2">
       <span class="fw-700">Promotional
         Applied </span>
-      <span class="order-info-number">-{{promotionTotal > 0 ? (' € ' + promotionTotal) : '' | formatNumber}}</span>
+      <span class="order-info-number">-{{promotionTotal > 0 ? (' € ' + promotionTotal.toFixed(2) ) : ''}}</span>
     </div>
     <g-divider/>
     <div class="order-info mt-2">

@@ -82,6 +82,14 @@
   }
 
   .g-btn {
+    white-space: normal;
+    padding: 0 !important;
+
+    ::v-deep .g-btn__content {
+      flex: 0 1 auto;
+      line-height: 0.9;
+    }
+
     &.g-btn__outlined {
       border: 1px solid #979797;
       background-color: #fafafa;

@@ -32,8 +32,7 @@
       return _.sumBy(items, orderUtil.calItemDiscount)
     },
     applyDiscountForOrder(items, { difference, value }) {
-      const resistanceValue = items.filter(i => i.discountResistance).reduce((acc, item) => (acc + this.calItemTotal(item)), 0);
-      const totalWithoutDiscountResist = difference + value - resistanceValue;
+      const totalWithoutDiscountResist = difference + value;
       const percent =  difference / totalWithoutDiscountResist * 100;
       let sumDiscount = 0;
       const lastDiscountableItemIndex = _.findLastIndex(items, item => !item.discountResistance);
@@ -47,7 +46,7 @@
             sumDiscount += this.calItemDiscount(item);
           } else {
             item.discountUnit = 'amount';
-            item.vDiscount = (difference - sumDiscount)/item.quantity;
+            item.vDiscount = +((difference - sumDiscount)/item.quantity).toFixed(2);
             item.price = item.originalPrice - item.vDiscount;
           }
         }
@@ -75,7 +74,7 @@
         productNameQuery: '',
         productNameQueryResults: [],
         //payment screen variables
-        paymentAmountTendered: 0,
+        paymentAmountTendered: '',
         paymentTip: 0,
         lastPayment: 0,
         //settings screen
@@ -96,6 +95,7 @@
               { title: 'General', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/general'*/ },
               { title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small' },
               { title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small' },
+              { title: 'Payment Layout', icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-payment-config', appendIcon: 'open_in_new' },
               { title: 'Function Layout', icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-fn-button', appendIcon: 'open_in_new' },
               {
                 title: 'Terminal 1', icon: 'radio_button_unchecked', iconType: 'small',
@@ -167,7 +167,7 @@
       },
       paymentChange() {
         if (parseFloat(this.paymentAmountTendered) > this.paymentTotal) {
-          return this.paymentAmountTendered - this.paymentTotal
+          return parseFloat(this.paymentAmountTendered) - this.paymentTotal
         }
         return 0
       },
@@ -358,7 +358,7 @@
       async resetOrderData() {
         this.activeTableProduct = null
         this.currentOrder = { items: [] }
-        this.paymentAmountTendered = 0
+        this.paymentAmountTendered = ''
         this.productIdQuery = ''
         await this.getSavedOrders()
       },
@@ -390,7 +390,7 @@
             vTax: this.paymentTax,
             vTaxGroups,
             vDiscount: this.paymentDiscount,
-            receive: this.paymentAmountTendered,
+            receive: parseFloat(this.paymentAmountTendered),
             cashback: this.paymentChange
           }
 
@@ -1084,7 +1084,7 @@
       },
       async quickCash() {
         this.lastPayment = +this.paymentTotal
-        this.paymentAmountTendered = this.paymentTotal
+        this.paymentAmountTendered = this.paymentTotal.toString()
         await this.savePaidOrder({ type: 'cash', value: this.lastPayment });
       },
       pay() {

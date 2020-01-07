@@ -7,7 +7,7 @@
     <div>Change</div>
     <div class="input two-head">
       <p class="balance">€ {{paymentTotal | formatNumber}}</p>
-      <p class="amount">€ {{paymentAmountTendered}}</p>
+      <p class="amount">€ {{paymentAmountTendered || 0}}</p>
     </div>
     <div class="input change">
       € {{paymentChange | formatNumber}}

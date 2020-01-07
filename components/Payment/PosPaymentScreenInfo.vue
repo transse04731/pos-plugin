@@ -13,8 +13,8 @@
       <g-avatar size="36">
         <img :src="user ? user.avatar : ''"/>
       </g-avatar>
-      <div class="pa-1" style="line-height: 16px">
-        <p class="ta-right fw-700 fs-small">{{user ? user.name : ''}}</p>
+      <div class="pa-1 ta-right" style="line-height: 16px">
+        <p class="username">{{user ? user.name : ''}}</p>
         <p class="fs-small-2">{{formattedDate}}</p>
       </div>
     </div>
@@ -66,5 +66,15 @@
     flex-direction: row-reverse;
     align-items: center;
     padding: 0 6px;
+
+    .username {
+      word-break: break-all;
+      -webkit-line-clamp: 2;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-size: 14px;
+      font-weight: 700;
+    }
   }
 </style>

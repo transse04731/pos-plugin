@@ -6,7 +6,7 @@
                @click.stop="toggleSelect(item)"
                style="flex-basis: 30%; margin: 0 0 12px 12px">
           <img :src="item.icon" style="width: 20px; height: 20px"/>
-          <span class="ml-2 text-black">{{item.name | capitalize}}</span>
+          <span class="ml-2 text-black" style="text-transform: capitalize">{{item.name}}</span>
         </g-btn>
       </template>
       <template #selected="{toggleSelect, item, index}">
@@ -14,7 +14,7 @@
                @click.stop="toggleSelect(item)"
                style="flex-basis: 30%; margin: 0 0 12px 12px">
           <img :src="item.icon" style="width: 20px; height: 20px"/>
-          <span class="ml-2">{{item.name | capitalize}}</span>
+          <span class="ml-2" style="text-transform: capitalize">{{item.name}}</span>
         </g-btn>
       </template>
     </g-grid-select>
@@ -30,13 +30,6 @@
       'PosStore:getListPayments',
       'PosStore:selectedPayment',
     ],
-    filters: {
-      capitalize: function (value) {
-        if (!value) return ''
-        value = value.toString()
-        return value.charAt(0).toUpperCase() + value.slice(1)
-      }
-    },
     data() {
       return {
       }

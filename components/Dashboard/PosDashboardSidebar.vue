@@ -5,7 +5,7 @@
         <g-avatar size="40">
           <g-img :src="srcImg"></g-img>
         </g-avatar>
-        <span class="ml-2" style="word-break: break-all">{{userName}}</span>
+        <span class="username">{{userName}}</span>
       </div>
     </template>
     <g-side-bar-tree-view :data="sideBardata" v-model="sidebar"></g-side-bar-tree-view>
@@ -72,6 +72,17 @@
       line-height: 18px;
       font-weight: 600;
       color: #1d1d26;
+
+      .username {
+        word-break: break-all;
+        -webkit-line-clamp: 2;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: 14px;
+        font-weight: 600;
+        padding-left: 8px;
+      }
     }
   }
 

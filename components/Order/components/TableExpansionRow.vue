@@ -3,7 +3,7 @@
     <td>
       <div class="g-expansion-header"
            @click="$emit('toggle')">
-        <div class="flex-grow-1 pa-2">
+        <div class="flex-grow-1 pa-2" style="width: 52.5%; max-width: 52.5%">
           <p style="font-size: 15px">
             {{name}}
           </p>
@@ -15,8 +15,9 @@
           <p>{{price}}</p>
           <p class="promotion-price" v-if="vDiscount > 0">{{originalPrice}}</p>
         </div>
-        <div :class="{'w-12 pa-2 ta-right': true,
-          ...price !== originalPrice && {'text-light-green': true}}">
+        <div :class="{'py-2 pr-2 ta-right': true,
+          ...price !== originalPrice && {'text-light-green': true}}"
+        style="width: 15%; max-width: 15%;">
           <p class="fw-700">{{total}}</p>
           <p class="promotion-price" v-if="vDiscount > 0">{{originalTotal}}</p>
         </div>

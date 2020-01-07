@@ -41,10 +41,10 @@
         </td>
       </tr>
       <tr v-for="(order, i) in orderHistoryOrders" :key="i" :class="[order._id === orderHistoryCurrentOrder._id && 'tr__active']" @click="chooseOrder(order)">
-        <td class="ta-center">{{order.id}}</td>
+        <td class="ta-center" style="white-space: nowrap">{{order.id}}</td>
         <td class="ta-center">{{order.dateTime}}</td>
-        <td class="ta-center">{{order.barcode}}</td>
-        <td class="ta-right">€ {{+order.amount.toFixed(2)}}</td>
+        <td class="ta-center" style="white-space: nowrap">{{order.barcode}}</td>
+        <td class="ta-right" style="white-space: nowrap">€ {{order.amount.toFixed(2)}}</td>
         <td>{{getStaffName(order.staff)}}</td>
         <td class="ta-center">{{order.info}}</td>
       </tr>
@@ -168,6 +168,8 @@
       font-size: 13px;
       line-height: 16px;
       padding: 0 8px;
+      border-top: 2px solid transparent;
+      border-bottom: 2px solid transparent;
     }
 
     .td__sticky {
@@ -204,11 +206,11 @@
     }
 
     tr th:nth-child(4) {
-      width: 12%;
+      width: 13%;
     }
 
     tr th:nth-child(5) {
-      width: 15%;
+      width: 18%;
     }
   }
 

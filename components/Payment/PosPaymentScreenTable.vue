@@ -9,7 +9,7 @@
             <span class="w-10 pa-2 ta-center">Unit</span>
             <span class="w-10 pa-2 ta-right">Qty</span>
             <span class="w-12 pa-2 ta-right">Each(€)</span>
-            <span class="W-12 pa-2 ta-right">Total(€)</span>
+            <span class="pa-2 ta-right" style="width: 15%; max-width: 15%">Total(€)</span>
           </div>
         </th>
       </tr>
@@ -20,7 +20,7 @@
           <div style="line-height: 1.75"
                :class="{'row-flex': true, ...product.edited ? {'text__edited': true} : null}"
           >
-            <div class="flex-grow-1 pa-2 ta-left" style="font-size: 15px">
+            <div class="flex-grow-1 pa-2 ta-left" style="font-size: 15px; width: 52.5%; max-width: 52.5%">
               <p>{{product.name}}
               <p v-if="product.attributes" class="promotion">{{product.attributes}}</p>
             </div>
@@ -30,7 +30,7 @@
               <p>{{product.price | formatNumber}}</p>
               <p v-if="product.vDiscount > 0" class="promotion-price">{{product.originalPrice}}</p>
             </div>
-            <div class="w-12 pa-2 ta-right">
+            <div class="py-2 pr-2 ta-right" style="width: 15%; max-width: 15%">
               <p :class="[product.edited && 'text__edited']">{{(product.price * product.quantity) | formatNumber}}</p>
               <p v-if="product.vDiscount > 0" class="promotion-price">{{product.originalPrice * product.quantity}}</p>
             </div>
