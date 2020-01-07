@@ -1128,8 +1128,28 @@
       getHighestZNumber() {
         const reportWithHighestZ = cms.getList('EndOfDay').sort((cur, next) => next.z - cur.z)[0]
         return reportWithHighestZ ? reportWithHighestZ.z + 1 : 1
-      }
+      },
       //<!--</editor-fold>-->
+      //Layout config views
+      async updatePosSettings(item, dbButtonList, mergeMap) {
+        try {
+          await cms.getModel('PosSetting').findOneAndUpdate({ [`${dbButtonList}._id`]: item.buttonId }, {
+            '$set': {
+              [`${dbButtonList}.$.backgroundColor`]: item.style.backgroundColor,
+              [`${dbButtonList}.$.text`]: item.text,
+              [`${dbButtonList}.$.rows`]: item.row,
+              [`${dbButtonList}.$.cols`]: item.col,
+              [`${dbButtonList}.$.textColor`]: ['#73F8F8', '#FFFFFF'].includes(item.style.backgroundColor) ? '#000000' : '#FFFFFF',
+              [`${dbButtonList}.$.buttonFunction`]: item.buttonFunction,
+              [`${dbButtonList}.$.buttonFunctionValue`]: item.buttonFunctionValue,
+              [`${dbButtonList}.$.containedButtons`]: mergeMap && mergeMap[item.buttonId] ? mergeMap[item.buttonId] : [],
+              ...(item.buyback && {[`${dbButtonList}.$.buyback`]: item.buyback}),
+            }
+          });
+        } catch (e) {
+          console.log('Error updating updatePosSettings', e);
+        }
+      },
     },
     created() {
       const cachedPageSize = localStorage.getItem('orderHistoryPageSize')
@@ -1272,6 +1292,9 @@
         finalizeReport: this.finalizeReport,
         printZReport: this.printZReport,
         getXReport: this.getXReport,
+
+        //Layout config views
+        updatePosSettings: this.updatePosSettings
       }
     }
   }

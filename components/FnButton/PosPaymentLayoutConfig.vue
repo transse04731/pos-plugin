@@ -1,6 +1,6 @@
 <template>
   <g-grid-layout :layout="layout" style="height: 100%">
-    <div area="payment-button-name">
+    <div area="button-name">
       <pos-text-field :value="textFieldValue"
                       @change="updateButtonItems"
                       @input="updateButton($event, 'text')"
@@ -47,7 +47,7 @@
       <g-grid-select :grid="false" :items="buttonColors" return-object v-model="selectedColor">
         <template #default="{toggleSelect, item, index}">
           <g-btn :key="index" :ripple="false"
-                 :style="calculateColorStyle(item)"
+                 :style="computeColorStyle(item)"
                  :uppercase="false"
                  @click="toggleSelect(item); updateButtonItems();"></g-btn>
         </template>
@@ -57,7 +57,7 @@
               <g-icon>done</g-icon>
             </template>
             <g-btn :ripple="false"
-                   :style="calculateSelectedColorStyle(item)"
+                   :style=" computeSelectedColorStyle(item)"
                    :uppercase="false">
             </g-btn>
           </g-badge>
@@ -109,7 +109,7 @@
     <g-button-merger :items="buttonItems" :received-merge-map="mergeMap" :received-merged-buttons="mergedButtons" :value="selectedButtons" @input="updateButtonItems" @merged="setMergedButtons" area="button-merger" cols="1fr 1fr 1fr 1fr 1fr" ref="paymentMerger" rows="1fr 1fr 1fr 1fr 1fr" style="height: 100%; padding: 4px;">
       <template #default="{toggleSelect, item, index}">
         <g-btn :disabled="item.disabled"
-               :style="calculateButtonStyle(item)"
+               :style="computeButtonStyle(item)"
                :uppercase="false"
                @click="toggleSelect(item)"
                elevation="0" height="100%" width="100%">
@@ -118,7 +118,7 @@
       </template>
       <template #selected="{toggleSelect, item, index}">
         <g-btn :class="activeSelectedButton"
-               :style="calculateSelectedButtonStyle(item)"
+               :style="computeSelectedButtonStyle(item)"
                :uppercase="false" @click="toggleSelect(item)"
                elevation="0" height="100%" width="100%">
           {{item.text}}
@@ -174,19 +174,16 @@
   import paymentLayout from './paymentLayout'
   import PosTextField from '../pos-shared-components/POSInput/PosTextField';
   import PosSelect from '../pos-shared-components/POSInput/PosSelect';
+  import layoutConfigMixin from './common/layoutConfigMixin';
+
 
   export default {
     name: 'PosPaymentLayoutConfig',
     components: { PosSelect, PosTextField, GButtonMerger },
+    injectService: ['PosStore:( updatePosSettings )'],
+    mixins: [layoutConfigMixin],
     data: () => ({
-      mergeMap: null,
       layout: paymentLayout,
-      mergedButtons: [],
-      activeSelectedButton: 'active-selected',
-      showMenu: false,
-      mergeMode: false,
-      splitMode: false,
-      selectedButtons: [],
       buttonItems: [
         {
           col: [1, 2],
@@ -315,44 +312,6 @@
         { text: 'Discount', value: 'discount', hasValue: false },
         { text: 'Cashdrawer', value: 'cashDrawer', hasValue: false },
       ],
-      buttonColors: [
-        {
-          text: '#FFFFFF',
-          value: '#FFFFFF'
-        },
-        {
-          text: '#FFA726',
-          value: '#FFA726'
-        },
-        {
-          text: '#FF87E9',
-          value: '#FF87E9'
-        },
-        {
-          text: '#73F8F8',
-          value: '#73F8F8'
-        },
-        {
-          text: '#66BB6A',
-          value: '#66BB6A'
-        },
-        {
-          text: '#1976D2',
-          value: '#1976D2'
-        },
-        {
-          text: '#7575FF',
-          value: '#7575FF'
-        },
-        {
-          text: '#F6787C',
-          value: '#F6787C'
-        },
-      ],
-      selectedFunction: null,
-      selectedColor: null,
-      textFieldValue: '',
-      textFieldFunctionValue: ''
     }),
     watch: {
       selectedButtons(newVal) {
@@ -382,12 +341,6 @@
       },
     },
     computed: {
-      isButtonSelected() {
-        return this.selectedButtons.length > 0;
-      },
-      isInConfigLayoutMode() {
-        return this.mergeMode || this.splitMode;
-      },
       showFunctionValue() {
         if (!this.selectedFunction || !this.listButtonFunctions) {
           return false;
@@ -418,80 +371,10 @@
               buttonFunctionValue: null,
               text: ''
             });
-            this.updatePosSettings(resetButton, 'paymentFunctionButtons')
+            this.updatePosSettings(resetButton, 'paymentFunctionButtons', this.mergeMap)
           } catch (e) {
             console.log('Error updating: ', e);
           }
-        }
-      },
-      updateButtonFunction(value) {
-        this.updateButton(value, 'buttonFunction');
-        this.updateButtonItems();
-      },
-      toggleMode(mode) {
-        switch (mode) {
-          case 'merge':
-            this.mergeMode = !this.mergeMode;
-            this.selectedButtons = []
-            this.splitMode = false;
-            this.showMenu = false;
-            break;
-          case 'split':
-            this.splitMode = !this.splitMode;
-            this.selectedButtons = []
-            this.mergeMode = false;
-            this.showMenu = false;
-            break;
-          case 'cancel':
-            this.splitMode = false;
-            this.selectedButtons = []
-            this.mergeMode = false;
-            this.showMenu = false;
-            break;
-          default:
-            throw new Error('Invalid mode')
-        }
-      },
-      calculateSelectedColorStyle(item) {
-        return {
-          boxShadow: 'none',
-          borderRadius: '50%',
-          width: '38px',
-          minWidth: '38px',
-          height: '38px',
-          border: '2px solid #1271FF',
-          backgroundColor: item.value
-        }
-      },
-      calculateColorStyle(item) {
-        return {
-          marginRight: '14px',
-          boxShadow: 'none',
-          borderRadius: '50%',
-          width: '38px',
-          minWidth: '38px',
-          height: '38px',
-          border: '1px solid #D2D2D2',
-          backgroundColor: item.value
-        }
-      },
-      calculateSelectedButtonStyle(item) {
-        return {
-          display: this.mergedButtons.indexOf(item.buttonId) >= 0 ? 'none' : '',
-          gridRow: item.row[0] + '/' + item.row[1],
-          gridColumn: item.col[0] + '/' + item.col[1],
-          backgroundColor: item.style.backgroundColor,
-          color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : '',
-        }
-      },
-      calculateButtonStyle(item) {
-        return {
-          display: this.mergedButtons.indexOf(item.buttonId) >= 0 ? 'none' : '',
-          gridRow: item.row[0] + '/' + item.row[1],
-          gridColumn: item.col[0] + '/' + item.col[1],
-          backgroundColor: item.style.backgroundColor,
-          color: item.style.backgroundColor && item.style.backgroundColor !== '#FFFFFF' ? item.style.textColor : '',
-          border: '1px solid #979797'
         }
       },
       validateSplit() {
@@ -521,38 +404,12 @@
         this.mergedButtons = mergedButtons;
         this.mergeMap = mergeMap
       },
-      updateButton(newVal, updatedField) {
-        if (this.selectedButtons[0]) {
-          const item = this.findSelectedButton(this.selectedButtons[0]);
-          if (item) {
-            item[updatedField] = newVal;
-          }
-        }
-      },
       findSelectedButton(button) {
         if (!button) {
           return null;
         }
 
         return this.buttonItems.find((x) => x.buttonId === button.buttonId);
-      },
-      async updatePosSettings(item, dbButtonList) {
-        try {
-          await cms.getModel('PosSetting').findOneAndUpdate({ [`${dbButtonList}._id`]: item.buttonId }, {
-            '$set': {
-              [`${dbButtonList}.$.backgroundColor`]: item.style.backgroundColor,
-              [`${dbButtonList}.$.text`]: item.text,
-              [`${dbButtonList}.$.rows`]: item.row,
-              [`${dbButtonList}.$.cols`]: item.col,
-              [`${dbButtonList}.$.textColor`]: item.style.backgroundColor !== '#FFFFFF' ? '#FFFFFF' : '#000000',
-              [`${dbButtonList}.$.buttonFunction`]: item.buttonFunction,
-              [`${dbButtonList}.$.buttonFunctionValue`]: item.buttonFunctionValue,
-              [`${dbButtonList}.$.containedButtons`]: this.mergeMap && this.mergeMap[item.buttonId] ? this.mergeMap[item.buttonId] : []
-            }
-          });
-        } catch (e) {
-          console.log('Error updating updatePosSettings', e);
-        }
       },
       updateButtonItems() {
         if (!this.selectedButtons[0]) {
@@ -562,40 +419,11 @@
         let foundItem = this.findSelectedButton(this.selectedButtons[0]);
         if (foundItem) {
           foundItem.style.backgroundColor = this.selectedColor ? this.selectedColor.value : null;
-          foundItem.style.textColor = this.selectedColor && this.selectedColor.value !== '#FFFFFF' ? '#FFFFFF' : '#000000';
+          foundItem.style.textColor =  this.selectedColor && ['#73F8F8', '#FFFFFF'].includes(this.selectedColor.value) ? '#000000' : '#FFFFFF';
           try {
-            this.updatePosSettings(foundItem, 'paymentFunctionButtons')
+            this.updatePosSettings(foundItem, 'paymentFunctionButtons', this.mergeMap)
           } catch (e) {
             console.log('Error updating: ', e);
-          }
-        }
-      },
-      mapFetchedButtons(buttonList, dataList) {
-        for (let item of buttonList) {
-          const {
-            backgroundColor, buttonFunction, buttonFunctionValue, originalRows, originalCols,
-            text, textColor, containedButtons, _id, rows, cols
-          } = item;
-
-          dataList.push({
-            row: rows,
-            col: cols,
-            originalRow: originalRows,
-            originalCol: originalCols,
-            text,
-            style: { backgroundColor: backgroundColor, textColor: textColor },
-            buttonFunction,
-            buttonFunctionValue,
-            buttonId: _id,
-          })
-
-          this.mergedButtons = this.mergedButtons.concat(containedButtons);
-          if (containedButtons.length > 0) {
-            if (this.mergeMap) {
-              this.mergeMap = Object.assign(this.mergeMap, { [_id]: containedButtons });
-            } else {
-              this.mergeMap = Object.assign({}, { [_id]: containedButtons });
-            }
           }
         }
       },
@@ -614,6 +442,8 @@
 </script>
 
 <style lang="scss" scoped>
+  @import "common/layoutConfig";
+
   .payment-details-textfield-container {
     width: 100%;
     display: flex;
@@ -650,50 +480,8 @@
     flex: 1;
   }
 
-  ::v-deep .g-badge {
-    background-color: #1271FF !important;
-    width: 12px;
-    min-width: 12px;
-    left: 20px;
-    top: 5px;
-
-    .g-icon {
-      font-size: 10px !important;
-      font-weight: bold;
-    }
-  }
-
-  .left-layout-overlay {
-    .left-layout-overlay-info {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-    }
-
-    background-color: #ffffff;
-    z-index: 99;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
   .payment-details {
     padding: 9px;
-  }
-
-  .title {
-    font-size: 13px;
-    line-height: 16px;
-  }
-
-  .payment-button-name {
-    padding: 12px;
-
-    ::v-deep .bs-tf-wrapper {
-      margin: 0;
-    }
   }
 
   .button-merger {
@@ -704,19 +492,9 @@
     }
   }
 
-  .active-selected {
-    border: 2px solid #1271FF !important
-  }
-
-  .active-error {
-    border: 2px solid darkred !important;
-  }
-
   .button-fn {
     padding: 13px 12px 8px 13px;
-  }
 
-  .button-fn {
     ::v-deep .g-select .g-tf-wrapper {
       margin: 8px 0 24px 0;
     }
@@ -724,18 +502,6 @@
     ::v-deep .bs-tf-wrapper {
       margin: 0;
     }
-  }
-
-  .color {
-    padding: 8px 8px 8px 13px;
-
-    ::v-deep .g-row {
-      margin-top: 20px;
-    }
-  }
-
-  .color-select-active {
-    border: 2px solid #1271FF;
   }
 
   .toolbar {
@@ -747,17 +513,6 @@
 
     .g-btn {
       min-width: 0 !important;
-    }
-  }
-
-  .button-fn-value {
-    padding: 8px;
-    display: flex;
-
-    .bs-tf-wrapper {
-      width: 100%;
-      padding-right: 23px;
-      margin: 0;
     }
   }
 
