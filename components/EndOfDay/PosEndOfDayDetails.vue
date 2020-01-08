@@ -141,6 +141,7 @@
 
     .g-tab:not(.g-tab__active) {
       height: 85px;
+      border-top: 4px solid transparent;
       background-color: #F2F2F2;
     }
 

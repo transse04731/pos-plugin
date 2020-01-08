@@ -17,15 +17,13 @@
 
     <pos-end-of-day-print-dialog>
       <template v-slot:activator="{open, close}">
-        <g-btn :uppercase="false" @click="open(selectedReportDate.date)" class="mr-2" v-if="showRunEndOfDay">
-          <g-icon class="mr-2" svg>icon-print2</g-icon>
+        <g-btn :uppercase="false" @click="open(selectedReportDate.date)" width="139px" class="mr-2" v-if="showRunEndOfDay">
           X-Report
         </g-btn>
       </template>
     </pos-end-of-day-print-dialog>
 
-    <g-btn :uppercase="false" @click="runEndOfDay" background-color="#E57373" class="mr-2" text-color="#FFFFFF" v-if="showRunEndOfDay">
-      <g-icon class="mr-2" svg>icon-print2</g-icon>
+    <g-btn :uppercase="false" @click="runEndOfDay" background-color="#E57373" text-color="#FFFFFF" v-if="showRunEndOfDay">
       Run End-of-Day
     </g-btn>
 
