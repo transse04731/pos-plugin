@@ -430,9 +430,3 @@
     }
   }
 </style>
-
-<style lang="scss">
-  .g-dialog-content {
-    display: flex;
-  }
-</style>

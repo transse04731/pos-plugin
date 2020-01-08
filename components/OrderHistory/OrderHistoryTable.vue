@@ -45,7 +45,9 @@
         <td class="ta-center">{{order.dateTime}}</td>
         <td class="ta-center" style="white-space: nowrap">{{order.barcode}}</td>
         <td class="ta-right" style="white-space: nowrap">€ {{order.amount.toFixed(2)}}</td>
-        <td>{{getStaffName(order.staff)}}</td>
+        <td>
+          <p class="staff-name">{{getStaffName(order.staff)}}</p>
+        </td>
         <td class="ta-center">{{order.info}}</td>
       </tr>
     </g-simple-table>
@@ -170,6 +172,13 @@
       padding: 0 8px;
       border-top: 2px solid transparent;
       border-bottom: 2px solid transparent;
+
+      .staff-name {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+      }
     }
 
     .td__sticky {

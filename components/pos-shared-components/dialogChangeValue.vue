@@ -79,7 +79,7 @@
         newPercent: '',
         newAmount: '',
         rules: {
-          percent: value => (value < 100 && value > 0) || value === '' || 'Input: 0 - 100',
+          percent: value => (value <= 100 && value >= 0) || value === '' || 'Input: 0 - 100',
         },
         showDialog: false,
         originalValue: 0,

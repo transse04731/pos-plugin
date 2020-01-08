@@ -46,6 +46,10 @@
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+  .keyboard__template {
+    ::v-deep .key {
+      border-color: #979797
+    }
+  }
 </style>

@@ -21,12 +21,9 @@
 </template>
 
 <script>
-  //import PosTextField from '../POSInput/PosTextField';
-  //import PosNumpad from '../PosNumpad';
 
   export default {
     name: 'dialogNumberFilter',
-    //components: { PosNumpad, PosTextField },
     props: {
       label: String,
       value: null,

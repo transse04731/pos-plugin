@@ -19,11 +19,9 @@
 </template>
 
 <script>
-  //import PosRangeSlider from '../POSInput/PosRangeSlider';
 
   export default {
     name: 'dialogRangeFilter',
-    //components: { PosRangeSlider },
     props: {
       label: String,
       min: {

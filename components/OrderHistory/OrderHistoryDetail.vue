@@ -56,7 +56,7 @@
 
 <style scoped lang="scss">
   .wrapper {
-    padding: 16px 8px;
+    padding: 16px 4px;
     box-shadow: -1px 0px 6px rgba(0, 0, 0, 0.25);
     overflow: auto;
     z-index: 2;
@@ -85,19 +85,19 @@
 
       tr td {
         height: 28px;
-        padding: 0 4px 0 2px;
-        font-size: 12px;
+        padding: 0 4px 0 0;
+        font-size: 11.5px;
         line-height: 28px;
         white-space: nowrap;
         max-width: 0;
       }
 
       tr td:first-child {
-        width: 15%;
+        width: 20%;
       }
 
       tr td:nth-child(2) {
-        width: 60%;
+        width: 50%;
         text-overflow: ellipsis;
         overflow: hidden;
         padding-left: 8px;
