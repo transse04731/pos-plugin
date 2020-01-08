@@ -2,10 +2,9 @@
   import _ from 'lodash'
   import { ref, computed } from '@vue/composition-api'
   import { _computedDatesInMonthCustom } from './computedDateInMonth';
-  import { setTextColor, setBackgroundColor } from 'pos-vue-framework/src/mixins/colorable';
-  import GDatePickerUtil from 'pos-vue-framework/src/components/GDatePicker/logic/GDatePickerUtil';
-  import GPicker from 'pos-vue-framework/src/components/GPicker/GPicker'
-  import Touch from 'pos-vue-framework/src/directives/touch/touch';
+  import { setBackgroundColor, setTextColor } from 'pos-vue-framework';
+  import { GDatePickerUtil } from 'pos-vue-framework';
+  import { GPicker} from 'pos-vue-framework'
 
   const MINIMUM_WIDTH = 300;
   const DEFAULT_COLOR = 'rgb(98, 0, 237)';
@@ -367,7 +366,7 @@
             <template slot="title">
               {datePickerTitleRenderFn()}
             </template>
-              {datePickerBodyRenderFn()}
+            {datePickerBodyRenderFn()}
             <template slot="actions">
               {context.slots.default && context.slots.default()}
             </template>
@@ -397,6 +396,7 @@
   .g-picker {
     background-color: #eee;
   }
+
   button {
     outline: none;
   }
