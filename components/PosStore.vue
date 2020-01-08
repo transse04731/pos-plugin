@@ -155,6 +155,15 @@
         //End of day report screen
         selectedReportDate: null,
         listOfDatesWithReports: [],
+        //month report screen
+        selectedMonth: null,
+        monthReportFrom: null,
+        monthReportTo: null,
+        showProductSold: true,
+        showAllZNumber: false,
+        saleDataByPaymentType: [],
+        zNumberData: [],
+        productsSoldByCategory: [],
       }
     },
     domain: 'PosStore',
@@ -471,7 +480,6 @@
       },
       printOrderReport(orderId) {
         return new Promise((resolve, reject) => {
-          debugger
           if (_.isNil(orderId)) reject()
           cms.socket.emit('printReport', 'OrderReport', { orderId }, ({ success, message }) => {
             if (success) resolve()
@@ -1150,6 +1158,66 @@
           console.log('Error updating updatePosSettings', e);
         }
       },
+      //month report
+      async getSalesByPaymentType() {
+        this.saleDataByPaymentType = await cms.getModel('Order').aggregate([
+          {
+            $match: {
+              status: 'paid',
+              date: { $gte: new Date(this.monthReportFrom + ' 00:00:00'), $lte: new Date(this.monthReportTo + ' 23:59:59') }
+            }
+          },
+          { $unwind: { path: '$payment' } },
+          {
+            $group: {
+              _id: '$payment.type',
+              total: { $sum: '$payment.value' }
+            }
+          }
+        ])
+      },
+      async getListProductSoldByCategory() {
+        this.productsSoldByCategory = await cms.getModel('Order').aggregate([
+          { $match: {
+              status: 'paid',
+              date: { $gte: dayjs(this.monthReportFrom).startOf('day').toDate(), $lt: dayjs(this.monthReportTo).add(1, 'day').startOf('day').toDate() }
+            } },
+          { $unwind: { path: '$items' } },
+          {
+            $group: {
+              _id: { name: '$items.name', category: '$items.category' },
+              totalSales: { $sum: { $multiply: ['$items.quantity', '$items.price'] } },
+              amount: { $sum: '$items.quantity' }
+            }
+          },
+          {
+            $group: {
+              _id: '$_id.category',
+              total: { $sum: '$totalSales' },
+              items: {
+                $push:
+                    {name: '$_id.name', quantity: '$amount'}
+              }
+            }
+          }
+        ])
+      },
+      async getAllZNumber() {
+        const model = cms.getModel('EndOfDay');
+        const data = await model.find({
+          begin: { $gte: dayjs(this.monthReportFrom).startOf('day').toDate()},
+          end: { $lt: dayjs(this.monthReportTo).add(1, 'day').startOf('day').toDate()}
+        })
+        this.zNumberData = data.map(datum => ({
+          ...datum,
+          date: dayjs(datum.begin).format('DD.MM.YYYY')
+        }))
+      },
+      async getMonthReportData() {
+        await this.getSalesByPaymentType();
+        await this.getListProductSoldByCategory();
+        await this.getAllZNumber();
+      },
     },
     created() {
       const cachedPageSize = localStorage.getItem('orderHistoryPageSize')
@@ -1294,7 +1362,17 @@
         getXReport: this.getXReport,
 
         //Layout config views
-        updatePosSettings: this.updatePosSettings
+        updatePosSettings: this.updatePosSettings,
+        //month report screen
+        selectedMonth: this.selectedMonth,
+        monthReportFrom: this.monthReportFrom,
+        monthReportTo: this.monthReportTo,
+        showProductSold: this.showProductSold,
+        showAllZNumber: this.showAllZNumber,
+        getMonthReportData: this.getMonthReportData,
+        saleDataByPaymentType: this.saleDataByPaymentType,
+        zNumberData: this.zNumberData,
+        productsSoldByCategory: this.productsSoldByCategory,
       }
     }
   }
