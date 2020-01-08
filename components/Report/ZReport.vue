@@ -201,7 +201,7 @@
       }
 
       .store-details {
-        font-weight: lighter;
+        font-weight: normal;
         font-size: 20px;
         line-height: 24px;
         margin: 0 auto 12px;
@@ -225,7 +225,7 @@
         }
 
         P:not(:first-child) {
-          font-weight: lighter;
+          font-weight: normal;
         }
 
         p:first-child {
@@ -271,7 +271,7 @@
 
             td {
               word-break: break-all;
-              font-weight: lighter;
+              font-weight: normal;
               font-size: 24px;
               line-height: 24px;
               padding: 0;
@@ -296,7 +296,7 @@
         div {
           &:not(.total):not(.due) {
             span {
-              font-weight: lighter;
+              font-weight: normal;
               font-size: 24px;
               line-height: 29px;
             }
@@ -315,7 +315,7 @@
       }
 
       .payment-method {
-        font-weight: lighter;
+        font-weight: normal;
         font-size: 25px;
         line-height: 30px;
         padding-bottom: 0;
