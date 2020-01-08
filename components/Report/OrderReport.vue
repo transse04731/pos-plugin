@@ -71,7 +71,7 @@
           <span>Subtotal</span>
           <span class="float-right">{{(orderSum - orderTax) | convertMoney}}</span>
         </div>
-        <div style="margin: 12px 0;">
+        <div v-if="!isNaN(discount) && discount > 0" style="margin: 12px 0;">
           <span>Discount</span>
           <span class="float-right">({{discount | convertMoney}})</span>
         </div>
@@ -123,7 +123,7 @@
     },
     filters: {
       convertMoney(value) {
-        return value.toFixed(2)
+        return !isNaN(value) ? value.toFixed(2) : value
       }
     },
     props: {

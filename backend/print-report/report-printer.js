@@ -185,7 +185,7 @@ module.exports = async function (cms) {
   function callbackWithError(callback, error) {
     callback({
       success: false,
-      message: error
+      message: error.toString()
     })
   }
 }

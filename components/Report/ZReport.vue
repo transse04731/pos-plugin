@@ -92,7 +92,7 @@
     name: "ZReport.vue",
     filters: {
       convertMoney(value) {
-        return value.toFixed(2)
+        return !isNaN(value) ? value.toFixed(2) : value
       }
     },
     props: {
@@ -106,7 +106,10 @@
       subTotal: Number,
       taxTotal: Number,
       sumTotal: Number,
-      discount: Number,
+      discount: {
+        type: Number,
+        default: 0,
+      },
       reportByPayment: Object,
       reportGroups: Object,
       z: Number,
