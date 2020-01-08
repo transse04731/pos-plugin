@@ -53,7 +53,8 @@
                 height="28" width="20%" style="text-align: right">{{(item.originalPrice) | convertMoney}}
             </td>
             <td :style="index === orderProductList.length - 1 ? 'padding-bottom: 0' : ''"
-                height="28" width="25%" style="text-align: right">{{(item.quantity * item.originalPrice) | convertMoney}}
+                height="28" width="25%" style="text-align: right">{{(item.quantity * item.originalPrice) |
+              convertMoney}}
             </td>
           </tr>
           <tr class="divider-row">
@@ -148,9 +149,8 @@
 
 <style lang="scss">
   .order-report-main-container {
-    width: calc(100% + 16px);
+    width: 100%;
     padding: 0;
-    margin: -8px;
     background-color: #ffffff;
     font-family: Verdana;
     font-style: normal;

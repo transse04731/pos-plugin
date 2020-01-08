@@ -116,9 +116,8 @@
 
 <style lang="scss">
   .z-report-main-container {
-    width: calc(100% + 16px);
+    width: 100%;
     padding: 0;
-    margin: -8px;
     background-color: #ffffff;
     font-family: Verdana;
     font-style: normal;
