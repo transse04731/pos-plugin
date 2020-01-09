@@ -20,6 +20,8 @@ module.exports = async function (cms) {
       await orderReportHandler(args, callback)
     } else if (reportType === 'ZReport') {
       await zReportHandler(args, callback)
+    } else if (reportType === 'MonthlyReport') {
+      await monthlyReportHandler(args, callback)
     }
   }
 
@@ -156,6 +158,27 @@ module.exports = async function (cms) {
       components: {ZReport},
       render(h) {
         return h('ZReport', {props})
+      }
+    })
+
+    renderer.renderToString(component, {}, async (err, html) => {
+      if (err) {
+        callbackWithError(callback, err)
+        return
+      }
+      await print(html)
+      callback({success: true})
+    })
+  }
+
+  async function monthlyReportHandler(report, callback) {
+    const totalSales = report.saleDataByPaymentType.reduce((acc, val) => (acc + val.total), 0)
+    const props = {...report, totalSales }
+    const MonthReport = require('../../dist/MonthReport.vue')
+    const component = new Vue({
+      components: { MonthReport },
+      render(h) {
+        return h('MonthReport', { props })
       }
     })
 

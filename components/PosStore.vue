@@ -403,11 +403,10 @@
             cashback: this.paymentChange
           }
 
-          if (this.currentOrder.status === 'inProgress') {
-            await orderModel.findOneAndUpdate({ _id: this.currentOrder._id }, order)
-          } else {
-            await orderModel.create(order)
-          }
+          const newOrder = this.currentOrder.status === 'inProgress'
+            ? await orderModel.findOneAndUpdate({ _id: this.currentOrder._id }, order)
+            : await orderModel.create(order);
+          newOrder && this.printOrderReport(newOrder._id)
         } catch (e) {
           console.error(e)
           return
@@ -1138,6 +1137,7 @@
         return reportWithHighestZ ? reportWithHighestZ.z + 1 : 1
       },
       //<!--</editor-fold>-->
+
       //Layout config views
       async updatePosSettings(item, dbButtonList, mergeMap) {
         try {
@@ -1158,7 +1158,8 @@
           console.log('Error updating updatePosSettings', e);
         }
       },
-      //month report
+
+      //<!--<editor-fold desc="Monthly Report">-->
       async getSalesByPaymentType() {
         this.saleDataByPaymentType = await cms.getModel('Order').aggregate([
           {
@@ -1218,6 +1219,17 @@
         await this.getListProductSoldByCategory();
         await this.getAllZNumber();
       },
+      printMonthlyReport(report) {
+        return new Promise((resolve, reject) => {
+          cms.socket.emit('printReport', 'MonthlyReport',
+            report,
+            ({ success, message }) => {
+              if (success) resolve()
+              reject(message)
+            })
+        })
+      }
+      //<!--</editor-fold>-->
     },
     created() {
       const cachedPageSize = localStorage.getItem('orderHistoryPageSize')
@@ -1373,6 +1385,7 @@
         saleDataByPaymentType: this.saleDataByPaymentType,
         zNumberData: this.zNumberData,
         productsSoldByCategory: this.productsSoldByCategory,
+        printMonthlyReport: this.printMonthlyReport,
       }
     }
   }
