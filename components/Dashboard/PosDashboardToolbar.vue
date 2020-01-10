@@ -3,8 +3,8 @@
     <slot></slot>
     <g-spacer></g-spacer>
     <div class="time">
-      <p>{{time}}</p>
-      <p>{{date}}</p>
+      <p>{{formattedDateTime.time}}</p>
+      <p>{{formattedDateTime.date}}</p>
     </div>
   </g-toolbar>
 </template>
@@ -12,21 +12,15 @@
 <script>
   export default {
     name: 'PosDashboardToolbar',
-    data() {
-      return {
-        time: null,
-        date: null,
+    injectService: ['PosStore:systemDate'],
+    computed: {
+      formattedDateTime() {
+        const dateObj = dayjs(this.systemDate)
+        return {
+          date:dayjs(dateObj).format('MMM DD, YY'),
+          time: dateObj.format('HH:mm')
+        }
       }
-    },
-    methods: {
-      updateTime() {
-        this.time = dayjs(new Date()).format('HH:mm');
-        this.date = dayjs(new Date()).format('MMM DD, YY');
-      }
-    },
-    created() {
-      this.updateTime();
-      setInterval(() => this.updateTime(), 60 * 1000);
     }
   }
 </script>

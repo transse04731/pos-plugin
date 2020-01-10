@@ -60,6 +60,7 @@
     props: {},
     data() {
       return {
+        systemDate: new Date(),
         user: null,
         loginPassword: '',
         incorrectPasscode: false,
@@ -1238,6 +1239,10 @@
       if (cachedArticlePageSize) this.productPagination.limite = parseInt(cachedArticlePageSize);
       this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
       this.user = cms.getList('PosSetting')[0].user[0]
+      this.setDateInterval = setInterval(() => this.systemDate = new Date(), 10000)
+    },
+    beforeDestroy() {
+      this.setDateInterval && clearInterval(this.setDateInterval)
     },
     watch: {
       'orderHistoryPagination.limit'(newVal) {
