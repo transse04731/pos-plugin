@@ -143,7 +143,7 @@
     }
 
     .col {
-      padding: 12px;
+      padding: 12px 2px 12px 12px;
 
       &-12 {
         flex: 0 0 100%;
@@ -260,7 +260,6 @@
               font-size: 24px;
               line-height: 29px;
               text-align: left;
-              padding: 0 12px;
             }
           }
 
@@ -284,7 +283,7 @@
               }
 
               &:last-child {
-                padding-right: 12px;
+                padding-right: 2px;
               }
             }
           }

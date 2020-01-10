@@ -29,13 +29,13 @@
         <table>
           <thead>
           <tr>
-            <th width="40%">Item</th>
+            <th width="42%" style="padding-left: 12px">Item</th>
             <th width="5%" style="text-align: right">Q.ty</th>
-            <th width="20%" style="text-align: right">Unit price</th>
-            <th width="25%" style="text-align: right">Total</th>
+            <th width="18%" style="text-align: right">Unit price</th>
+            <th width="25%" style="text-align: right; padding-right: 2px;">Total</th>
           </tr>
           <tr class="divider-row">
-            <th colspan="4">
+            <th colspan="4" style="padding-right: 2px">
               <div class="divider divider-dashed"/>
             </th>
           </tr>
@@ -173,7 +173,7 @@
     }
 
     .col {
-      padding: 12px;
+      padding: 12px 2px 12px 12px;
 
       &-12 {
         flex: 0 0 100%;
@@ -283,7 +283,6 @@
               font-size: 24px;
               line-height: 29px;
               text-align: left;
-              padding: 0 12px;
             }
           }
 
@@ -307,7 +306,7 @@
               }
 
               &:last-child {
-                padding-right: 12px;
+                padding-right: 2px;
               }
             }
           }
