@@ -22,6 +22,8 @@ module.exports = async function (cms) {
       await zReportHandler(args, callback)
     } else if (reportType === 'MonthlyReport') {
       await monthlyReportHandler(args, callback)
+    } else if (reportType === 'XReport') {
+      await xReportHandler(args, callback)
     }
   }
 
@@ -190,6 +192,49 @@ module.exports = async function (cms) {
       await print(html)
       callback({success: true})
     })
+  }
+
+  async function xReportHandler({from, to}, callback) {
+    try {
+      const report  = await new Promise((resolve, reject) => {
+        cms.api.processData('OrderXReport', {from, to}, result => {
+          if (result === 'string') reject(result)
+          else resolve(result)
+        })
+      })
+      const reportDate = dayjs(from);
+      const xReport = {
+        ...report.report,
+        ...report.dayReport[reportDate.format('DD-MM-YYYY')]
+      }
+
+      const posSettings = await cms.getModel('PosSetting').findOne()
+      const companyInfo = posSettings && posSettings.companyInfo
+      const props = {
+        ...companyInfo,
+        ...xReport,
+        date: reportDate.format('DD/MM/YYYY')
+      }
+
+      const XReport = require('../../dist/XReport.vue')
+      const component = new Vue({
+        components: { XReport },
+        render(h) {
+          return h('XReport', { props })
+        }
+      })
+
+      renderer.renderToString(component, {}, async (err, html) => {
+        if (err) {
+          callbackWithError(callback, err)
+          return
+        }
+        await print(html)
+        callback({success: true})
+      })
+    } catch (e) {
+      callbackWithError(callback, e)
+    }
   }
 
   async function print(html) {

@@ -1023,6 +1023,18 @@
           console.error(e)
         }
       },
+      async printXReport(date) {
+        const from = dayjs(date).startOf('day').toDate()
+        const to = dayjs(from).add(1, 'day').toDate()
+
+        return new Promise((resolve, reject) => {
+          cms.socket.emit('printReport', 'XReport',
+            { from, to }, ({ success, message }) => {
+              if (success) resolve()
+              reject(message)
+            })
+        })
+      },
       //<!--</editor-fold>-->
 
       //<!--<editor-fold desc="Button functions">-->
@@ -1377,7 +1389,7 @@
         finalizeReport: this.finalizeReport,
         printZReport: this.printZReport,
         getXReport: this.getXReport,
-
+        printXReport: this.printXReport,
         //Layout config views
         updatePosSettings: this.updatePosSettings,
         //month report screen

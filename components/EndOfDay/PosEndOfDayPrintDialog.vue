@@ -36,7 +36,7 @@
             <g-btn :uppercase="false" @click="close" class="mr-2">
               Cancel
             </g-btn>
-            <g-btn :uppercase="false" background-color="#2979FF" text-color="#fff">
+            <g-btn :uppercase="false" background-color="#2979FF" text-color="#fff" @click.stop="print">
               <g-icon class="mr-2" svg>icon-print</g-icon>
               Print
             </g-btn>
@@ -55,7 +55,8 @@
     name: 'PosEndOfDayPrintDialog',
     data() {
       return {
-        xReport: null
+        xReport: null,
+        date: null
       }
     },
     filters: {
@@ -69,6 +70,7 @@
     methods: {
       async open(date) {
         this.dialog = true;
+        this.date = date;
         this.xReport = await this.$getService('PosStore:getXReport')(date)
       },
       close() {
@@ -77,6 +79,9 @@
       },
       getSum(paymentTypes) {
         return _.reduce(paymentTypes, (res, value) => res + value, 0)
+      },
+      async print() {
+        await this.$getService('PosStore:printXReport')(this.date)
       }
     },
     setup() {
