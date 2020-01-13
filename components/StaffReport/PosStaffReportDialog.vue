@@ -5,10 +5,11 @@
               :show-arrows="false"
               :vertical="true"
               color='#F2F2F2'
-              slider-size="0"
               text-color="#000000"
               v-if="staffs.length"
               v-model="selectedStaff"
+              slider-size="4px"
+              slider-color="#2979FF"
       >
         <g-tab-item :item="item" :key="i" v-for="(item, i) in staffs">
           <div class="detail-header">Staff Name: {{item.name}}</div>
@@ -45,7 +46,7 @@
         </g-tab-item>
         <template #tab="{item, index}">
           <g-tab :item="item" :key="index" active-text-color="#000000">
-            <p style="text-transform: uppercase; overflow: hidden; text-overflow: ellipsis;">{{item.name}}</p>
+            <p class="tab-username">{{item.name}}</p>
           </g-tab>
         </template>
       </g-tabs>
@@ -257,13 +258,12 @@
         height: 99px;
         width: 190px;
         background-color: #F9F9F9;
-        border-left: 4px solid transparent;
       }
 
-      .g-tab.g-tab__active {
-        border-left: 4px solid #2979FF;
+      .tab-username {
+        text-transform: uppercase;
+        white-space: normal;
       }
-
 
       ::v-deep .g-tabs-wrapper {
         height: calc(100% - 64px);
