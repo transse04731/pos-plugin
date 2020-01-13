@@ -1,23 +1,15 @@
-import { computedDisplayMonth, computedDisplayYear, isAllowed, isSelected } from 'pos-vue-framework/src/components/GDatePicker/logic/TableUtil';
 import dayjs from 'dayjs';
 import { computed } from '@vue/composition-api';
-import { pad } from 'pos-vue-framework/src/components/GDatePicker/logic/utils';
-import {
-  _addRangeInformation, _computedDaysBeforeFirstDayOfTheMonth,
-  _computedDaysInMonth,
-  _computedWeekNumber, _genEvents, cptAdjacentMonth, getDateItemObj,
-  getFirstNDaysOfMonth,
-  getLastNDaysOfMonth
-} from 'pos-vue-framework/src/components/GDatePicker/logic/DateTableUtil';
+import { pad, TableUtil, DateTableUtil } from 'pos-vue-framework';
 
 export const _computedDatesInMonthCustom = (props, state) => {
-  const cptMonth = computedDisplayMonth(state)
-  const cptYear = computedDisplayYear(state)
+  const cptMonth = TableUtil.computedDisplayMonth(state)
+  const cptYear = TableUtil.computedDisplayYear(state)
   const defaultDayFormatFn = (day => dayjs(day).format('D'))
   const cptDateFormatFunc = computed(() => props.dayFormat || defaultDayFormatFn)
-  const cptDaysInMonth = _computedDaysInMonth(cptYear, cptMonth)
-  const cptWeekNumber = _computedWeekNumber(props, cptYear, cptMonth)
-  const cptDaysBeforeFirstDayOfMonth = _computedDaysBeforeFirstDayOfTheMonth(props, cptYear, cptMonth)
+  const cptDaysInMonth = DateTableUtil._computedDaysInMonth(cptYear, cptMonth)
+  const cptWeekNumber = DateTableUtil._computedWeekNumber(props, cptYear, cptMonth)
+  const cptDaysBeforeFirstDayOfMonth = DateTableUtil._computedDaysBeforeFirstDayOfTheMonth(props, cptYear, cptMonth)
 
   // each week will be displayed in a row of Date table
   return computed(() => {
@@ -30,15 +22,15 @@ export const _computedDatesInMonthCustom = (props, state) => {
 
     // add blank day before the first day of the month
     let dayBeforeFirstDayOfMonths = cptDaysBeforeFirstDayOfMonth.value
-    const lastMonth = cptAdjacentMonth(state.viewportDate, 'prev');
-    let lastNDays = getLastNDaysOfMonth(dayBeforeFirstDayOfMonths, lastMonth.month, lastMonth.year);
+    const lastMonth = DateTableUtil.cptAdjacentMonth(state.viewportDate, 'prev');
+    let lastNDays = DateTableUtil.getLastNDaysOfMonth(dayBeforeFirstDayOfMonths, lastMonth.month, lastMonth.year);
 
     for (let day = 0; day < lastNDays.length; day++) {
       const date = lastNDays[day];
       const dateItem = {
-        ...getDateItemObj(props, date),
+        ...DateTableUtil.getDateItemObj(props, date),
         formattedValue: cptDateFormatFunc.value(date),
-        isSelected: isSelected(props, state, date),
+        isSelected: TableUtil.isSelected(props, state, date),
         isCurrent: props.showCurrent && date === currentDate
       };
 
@@ -52,15 +44,15 @@ export const _computedDatesInMonthCustom = (props, state) => {
     for (let day = 1; day <= daysInMonth; day++) {
       const date = `${cptYear.value}-${pad(cptMonth.value + 1)}-${pad(day)}`
       const dateItem = {
-        ...getDateItemObj(props, date),
+        ...DateTableUtil.getDateItemObj(props, date),
         formattedValue: cptDateFormatFunc.value(date),
-        isAllowed: isAllowed(props, date),
-        isSelected: isSelected(props, state, date),
+        isAllowed: TableUtil.isAllowed(props, date),
+        isSelected: TableUtil.isSelected(props, state, date),
         isCurrent: props.showCurrent && date === currentDate
       };
 
       if (props.range) {
-        _addRangeInformation(dateItem, state, date)
+        DateTableUtil._addRangeInformation(dateItem, state, date)
       }
 
       week.push(dateItem)
@@ -78,13 +70,13 @@ export const _computedDatesInMonthCustom = (props, state) => {
     if (week.length) {
       let numberOfDays = 7 - week.length;
       let nextMonth = dayjs(state.viewportDate).add(1, 'month')
-      let firstNDays = getFirstNDaysOfMonth(numberOfDays, nextMonth.month() % 12 + 1, nextMonth.year());
+      let firstNDays = DateTableUtil.getFirstNDaysOfMonth(numberOfDays, nextMonth.month() % 12 + 1, nextMonth.year());
       for (let day = 0; day < firstNDays.length; day++) {
         const date = firstNDays[day];
         const dateItem = {
-          ...getDateItemObj(props, date),
+          ...DateTableUtil.getDateItemObj(props, date),
           formattedValue: cptDateFormatFunc.value(date),
-          isSelected: isSelected(props, state, date),
+          isSelected: TableUtil.isSelected(props, state, date),
           isCurrent: props.showCurrent && date === currentDate
         };
         week.push(dateItem);

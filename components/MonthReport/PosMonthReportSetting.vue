@@ -103,6 +103,10 @@
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;
 
+        .g-tf::before{
+          background-color: unset;
+        }
+
         .inputGroup {
           .input {
             div span {

@@ -1,10 +1,8 @@
 <script>
   import _ from 'lodash'
-  import { ref, computed } from '@vue/composition-api'
+  import { computed } from '@vue/composition-api'
   import { _computedDatesInMonthCustom } from './computedDateInMonth';
-  import { setBackgroundColor, setTextColor } from 'pos-vue-framework';
-  import { GDatePickerUtil } from 'pos-vue-framework';
-  import { GPicker} from 'pos-vue-framework'
+  import { setBackgroundColor, setTextColor, GDatePickerUtil, GPicker } from 'pos-vue-framework';
 
   const MINIMUM_WIDTH = 300;
   const DEFAULT_COLOR = 'rgb(98, 0, 237)';

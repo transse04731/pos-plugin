@@ -24,6 +24,8 @@ module.exports = async function (cms) {
       await monthlyReportHandler(args, callback)
     } else if (reportType === 'XReport') {
       await xReportHandler(args, callback)
+    }  else if (reportType === 'StaffReport') {
+      await staffReportHandler(args, callback)
     }
   }
 
@@ -181,6 +183,26 @@ module.exports = async function (cms) {
       components: { MonthReport },
       render(h) {
         return h('MonthReport', { props })
+      }
+    })
+
+    renderer.renderToString(component, {}, async (err, html) => {
+      if (err) {
+        callbackWithError(callback, err)
+        return
+      }
+      await print(html)
+      callback({success: true})
+    })
+  }
+
+  async function staffReportHandler(report, callback) {
+    const props = { ...report }
+    const StaffReport = require('../../dist/StaffReport.vue')
+    const component = new Vue({
+      components: { StaffReport },
+      render(h) {
+        return h('StaffReport', { props })
       }
     })
 

@@ -23,9 +23,8 @@
       formatNumber: (val) => {
         if (val && typeof (val) === 'number') {
           return val.toFixed(2)
-        } else {
-          return 0
         }
+        return 0
       },
     },
     injectService: [

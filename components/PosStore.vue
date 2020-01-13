@@ -4,56 +4,8 @@
 
 <script>
   import _ from 'lodash'
-  import isBetween from 'dayjs/plugin/isBetween'
   import * as jsonfn from 'json-fn';
-
-  dayjs.extend(isBetween)
-
-  const orderUtil = {
-    calItemTotal(item) {
-      return +(item.quantity * item.price).toFixed(2);
-    },
-    calTax(price, tax) {
-      return price * (1 - 1 / (1 + tax / 100))
-    },
-    calItemTax(item) {
-      return +(orderUtil.calTax(item.price, item.tax) * item.quantity).toFixed(2);
-    },
-    calOrderTax(items) {
-      return _.sumBy(items, orderUtil.calItemTax);
-    },
-    calOrderTotal(items) {
-      return _.sumBy(items, orderUtil.calItemTotal);
-    },
-    calItemDiscount(item) {
-      return item.vDiscount ? (item.vDiscount * item.quantity) : 0
-    },
-    calOrderDiscount(items) {
-      return _.sumBy(items, orderUtil.calItemDiscount)
-    },
-    applyDiscountForOrder(items, { difference, value }) {
-      const totalWithoutDiscountResist = difference + value;
-      const percent =  difference / totalWithoutDiscountResist * 100;
-      let sumDiscount = 0;
-      const lastDiscountableItemIndex = _.findLastIndex(items, item => !item.discountResistance);
-      for(let i = 0; i < items.length; i++) {
-        let item = items[i];
-        if(!item.discountResistance) {
-          if(i < lastDiscountableItemIndex) {
-            item.price = +(item.originalPrice * (100 - percent) / 100).toFixed(2);
-            item.discountUnit = 'percent';
-            item.vDiscount = +(item.originalPrice - item.price).toFixed(2);
-            sumDiscount += this.calItemDiscount(item);
-          } else {
-            item.discountUnit = 'amount';
-            item.vDiscount = +((difference - sumDiscount)/item.quantity).toFixed(2);
-            item.price = item.originalPrice - item.vDiscount;
-          }
-        }
-      }
-      return items;
-    }
-  }
+  import orderUtil from './logic/orderUtil';
 
   export default {
     name: 'PosStore',
@@ -988,7 +940,7 @@
 
         try {
           const orderModel = cms.getModel('Order')
-          let vDateOrders = await orderModel.find({status: 'paid', vDate: dayjs(report.begin).startOf('day').toDate()})
+          let vDateOrders = await orderModel.find({ status: 'paid', vDate: dayjs(report.begin).startOf('day').toDate() })
           vDateOrders = jsonfn.clone(vDateOrders, true, true)
 
           const ordersToUpdate = vDateOrders.filter(order => report.begin <= order.date && order.date <= report.end).map(i => i._id)
@@ -1241,8 +1193,36 @@
               reject(message)
             })
         })
-      }
+      },
       //<!--</editor-fold>-->
+      async getOrdersByStaff(staffName) {
+        if (!staffName) {
+          return
+        }
+        const orderModel = cms.getModel('Order');
+        const orders = await orderModel.find({ status: 'paid', 'user.name': staffName, vDate: dayjs(this.systemDate).startOf('day').toDate() }).sort('date')
+
+        return orders.map(order => ({
+          ...order,
+          dateTime: dayjs(order.date).format('DD.MM HH:mm'),
+          payment: order.payment,
+          amount: order.vSum ? order.vSum : orderUtil.calOrderTotal(order.items),
+          tax: order.vTax ? order.vTax : orderUtil.calOrderTax(order.items),
+          discount: order.vDiscount ? order.vDiscount : orderUtil.calOrderDiscount(order.items),
+        }));
+      },
+      printStaffReport(report) {
+        return new Promise((resolve, reject) => {
+          cms.socket.emit('printReport', 'StaffReport',
+            report,
+            ({ success, message }) => {
+              if (success) {
+                resolve()
+              }
+              reject(message)
+            })
+        })
+      }
     },
     created() {
       const cachedPageSize = localStorage.getItem('orderHistoryPageSize')
@@ -1271,7 +1251,7 @@
         login: this.login,
         resetIncorrectPasscodeFlag: this.resetIncorrectPasscodeFlag,
         user: this.user,
-
+        systemDate: this.systemDate,
         //order screen
         activeProductWindow: this.activeProductWindow,
         activeTableProduct: this.activeTableProduct,
@@ -1403,6 +1383,9 @@
         zNumberData: this.zNumberData,
         productsSoldByCategory: this.productsSoldByCategory,
         printMonthlyReport: this.printMonthlyReport,
+
+        //Staff Report Screen
+        printStaffReport: this.printStaffReport,
       }
     }
   }
