@@ -1,41 +1,46 @@
 <template>
   <div class="staff-report-wrapper">
     <div class="report-content">
-      <div class="detail-header">Staff Name: {{name}}</div>
-      <div class="detail-header">Report Date: {{reportDate}}</div>
-      <div class="detail-time">First Order: {{computedFirstOrderTime}}</div>
-      <div class="detail-time">Last Order: {{computedLastOrderTime}}</div>
+      <div class="detail-header" v-if="orderSalesByStaff">Staff Name: {{orderSalesByStaff.name}}</div>
+      <div v-if="orderSalesByStaff && orderSalesByStaff.user[orderSalesByStaff.name]">
+        <div class="detail-header">Report Date: {{orderSalesByStaff.from | formatDate }}</div>
+        <div class="detail-time">First Order: {{ (orderSalesByStaff.user[orderSalesByStaff.name].from) | formatTime}}</div>
+        <div class="detail-time">Last Order: {{ (orderSalesByStaff.user[orderSalesByStaff.name].to) | formatTime}}</div>
+      </div>
+
       <div class="sales-details-header">Sales</div>
-      <p>
-        <span class="sales-entry sales-type">Total</span>
-        <span class="sales-entry sales-amount">{{computedTotal | formatNumber}}</span>
-      </p>
-      <p>
-        <span class="sales-entry sales-type">Sub-total</span>
-        <span class="sales-entry sales-amount">{{computedSubTotal | formatNumber}}</span>
-      </p>
-      <p>
-        <span class="sales-entry sales-type">Tax</span>
-        <span class="sales-entry sales-amount">{{computedTax | formatNumber}}</span>
-      </p>
+      <div v-if="orderSalesByStaff && orderSalesByStaff.user[orderSalesByStaff.name]">
+        <p><span class="sales-entry sales-type">Total</span> <span class="sales-entry sales-amount">{{(orderSalesByStaff.user[orderSalesByStaff.name].vSum)
+          | formatNumber}}</span></p>
+        <p><span class="sales-entry sales-type">Sub-total</span> <span class="sales-entry sales-amount">{{(orderSalesByStaff.user[orderSalesByStaff.name].net)
+          | formatNumber}}</span></p>
+        <p><span class="sales-entry sales-type">Tax</span> <span class="sales-entry sales-amount">{{(orderSalesByStaff.user[orderSalesByStaff.name].tax)
+          | formatNumber}}</span></p>
+      </div>
+
       <div class="tax-detail">
-        <div v-for="(entry, key, index) in computedTaxByCategory">
-          <p><span class="sales-entry">Tax {{key}}%:</span></p>
-          <p><span class="sales-entry sales-type">Total</span><span class="sales-entry sales-amount">{{entry.total | formatNumber}}</span></p>
-          <p><span class="sales-entry sales-type">Sub-total</span> <span class="sales-entry sales-amount">{{(entry.total - entry.tax) | formatNumber}}</span></p>
-          <p><span class="sales-entry sales-type">Tax</span> <span class="sales-entry sales-amount">{{entry.tax | formatNumber}}</span></p>
-          <br/>
+        <div v-if="orderSalesByStaff && orderSalesByStaff['groupByTax']">
+          <div v-for="(entry, key, index) in orderSalesByStaff['groupByTax']">
+            <p class="sales-entry sales-type">Tax {{key}}%:</p>
+            <p><span class="sales-entry sales-type">Total</span> <span class="sales-entry sales-amount">{{entry.gross | formatNumber}}</span></p>
+            <p><span class="sales-entry sales-type">Sub-total</span> <span class="sales-entry sales-amount">{{entry.net | formatNumber}}</span></p>
+            <p><span class="sales-entry sales-type">Tax</span> <span class="sales-entry sales-amount">{{entry.salesTax | formatNumber}}</span></p>
+            <br/>
+          </div>
         </div>
 
-        <p><span class="sales-entry sales-type">Vouchers Sold</span> <span class="sales-entry sales-amount">0.00</span></p>
-        <p><span class="sales-entry sales-type">Vouchers Used</span> <span class="sales-entry sales-amount">0.00</span></p>
-        <p><span class="sales-entry sales-type">Discount</span> <span class="sales-entry sales-amount">{{computedDiscount | formatNumber}}</span></p>
+        <div v-if="orderSalesByStaff && orderSalesByStaff.user[orderSalesByStaff.name]">
+          <p><span class="sales-entry sales-type">Vouchers Sold</span> <span class="sales-entry sales-amount">0.00</span></p>
+          <p><span class="sales-entry sales-type">Vouchers Used</span> <span class="sales-entry sales-amount">0.00</span></p>
+          <p><span class="sales-entry sales-type">Discount</span> <span class="sales-entry sales-amount">{{orderSalesByStaff.user[orderSalesByStaff.name].discount
+            | formatNumber}}</span></p>
+        </div>
       </div>
-      <div class="sales-details">
-        <p :key="index" v-for="(sale, key, index) in computedSalesByPayment">
-          <span class="sales-entry sales-type">{{key}} Sales: </span><span class="sales-entry sales-amount">{{sale | formatNumber}}</span>
+      <div class="sales-details" v-if="orderSalesByStaff && orderSalesByStaff['groupByPayment']">
+        <p :key="index" v-for="(sale, key, index) in orderSalesByStaff['groupByPayment']">
+          <span class="sales-entry sales-type">{{key}} Sales: </span><span class="sales-entry">{{sale | formatNumber}}</span>
         </p>
-        <p><span  class="sales-entry sales-type">Returned Total: </span> <span class="sales-entry sales-amount">{{computedCashBack | formatNumber}}</span></p>
+        <p><span class="sales-entry sales-type">Returned Total: </span> <span class="sales-entry">{{0 | formatNumber}}</span></p>
       </div>
     </div>
   </div>
@@ -45,26 +50,19 @@
   export default {
     name: 'StaffReport',
     props: {
-      name: String,
-      reportDate: String,
-      computedFirstOrderTime: String,
-      computedLastOrderTime: String,
-      computedTotal: Number,
-      computedTax: Number,
-      computedSubTotal: Number,
-      computedDiscount: Number,
-      computedSalesByPayment: null,
-      computedCashBack: Number,
-      computedTaxByCategory: null
+      orderSalesByStaff: null
     },
     filters: {
       formatNumber: (val) => {
-        if (isNaN(val)) {
-          return '0.00'
-        }
-        return val.toFixed(2)
+        return isNaN(val) ? '0.00' : val.toFixed(2)
       },
-    }
+      formatTime: (val) => {
+        return val ? dayjs(val).format('DD/MM HH:mm') : ''
+      },
+      formatDate: (val) => {
+        return val ? dayjs(val).format('DD/MM/YYYY') : ''
+      }
+    },
   }
 </script>
 

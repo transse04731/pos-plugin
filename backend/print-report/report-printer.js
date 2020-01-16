@@ -197,12 +197,11 @@ module.exports = async function (cms) {
   }
 
   async function staffReportHandler(report, callback) {
-    const props = { ...report }
     const StaffReport = require('../../dist/StaffReport.vue')
     const component = new Vue({
       components: { StaffReport },
       render(h) {
-        return h('StaffReport', { props })
+        return h('StaffReport', { props: { orderSalesByStaff: report } })
       }
     })
 
@@ -212,7 +211,7 @@ module.exports = async function (cms) {
         return
       }
       await print(html)
-      callback({success: true})
+      callback({ success: true })
     })
   }
 

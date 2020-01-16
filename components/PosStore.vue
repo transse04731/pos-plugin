@@ -1195,21 +1195,14 @@
         })
       },
       //<!--</editor-fold>-->
-      async getOrdersByStaff(staffName) {
+      async getOrderSalesByStaff(staffName, date = new Date()) {
         if (!staffName) {
           return
         }
-        const orderModel = cms.getModel('Order');
-        const orders = await orderModel.find({ status: 'paid', 'user.name': staffName, vDate: dayjs(this.systemDate).startOf('day').toDate() }).sort('date')
+        const fromTime = dayjs(date).startOf('day').toDate();
+        const toTime = dayjs(date).startOf('day').add(1, 'day').toDate();
 
-        return orders.map(order => ({
-          ...order,
-          dateTime: dayjs(order.date).format('DD.MM HH:mm'),
-          payment: order.payment,
-          amount: order.vSum ? order.vSum : orderUtil.calOrderTotal(order.items),
-          tax: order.vTax ? order.vTax : orderUtil.calOrderTax(order.items),
-          discount: order.vDiscount ? order.vDiscount : orderUtil.calOrderDiscount(order.items),
-        }));
+        return await cms.processData('OrderSalesByStaff', { from: fromTime, to: toTime, name: staffName })
       },
       printStaffReport(report) {
         return new Promise((resolve, reject) => {
