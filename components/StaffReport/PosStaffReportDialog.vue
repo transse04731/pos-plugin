@@ -67,9 +67,9 @@
         Back
       </g-btn>
       <g-spacer/>
-      <g-btn :uppercase="false" @click="print" background-color="#2979FF" text-color="#FFFFFF" width="94px">
+      <g-btn :uppercase="false" @click="print" background-color="#2979FF" text-color="#FFFFFF">
         <g-icon class="mr-2" svg>icon-print2</g-icon>
-        Print
+        Print Report
       </g-btn>
     </g-toolbar>
   </div>

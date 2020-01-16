@@ -1,83 +1,101 @@
 <template>
   <div>
-    <g-dialog v-model="dialogNewProduct" fullscreen scrollable eager :key="'dialogNewProduct'+key">
+    <g-dialog :key="'dialogNewProduct'+key" eager fullscreen scrollable v-model="dialogNewProduct">
       <div class="dialog-product w-100">
         <div class="form">
           <div class="title">
             Create New Product
           </div>
           <div class="input">
-            <pos-text-field label="Name" placeholder="Fill your number" @click="openDialogDetail('name')" v-model="productName" required/>
+            <!--            Name-->
+            <pos-text-field @click="openDialogDetail('name')" class="name-input" label="Name" placeholder="Fill your number" required v-model="productName"/>
+            <pos-select :items="categories" class="category-input" item-text="name" item-value="value" label="Product Category" required return-object v-model="productCategory"/>
+
+            <!--            Tax-->
             <div class="input__tax">
               <p class="label">Tax <span class="text-red">*</span></p>
               <div class="row-flex">
-                <div v-for="(tax, i) in taxes" :key="i"
-                     :class="['tax', taxCategory && tax.value === taxCategory.value && 'selected__tax']"
-                     @click="selectTax(tax)">
+                <div :class="['tax', taxCategory && tax.value === taxCategory.value && 'selected__tax']" :key="i"
+                     @click="selectTax(tax)"
+                     v-for="(tax, i) in taxes">
                   {{tax.value}}%
                 </div>
               </div>
             </div>
-            <pos-text-field label="Product ID" placeholder="Auto generate" disabled @click="openDialogDetail('id')" v-model="productID"/>
-            <pos-select label="Product Category" :items="categories" item-text="name" item-value="value" return-object v-model="productCategory" append-icon="mdi-chevron-down" required/>
-            <pos-select label="Unit" :items="units" v-model="unit" append-icon="mdi-chevron-down"/>
-            <div></div>
-            <pos-text-field :key="'pPrice'+key" label="Price" placeholder="Fill your number" @click="openDialogDetail('price')" v-model="productPrice" required>
+            <pos-text-field @click="openDialogDetail('id')" disabled label="Product ID" placeholder="Auto generate" v-model="productID"/>
+            <pos-text-field :key="'pPrice'+key" @click="openDialogDetail('price')" label="Price" placeholder="Fill your number" required v-model="productPrice">
               <template v-slot:append>
                 <span style="color: #1471ff">€</span>
               </template>
             </pos-text-field>
-            <pos-text-field label="Barcode/PLU" placeholder="Fill your number" @click="openDialogDetail('barcode')" v-model="productBarcode">
+            <pos-select :items="units" class="unit-input" label="Unit" v-model="unit"/>
+            <pos-text-field @click="openDialogDetail('barcode')" class="barcode-input" label="Barcode/PLU" placeholder="Fill your number" v-model="productBarcode">
               <template v-slot:append>
                 <g-icon svg>icon-scanning_barcode</g-icon>
               </template>
             </pos-text-field>
-            <div></div>
-            <div class="row-flex">
-              <div class="col-6">
-                <pos-switch dense label="Favorite" v-model="favorite"/>
-              </div>
-              <div class="col-6">
-                <pos-switch dense label="Non-Refundable" v-model="nonRefundable"/>
-              </div>
+
+            <div class="switch-input switch-input-1">
+              <pos-switch dense v-model="favorite"/>
+              <p class="switch-title">Favourite</p>
             </div>
-            <div class="row-flex justify-between">
-              <pos-switch dense label="Active" v-model="active"/>
-              <pos-switch dense label='Show on "Order Screen"' v-model="showOnOrderScreen"/>
+            <div class="switch-input switch-input-2">
+              <pos-switch dense v-model="itemIsVoucher"/>
+              <p class="switch-title">Item is a voucher</p>
             </div>
-            <pos-switch dense label="Manual Price" v-model="manualPrice"/>
+
+            <div class="switch-input switch-input-3">
+              <pos-switch dense v-model="active"/>
+              <p class="switch-title">Active</p>
+            </div>
+
+            <div class="switch-input switch-input-1">
+              <pos-switch dense v-model="nonRefundable"/>
+              <p class="switch-title">Non-Refundable</p>
+            </div>
+
+            <div class="switch-input switch-input-2">
+              <pos-switch dense v-model="showOnOrderScreen"/>
+              <p class="switch-title">Show on "Order Screen"</p>
+            </div>
+
+            <div class="switch-input switch-input-3">
+              <pos-switch dense v-model="manualPrice"/>
+              <p class="switch-title">Manual Price</p>
+            </div>
           </div>
-          <div class="accordion">
-            <g-expansion accordion v-model="expansionItem" :items="expansions" item-header="name">
-            </g-expansion>
-          </div>
+        </div>
+
+        <div class="accordion">
+          <g-expansion :items="expansions" accordion item-header="name" v-model="expansionItem">
+          </g-expansion>
         </div>
         <g-toolbar absolute bottom color="grey lighten 3">
           <g-spacer/>
-          <g-btn :uppercase="false" outlined class="mr-2" width="120" @click="back()">Cancel</g-btn>
-          <g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" width="120" :disabled="!valid" @click="submit">Submit</g-btn>
+          <g-btn :uppercase="false" @click="back()" class="mr-2" outlined width="120">Cancel</g-btn>
+          <g-btn :disabled="!valid" :uppercase="false" @click="submit" background-color="blue accent 3" flat text-color="white" width="120">Submit</g-btn>
         </g-toolbar>
       </div>
     </g-dialog>
-    <g-dialog v-model="dialogNewProductDetail" overlay-color="#6b6f82" overlay-opacity="0.95" width="90%" eager :key="'dialogNewProductDetail'+key">
+    <g-dialog :key="'dialogNewProductDetail'+key" eager overlay-color="#6b6f82" overlay-opacity="0.95" v-model="dialogNewProductDetail" width="90%">
       <div class="dialog-product w-100">
         <div class="form__detail">
           <div class="input__detail">
             <div>
-              <pos-text-field ref="name" label="Name" required placeholder="Fill your number" :rules="[rules.required]" v-model="name" @click="keyboardFocus = 'name'"/>
+              <pos-text-field :rules="[rules.required]" @click="keyboardFocus = 'name'" label="Name" placeholder="Fill your number" ref="name" required v-model="name"/>
             </div>
             <div>
-              <pos-text-field ref="productID" label="Product ID" placeholder="Auto generate" v-model="productID" @click="keyboardFocus = 'id'"/>
+              <pos-text-field @click="keyboardFocus = 'id'" label="Product ID" placeholder="Auto generate" ref="productID" v-model="productID"/>
             </div>
             <div>
-              <pos-text-field ref="price" label="Price" required placeholder="Fill your number" :rules="[rules.number, rules.required]" v-model="price" @click="keyboardFocus = 'price'">
+              <pos-text-field :rules="[rules.number, rules.required]" @click="keyboardFocus = 'price'" label="Price" placeholder="Fill your number" ref="price" required v-model="price">
                 <template v-slot:append>
                   <span style="color: #1471ff">€</span>
                 </template>
               </pos-text-field>
             </div>
             <div>
-              <pos-text-field ref="barcode" label="Barcode/PLU" placeholder="Fill your number" v-model="barcode" @click="keyboardFocus = 'barcode'">
+              <pos-text-field @click="keyboardFocus = 'barcode'" label="Barcode/PLU" placeholder="Fill your number" ref="barcode" v-model="barcode">
                 <template v-slot:append>
                   <g-icon svg>icon-scanning_barcode</g-icon>
                 </template>
@@ -85,8 +103,8 @@
             </div>
           </div>
           <div class="action">
-            <g-btn :uppercase="false" outlined class="mr-2" width="120" @click="dialogNewProductDetail = false">Cancel</g-btn>
-            <g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" width="120" @click="save">OK</g-btn>
+            <g-btn :uppercase="false" @click="dialogNewProductDetail = false" class="mr-3" outlined width="120">Cancel</g-btn>
+            <g-btn :uppercase="false" @click="save" background-color="blue accent 3" flat text-color="white" width="120">OK</g-btn>
           </div>
         </div>
         <div class="bg-grey-lighten-1 pa-2">
@@ -124,6 +142,7 @@
         nonRefundable: null,
         active: null,
         showOnOrderScreen: null,
+        itemIsVoucher: null,
         manualPrice: null,
         expansions: [
           { name: 'Multiple Unit' },
@@ -179,7 +198,7 @@
           return false
         }
         if (typeof this.rules.required(this.price) === 'string'
-            || typeof this.rules.number(this.price) === 'string') {
+          || typeof this.rules.number(this.price) === 'string') {
           return false
         }
         return true
@@ -276,8 +295,8 @@
             manualPrice: this.manualPrice,
           },
           layouts: this.isEditProduct
-              ? this.selectedProduct.layouts
-              : [{'color': 'white', 'order': maxOrder + 1}]
+            ? this.selectedProduct.layouts
+            : [{ 'color': 'white', 'order': maxOrder + 1 }]
         }
         this.dialogNewProduct = false;
         if (this.isEditProduct) {
@@ -301,18 +320,50 @@
   }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
   .dialog-product {
     display: flex;
     flex-direction: column;
     background-color: white;
     overflow-y: auto;
 
+    .accordion {
+      padding: 0 48px;
+
+      .g-expansion-group {
+        box-shadow: none;
+        margin: 0;
+
+        ::v-deep .g-expansion,
+        ::v-deep .g-expansion > .g-expansion-header {
+          border: none !important;
+          padding: 0;
+          font-size: 16px;
+          line-height: 20px;
+          min-height: 42px;
+          font-weight: 700;
+
+          .g-expansion-header-prepend {
+            width: 16px;
+            color: #919191;
+          }
+        }
+
+        ::v-deep .g-expansion .g-expansion-content {
+          background-color: white;
+          border: none;
+
+          .g-expansion-content-wrapper {
+            border: none;
+          }
+        }
+      }
+    }
+
     .form {
       padding: 48px;
 
       .title {
-        padding-left: 27px;
         font-size: 16px;
         line-height: 20px;
         color: #1d1d26;
@@ -323,16 +374,74 @@
       .input {
         display: grid;
         grid-gap: 12px 4px;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(6, 1fr);
         grid-template-rows: repeat(4, auto);
-        padding: 0 48px;
+
+        .g-select {
+          ::v-deep .g-tf-wrapper {
+            margin-top: 33px !important;
+          }
+        }
+
+        .bs-tf-wrapper {
+          margin: 4px 0 8px 0;
+          width: calc(100% - 4px);
+        }
+
+        .name-input {
+          grid-row: 1 / 2;
+          grid-column: 1 / 3;
+        }
+
+        .category-input {
+          grid-row: 1 / 2;
+          grid-column: 3 / 5;
+        }
+
+        .input__tax {
+          grid-row: 1 / 2;
+          grid-column: 5 / 7;
+        }
+
+        .unit-input {
+          grid-row: 2 / 3;
+          grid-column: 3 / 5;
+        }
+
+        .barcode-input {
+          grid-row: 2 / 3;
+          grid-column: 5 / 7;
+        }
+
+        .switch-input {
+          display: flex;
+          align-items: center;
+
+          &-1 {
+            grid-column: 1 / 3;
+          }
+
+          &-2 {
+            grid-column: 3 / 5;
+          }
+
+          &-3 {
+            grid-column: 5 / 7;
+          }
+
+          .switch-title {
+            margin-top: 12px;
+            margin-left: 12px;
+          }
+        }
 
         .g-switch-wrapper {
           margin-top: 0;
+          margin-left: 0;
         }
 
         &__tax {
-          padding: 4px 4px 8px;
+          padding: 4px 0 8px 0;
 
           .label {
             font-size: 13px;
@@ -348,7 +457,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 36px;
+            height: 38px;
             margin: 8px;
             flex-grow: 1;
 
@@ -379,30 +488,6 @@
               line-height: 1;
             }
           }
-        }
-      }
-
-      .g-expansion-group {
-        box-shadow: none;
-
-        ::v-deep .g-expansion,
-        ::v-deep .g-expansion > .g-expansion-header {
-          border: none;
-          padding: 0;
-          font-size: 16px;
-          line-height: 20px;
-          min-height: 42px;
-          font-weight: 700;
-
-          .g-expansion-header-prepend {
-            width: 16px;
-            color: #919191;
-          }
-        }
-
-        ::v-deep .g-expansion .g-expansion-content {
-          background-color: white;
-          border: none;
         }
       }
     }

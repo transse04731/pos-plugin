@@ -7,7 +7,7 @@
           <pos-text-field @click="check = 'letter'" large label="Invoice Letter" v-model="computedLetter"/>
         </div>
         <div class="action">
-          <g-btn :uppercase="false" outlined class="mr-2" width="120" @click="dialogNewTaxCategory = false">Cancel</g-btn>
+          <g-btn :uppercase="false" outlined class="mr-3" width="120" @click="dialogNewTaxCategory = false">Cancel</g-btn>
           <g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" width="120" @click="submit" :disabled="!valid">OK</g-btn>
         </div>
       </div>

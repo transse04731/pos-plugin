@@ -1,12 +1,12 @@
 <template>
 	<fragment>
-		<g-btn :uppercase="false" background-color="white" text-color="#1d1d26" :disabled="!selectedCategory" class="mr-2" @click="openDialogEditCategory">
+		<g-btn :uppercase="false" background-color="white" text-color="#1d1d26" :disabled="!selectedCategory" class="mr-3" @click="openDialogEditCategory">
 			<g-icon class="mr-2" color="red">
 				edit
 			</g-icon>
 			Edit
 		</g-btn>
-		<g-btn :uppercase="false" background-color="white" text-color="#1d1d26" :disabled="!selectedCategory" class="mr-2" @click="openDialogDelete">
+		<g-btn :uppercase="false" background-color="white" text-color="#1d1d26" :disabled="!selectedCategory" class="mr-3" @click="openDialogDelete">
 			<g-icon class="mr-2" svg>
 				icon-trash
 			</g-icon>

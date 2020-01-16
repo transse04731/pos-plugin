@@ -20,7 +20,7 @@
         </g-item-group>
       </div>
       <div class="action">
-        <g-btn :uppercase="false" outlined class="mr-2" width="120" @click="dialogSelectAvatar = false">Cancel</g-btn>
+        <g-btn :uppercase="false" outlined class="mr-3" width="120" @click="dialogSelectAvatar = false">Cancel</g-btn>
         <g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" width="120" @click="submit">OK</g-btn>
       </div>
     </div>

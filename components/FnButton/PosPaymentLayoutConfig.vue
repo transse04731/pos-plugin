@@ -126,19 +126,19 @@
     </g-button-merger>
 
     <div area="toolbar">
-      <g-btn :uppercase="false" @click="$router.push({ path: '/view/pos-settings' })" background-color="white" class="mr-2">
+      <g-btn :uppercase="false" @click="$router.push({ path: '/view/pos-settings' })" background-color="white" class="mr-3">
         <g-icon class="mr-2" svg>icon-back</g-icon>
         <span style="color: rgba(0, 0, 0, 0.87)">Back</span>
       </g-btn>
 
       <g-menu nudge-top="5" top v-model="showMenu">
         <template v-slot:activator="{toggleContent}">
-          <g-btn :uppercase="false" @click="toggleContent" background-color="white" class="mr-2" v-if="!isInConfigLayoutMode">
+          <g-btn :uppercase="false" @click="toggleContent" background-color="white" class="mr-3" v-if="!isInConfigLayoutMode">
             <g-icon class="mr-2" svg>icon-menu</g-icon>
             <span style="color: rgba(0, 0, 0, 0.87)">More</span>
           </g-btn>
 
-          <g-btn :uppercase="false" @click="toggleMode('cancel')" background-color="white" class="mr-2" v-if="isInConfigLayoutMode">
+          <g-btn :uppercase="false" @click="toggleMode('cancel')" background-color="white" class="mr-3" v-if="isInConfigLayoutMode">
             <g-icon class="mr-2" color="red">mdi-close-circle</g-icon>
             <span style="color: rgba(0, 0, 0, 0.87)">Cancel</span>
           </g-btn>

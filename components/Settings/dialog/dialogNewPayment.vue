@@ -11,7 +11,7 @@
 				<pos-keyboard-full v-model="name"/>
 			</div>
 			<g-toolbar bottom color="grey lighten 3">
-				<g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="ma-2" @click="back">
+				<g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="ma-3" @click="back">
 					<g-icon class="mr-2" svg>
 						icon-back
 					</g-icon>

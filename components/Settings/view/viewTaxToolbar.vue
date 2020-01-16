@@ -1,22 +1,19 @@
 <template>
   <fragment>
-    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-2" @click="openDialogNewTaxCategory">
-      <g-icon class="mr-2" >
-        add_circle
-      </g-icon>
-      Add
-    </g-btn>
-    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-2" :disabled="!selectedTaxCategory" @click="openDialogEditTaxCategory">
+    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-3" :disabled="!selectedTaxCategory" @click="openDialogEditTaxCategory">
       <g-icon class="mr-2" color="red">
         edit
       </g-icon>
       Edit
     </g-btn>
-    <g-btn :uppercase="false" background-color="white" :disabled="!selectedTaxCategory" text-color="#1d1d26" @click="openDialogDelete">
+    <g-btn :uppercase="false" class="mr-3" background-color="white" :disabled="!selectedTaxCategory" text-color="#1d1d26" @click="openDialogDelete">
       <g-icon class="mr-2" svg>
         icon-trash
       </g-icon>
       Delete
+    </g-btn>
+    <g-btn :uppercase="false" background-color="#4CAF50" text-color="#FFFFFF" @click="openDialogNewTaxCategory">
+      + Create new category
     </g-btn>
     <dialog-confirm-delete type="tax category" :label="selectedTaxCategory ? selectedTaxCategory.value + '%' : ''" v-model="dialogConfirmDelete" @submit="deleteTaxCategory"/>
   </fragment>

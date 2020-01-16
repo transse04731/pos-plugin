@@ -29,11 +29,8 @@
 <script>
   import loginSupportDialog from './loginSupportDialog'
 
-  //import PosKeyboardFull from '../pos-shared-components/PosKeyboardFull';
-
   export default {
     name: 'dialogLoginSupport',
-    //components: { PosKeyboardFull },
     props: {
       value: null
     },
@@ -66,11 +63,9 @@
   }
 
   .support-item {
-    //padding: 34px;
     margin-top: 34px;
     margin-left: 17px;
     font-size: 20px;
-    font-weight: 800;
     line-height: 25px;
   }
 
@@ -84,11 +79,11 @@
     display: inline-flex;
     padding: 10px;
 
-    .g-tf-input {
-      text-align: center;
-      letter-spacing: 12px;
-      font-size: 30px;
-      color: #1271ff;
+    .g-tf-wrapper {
+      background-color: #ffffff;
+      ::v-deep fieldset {
+        border: none !important;
+      }
     }
 
   }

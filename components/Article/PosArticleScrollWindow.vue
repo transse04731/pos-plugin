@@ -1,9 +1,8 @@
 <template>
   <div class="main">
-    <g-scroll-window :show-arrows="false" v-model="activeWindow" area="window" elevation="0">
-      <g-scroll-window-item :key="windowIndex" v-for="(window, windowIndex) in productWindows" @input="updateActiveWindow(windowIndex)">
-        <g-btn v-for="(item, i) in window"
-               :active="articleSelectedProductButton && (articleSelectedProductButton._id === item._id)"
+    <g-scroll-window :show-arrows="false" area="window" elevation="0" v-model="activeWindow">
+      <g-scroll-window-item :key="windowIndex" @input="updateActiveWindow(windowIndex)" v-for="(window, windowIndex) in productWindows">
+        <g-btn :active="articleSelectedProductButton && (articleSelectedProductButton._id === item._id)"
                :active-class="productActive"
                :key="i"
                :style="getBtnStyle(item)"
@@ -11,6 +10,7 @@
                @click="selectArticle(item)"
                flat
                height="100%"
+               v-for="(item, i) in window"
         >
           {{item.name}}
         </g-btn>
@@ -85,6 +85,10 @@
           this.activeProductWindow = val
         }
       }
+    },
+    async activated() {
+      this.articleSelectedProductButton = null;
+      this.activeCategory && await this.$getService('PosStore:getActiveProducts')()
     }
   }
 </script>
