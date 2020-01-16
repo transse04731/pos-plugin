@@ -1,5 +1,5 @@
 <template>
-  <g-toolbar bottom color="#eee" style="z-index: 2">
+  <g-toolbar color="#eee" style="z-index: 2">
     <g-btn :uppercase="false" @click="back">
       <g-icon class="mr-2" svg>icon-back</g-icon>
       Back

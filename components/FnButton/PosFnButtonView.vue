@@ -3,8 +3,7 @@
 
     <div area="button-name" v-show="isButtonSelected && !isInConfigLayoutMode">
       <pos-text-field :value="textFieldValue"
-                      @change="updateButtonItems"
-                      @input="updateButton($event, 'text')"
+                      @input="updateButton($event, 'text'); debounceUpdate()"
                       label="Button Name"
                       placeholder="Fill your text">
         <template v-slot:append>
@@ -46,13 +45,12 @@
 
     <div area="button-fn-value">
       <pos-text-field :rules="selectedFunction === 'discountSingleItemByPercent' ? [rules.minMax] : []"
-                      @change="updateButtonItems"
-                      @input="updateButton($event, 'buttonFunctionValue')"
+                      @input="updateButton($event, 'buttonFunctionValue'); debounceUpdate()"
                       label="Value"
                       placeholder="Fill your value"
                       v-if="isButtonSelected && !isInConfigLayoutMode && showFunctionValue"
                       v-model.number="textFieldFunctionValue"></pos-text-field>
-      <pos-text-field @change="updateButtonItems"
+      <pos-text-field @input="debounceUpdate()"
                       label="Price"
                       placeholder="Fill your value"
                       style="height: fit-content; margin-top: auto;"
@@ -250,7 +248,7 @@
         { text: 'Discount single item by %', value: 'discountSingleItemByPercent', hasValue: true },
         { text: 'Discount single item by €', value: 'discountSingleItemByAmount', hasValue: true },
         { text: 'Product Lookup', value: 'productLookup', hasValue: false },
-        { text: 'Change price', value: 'changePrice', hasValue: true },
+        { text: 'Change price', value: 'changePrice', hasValue: false },
         { text: 'Quick Cash', value: 'quickCash', hasValue: false },
         { text: 'Save order', value: 'saveOrder', hasValue: false },
         { text: 'Pay', value: 'pay', hasValue: false },
@@ -429,13 +427,13 @@
       },
       updateSelectedBtnStyle() {
         this.selectedButtons[0].style.textColor = this.selectedColor && ['#73F8F8', '#FFFFFF'].includes(this.selectedColor.value) ? '#000000' : '#FFFFFF';
-        this.selectedButtons[0].style.backgroundColor = this.selectedColor.value;
+        this.selectedButtons[0].style.backgroundColor = this.selectedColor && this.selectedColor.value;
         if (this.selectedButtons[0].buyback) {
           this.selectedButtons[0].buyback.price = this.buybackProductPrice;
         }
       },
       updateButtonItems() {
-        if (!this.isValidForm) {
+        if (!this.isValidForm || !this.selectedButtons.length) {
           return;
         }
         const selectedBtnId = this.selectedButtons[0].buttonId;
@@ -462,6 +460,9 @@
           }
         }
       },
+      debounceUpdate: _.debounce(function (e) {
+        this.updateButtonItems();
+      }, 500),
       setMergedButtons(mergedButtons, mergeMap) {
         this.mergedButtons = mergedButtons;
         this.mergeMap = mergeMap
@@ -496,9 +497,11 @@
     },
     mounted() {
       this.refreshData();
+      this.selectedButtons = [];
     },
     activated() {
       this.refreshData();
+      this.selectedButtons = [];
     }
   }
 </script>

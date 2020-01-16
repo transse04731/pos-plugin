@@ -2,8 +2,7 @@
   <g-grid-layout :layout="layout" style="height: 100%">
     <div area="button-name">
       <pos-text-field :value="textFieldValue"
-                      @change="updateButtonItems"
-                      @input="updateButton($event, 'text')"
+                      @input="updateButton($event, 'text'); debounceUpdate()"
                       label="Button Name"
                       placeholder="Fill your text">
         <template v-slot:append>
@@ -34,8 +33,8 @@
 
     <div area="button-fn-value">
       <pos-text-field
-          :value="textFieldFunctionValue" @change="updateButtonItems"
-          @input="updateButton($event, 'buttonFunctionValue')"
+          :value="textFieldFunctionValue"
+          @input="updateButton($event, 'buttonFunctionValue'), debounceUpdate()"
           label="Value"
           placeholder="Fill your value"
           v-if="isButtonSelected && !isInConfigLayoutMode && showFunctionValue"
@@ -419,7 +418,7 @@
         let foundItem = this.findSelectedButton(this.selectedButtons[0]);
         if (foundItem) {
           foundItem.style.backgroundColor = this.selectedColor ? this.selectedColor.value : null;
-          foundItem.style.textColor =  this.selectedColor && ['#73F8F8', '#FFFFFF'].includes(this.selectedColor.value) ? '#000000' : '#FFFFFF';
+          foundItem.style.textColor = this.selectedColor && ['#73F8F8', '#FFFFFF'].includes(this.selectedColor.value) ? '#000000' : '#FFFFFF';
           try {
             this.updatePosSettings(foundItem, 'paymentFunctionButtons', this.mergeMap)
           } catch (e) {
@@ -427,6 +426,9 @@
           }
         }
       },
+      debounceUpdate: _.debounce(function (e) {
+        this.updateButtonItems();
+      }, 500),
       refreshData() {
         this.posSettings = cms.getList('PosSetting')[0];
         if (this.posSettings) {
@@ -435,8 +437,13 @@
       }
     },
     mounted() {
-      this.selectedColor = this.buttonColors[0]
       this.refreshData();
+      this.selectedButtons = [];
+    },
+    activated() {
+      this.refreshData();
+      this.selectedButtons = [];
+
     }
   }
 </script>
