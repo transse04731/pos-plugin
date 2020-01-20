@@ -677,6 +677,11 @@
 
   .keyboard {
     padding: 8px 0 8px 8px;
+    height: 100%;
+
+    ::v-deep .keyboard__template {
+      grid-template-rows: repeat(5, calc(20% - 3.67px))!important;
+    }
   }
 
   .buttons {
