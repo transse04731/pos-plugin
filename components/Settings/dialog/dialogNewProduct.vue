@@ -8,7 +8,7 @@
           </div>
           <div class="input">
             <!--            Name-->
-            <pos-text-field @click="openDialogDetail('name')" class="name-input" label="Name" placeholder="Fill your number" required v-model="productName"/>
+            <pos-text-field @click="openDialogDetail('name')" class="name-input" label="Name" placeholder="Product Name" required v-model="productName"/>
             <pos-select :items="categories" class="category-input" item-text="name" item-value="value" label="Product Category" required return-object v-model="productCategory"/>
 
             <!--            Tax-->
@@ -23,13 +23,13 @@
               </div>
             </div>
             <pos-text-field @click="openDialogDetail('id')" disabled label="Product ID" placeholder="Auto generate" v-model="productID"/>
-            <pos-text-field :key="'pPrice'+key" @click="openDialogDetail('price')" label="Price" placeholder="Fill your number" required v-model="productPrice">
+            <pos-text-field :key="'pPrice'+key" @click="openDialogDetail('price')" label="Price" placeholder="Price" required v-model="productPrice">
               <template v-slot:append>
                 <span style="color: #1471ff">€</span>
               </template>
             </pos-text-field>
             <pos-select :items="units" class="unit-input" label="Unit" v-model="unit"/>
-            <pos-text-field @click="openDialogDetail('barcode')" class="barcode-input" label="Barcode/PLU" placeholder="Fill your number" v-model="productBarcode">
+            <pos-text-field @click="openDialogDetail('barcode')" class="barcode-input" label="Barcode/PLU" placeholder="Barcode" v-model="productBarcode">
               <template v-slot:append>
                 <g-icon svg>icon-scanning_barcode</g-icon>
               </template>
@@ -82,20 +82,20 @@
         <div class="form__detail">
           <div class="input__detail">
             <div>
-              <pos-text-field :rules="[rules.required]" @click="keyboardFocus = 'name'" label="Name" placeholder="Fill your number" ref="name" required v-model="name"/>
+              <pos-text-field :rules="[rules.required]" @click="keyboardFocus = 'name'" label="Name" placeholder="Product Name" ref="name" required v-model="name"/>
             </div>
             <div>
               <pos-text-field @click="keyboardFocus = 'id'" label="Product ID" placeholder="Auto generate" ref="productID" v-model="productID"/>
             </div>
             <div>
-              <pos-text-field :rules="[rules.number, rules.required]" @click="keyboardFocus = 'price'" label="Price" placeholder="Fill your number" ref="price" required v-model="price">
+              <pos-text-field :rules="[rules.number, rules.required]" @click="keyboardFocus = 'price'" label="Price" placeholder="Price" ref="price" required v-model="price">
                 <template v-slot:append>
                   <span style="color: #1471ff">€</span>
                 </template>
               </pos-text-field>
             </div>
             <div>
-              <pos-text-field @click="keyboardFocus = 'barcode'" label="Barcode/PLU" placeholder="Fill your number" ref="barcode" v-model="barcode">
+              <pos-text-field @click="keyboardFocus = 'barcode'" label="Barcode/PLU" placeholder="Barcode" ref="barcode" v-model="barcode">
                 <template v-slot:append>
                   <g-icon svg>icon-scanning_barcode</g-icon>
                 </template>
