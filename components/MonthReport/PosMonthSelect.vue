@@ -13,23 +13,15 @@
 <script>
   export default {
     name: 'PosMonthSelect',
-    injectService: [
-      'PosStore:monthReportFrom',
-      'PosStore:monthReportTo',
-      'PosStore:selectedMonth',
-      'PosStore:getMonthReportData',
-    ],
-    data() {
-      return {
-      }
-    },
+    injectService: ['PosStore:(monthReportFrom,monthReportTo,selectedMonth)'],
     computed: {
       month() {
-        if(this.monthReportFrom && this.monthReportTo) {
+        if (this.monthReportFrom && this.monthReportTo) {
           const start = dayjs(this.monthReportFrom);
           const end = dayjs(this.monthReportTo);
-          if(!start.isSame(end, 'month'))
-            return start.format('MMM DD YYYY') + ' - ' + end.format('MMM DD YYYY')
+          if (!start.isSame(end, 'month')) {
+            return `${start.format('MMM DD YYYY')} - ${end.format('MMM DD YYYY')}`
+          }
         }
         if (this.selectedMonth) {
           return this.selectedMonth.format('MMMM YYYY')
@@ -49,9 +41,9 @@
         this.monthReportFrom = this.selectedMonth.startOf('month').format('YYYY-MM-DD');
         this.monthReportTo = dayjs().isSame(this.selectedMonth.endOf('month'), 'month')
         && dayjs().isBefore(this.selectedMonth.endOf('month'))
-            ? dayjs().format('YYYY-MM-DD')
-            : this.selectedMonth.endOf('month').format('YYYY-MM-DD');
-        await this.getMonthReportData();
+          ? dayjs().format('YYYY-MM-DD')
+          : this.selectedMonth.endOf('month').format('YYYY-MM-DD');
+        await this.$getService('PosStore:getMonthReport')();
       }
     },
     async created() {

@@ -2,34 +2,23 @@
   <div class="setting-wrapper">
     <g-date-picker-input label="From:" v-model="from" class="mt-5"/>
     <g-date-picker-input label="To:" v-model="to"/>
-    <pos-switch dense label="Show Product Sold" v-model="showProduct"/>
-    <pos-switch dense label="Show All Z-Number" v-model="showZNumber" class="mt-5"/>
+    <pos-switch dense label="Show Product Sold" v-model="showProductSold"/>
+    <pos-switch dense label="Show All Z-Number" v-model="showAllZNumber" class="mt-5"/>
   </div>
 </template>
 
 <script>
   export default {
     name: 'PosMonthReportSetting',
-    injectService: [
-      'PosStore:selectedMonth',
-      'PosStore:monthReportFrom',
-      'PosStore:monthReportTo',
-      'PosStore:showProductSold',
-      'PosStore:showAllZNumber',
-      'PosStore:getMonthReportData',
-    ],
-    data() {
-      return {
-      }
-    },
+    injectService: ['PosStore:(selectedMonth,monthReportFrom,monthReportTo,showProductSold,showAllZNumber,getMonthReport)'],
     computed: {
       from: {
         get() {
           return this.monthReportFrom
         },
         set(val) {
-          this.monthReportFrom = val;
-          this.updateMonth();
+          this.monthReportFrom = val
+          this.updateMonth()
         }
       },
       to: {
@@ -37,37 +26,21 @@
           return this.monthReportTo
         },
         set(val) {
-          this.monthReportTo = val;
-          this.updateMonth();
-        }
-      },
-      showProduct: {
-        get() {
-          return this.showProductSold
-        },
-        set(val) {
-          this.showProductSold = val
-        }
-      },
-      showZNumber: {
-        get() {
-          return this.showAllZNumber
-        },
-        set(val) {
-          this.showAllZNumber = val
+          this.monthReportTo = val
+          this.updateMonth()
         }
       },
     },
     methods: {
       async updateMonth() {
-        const start = dayjs(this.monthReportFrom);
-        const end = dayjs(this.monthReportTo);
-        if(start.isSame(end, 'month')) {
-          this.selectedMonth = start.endOf('month');
+        const start = dayjs(this.monthReportFrom)
+        const end = dayjs(this.monthReportTo)
+        if (start.isSame(end, 'month')) {
+          this.selectedMonth = start.endOf('month')
         } else {
-          this.selectedMonth = dayjs();
+          this.selectedMonth = dayjs()
         }
-        await this.getMonthReportData();
+        await this.getMonthReport()
       }
     }
   }
@@ -103,7 +76,7 @@
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;
 
-        .g-tf::before{
+        .g-tf::before {
           background-color: unset;
         }
 

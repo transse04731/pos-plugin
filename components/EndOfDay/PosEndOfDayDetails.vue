@@ -83,7 +83,7 @@
             z: report.z
           }))
 
-          this.model = this.zNumberReports[0]
+          this.model = this.zNumberReports[this.zNumberReports.length - 1]
         } else {
           this.zNumberReports = []
           this.model = null

@@ -1,0 +1,302 @@
+{
+  "output": [
+    "groupByTax",
+    "user",
+    "groupByPayment"
+  ],
+  "_id": "5d09f9104fbc7211fc7b2eb7",
+  "__v": 0,
+  "collections": "Order",
+  "initProps": {
+    "from": "2019-01-10T17:00:00.000Z",
+    "to": "2020-01-11T17:00:00.000Z",
+    "name": "Admin"
+  },
+  "inputForm": {
+    "_id": "5e1d660424e78a033450351f",
+    "extensions": [],
+    "fields": [
+      {
+        "_id": "5e1d662c24e78a0334503527",
+        "schemaType": "date",
+        "key": "from",
+        "type": "input@date"
+      },
+      {
+        "_id": "5e1d662c24e78a0334503526",
+        "schemaType": "date",
+        "key": "to",
+        "type": "input@date"
+      },
+      {
+        "_id": "5e1d662c24e78a0334503525",
+        "schemaType": "string",
+        "key": "name",
+        "type": "input"
+      }
+    ],
+    "tabs": [],
+    "name": "StaffOrderForm"
+  },
+  "items": [
+    {
+      "choice": "step",
+      "name": "getOrdersInRange",
+      "input": [
+        "from",
+        "to",
+        "name"
+      ],
+      "output": "orders",
+      "items": [
+        {
+          "choice": "query",
+          "path": "date",
+          "comparator": "$gte",
+          "value": "from",
+          "valueType": "variable"
+        },
+        {
+          "choice": "query",
+          "path": "date",
+          "comparator": "$lte",
+          "value": "to",
+          "valueType": "variable"
+        },
+        {
+          "choice": "query",
+          "path": "user.name",
+          "comparator": "$eq",
+          "valueType": "variable",
+          "value": "name"
+        }
+      ],
+      "type": "query",
+      "clipboardType": "cut"
+    },
+    {
+      "choice": "filter",
+      "input": "orders",
+      "output": "paidOrders",
+      "fn": {
+        "_id": "5d09bcdb4fbc7211fc7b2833",
+        "extensionType": "Filter",
+        "name": "paidOrders",
+        "fn": {
+          "_code_": "const _ = require('lodash');\nmodule.exports = function (order) {\n  return order.status === 'paid';\n}",
+          "_code_type_": "commonJs"
+        }
+      }
+    },
+    {
+      "choice": "convert",
+      "input": "paidOrders",
+      "output": "items",
+      "fn": {
+        "_id": "5d088ea4d52d8e0534fad07e",
+        "extensionType": "Convert",
+        "fn": {
+          "_code_": "const _ = require('lodash');\nmodule.exports = function (orders) {\n  return _.reduce(orders, (items, order) => {\n    return items.concat(order.items.map(i => Object.assign(i, {orderDate: order.date})));\n  }, []);\n}",
+          "_code_type_": "commonJs"
+        },
+        "name": "items"
+      }
+    },
+    {
+      "choice": "filter",
+      "input": "items",
+      "output": "itemsForCalculateSales",
+      "fn": {
+        "_id": "5d09fbb34fbc7211fc7b2f1d",
+        "extensionType": "Filter",
+        "name": "neccessaryItemsForSales",
+        "fn": {
+          "_code_": "const _ = require('lodash');\nmodule.exports = function (item) {\n  return !item.excludedFromSales;\n}",
+          "_code_type_": "commonJs"
+        }
+      }
+    },
+    {
+      "choice": "pivottable",
+      "input": "itemsForCalculateSales",
+      "rows": [],
+      "columns": [
+        {
+          "choice": "field",
+          "label": "tax",
+          "field": "tax"
+        }
+      ],
+      "reducers": [
+        {
+          "choice": "reducer",
+          "label": "gross",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, item) {\n  return sum + item.price * item.quantity + _.sumBy(item.extra, e => e.price * e.quantity);\n}",
+            "_code_type_": "commonJs"
+          },
+          "resultType": "number"
+        },
+        {
+          "choice": "reducer",
+          "label": "net",
+          "fn": {
+            "_code_": "const _ = require('lodash');\n\nfunction calNetto(brutto, tax) {\n    if (tax === 0) return brutto;\n    return brutto * (1 / (1 + tax / 100));\n}\n\nmodule.exports = function (sum, item) {\n  const price = item.price * item.quantity + _.sumBy(item.extra, e => e.price * e.quantity);\n  return sum + calNetto(price, item.tax);\n}",
+            "_code_type_": "commonJs"
+          },
+          "resultType": "number"
+        },
+        {
+          "choice": "reducer",
+          "label": "salesTax",
+          "fn": {
+            "_code_": "const _ = require('lodash');\n\nfunction calTax(brutto, tax) {\n    if (tax === 0) return 0;\n    return brutto * (1 - 1 / (1 + tax / 100));\n}\n\nmodule.exports = function (sum, item) {\n  const price = item.price * item.quantity + _.sumBy(item.extra, e => e.price * e.quantity);\n  return sum + calTax(price, item.tax);\n}",
+            "_code_type_": "commonJs"
+          },
+          "resultType": "number",
+          "key": "undefined_copy"
+        }
+      ],
+      "type": "items",
+      "output": "groupByTax"
+    },
+    {
+      "choice": "pivottable",
+      "input": "itemsForCalculateSales",
+      "rows": [],
+      "columns": [],
+      "reducers": [
+        {
+          "choice": "reducer",
+          "label": "gross",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, item) {\n  return sum + item.price * item.quantity + _.sumBy(item.extra, e => e.price * e.quantity);\n}",
+            "_code_type_": "commonJs"
+          },
+          "resultType": "number"
+        },
+        {
+          "choice": "reducer",
+          "label": "net",
+          "fn": {
+            "_code_": "const _ = require('lodash');\n\nfunction calNetto(brutto, tax) {\n    if (tax === 0) return brutto;\n    return brutto * (1 / (1 + tax / 100));\n}\n\nmodule.exports = function (sum, item) {\n  const price = item.price * item.quantity + _.sumBy(item.extra, e => e.price * e.quantity);\n  return sum + calNetto(price, item.tax);\n}",
+            "_code_type_": "commonJs"
+          },
+          "resultType": "number"
+        },
+        {
+          "choice": "reducer",
+          "label": "salesTax",
+          "fn": {
+            "_code_": "const _ = require('lodash');\n\nfunction calTax(brutto, tax) {\n    if (tax === 0) return 0;\n    return brutto * (1 - 1 / (1 + tax / 100));\n}\n\nmodule.exports = function (sum, item) {\n  const price = item.price * item.quantity + _.sumBy(item.extra, e => e.price * e.quantity);\n  return sum + calTax(price, item.tax);\n}",
+            "_code_type_": "commonJs"
+          },
+          "resultType": "number",
+          "key": "undefined_copy"
+        }
+      ],
+      "type": "items",
+      "output": "sales",
+      "key": "undefined_copy_copy_copy"
+    },
+    {
+      "choice": "pivottable",
+      "input": "paidOrders",
+      "output": "groupByPayment",
+      "rows": [],
+      "columns": [
+        {
+          "choice": "computedField",
+          "fn": {
+            "_code_": "module.exports = function(item) {\n  return item.payment && item.payment[0].type;\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "vPayment"
+        }
+      ],
+      "reducers": [
+        {
+          "choice": "sum",
+          "path": "vSum"
+        }
+      ]
+    },
+    {
+      "choice": "pivottable",
+      "input": "paidOrders",
+      "rows": [],
+      "columns": [
+        {
+          "choice": "computedField",
+          "label": "vUser",
+          "fn": {
+            "_code_": "module.exports = function(item) {\n  return item.user && item.user[0].name;\n}",
+            "_code_type_": "commonJs"
+          }
+        }
+      ],
+      "reducers": [
+        {
+          "choice": "reducer",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (_from, order) {\n  if (_from === undefined) return order.date; \n  if (_from > order.date) return order.date;\n  return _from\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "from",
+          "resultType": "number",
+          "initValue": "undefined"
+        },
+        {
+          "choice": "reducer",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (_to, order) {\n  if (_to === undefined) return order.date;\n  if (_to < order.date) return order.date;\n  return _to;\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "to",
+          "resultType": "number",
+          "initValue": "undefined"
+        },
+        {
+          "choice": "reducer",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  sum = sum + (order.vDiscount || 0);\n  return sum;\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "discount",
+          "resultType": "number",
+          "initValue": "",
+          "key": "undefined_copy"
+        },
+        {
+          "choice": "sum",
+          "path": "vSum"
+        },
+        {
+          "choice": "reducer",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  return sum + order.vSum - order.vTax;\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "net",
+          "resultType": "number",
+          "initValue": "",
+          "key": "undefined_copy_copy"
+        },
+        {
+          "choice": "reducer",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  return sum + order.vTax;\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "tax",
+          "resultType": "number",
+          "initValue": "",
+          "key": "undefined_copy"
+        }
+      ],
+      "output": "user"
+    }
+  ],
+  "name": "OrderSalesByStaff",
+  "registerAsVueComponent": true
+}

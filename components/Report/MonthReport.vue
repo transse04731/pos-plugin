@@ -4,36 +4,36 @@
     <div class="report-content">
       <div class="report__sales">
         <div class="title">Sales</div>
-        <div class="detail" v-for="(sale, i) in saleDataByPaymentType" :key="`sales${i}`">
-          <span>{{sale._id}}</span>
-          <span class="float-right">€ {{sale.total}}</span>
+        <div class="detail" v-for="(amount, payment) in salesByPayment" :key="`sales${payment}`">
+          <span>{{payment}}</span>
+          <span class="float-right">€ {{amount | convertMoney}}</span>
         </div>
         <div class="total">
           <span>Total</span>
-          <span class="float-right"><u>€ {{totalSales}}</u></span>
+          <span class="float-right"><u>€ {{total | convertMoney}}</u></span>
         </div>
       </div>
-      <div v-if="showAllZNumber" class="report__z-number">
+      <div v-if="zNumbers" class="report__z-number">
         <table>
-          <tr v-for="(z, i) in zNumberData" :key="`zNumber${i}`" class="z-number">
+          <tr v-for="(z, i) in zNumbers" :key="`zNumber${i}`" class="z-number">
             <td>
               <div class="row-flex justify-between">
                 <span>Z-Number {{z.z}}:</span>
-                <span class="ml-2 float-right">€ {{z.sum}}</span>
+                <span class="ml-2 float-right">€ {{z.sum | convertMoney}}</span>
               </div>
             </td>
             <td>Date: {{z.date}}</td>
           </tr>
         </table>
       </div>
-      <div v-if="showProductsSold" class="report__product">
+      <div v-if="salesByCategory" class="report__product">
         <div class="title">Product Sold</div>
-        <div v-for="(category, i) in productsSoldByCategory" :key="`category${i}`">
+        <div v-for="({products, sum}, category) in salesByCategory" :key="`category${category}`">
           <p class="category">
-            {{category._id}} (€ {{category.total}})
+            {{category}} (€ {{sum | convertMoney}})
           </p>
-          <p class="product" v-for="(item, i) in category.items" :key="`item${i}`">
-            {{item.quantity}}x {{item.name}}
+          <p class="product" v-for="{product, quantity} in products" :key="`item${product}`">
+            {{quantity}} x {{product}}
           </p>
         </div>
       </div>
@@ -46,19 +46,18 @@
     name: 'MonthReport',
     props: {
       date: String,
-      saleDataByPaymentType: Array,
-      zNumberData: Array,
-      productsSoldByCategory: Array,
-      totalSales: Number
+      salesByCategory: null,
+      salesByPayment: null,
+      zNumbers: {
+        type: Array,
+        default: null
+      },
+      total: Number
     },
-    computed: {
-      showAllZNumber() {
-        return this.zNumberData && this.zNumberData.length
-      },
-      showProductsSold() {
-        return this.productsSoldByCategory && this.productsSoldByCategory.length
-      },
-
+    filters: {
+      convertMoney(value) {
+        return !isNaN(value) ? value.toFixed(2) : value
+      }
     }
   }
 </script>

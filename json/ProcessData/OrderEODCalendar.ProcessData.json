@@ -1,0 +1,124 @@
+{
+  "output": [
+    "ordersByDate"
+  ],
+  "_id": "5e0ea8fde257a15ae8712b7f",
+  "collections": "Order",
+  "initProps": {
+    "from": "2019-12-24T17:00:00.000Z",
+    "to": "2020-01-03T02:37:49.336Z"
+  },
+  "inputForm": {
+    "_id": "5c69411994b44769f7ad4e63",
+    "__v": 0,
+    "extensions": [],
+    "fields": [
+      {
+        "_id": "5c863f31dadddd317f5017de",
+        "schemaType": "date",
+        "key": "from",
+        "type": "date-picker",
+        "pickerType": "date",
+        "clearable": true,
+        "showIcon": true
+      },
+      {
+        "_id": "5c863f31dadddd317f5017dd",
+        "schemaType": "date",
+        "key": "to",
+        "type": "date-picker",
+        "pickerType": "date",
+        "clearable": true,
+        "showIcon": true
+      }
+    ],
+    "id": "5c69411994b44769f7ad4e63",
+    "name": "QueryTest",
+    "tabs": []
+  },
+  "items": [
+    {
+      "choice": "step",
+      "name": "getOrdersInRange",
+      "input": [
+        "from",
+        "to"
+      ],
+      "output": "paidOrders",
+      "items": [
+        {
+          "choice": "query",
+          "path": "vDate",
+          "comparator": "$gte",
+          "value": "from",
+          "valueType": "variable"
+        },
+        {
+          "choice": "query",
+          "path": "vDate",
+          "comparator": "$lte",
+          "value": "to",
+          "valueType": "variable"
+        },
+        {
+          "choice": "query",
+          "path": "status",
+          "comparator": "$eq",
+          "valueType": "string",
+          "value": "paid"
+        }
+      ],
+      "type": "query"
+    },
+    {
+      "choice": "pivottable",
+      "input": "paidOrders",
+      "output": "ordersByDate",
+      "rows": [],
+      "reducers": [
+        {
+          "choice": "sum",
+          "path": "vSum"
+        },
+        {
+          "choice": "reducer",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (_from, order) {\n  if (_from === undefined) return order.date; \n  if (_from > order.date) return order.date;\n  return _from\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "from",
+          "resultType": "number",
+          "initValue": "undefined"
+        },
+        {
+          "choice": "reducer",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (_to, order) {\n  if (_to === undefined) return order.date;\n  if (_to < order.date) return order.date;\n  return _to;\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "to",
+          "resultType": "number",
+          "initValue": "undefined"
+        }
+      ],
+      "columns": [
+        {
+          "choice": "computedField",
+          "label": "vDate2",
+          "fn": {
+            "_code_": "module.exports = function(order) {\n  return order.vDate.toISOString();\n}",
+            "_code_type_": "commonJs"
+          },
+          "key": "undefined_copy"
+        },
+        {
+          "choice": "field",
+          "label": "z",
+          "field": "z"
+        }
+      ],
+      "view": "table"
+    }
+  ],
+  "name": "OrderEODCalendar"
+}

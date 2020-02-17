@@ -176,8 +176,7 @@ module.exports = async function (cms) {
   }
 
   async function monthlyReportHandler(report, callback) {
-    const totalSales = report.saleDataByPaymentType.reduce((acc, val) => (acc + val.total), 0)
-    const props = {...report, totalSales }
+    const props = {...report }
     const MonthReport = require('../../dist/MonthReport.vue')
     const component = new Vue({
       components: { MonthReport },
@@ -261,6 +260,7 @@ module.exports = async function (cms) {
   async function print(html) {
     const png = await phantomUtil.render(html); //TODO: remove fs.writeFile in render when testing is done
     const terminalSettings = await cms.getModel('Terminal').findOne({})
+    if (!terminalSettings) return
     const printerIp = terminalSettings.thermalPrinters[0].ip
 
     const printer = new EscPrinter({

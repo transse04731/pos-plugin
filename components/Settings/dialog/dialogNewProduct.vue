@@ -125,6 +125,7 @@
       'PosStore:getHighestProductOrder',
       'PosStore:selectedProduct',
       'PosStore:updateProduct',
+      'PosStore:getHighestFavouriteProductOrder'
     ],
     data() {
       return {
@@ -197,11 +198,8 @@
         if (typeof this.rules.required(this.productCategory) === 'string') {
           return false
         }
-        if (typeof this.rules.required(this.price) === 'string'
-          || typeof this.rules.number(this.price) === 'string') {
-          return false
-        }
-        return true
+        return !(typeof this.rules.required(this.price) === 'string'
+          || typeof this.rules.number(this.price) === 'string');
       }
     },
     methods: {
@@ -279,6 +277,7 @@
       },
       async submit() {
         const maxOrder = await this.getHighestProductOrder(this.productCategory._id);
+        const maxFavouriteOrder = await this.getHighestFavouriteProductOrder();
         const product = {
           name: this.productName,
           category: this.productCategory._id,
@@ -293,15 +292,23 @@
             active: this.active,
             showOnOrderScreen: this.showOnOrderScreen,
             manualPrice: this.manualPrice,
-          },
-          layouts: this.isEditProduct
-            ? this.selectedProduct.layouts
-            : [{ 'color': 'white', 'order': maxOrder + 1 }]
+          }
         }
         this.dialogNewProduct = false;
         if (this.isEditProduct) {
+          const hasFavouriteLayout = this.selectedProduct.layouts.find(layout => layout.favourite)
+          const layouts = !hasFavouriteLayout && this.favorite
+            ? [...this.selectedProduct.layouts, { color: '#FFFFFF', favourite: true, order: maxFavouriteOrder + 1 }]
+            : this.selectedProduct.layouts
+
+          Object.assign(product, { layouts })
           await this.updateProduct({ ...product, _id: this.selectedProduct._id })
         } else {
+          const layouts = this.favorite
+            ? [{ color: '#FFFFFF', order: maxOrder + 1 }, { color: '#FFFFFF', favourite: true, order: maxFavouriteOrder + 1 }]
+            : [{ color: '#FFFFFF', order: maxOrder + 1 }]
+
+          Object.assign(product, { layouts })
           await this.createNewProduct(product);
         }
       }

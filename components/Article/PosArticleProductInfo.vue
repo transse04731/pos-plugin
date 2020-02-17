@@ -26,8 +26,8 @@
       <div style="margin-top: 5px;">
         <span class="sub-title">Attributes</span>
         <div v-if="productAttributes">
-          <div class="product-info" v-for="(item, index) in productAttributes">
-            <span class="product-info">{{item.key | capitalize}}: </span>
+          <div class="product-info" v-for="item in productAttributes">
+            <span class="product-info">{{item.key}}: </span>
             <span class="product-info">{{item.values}}</span>
           </div>
         </div>
@@ -42,38 +42,21 @@
   export default {
     name: 'PosArticleProductInfo',
     injectService: ['PosStore:(activeCategory, articleSelectedProductButton )'],
-    filters: {
-      capitalize: function (value) {
-        if (!value) {
-          return ''
-        }
-        value = value.toString()
-        return value.charAt(0).toUpperCase() + value.slice(1)
-      }
-    },
     methods: {
       mergeAttributes(attributes) {
         return _.map(_.groupBy(attributes, 'key'),
           val => ({
-            key: val[0].key, values: _.reduce(val.map(v => v.value), function (concat, val, index) {
-              if (index !== 0) {
-                return concat + ', ' + val
-              } else {
-                return val
-              }
-            }, '')
+            key: val[0].key,
+            values: val.map(v => v.value).join(', ')
           })
         )
       }
     },
     computed: {
       productAttributes() {
-        if (!this.articleSelectedProductButton || !this.articleSelectedProductButton.attributes) {
-          return []
-        }
-
-        let attributes = this.articleSelectedProductButton.attributes;
-        return this.mergeAttributes(attributes);
+        return !this.articleSelectedProductButton || !this.articleSelectedProductButton.attributes
+          ? []
+          : this.mergeAttributes(this.articleSelectedProductButton.attributes);
       }
     }
   }
@@ -83,6 +66,7 @@
   .product-info {
     font-size: 14px;
     line-height: 18px;
+    text-transform: capitalize;
   }
 
   .sub-title {

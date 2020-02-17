@@ -1,5 +1,5 @@
 <template>
-  <g-grid-select :grid="false" :items="buttonColors" v-model="computedSelectedColor">
+  <g-grid-select :grid="false" :items="buttonColors" v-model="computedSelectedColor" style="padding: 5px">
     <template #default="{toggleSelect, item, index}">
       <g-btn :uppercase="false" :key="index" :ripple="false" :style="{marginRight: '15px', boxShadow: 'none', width: '38px', minWidth: '38px', height: '38px', border: '1px solid #D2D2D2', backgroundColor: item.value}" @click="toggleSelect(item); setSelectedArticleColor();" border-radius="50%"></g-btn>
     </template>

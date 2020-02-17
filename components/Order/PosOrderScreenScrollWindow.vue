@@ -1,20 +1,20 @@
 <template>
   <div class="main">
-    <div v-for="(productsList, category) in scrollWindowProducts" :key="category" :ref="`window_${category}`" style="z-index: -1">
+    <div v-for="(productsList, category) in productWindows" :key="category" :ref="`window_${category}`" style="z-index: -1">
       <scroll-window area="window" :show-arrows="false"
-                     elevation="0"
+                     elevation="0" :should-force-update="shouldForceUpdate"
                      :key="`window_${category}`"
                      :value="activeProductWindows[category]"
       >
-        <scroll-window-item v-for="(window, windowIndex) in productsList"
+        <scroll-window-item v-for="(window, windowIndex) in productsList" :should-force-update="shouldForceUpdate"
                             :key="`${category}_window_item_${windowIndex}`"
                             @input="activeProductWindows[category] = $event"
         >
           <g-btn :uppercase="false" flat
                  v-for="(item, i) in window"
                  :key="`btn_${i}`"
-                 :background-color="(item.layouts.length > 0 && item.layouts[0].color)|| '#FFF'"
-                 :style="[!item.layouts[0] || item.layouts[0].color === 'white' ? {border: '1px solid #979797'}: null]"
+                 :background-color="(item.layout && item.layout.color)|| '#FFFFFF'"
+                 :style="getItemStyle(item)"
                  height="100%"
                  @click.native.stop="addProduct(item)"
           >
@@ -43,7 +43,7 @@
 
 <script>
   import _ from 'lodash'
-  import {GScrollWindow, GScrollWindowItem} from 'pos-vue-framework';
+  import { GScrollWindow, GScrollWindowItem } from 'pos-vue-framework';
 
   export default {
     name: 'PosOrderScreenScrollWindow',
@@ -51,15 +51,41 @@
       scrollWindow: {
         name: 'ScrollWindow',
         mixins: [GScrollWindow],
+        props: {
+          shouldForceUpdate: Boolean
+        },
+        data() {
+          return {
+            _forceUpdate: null
+          }
+        },
         mounted() {
-          this.$forceUpdate = () => null
+          this._forceUpdate = this.$forceUpdate
+        },
+        watch: {
+          shouldForceUpdate(newVal) {
+            this.$forceUpdate = newVal ? this._forceUpdate : () => null
+          }
         }
       },
       scrollWindowItem: {
         name: 'ScrollWindowItem',
         mixins: [GScrollWindowItem],
+        props: {
+          shouldForceUpdate: Boolean
+        },
+        data() {
+          return {
+            _forceUpdate: null
+          }
+        },
         mounted() {
-          this.$forceUpdate = () => null
+          this._forceUpdate = this.$forceUpdate
+        },
+        watch: {
+          shouldForceUpdate(newVal) {
+            this.$forceUpdate = newVal ? this._forceUpdate : () => null
+          }
         }
       }
     },
@@ -69,20 +95,22 @@
         default: 0
       }
     },
-    injectService: ['PosStore:(addProductToOrder,scrollWindowProducts)'],
     data() {
       return {
-        activeProductWindows: {}
-      }
-    },
-    computed: {
-      productWindows() {
-        return _.chunk(this.listProducts, 28)
+        productWindows: null,
+        activeProductWindows: {},
+        shouldForceUpdate: true
       }
     },
     methods: {
       addProduct(item) {
-        this.addProductToOrder(item)
+        this.$getService('PosStore:addProductToOrder')(item)
+      },
+      getItemStyle(item) {
+        if (item.layout) return {
+          order: item.layout.order,
+          ...item.layout.color === '#FFFFFF' || !item.layout.color && {border: '1px solid #979797'}
+        }
       }
     },
     created() {
@@ -108,12 +136,41 @@
         }
       }
 
-      if (this.scrollWindowProducts) {
-        this.activeProductWindows = Object.keys(this.scrollWindowProducts).reduce((obj, key) => {
-          this.$set(obj, key, 0)
-          return obj
-        }, {})
-      }
+      this.unwatch = posStore.$watch('scrollWindowProducts', (newValue, oldValue) => {
+        if (!_.isEqual(newValue, oldValue)) {
+          const tempValue = Object.assign({}, this.productWindows, newValue)
+          for (const category in tempValue) {
+            if (tempValue.hasOwnProperty(category)) {
+              tempValue[category] = tempValue[category].map(window => window.map(product => ({
+                ...product,
+                layout: this.$getService('PosStore:getProductLayout')(product, { name: category })
+              })))
+            }
+          }
+
+          this.productWindows = Object.assign({}, this.productWindows, tempValue)
+          this.activeProductWindows = Object.keys(newValue).reduce((obj, key) => {
+            this.$set(obj, key, 0)
+            return obj
+          }, {})
+        }
+      }, { immediate: true, deep: true, sync: true })
+    },
+    async activated() {
+      this.shouldForceUpdate = true
+      await this.$getService('PosStore:getScrollWindowProducts')()
+      this.$nextTick(() => {
+        this.shouldForceUpdate = false
+      })
+    },
+    async mounted() {
+      await this.$getService('PosStore:getScrollWindowProducts')()
+      this.$nextTick(() => {
+        this.shouldForceUpdate = false
+      })
+    },
+    beforeDestroy() {
+      this.unwatch()
     }
   }
 </script>

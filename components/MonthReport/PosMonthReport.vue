@@ -4,26 +4,26 @@
       <div class="report__sales">
         <div class="title">Sales</div>
         <g-divider dashed color="black"/>
-        <div class="detail" v-for="(sale, i) in saleDataByPaymentType" :key="`sales`+i">
-          <span>{{sale._id | capitalize}}</span>
-          <span>€ {{sale.total.toFixed(2)}}</span>
+        <div class="detail" v-for="(amount, payment) in salesByPayment" :key="`sales${payment}`">
+          <span>{{payment}}</span>
+          <span>€ {{amount | convertMoney}}</span>
         </div>
         <div class="total">
           <span>Total</span>
-          <span><u>€ {{totalSales}}</u></span>
+          <span><u>€ {{total | convertMoney}}</u></span>
         </div>
       </div>
-      <div v-if="showAllZNumber" class="report__z-number">
+      <div v-show="showAllZNumber" class="report__z-number">
         <g-divider dashed color="black"/>
         <table>
-          <tr v-for="(z, i) in zNumberData" :key="`zNumber`+i" class="z-number">
+          <tr v-for="(z, i) in zNumbers" :key="`zNumber${i}`" class="z-number">
             <td>
               <div class="row-flex justify-between">
                 <span>Z-Number {{z.z}}:</span>
-                <span class="ml-2">€ {{z.sum.toFixed(2)}}</span>
+                <span class="ml-2">€ {{z.sum | convertMoney}}</span>
               </div>
             </td>
-            <td class="pl-2">Date: {{z.date}}</td>
+            <td class="pl-3">Date: {{z.date}}</td>
           </tr>
         </table>
         <g-divider dashed color="black"/>
@@ -31,12 +31,12 @@
       <div v-if="showProductSold" class="report__product">
         <div class="title">Product Sold</div>
         <g-divider dashed color="black"/>
-        <div v-for="(category, i) in productsSoldByCategory" :key="`category`+i">
+        <div v-for="({products, sum}, category) in salesByCategory" :key="`category${category}`">
           <p class="category">
-            {{category._id}} (€ {{category.total.toFixed(2)}})
+            {{category}} (€ {{sum | convertMoney}})
           </p>
-          <p class="product" v-for="(item, i) in category.items" :key="`item`+i">
-            {{item.quantity}}x {{item.name}}
+          <p class="product" v-for="{product, quantity} in products" :key="`item${product}`">
+            {{quantity}} x {{product}}
           </p>
         </div>
       </div>
@@ -47,94 +47,104 @@
 <script>
   export default {
     name: 'PosMonthReport',
-    injectService: [
-      'PosStore:saleDataByPaymentType',
-      'PosStore:zNumberData',
-      'PosStore:productsSoldByCategory',
-      'PosStore:showAllZNumber',
-      'PosStore:showProductSold',
-      'PosStore:getMonthReportData',
-    ],
-    filters: {
-      capitalize: function (value) {
-        if (!value) return ''
-        value = value.toString()
-        return value.charAt(0).toUpperCase() + value.slice(1)
+    injectService: ['PosStore:(monthReport,getMonthReport,showAllZNumber,showProductSold)'],
+    data() {
+      return {
+        total: 0,
+        salesByCategory: null,
+        salesByPayment: null,
+        zNumbers: null,
       }
     },
-    computed: {
-      totalSales() {
-        return this.saleDataByPaymentType.reduce((acc, val) => (acc + val.total), 0);
-      },
+    filters: {
+      convertMoney(value) {
+        return !isNaN(value) ? value.toFixed(2) : value
+      }
     },
     async created() {
-      if(this.saleDataByPaymentType.length === 0) {
-        await this.getMonthReportData();
-      }
+      const posStore = this.$getService('PosStore')
+      this.unwatch = posStore.$watch('monthReport', newVal => {
+        if (newVal) {
+          const { total, salesByCategory, salesByPayment, zNumbers } = newVal
+          this.total = total
+          this.salesByCategory = salesByCategory
+          this.salesByPayment = salesByPayment
+          this.zNumbers = zNumbers
+        }
+      })
+
+      await posStore.getMonthReport()
+    },
+    async activated() {
+      await this.$getService('PosStore:getMonthReport')()
+    },
+    beforeDestroy() {
+      this.unwatch()
     }
   }
 </script>
 
 <style scoped lang="scss">
- .report-wrapper{
-   background: #d8d8d8;
-   padding: 0 150px;
-   z-index: -1;
+  .report-wrapper {
+    background: #d8d8d8;
+    padding: 0 150px;
+    z-index: -1;
 
-   .report-content {
-     background: white;
-     padding: 32px;
-     color: #1d1d26;
-     overflow: auto;
-     height: 100%;
+    .report-content {
+      background: white;
+      padding: 32px;
+      color: #1d1d26;
+      overflow: auto;
+      height: 100%;
 
-     .title {
-       font-weight: 700;
-       font-size: 16px;
-       line-height: 20px;
-       margin-bottom: 12px;
-       margin-top: 8px;
-     }
+      .title {
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 20px;
+        margin-bottom: 12px;
+        margin-top: 8px;
+      }
 
-     .report__sales {
+      .report__sales {
 
-       .detail {
-         display: flex;
-         justify-content: space-between;
-         padding-left: 16px;
-         padding-top: 8px;
-         font-size: 14px;
-         line-height: 25px;
-       }
+        .detail {
+          display: flex;
+          justify-content: space-between;
+          padding-left: 16px;
+          padding-top: 8px;
+          font-size: 14px;
+          line-height: 25px;
+          text-transform: capitalize;
+        }
 
-       .total {
-         display: flex;
-         justify-content: space-between;
-         font-weight: 800;
-         font-size: 14px;
-         line-height: 30px;
-         padding: 12px 0;
-       }
-     }
+        .total {
+          display: flex;
+          justify-content: space-between;
+          font-weight: 800;
+          font-size: 14px;
+          line-height: 30px;
+          padding: 12px 0;
+        }
+      }
 
-     .report__z-number {
-       margin: 16px 0 32px;
+      .report__z-number {
+        margin: 16px 0 32px;
 
-       .z-number {
-         font-size: 14px;
-         line-height: 25px;
+        .z-number {
+          font-size: 14px;
+          line-height: 25px;
 
-         + .g-divider {
-           margin-top: 16px;
-         }
-       }
+          + .g-divider {
+            margin-top: 16px;
+          }
+        }
 
-       .g-divider + .z-number {
-         margin-top: 16px;
-       }
-     }
+        .g-divider + .z-number {
+          margin-top: 16px;
+        }
+      }
 
-     .report__product {
+      .report__product {
         .category {
           font-weight: 800;
           font-size: 14px;
@@ -142,12 +152,12 @@
           padding-top: 8px;
         }
 
-       .product {
-         padding: 0 16px;
-         font-size: 14px;
-         line-height: 25px;
-       }
-     }
-   }
- }
+        .product {
+          padding: 0 16px;
+          font-size: 14px;
+          line-height: 25px;
+        }
+      }
+    }
+  }
 </style>

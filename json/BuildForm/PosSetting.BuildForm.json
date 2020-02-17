@@ -1,0 +1,723 @@
+{
+  "_id": "5ddb985ff26bb37e5ccc5c43",
+  "__v": 0,
+  "alwaysLoad": true,
+  "extensions": [],
+  "fields": [
+    {
+      "_id": "5ddb9df3f26bb37e5ccc5c5a",
+      "schemaType": "array",
+      "key": "leftFunctionButtons",
+      "type": "tableArray",
+      "fields": [
+        {
+          "schemaType": "string",
+          "key": "text",
+          "type": "input",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "string",
+          "key": "buttonFunction",
+          "type": "input@select",
+          "chips": true,
+          "optionsType": null,
+          "options": null,
+          "flex": null,
+          "notOnlyValueInOptions": true
+        },
+        {
+          "schemaType": "string",
+          "key": "buttonFunctionValue",
+          "type": "input",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "string",
+          "key": "backgroundColor",
+          "type": "input",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "string",
+          "key": "textColor",
+          "type": "input",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "array",
+          "key": "containedButtons",
+          "type": "array",
+          "fields": [
+            {
+              "schemaType": "string",
+              "type": "input"
+            }
+          ]
+        },
+        {
+          "schemaType": "array",
+          "key": "rows",
+          "fields": [
+            {
+              "schemaType": "number",
+              "type": "input@number"
+            }
+          ],
+          "type": "input@multiSelect",
+          "chips": true
+        },
+        {
+          "schemaType": "array",
+          "key": "cols",
+          "fields": [
+            {
+              "schemaType": "number",
+              "type": "input@number"
+            }
+          ],
+          "type": "input@multiSelect",
+          "chips": true
+        },
+        {
+          "schemaType": "array",
+          "key": "originalRows",
+          "type": "input@multiSelect",
+          "fields": [
+            {
+              "schemaType": "number",
+              "type": "input@number"
+            }
+          ],
+          "chips": true
+        },
+        {
+          "schemaType": "array",
+          "key": "originalCols",
+          "type": "input@multiSelect",
+          "fields": [
+            {
+              "schemaType": "number",
+              "type": "input@number"
+            }
+          ],
+          "chips": true
+        },
+        {
+          "schemaType": "object",
+          "key": "buyback",
+          "type": "object",
+          "fields": [
+            {
+              "schemaType": "objectId",
+              "key": "product",
+              "ref": "Product",
+              "autopopulate": true,
+              "type": "ref-select",
+              "flex": null,
+              "labelProp": "name"
+            },
+            {
+              "schemaType": "number",
+              "key": "price",
+              "type": "input@number",
+              "addable": false,
+              "clipboardType": "cut"
+            },
+            {
+              "schemaType": "string",
+              "key": "unit",
+              "type": "input"
+            }
+          ],
+          "flex": null
+        }
+      ],
+      "expansion": [
+        "containedButtons",
+        "textColor",
+        "rows",
+        "cols",
+        "buyback"
+      ],
+      "lazy": true
+    },
+    {
+      "_id": "5de0e0378cc2b9147731b5ff",
+      "schemaType": "array",
+      "key": "rightFunctionButtons",
+      "type": "tableArray",
+      "fields": [
+        {
+          "schemaType": "string",
+          "key": "text",
+          "type": "input",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "string",
+          "key": "buttonFunction",
+          "type": "input@select",
+          "chips": true,
+          "optionsType": "onlyValue",
+          "options": [
+            "Product Lookup",
+            "Pay",
+            "Discount"
+          ],
+          "flex": null,
+          "notOnlyValueInOptions": true
+        },
+        {
+          "schemaType": "string",
+          "key": "buttonFunctionValue",
+          "type": "input",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "string",
+          "key": "backgroundColor",
+          "type": "input",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "string",
+          "key": "textColor",
+          "type": "input",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "array",
+          "key": "containedButtons",
+          "fields": [
+            {
+              "schemaType": "string",
+              "type": "input"
+            }
+          ],
+          "type": "array",
+          "label": "containedButtons"
+        },
+        {
+          "schemaType": "array",
+          "key": "rows",
+          "type": "input@multiSelect",
+          "fields": [
+            {
+              "schemaType": "number",
+              "type": "input@number"
+            }
+          ],
+          "chips": true
+        },
+        {
+          "schemaType": "array",
+          "key": "cols",
+          "type": "input@multiSelect",
+          "fields": [
+            {
+              "schemaType": "number",
+              "type": "input@number"
+            }
+          ],
+          "chips": true
+        },
+        {
+          "schemaType": "array",
+          "key": "originalRows",
+          "type": "input@multiSelect",
+          "fields": [
+            {
+              "schemaType": "number",
+              "type": "input@number"
+            }
+          ],
+          "chips": true
+        },
+        {
+          "schemaType": "array",
+          "key": "originalCols",
+          "type": "input@multiSelect",
+          "fields": [
+            {
+              "schemaType": "number",
+              "type": "input@number"
+            }
+          ],
+          "chips": true
+        },
+        {
+          "schemaType": "object",
+          "key": "buyback",
+          "type": "object",
+          "fields": [
+            {
+              "schemaType": "objectId",
+              "key": "product",
+              "ref": "Product",
+              "autopopulate": true,
+              "type": "ref-select",
+              "labelProp": "name"
+            },
+            {
+              "schemaType": "number",
+              "key": "price",
+              "type": "input@number"
+            },
+            {
+              "schemaType": "string",
+              "key": "unit",
+              "type": "input"
+            }
+          ],
+          "flex": null,
+          "clipboardType": "cut"
+        }
+      ],
+      "expansion": [
+        "containedButtons",
+        "textColor",
+        "rows",
+        "cols",
+        "buyback"
+      ],
+      "lazy": true
+    },
+    {
+      "_id": "5de76b73b9015752d80bc3c1",
+      "schemaType": "array",
+      "key": "user",
+      "type": "array",
+      "fields": [
+        {
+          "schemaType": "string",
+          "key": "name",
+          "type": "input",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "string",
+          "key": "passcode",
+          "type": "input",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "string",
+          "key": "avatar",
+          "type": "inline-image",
+          "flex": "md4",
+          "onChange": {
+            "_code_": "",
+            "_code_type_": "commonJs"
+          }
+        },
+        {
+          "schemaType": "string",
+          "key": "role",
+          "default": "user",
+          "type": "input@select",
+          "optionsType": "onlyValue",
+          "options": [
+            "admin",
+            "user"
+          ]
+        },
+        {
+          "schemaType": "boolean",
+          "key": "viewOwnReport",
+          "type": "input@switch",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "viewOtherReport",
+          "type": "input@switch",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "editArticle",
+          "type": "input@switch",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "accessZReport",
+          "type": "input@switch",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "itemCancellation",
+          "type": "input@switch",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "allowTableTakeover",
+          "type": "input@switch",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "itemCancellationReactivePaidTable",
+          "type": "input@switch",
+          "label": "Item Cancellation after Reactive Paid Table",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "allowMoveItem",
+          "type": "input@switch",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "allowTableSwitch",
+          "type": "input@switch",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "reactivePaidTable",
+          "unique": false,
+          "type": "input@switch",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "openCashdrawerManually",
+          "type": "input@switch",
+          "label": "Open Cashdrawer Manually",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "discount",
+          "type": "input@switch",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "cancelInvoice",
+          "type": "input@switch",
+          "flex": "md4"
+        }
+      ]
+    },
+    {
+      "_id": "5de8d754cdff2284f2ce4a27",
+      "schemaType": "array",
+      "key": "payment",
+      "fields": [
+        {
+          "schemaType": "string",
+          "key": "name",
+          "type": "input"
+        },
+        {
+          "schemaType": "string",
+          "key": "icon",
+          "type": "input"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "editable",
+          "default": "",
+          "type": "input@switch"
+        }
+      ],
+      "type": "tableArray",
+      "lazy": true
+    },
+    {
+      "_id": "5de8d754cdff2284f2ce4a26",
+      "schemaType": "object",
+      "key": "companyInfo",
+      "fields": [
+        {
+          "schemaType": "string",
+          "key": "name",
+          "type": "input",
+          "flex": "md6"
+        },
+        {
+          "schemaType": "string",
+          "key": "address",
+          "type": "input",
+          "flex": "md6"
+        },
+        {
+          "schemaType": "string",
+          "key": "telephone",
+          "type": "input",
+          "flex": "md6"
+        },
+        {
+          "schemaType": "string",
+          "key": "taxNumber",
+          "type": "input",
+          "flex": "md6"
+        },
+        {
+          "schemaType": "string",
+          "key": "logo",
+          "type": "inline-image",
+          "flex": "md6",
+          "onChange": {
+            "_code_": "",
+            "_code_type_": "commonJs"
+          }
+        },
+        {
+          "schemaType": "number",
+          "key": "logoSize",
+          "type": "input@select:number",
+          "flex": "md6",
+          "optionsType": "onlyValue",
+          "options": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ]
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "_id": "5de8d89ccdff2284f2ce4a32",
+      "schemaType": "object",
+      "key": "generalSetting",
+      "fields": [
+        {
+          "schemaType": "boolean",
+          "key": "barcode",
+          "type": "input@switch"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "favoriteArticle",
+          "type": "input@switch"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "virtualKeyboard",
+          "type": "input@switch"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "automaticCashdrawer",
+          "type": "input@switch"
+        },
+        {
+          "schemaType": "number",
+          "key": "quickFnRows",
+          "type": "input@select:number",
+          "optionsType": "onlyValue",
+          "options": [
+            "1",
+            "2",
+            "0"
+          ]
+        },
+        {
+          "schemaType": "string",
+          "key": "beginHour",
+          "type": "time-picker",
+          "clearable": true,
+          "showIcon": true,
+          "label": "beginHour"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "_id": "5df1f653fdeb6602ac49d55c",
+      "schemaType": "array",
+      "key": "taxCategory",
+      "type": "tableArray",
+      "fields": [
+        {
+          "schemaType": "number",
+          "key": "value",
+          "type": "input@number"
+        },
+        {
+          "schemaType": "string",
+          "key": "invoiceLetter",
+          "type": "input"
+        }
+      ],
+      "lazy": true
+    },
+    {
+      "_id": "5e09d91349b6aa0421cceb72",
+      "schemaType": "array",
+      "key": "paymentFunctionButtons",
+      "type": "tableArray",
+      "fields": [
+        {
+          "schemaType": "string",
+          "key": "text",
+          "type": "input",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "string",
+          "key": "buttonFunction",
+          "type": "input"
+        },
+        {
+          "schemaType": "string",
+          "key": "buttonFunctionValue",
+          "type": "input",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "string",
+          "key": "backgroundColor",
+          "type": "input",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "string",
+          "key": "textColor",
+          "type": "input"
+        },
+        {
+          "schemaType": "array",
+          "key": "containedButtons",
+          "fields": [
+            {
+              "schemaType": "string",
+              "type": "input"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "schemaType": "array",
+          "key": "rows",
+          "type": "input@multiSelect",
+          "fields": [
+            {
+              "schemaType": "number",
+              "type": "input@number"
+            }
+          ],
+          "chips": true
+        },
+        {
+          "schemaType": "array",
+          "key": "cols",
+          "type": "input@multiSelect",
+          "fields": [
+            {
+              "schemaType": "number",
+              "type": "input@number"
+            }
+          ],
+          "chips": true
+        },
+        {
+          "schemaType": "array",
+          "key": "originalRows",
+          "type": "input@multiSelect",
+          "fields": [
+            {
+              "schemaType": "number",
+              "type": "input@number"
+            }
+          ],
+          "chips": true
+        },
+        {
+          "schemaType": "array",
+          "key": "originalCols",
+          "type": "input@multiSelect",
+          "fields": [
+            {
+              "schemaType": "number"
+            }
+          ],
+          "chips": true
+        }
+      ],
+      "expansion": [
+        "textColor",
+        "backgroundColor",
+        "buttonFunction",
+        "buttonFunctionValue",
+        "containedButtons"
+      ],
+      "flex": "",
+      "addable": null,
+      "lazy": true
+    }
+  ],
+  "id": "5ddb985ff26bb37e5ccc5c43",
+  "name": "PosSetting",
+  "tabs": [
+    {
+      "fields": [
+        "leftFunctionButtons"
+      ],
+      "_id": "5ddb9f1ff26bb37e5ccc5c8e",
+      "name": "LeftFunctionButtons"
+    },
+    {
+      "fields": [
+        "rightFunctionButtons"
+      ],
+      "_id": "5ddb9f1ff26bb37e5ccc5c8d",
+      "name": "RightFunctionButtons"
+    },
+    {
+      "fields": [
+        "user"
+      ],
+      "_id": "5de76b73b9015752d80bc3c4",
+      "name": "User"
+    },
+    {
+      "fields": [
+        "payment"
+      ],
+      "_id": "5de8d754cdff2284f2ce4a2d",
+      "name": "Payment"
+    },
+    {
+      "fields": [
+        "companyInfo"
+      ],
+      "_id": "5de8d754cdff2284f2ce4a2c",
+      "name": "Company Info"
+    },
+    {
+      "fields": [
+        "generalSetting"
+      ],
+      "_id": "5de8d754cdff2284f2ce4a2b",
+      "name": "General"
+    },
+    {
+      "fields": [
+        "taxCategory"
+      ],
+      "_id": "5df1f4e0fdeb6602ac49d4e5",
+      "name": "Tax Category"
+    },
+    {
+      "fields": [
+        "paymentFunctionButtons"
+      ],
+      "_id": "5e0ab31749b6aa0421cceba0",
+      "name": "PaymentFunctionButtons"
+    }
+  ],
+  "title": "",
+  "type": "Collection"
+}

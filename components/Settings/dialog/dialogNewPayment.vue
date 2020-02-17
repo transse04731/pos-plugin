@@ -4,7 +4,6 @@
 			<div class="form">
 				<p class="ml-1 mb-3">{{ isEditPayment && selectedPayment ? 'Edit' : 'Create New' }} Payment</p>
 				<pos-text-field style="width: 268px" label="Name" placeholder="Payment name" v-model="name"/>
-				<pos-switch dense label="Editable" v-model="editable"></pos-switch>
 				<pos-file-input-image label="Icon" v-model="src"/>
 			</div>
 			<div class="keyboard-wrapper">
@@ -37,7 +36,6 @@
       return {
 				name: '',
 				src: null,
-				editable: true,
 				isEditPayment: false,
 				internalValue: false,
       }
@@ -61,18 +59,15 @@
 				if (this.isEditPayment && this.selectedPayment) {
 					this.name = this.selectedPayment.name;
 					this.src = this.selectedPayment.icon;
-					this.editable = this.selectedPayment.editable;
 				} else {
 					this.name = '';
 					this.src = '';
-					this.editable = true;
 				}
     		this.dialogNewPayment = true;
 			},
     	resetData() {
 				this.name = '';
 				this.src = '';
-				this.editable = true;
 				this.selectedPayment = null;
 				this.isEditPayment = false;
 			},
@@ -85,7 +80,6 @@
 					const payment = {
 						name: this.name.toLowerCase(),
 						icon: this.src,
-						editable: this.editable,
 					}
 					let oldPayment;
 					if(this.isEditPayment) oldPayment = this.selectedPayment;

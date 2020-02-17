@@ -10,7 +10,7 @@
 <script>
   export default {
     name: 'PosArticleProductCategoryMenu',
-    injectService: ['PosStore:(activeCategory,activeCategoryProducts,getActiveProducts,getAllCategories, articleSelectedProductButton, articleSelectedColor, updateArticleOrders)'],
+    injectService: ['PosStore:(activeCategory,getActiveProducts,getAllCategories,articleSelectedProductButton,articleSelectedColor, updateArticleOrders)'],
     data() {
       return {
         menu: [],
@@ -25,7 +25,7 @@
         this.updateArticleOrders();
       },
     },
-    async created() {
+    async activated() {
       this.menu = await this.getAllCategories();
       await this.select(this.menu[0])
     }

@@ -1,0 +1,321 @@
+{
+  "output": [
+    "groupByPayment",
+    "userSales"
+  ],
+  "_id": "5c83e6a89cb293283a240cd0",
+  "__v": 0,
+  "collections": "Order",
+  "initProps": {
+    "from": "2019-02-11T17:00:00.000Z",
+    "to": "2020-02-12T17:00:00.000Z"
+  },
+  "inputForm": {
+    "_id": "5c69411994b44769f7ad4e63",
+    "__v": 0,
+    "extensions": [],
+    "fields": [
+      {
+        "_id": "5c863f31dadddd317f5017de",
+        "schemaType": "date",
+        "key": "from",
+        "type": "date-picker",
+        "pickerType": "date",
+        "clearable": true,
+        "showIcon": true
+      },
+      {
+        "_id": "5c863f31dadddd317f5017dd",
+        "schemaType": "date",
+        "key": "to",
+        "type": "date-picker",
+        "pickerType": "date",
+        "clearable": true,
+        "showIcon": true
+      }
+    ],
+    "id": "5c69411994b44769f7ad4e63",
+    "name": "QueryTest",
+    "tabs": []
+  },
+  "items": [
+    {
+      "choice": "step",
+      "name": "getOrdersInRange",
+      "input": [
+        "from",
+        "to"
+      ],
+      "output": "orders",
+      "items": [
+        {
+          "choice": "query",
+          "path": "date",
+          "comparator": "$gte",
+          "value": "from",
+          "valueType": "variable"
+        },
+        {
+          "choice": "query",
+          "path": "date",
+          "comparator": "$lte",
+          "value": "to",
+          "valueType": "variable"
+        }
+      ],
+      "type": "query"
+    },
+    {
+      "choice": "filter",
+      "input": "orders",
+      "output": "paidOrders",
+      "name": "paidOrders",
+      "fn": {
+        "_id": "5d09bcdb4fbc7211fc7b2833",
+        "extensionType": "Filter",
+        "name": "paidOrders",
+        "fn": {
+          "_code_": "const _ = require('lodash');\nmodule.exports = function (order) {\n  return order.status === 'paid';\n}",
+          "_code_type_": "commonJs"
+        }
+      }
+    },
+    {
+      "choice": "pivottable",
+      "reducers": [
+        {
+          "choice": "reducer",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  let items = order.items;\n  return sum + _.sumBy(items, i => i.price * i.quantity + _.sumBy(i.extra, e => e.price * e.quantity));\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "sum",
+          "resultType": "number"
+        }
+      ],
+      "rows": [
+        {
+          "choice": "computedField",
+          "fn": {
+            "_code_": "module.exports = function(item) {\n  return item.payment && item.payment[0].type;\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "vPayment"
+        }
+      ],
+      "columns": [
+        {
+          "choice": "computedField",
+          "label": "vUser",
+          "fn": {
+            "_code_": "module.exports = function(item) {\n  return item.user && item.user[0].name;\n}",
+            "_code_type_": "commonJs"
+          }
+        }
+      ],
+      "input": "paidOrders",
+      "output": "groupByPayment",
+      "view": "table"
+    },
+    {
+      "choice": "pivottable",
+      "reducers": [
+        {
+          "choice": "reducer",
+          "label": "sum0",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  return sum + _.get(_.find(order.vTaxGroups, g => g.taxType === 0), 'sum', 0);\n}",
+            "_code_type_": "commonJs"
+          },
+          "resultType": "number",
+          "key": "undefined_copy"
+        },
+        {
+          "choice": "reducer",
+          "label": "tax0",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  return sum + _.get(order.vTaxGroups.find(g => g.taxType === 0), 'tax',0);\n}",
+            "_code_type_": "commonJs"
+          },
+          "resultType": "number"
+        },
+        {
+          "choice": "reducer",
+          "label": "net0",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  return (sum + _.get(order.vTaxGroups.find(g => g.taxType === 0), 'sum', 0) \n    - _.get(order.vTaxGroups.find(g => g.taxType === 0), 'tax', 0));\n}",
+            "_code_type_": "commonJs"
+          },
+          "resultType": "number"
+        },
+        {
+          "choice": "reducer",
+          "label": "sum7",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  return sum + _.get(_.find(order.vTaxGroups, g => g.taxType === 7), 'sum', 0);\n}",
+            "_code_type_": "commonJs"
+          },
+          "resultType": "number"
+        },
+        {
+          "choice": "reducer",
+          "label": "net7",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  return (sum + _.get(order.vTaxGroups.find(g => g.taxType === 7), 'sum', 0) \n    - _.get(order.vTaxGroups.find(g => g.taxType === 7), 'tax', 0));\n}",
+            "_code_type_": "commonJs"
+          },
+          "resultType": "number"
+        },
+        {
+          "choice": "reducer",
+          "label": "tax7",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  return sum + _.get(order.vTaxGroups.find(g => g.taxType === 7), 'tax',0);\n}",
+            "_code_type_": "commonJs"
+          },
+          "resultType": "number"
+        },
+        {
+          "choice": "reducer",
+          "label": "sum19",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  return sum + _.get(_.find(order.vTaxGroups, g => g.taxType === 19), 'sum',0);\n}",
+            "_code_type_": "commonJs"
+          },
+          "resultType": "number"
+        },
+        {
+          "choice": "reducer",
+          "label": "tax19",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  return sum + _.get(order.vTaxGroups.find(g => g.taxType === 19), 'tax',0);\n}",
+            "_code_type_": "commonJs"
+          },
+          "resultType": "number"
+        },
+        {
+          "choice": "reducer",
+          "label": "net19",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  return (sum + _.get(order.vTaxGroups.find(g => g.taxType === 19), 'sum', 0) \n    - _.get(order.vTaxGroups.find(g => g.taxType === 19), 'tax', 0));\n}",
+            "_code_type_": "commonJs"
+          },
+          "resultType": "number"
+        },
+        {
+          "choice": "reducer",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  return sum + order.vSum;\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "sum",
+          "resultType": "number",
+          "initValue": ""
+        },
+        {
+          "choice": "reducer",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  return sum + order.vTax;\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "tax",
+          "resultType": "number",
+          "initValue": "",
+          "key": "undefined_copy"
+        },
+        {
+          "choice": "reducer",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  return sum + order.vSum - order.vTax;\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "net",
+          "resultType": "number",
+          "initValue": "",
+          "key": "undefined_copy_copy"
+        },
+        {
+          "choice": "reducer",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  sum = sum + (order.vDiscount || 0);\n  return sum;\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "discount",
+          "resultType": "number",
+          "initValue": "",
+          "key": "undefined_copy"
+        },
+        {
+          "choice": "reducer",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (_from, order) {\n  if (_from === undefined) return order.date; \n  if (_from > order.date) return order.date;\n  return _from\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "from",
+          "resultType": "number",
+          "initValue": "undefined"
+        },
+        {
+          "choice": "reducer",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (_to, order) {\n  if (_to === undefined) return order.date;\n  if (_to < order.date) return order.date;\n  return _to;\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "to",
+          "resultType": "number",
+          "initValue": "undefined"
+        }
+      ],
+      "rows": [],
+      "columns": [
+        {
+          "choice": "computedField",
+          "label": "vUser",
+          "fn": {
+            "_code_": "module.exports = function(item) {\n  return item.user && item.user[0].name;\n}",
+            "_code_type_": "commonJs"
+          }
+        }
+      ],
+      "input": "paidOrders",
+      "output": "userSales",
+      "view": "table",
+      "key": "undefined_copy"
+    },
+    {
+      "choice": "pivottable",
+      "reducers": [
+        {
+          "choice": "reducer",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  let items = order.items;\n  return sum + _.sumBy(items, i => i.price * i.quantity + _.sumBy(i.extra, e => e.price * e.quantity));\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "sum"
+        }
+      ],
+      "rows": [
+        {
+          "choice": "field",
+          "label": "status",
+          "field": "status"
+        }
+      ],
+      "columns": [
+        {
+          "choice": "computedField",
+          "label": "vUser",
+          "fn": {
+            "_code_": "module.exports = function(item) {\n  return item.user && item.user[0].name;\n}",
+            "_code_type_": "commonJs"
+          }
+        }
+      ],
+      "input": "orders",
+      "output": "groupByStatus",
+      "key": "undefined_copy"
+    }
+  ],
+  "name": "OrderStaffReport",
+  "registerAsVueComponent": true
+}

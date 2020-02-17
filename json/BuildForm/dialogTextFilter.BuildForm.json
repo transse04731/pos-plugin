@@ -1,0 +1,28 @@
+{
+  "_id": "5de732bea7884176a656eeb0",
+  "extensions": [
+    {
+      "_id": "5de732f7a7884176a656eeb3",
+      "extensionType": "ComponentLib",
+      "events": [
+        "submit"
+      ],
+      "slotsType": "array",
+      "slots": [
+        "default"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "_id": "5de732f7a7884176a656eeb2",
+      "schemaType": "string",
+      "key": "label",
+      "type": "input",
+      "addable": true
+    }
+  ],
+  "name": "dialogTextFilter",
+  "tabs": [],
+  "type": "Component"
+}

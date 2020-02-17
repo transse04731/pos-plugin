@@ -22,6 +22,7 @@
         savedOrders: [],
         activeCategory: null, //todo use fn to load products?
         activeCategoryProducts: [],
+        scrollWindowProducts: null,
         productIdQuery: '',
         productIdQueryResults: [],
         productNameQuery: '',
@@ -108,15 +109,14 @@
         //End of day report screen
         selectedReportDate: null,
         listOfDatesWithReports: [],
+        reportsFromMonth: [],
         //month report screen
         selectedMonth: null,
         monthReportFrom: null,
         monthReportTo: null,
         showProductSold: true,
         showAllZNumber: false,
-        saleDataByPaymentType: [],
-        zNumberData: [],
-        productsSoldByCategory: [],
+        monthReport: null
       }
     },
     domain: 'PosStore',
@@ -151,26 +151,6 @@
       activeProducts() {
         return _.groupBy(cms.getList('Product'), 'category._id')
       },
-      scrollWindowProducts() {
-        const products = {}
-        const groupedProducts = _.groupBy(cms.getList('Product'), 'category.name')
-        if (groupedProducts) {
-          for (const key in groupedProducts) {
-            if (groupedProducts.hasOwnProperty(key)) {
-              const isFavourite = key === 'Favourite'
-              Object.assign(products, {
-                [key]: _.chunk(groupedProducts[key].sort((current, next) => {
-                  return this.getProductGridOrder(current, isFavourite) - this.getProductGridOrder(next, isFavourite)
-                }).map(product => ({
-                  ..._.omit(product, 'attributes'),
-                  originalPrice: product.price
-                })), 28)
-              })
-            }
-          }
-        }
-        return products
-      },
       activeProduct() {
         if (this.currentOrder.items && !_.isNil(this.activeTableProduct)) {
           return this.currentOrder.items[this.activeTableProduct]
@@ -202,8 +182,14 @@
       getAllCategories() {
         return cms.getList('Category')
       },
-      getActiveProducts() {
-        const products = cms.getList('Product').filter(product => product.category._id === this.activeCategory._id)
+      async getActiveProducts() {
+        // const products = cms.getList('Product').filter(product => product.category._id === this.activeCategory._id)
+        let products
+        if (this.activeCategory.name === 'Favourite') {
+          products = await cms.getModel('Product').find({ 'option.favorite': true })
+        } else {
+          products = await cms.getModel('Product').find({ 'category': this.activeCategory._id })
+        }
         this.activeCategoryProducts = products.sort((current, next) => this.getProductGridOrder(current) - this.getProductGridOrder(next))
       },
       getProductGridOrder(product, isFavourite = false) {
@@ -213,6 +199,39 @@
                 : !layout.favourite
         );
         return layout ? layout.order : 0
+      },
+      async getScrollWindowProducts() {
+        const products = {}
+        const allProducts = await cms.getModel('Product').find();
+        const groupedProducts = _.groupBy(allProducts, 'category.name')
+        const favouriteProducts = allProducts.filter(product => product.option && product.option.favorite)
+          .sort((cur, next) => this.getProductGridOrder(cur, true) - this.getProductGridOrder(next, true))
+          .map(product => ({
+            ..._.omit(product, 'attributes'),
+            originalPrice: product.price
+          }))
+        if (favouriteProducts) {
+          Object.assign(products, {
+            Favourite: _.chunk(favouriteProducts, 28)
+          })
+        }
+        if (groupedProducts) {
+          for (const key in groupedProducts) {
+            if (groupedProducts.hasOwnProperty(key)) {
+              const isFavourite = key === 'Favourite'
+              Object.assign(products, {
+                [key]: _.chunk(groupedProducts[key].sort((current, next) => {
+                  return this.getProductGridOrder(current, isFavourite) - this.getProductGridOrder(next, isFavourite)
+                }).map(product => ({
+                  ..._.omit(product, 'attributes'),
+                  originalPrice: product.price
+                })), 28)
+              })
+            }
+          }
+        }
+        this.scrollWindowProducts = products
+        return products
       },
       addProductToOrder(product) {
         if (this.currentOrder && product) {
@@ -348,12 +367,12 @@
             vDate: this.getVDate(orderDateTime),
             bookingNumber: this.getBookingNumber(orderDateTime),
             payment: [paymentMethod || { ...this.currentOrder.payment, value: this.paymentTotal }],
-            vSum: this.paymentTotal,
-            vTax: this.paymentTax,
+            vSum: this.paymentTotal.toFixed(2),
+            vTax: this.paymentTax.toFixed(2),
             vTaxGroups,
-            vDiscount: this.paymentDiscount,
+            vDiscount: this.paymentDiscount.toFixed(2),
             receive: parseFloat(this.paymentAmountTendered),
-            cashback: this.paymentChange
+            cashback: this.paymentChange.toFixed(2)
           }
 
           const newOrder = this.currentOrder.status === 'inProgress'
@@ -468,18 +487,7 @@
         const productModel = cms.getModel('Product');
         const condition = this.productFilters.reduce((acc, filter) => ({ ...acc, ...filter['condition'] }), {});
         const { limit, currentPage } = this.productPagination;
-        const products = await productModel.find(condition).skip(limit * (currentPage - 1)).limit(limit);
-        this.listProducts = products.map(p => ({
-          _id: p._id,
-          id: p.id,
-          name: p.name,
-          price: p.price,
-          category: p.category,
-          barcode: p.barcode,
-          tax: p.tax,
-          option: p.option,
-          unit: p.unit,
-        }))
+        this.listProducts = await productModel.find(condition).skip(limit * (currentPage - 1)).limit(limit);
       },
       async getTotalProducts() {
         const productModel = cms.getModel('Product');
@@ -560,7 +568,19 @@
               maxOrder: { $max: '$layouts.order' }
             }
           }])
-        return listMaxOrder.find(o => o._id === categoryId).maxOrder;
+        const maxOrderItem = listMaxOrder.find(o => o._id === categoryId)
+        return (maxOrderItem && maxOrderItem.maxOrder) || 0;
+      },
+      async getHighestFavouriteProductOrder() {
+        const result = await cms.getModel('Product').aggregate([
+          { $unwind: { path: '$layouts' } }, { $match: {'layouts.favourite': true} },
+          {
+            $group: {
+              _id: null,
+              maxOrder: { $max: '$layouts.order' }
+            }
+          }])
+        return (result[0] && result[0].maxOrder) || 0
       },
       //tax category view
       async updateTaxCategory(oldTaxId, newTaxCategory) {
@@ -640,7 +660,7 @@
       //general setting screen
       getGeneralSetting() {
         const setting = cms.getList('PosSetting')[0];
-        this.generalSetting = setting.generalSetting;
+        this.generalSetting = setting.generalSetting || {};
       },
       async updateSetting() {
         const settingModel = cms.getModel('PosSetting');
@@ -654,7 +674,7 @@
       //company info view
       async getCompanyInfo() {
         const setting = await cms.getModel('PosSetting').findOne();
-        this.companyInfo = setting.companyInfo;
+        this.companyInfo = setting.companyInfo || {};
       },
       async updateCompanyInfo() {
         await cms.getModel('PosSetting').findOneAndUpdate(
@@ -708,7 +728,7 @@
       async getThermalPrinter() {
         const terminalModel = cms.getModel('Terminal');
         const terminal = await terminalModel.findOne({ name: 'Terminal 1' })
-        this.thermalPrinter = terminal.thermalPrinters[0];
+        this.thermalPrinter = terminal && terminal.thermalPrinters && terminal.thermalPrinters[0] || {};
       },
       async updateThermalPrinter(oldPrinterId, newPrinter) {
         const terminalModel = cms.getModel('Terminal');
@@ -719,7 +739,7 @@
                 $push: {
                   thermalPrinters: newPrinter
                 }
-              }
+              }, { upsert: true }
           )
           //update thermal printer with new _id
           await this.getThermalPrinter();
@@ -732,7 +752,7 @@
                 $set: {
                   'thermalPrinters.$': newPrinter
                 }
-              }
+              }, { upsert: true }
           )
         }
       },
@@ -746,7 +766,8 @@
           return;
         }
         this.articleSelectedProductButton = item;
-        this.articleSelectedColor = this.articleSelectedProductButton.layouts[0].color;
+        const layout = this.getProductLayout(this.articleSelectedProductButton, this.activeCategory);
+        this.articleSelectedColor = layout && layout.color;
       },
       isIncreasingSequence(numArr) {
         for (let num = 0; num < numArr.length - 1; num++) {
@@ -760,17 +781,18 @@
       async updateArticleOrders() {
         const productModel = cms.getModel('Product');
         try {
-          _.forEach(this.activeCategoryProducts, async function (article, index) {
-            if (article.layouts[0].order !== index + 1) {
-              await productModel.findOneAndUpdate({ 'layouts._id': article.layouts[0]._id }, {
+          await Promise.all(this.activeCategoryProducts.map(async (article, index) => {
+            const articleLayout = this.getProductLayout(article, this.activeCategory)
+            if (articleLayout.order !== index + 1) {
+              await productModel.findOneAndUpdate({ 'layouts._id': articleLayout._id }, {
                 '$set': {
                   'layouts.$.order': index + 1
                 }
               });
-              return article.layouts[0].order = index + 1;
+              return articleLayout.order = index + 1;
             }
-            return article.layouts[0].order;
-          });
+            return articleLayout.order;
+          }))
         } catch (e) {
           console.error('Error reordering articles: ', e);
         }
@@ -782,7 +804,8 @@
 
         //Update to db
         const productModel = cms.getModel('Product')
-        const layoutID = this.articleSelectedProductButton.layouts[0]._id;
+        const layout = this.getProductLayout(this.articleSelectedProductButton, this.activeCategory)
+        const layoutID = layout._id
         //Update current product
         let foundItem = this.activeCategoryProducts.find((item) => item._id === this.articleSelectedProductButton._id);
         if (foundItem) {
@@ -794,54 +817,60 @@
             });
 
             if (updateColorResult) {
-              foundItem.layouts[0].color = this.articleSelectedColor;
+              layout.color = this.articleSelectedColor;
             }
           } catch (e) {
             console.error(e)
           }
         }
       },
-      async switchProductOrder(direction) {
+      async switchProductOrder(direction, category) {
+        const selectedArticleLayout = this.getProductLayout(this.articleSelectedProductButton, category)
+
         if (!this.articleSelectedProductButton || !direction) {
           return;
         }
 
         let dir = direction === 'right' ? 1 : -1;
 
-        let foundItem = this.activeCategoryProducts.find((item) => item._id === this.articleSelectedProductButton._id);
+        const foundItem = this.activeCategoryProducts.find((item) => item._id === this.articleSelectedProductButton._id);
         if (foundItem) {
-          let foundNextItem = this.activeCategoryProducts.find((item) => item.layouts[0].order === this.articleSelectedProductButton.layouts[0].order + dir);
+          const foundNextItem = this.activeCategoryProducts.find(item => {
+            const layout = this.getProductLayout(item, category)
+            return layout && layout.order && (layout.order === selectedArticleLayout.order + dir)
+          })
+
           if (foundNextItem) {
             //Update order on current product list
-            let tempNextItemOrder = foundNextItem.layouts[0].order;
-            let tempCurrItemOrder = foundItem.layouts[0].order;
+            const nextItemLayout = this.getProductLayout(foundNextItem, category)
+            const currentItemLayout = this.getProductLayout(foundItem, category)
 
             //Update db order
             const productModel = cms.getModel('Product')
-            const nextProductLayoutID = foundNextItem.layouts[0]._id;
-            const currentProductLayoutID = foundItem.layouts[0]._id;
             try {
-              let currentItemResult = await productModel.findOneAndUpdate({ 'layouts._id': currentProductLayoutID }, {
+              let currentItemResult = await productModel.findOneAndUpdate({ 'layouts._id': currentItemLayout._id }, {
                 '$set': {
-                  'layouts.$.order': foundNextItem.layouts[0].order
+                  'layouts.$.order': nextItemLayout.order
                 }
               });
 
-              let nextItemResult = await productModel.findOneAndUpdate({ 'layouts._id': nextProductLayoutID }, {
+              let nextItemResult = await productModel.findOneAndUpdate({ 'layouts._id': nextItemLayout._id }, {
                 '$set': {
-                  'layouts.$.order': foundItem.layouts[0].order
+                  'layouts.$.order': currentItemLayout.order
                 }
               });
 
               if (nextItemResult && currentItemResult) {
-                foundNextItem.layouts[0].order = tempCurrItemOrder;
-                foundItem.layouts[0].order = tempNextItemOrder;
+                const temp = nextItemLayout.order
+                nextItemLayout.order = currentItemLayout.order;
+                currentItemLayout.order = temp;
               }
             } catch (e) {
               console.error(e);
             }
 
-            this.activeCategoryProducts = this.activeCategoryProducts.sort((current, next) => this.getProductGridOrder(current) - this.getProductGridOrder(next))
+            this.activeCategoryProducts = this.activeCategoryProducts.sort((current, next) =>
+              this.getProductGridOrder(current) - this.getProductGridOrder(next))
           }
         }
       },
@@ -869,8 +898,12 @@
         }
 
       },
-      getPosSetting() {
-        return cms.getList('PosSetting')[0]
+      async getPosSetting() {
+        return cms.getModel('PosSetting').findOne();
+      },
+      getProductLayout(item, category) {
+        const isFavourite = category && category.name === 'Favourite' || false
+        return item.layouts && item.layouts.find(layout => !!layout.favourite === isFavourite) || {}
       },
       //<!--</editor-fold>-->
 
@@ -892,6 +925,8 @@
           const endDate = currentDate.add(1, 'month')
 
           const dates = await this.getEodReports(currentDate, endDate)
+          this.reportsFromMonth = dates
+
           eventDates = _.map(dates, (value, key) => {
             const color = Object.keys(value).includes('') ? '#00E676' : '#EF9A9A'
             return {
@@ -904,12 +939,12 @@
         this.listOfDatesWithReports = eventDates
         return eventDates
       },
-      async getDailyReports(date) {
+      getDailyReports(date) {
         try {
-          const dateObj = dayjs(date);
-          const reports = await this.getEodReports(dateObj, dateObj.add(1, 'day').toDate())
+          const reports = this.reportsFromMonth[dayjs(date).toISOString()]
+          if (!reports) return
 
-          return _.map(reports[dateObj.toISOString()], (value, key) => ({
+          return _.map(reports, (value, key) => ({
             z: key ? key : this.getHighestZNumber(),
             begin: value.from,
             end: value.to,
@@ -1125,64 +1160,29 @@
       },
 
       //<!--<editor-fold desc="Monthly Report">-->
-      async getSalesByPaymentType() {
-        this.saleDataByPaymentType = await cms.getModel('Order').aggregate([
-          {
-            $match: {
-              status: 'paid',
-              date: { $gte: new Date(this.monthReportFrom + ' 00:00:00'), $lte: new Date(this.monthReportTo + ' 23:59:59') }
-            }
-          },
-          { $unwind: { path: '$payment' } },
-          {
-            $group: {
-              _id: '$payment.type',
-              total: { $sum: '$payment.value' }
-            }
+      async getMonthReport() {
+        const from = dayjs(this.monthReportFrom).toDate()
+        const to = dayjs(this.monthReportTo).toDate()
+        let { total, salesByCategory, salesByPayment, zNumbers } = await cms.processData('OrderMonthReport', {from, to})
+
+        salesByCategory = _.mapValues(salesByCategory, (value) => {
+          const products = _.reduce(value, (acc, {quantity, gross}, product) => {
+            acc.push({product, quantity, gross})
+            return acc
+          }, [])
+          return {
+            products,
+            sum: products.reduce((acc, { gross }) => acc + gross, 0)
           }
-        ])
-      },
-      async getListProductSoldByCategory() {
-        this.productsSoldByCategory = await cms.getModel('Order').aggregate([
-          { $match: {
-              status: 'paid',
-              date: { $gte: dayjs(this.monthReportFrom).startOf('day').toDate(), $lt: dayjs(this.monthReportTo).add(1, 'day').startOf('day').toDate() }
-            } },
-          { $unwind: { path: '$items' } },
-          {
-            $group: {
-              _id: { name: '$items.name', category: '$items.category' },
-              totalSales: { $sum: { $multiply: ['$items.quantity', '$items.price'] } },
-              amount: { $sum: '$items.quantity' }
-            }
-          },
-          {
-            $group: {
-              _id: '$_id.category',
-              total: { $sum: '$totalSales' },
-              items: {
-                $push:
-                    {name: '$_id.name', quantity: '$amount'}
-              }
-            }
-          }
-        ])
-      },
-      async getAllZNumber() {
-        const model = cms.getModel('EndOfDay');
-        const data = await model.find({
-          begin: { $gte: dayjs(this.monthReportFrom).startOf('day').toDate()},
-          end: { $lt: dayjs(this.monthReportTo).add(1, 'day').startOf('day').toDate()}
         })
-        this.zNumberData = data.map(datum => ({
-          ...datum,
-          date: dayjs(datum.begin).format('DD.MM.YYYY')
-        }))
-      },
-      async getMonthReportData() {
-        await this.getSalesByPaymentType();
-        await this.getListProductSoldByCategory();
-        await this.getAllZNumber();
+        zNumbers = _.reduce(zNumbers, (acc, data, date) => {
+          acc.push(..._.map(data, (sum, z) => ({ z, sum, date: dayjs(date).format('DD.MM.YYYY') })))
+          return acc
+        }, [])
+
+        this.monthReport = { total, salesByCategory, salesByPayment, zNumbers }
+
+        return { total, salesByCategory, salesByPayment, zNumbers }
       },
       printMonthlyReport(report) {
         return new Promise((resolve, reject) => {
@@ -1195,6 +1195,7 @@
         })
       },
       //<!--</editor-fold>-->
+
       async getOrderSalesByStaff(staffName, date = new Date()) {
         if (!staffName) {
           return
@@ -1217,7 +1218,7 @@
         })
       }
     },
-    created() {
+    async created() {
       const cachedPageSize = localStorage.getItem('orderHistoryPageSize')
       if (cachedPageSize) this.orderHistoryPagination.limit = parseInt(cachedPageSize)
       const cachedArticlePageSize = localStorage.getItem('viewArticlePageSize');
@@ -1225,6 +1226,7 @@
       this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
       this.user = cms.getList('PosSetting')[0].user[0]
       this.setDateInterval = setInterval(() => this.systemDate = new Date(), 10000)
+      await this.getScrollWindowProducts()
     },
     beforeDestroy() {
       this.setDateInterval && clearInterval(this.setDateInterval)
@@ -1352,6 +1354,7 @@
         articleSelectedColor: this.articleSelectedColor,
         switchProductOrder: this.switchProductOrder,
         updateArticleOrders: this.updateArticleOrders,
+        getProductLayout: this.getProductLayout,
         getPosSetting: this.getPosSetting,
         //End of day report
         selectedReportDate: this.selectedReportDate,
@@ -1371,12 +1374,9 @@
         monthReportTo: this.monthReportTo,
         showProductSold: this.showProductSold,
         showAllZNumber: this.showAllZNumber,
-        getMonthReportData: this.getMonthReportData,
-        saleDataByPaymentType: this.saleDataByPaymentType,
-        zNumberData: this.zNumberData,
-        productsSoldByCategory: this.productsSoldByCategory,
+        monthReport: this.monthReport,
+        getMonthReport: this.getMonthReport,
         printMonthlyReport: this.printMonthlyReport,
-
         //Staff Report Screen
         printStaffReport: this.printStaffReport,
       }
