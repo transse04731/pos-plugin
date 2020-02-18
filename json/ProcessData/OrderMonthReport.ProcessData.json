@@ -1,0 +1,209 @@
+{
+  "output": [
+    "salesByCategory",
+    "total",
+    "salesByPayment",
+    "zNumbers"
+  ],
+  "_id": "5e4a67c24d2a63036e1f707e",
+  "collections": "Order",
+  "initProps": {
+    "from": "2020-01-01T17:00:00.000Z",
+    "to": "2020-02-01T02:37:49.336Z"
+  },
+  "inputForm": {
+    "_id": "5c69411994b44769f7ad4e63",
+    "__v": 0,
+    "extensions": [],
+    "fields": [
+      {
+        "_id": "5c863f31dadddd317f5017de",
+        "schemaType": "date",
+        "key": "from",
+        "type": "date-picker",
+        "pickerType": "date",
+        "clearable": true,
+        "showIcon": true
+      },
+      {
+        "_id": "5c863f31dadddd317f5017dd",
+        "schemaType": "date",
+        "key": "to",
+        "type": "date-picker",
+        "pickerType": "date",
+        "clearable": true,
+        "showIcon": true
+      }
+    ],
+    "id": "5c69411994b44769f7ad4e63",
+    "name": "QueryTest",
+    "tabs": []
+  },
+  "items": [
+    {
+      "choice": "step",
+      "name": "getOrdersInRange",
+      "input": [
+        "from",
+        "to"
+      ],
+      "output": "paidOrders",
+      "items": [
+        {
+          "choice": "query",
+          "path": "vDate",
+          "comparator": "$gte",
+          "value": "from",
+          "valueType": "variable"
+        },
+        {
+          "choice": "query",
+          "path": "vDate",
+          "comparator": "$lte",
+          "value": "to",
+          "valueType": "variable"
+        },
+        {
+          "choice": "query",
+          "path": "status",
+          "comparator": "$eq",
+          "valueType": "string",
+          "value": "paid"
+        },
+        {
+          "choice": "query",
+          "path": "z",
+          "comparator": "$gte",
+          "valueType": "number",
+          "value": 1
+        }
+      ],
+      "type": "query"
+    },
+    {
+      "choice": "convert",
+      "input": "paidOrders",
+      "output": "items",
+      "fn": {
+        "_id": "5d088ea4d52d8e0534fad07e",
+        "extensionType": "Convert",
+        "fn": {
+          "_code_": "const _ = require('lodash');\nmodule.exports = function (orders) {\n  return _.reduce(orders, (items, order) => {\n    return items.concat(order.items.map(i => Object.assign(i, {orderDate: order.date})));\n  }, []);\n}",
+          "_code_type_": "commonJs"
+        },
+        "name": "items"
+      }
+    },
+    {
+      "choice": "pivottable",
+      "input": "paidOrders",
+      "output": "total",
+      "rows": [],
+      "columns": [],
+      "reducers": [
+        {
+          "choice": "reducer",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  return sum + order.vSum;\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "sum",
+          "resultType": "number",
+          "initValue": ""
+        }
+      ],
+      "view": "json"
+    },
+    {
+      "choice": "pivottable",
+      "input": "paidOrders",
+      "output": "salesByPayment",
+      "rows": [],
+      "columns": [
+        {
+          "choice": "computedField",
+          "fn": {
+            "_code_": "module.exports = function(item) {\n  return item.payment && item.payment[0].type;\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "vPayment"
+        }
+      ],
+      "reducers": [
+        {
+          "choice": "sum",
+          "path": "vSum"
+        }
+      ]
+    },
+    {
+      "choice": "pivottable",
+      "input": "items",
+      "output": "salesByCategory",
+      "rows": [
+        {
+          "choice": "field",
+          "label": "name",
+          "field": "name"
+        }
+      ],
+      "reducers": [
+        {
+          "choice": "reducer",
+          "label": "gross",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, item) {\n  return sum + item.price * item.quantity + _.sumBy(item.extra, e => e.price * e.quantity);\n}",
+            "_code_type_": "commonJs"
+          },
+          "resultType": "number"
+        },
+        {
+          "choice": "sum",
+          "path": "quantity"
+        }
+      ],
+      "view": "json",
+      "type": "items",
+      "columns": [
+        {
+          "choice": "field",
+          "label": "category",
+          "field": "category"
+        }
+      ]
+    },
+    {
+      "choice": "pivottable",
+      "input": "paidOrders",
+      "output": "zNumbers",
+      "rows": [
+        {
+          "choice": "field",
+          "label": "z",
+          "field": "z"
+        }
+      ],
+      "columns": [
+        {
+          "choice": "field",
+          "label": "date",
+          "field": "date"
+        }
+      ],
+      "reducers": [
+        {
+          "choice": "reducer",
+          "fn": {
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, order) {\n  return sum + order.vSum;\n}",
+            "_code_type_": "commonJs"
+          },
+          "label": "sum",
+          "resultType": "number",
+          "initValue": ""
+        }
+      ],
+      "view": "json"
+    }
+  ],
+  "name": "OrderMonthReport"
+}

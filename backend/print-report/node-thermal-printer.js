@@ -23,6 +23,7 @@ const starConfig = require('node-thermal-printer/configs/starConfig');
 const bluetoothQueue = {};
 const cms = global['cms'];
 let nr = 0;
+const JsonFn = require('json-fn')
 
 const BluetoothManager = {
   push: function (mac, {channel, printer, nr}) {
