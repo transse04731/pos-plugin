@@ -1,3 +1,8 @@
+/* hide scrollbar from view port*/
+body::-webkit-scrollbar {
+  display: none;
+}
+
 .icon-add_user {
   background-image: url("../assets/add_user.svg");
   background-repeat: no-repeat;
