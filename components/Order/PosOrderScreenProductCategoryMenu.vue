@@ -47,6 +47,10 @@
     },
     mounted() {
       this.select(this.menu[0])
+    },
+    activated() {
+      const posStore = this.$getService('PosStore');
+      this.menu = posStore.getAllCategories()
     }
   }
 </script>
