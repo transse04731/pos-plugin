@@ -1,0 +1,752 @@
+{
+  "PosSetting": [
+    {
+      "_id": "5e1d89db00971c2ac29fccc9",
+      "companyInfo": {
+        "name": "Gigasource",
+        "address": "1 A Street, XYZ 9999",
+        "telephone": "0123 456 789",
+        "taxNumber": "9999 9999 9999"
+      }
+    }
+  ],
+  "Category": [
+    {
+      "_id": "5df6f31ba037304c8b0df66c",
+      "name": "Drink"
+    },
+    {
+      "_id": "5df6f5ee7854273fa4fd98a4",
+      "name": "Electronic"
+    },
+    {
+      "_id": "5df6f5e27854273fa4fd98a1",
+      "name": "Material"
+    },
+    {
+      "_id": "5df6f5cd7854273fa4fd989b",
+      "name": "Sport"
+    },
+    {
+      "_id": "5df6f5dd7854273fa4fd989e",
+      "name": "Wine"
+    }
+  ],
+  "Product": [
+    {
+      "category": "5df6f31ba037304c8b0df66c",
+      "name": "Cola",
+      "price": 98,
+      "tax": 19,
+      "layouts": [
+        {
+          "color": "#FBE4EC",
+          "order": 0,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f31ba037304c8b0df66c",
+      "name": "Pepsi",
+      "price": 35,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#FBE4EC",
+          "order": 1,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f31ba037304c8b0df66c",
+      "name": "Water",
+      "price": 67,
+      "tax": 7,
+      "layouts": [
+        {
+          "color": "#FBE4EC",
+          "order": 2,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f31ba037304c8b0df66c",
+      "name": "Soda",
+      "price": 20,
+      "tax": 19,
+      "layouts": [
+        {
+          "color": "#FBE4EC",
+          "order": 3,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f31ba037304c8b0df66c",
+      "name": "Green Tea",
+      "price": 39,
+      "tax": 7,
+      "layouts": [
+        {
+          "color": "#FBE4EC",
+          "order": 4,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f31ba037304c8b0df66c",
+      "name": "Black Tea",
+      "price": 1,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#FBE4EC",
+          "order": 5,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f31ba037304c8b0df66c",
+      "name": "Coffee",
+      "price": 64,
+      "tax": 19,
+      "layouts": [
+        {
+          "color": "#FBE4EC",
+          "order": 6,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f31ba037304c8b0df66c",
+      "name": "Lemonade",
+      "price": 48,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#FBE4EC",
+          "order": 7,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f31ba037304c8b0df66c",
+      "name": "Milkshake",
+      "price": 12,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#FBE4EC",
+          "order": 8,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f31ba037304c8b0df66c",
+      "name": "Milk",
+      "price": 76,
+      "tax": 19,
+      "layouts": [
+        {
+          "color": "#FBE4EC",
+          "order": 9,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f31ba037304c8b0df66c",
+      "name": "Juice",
+      "price": 80,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#FBE4EC",
+          "order": 10,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5cd7854273fa4fd989b",
+      "name": "Soccer ball",
+      "price": 3,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#CE93D8",
+          "order": 0,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5cd7854273fa4fd989b",
+      "name": "Tennis ball",
+      "price": 32,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#CE93D8",
+          "order": 1,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5cd7854273fa4fd989b",
+      "name": "Net",
+      "price": 89,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#CE93D8",
+          "order": 2,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5cd7854273fa4fd989b",
+      "name": "Gloves",
+      "price": 22,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#CE93D8",
+          "order": 3,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5cd7854273fa4fd989b",
+      "name": "Helmet",
+      "price": 73,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#CE93D8",
+          "order": 4,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5cd7854273fa4fd989b",
+      "name": "Running Shoes",
+      "price": 76,
+      "tax": 19,
+      "layouts": [
+        {
+          "color": "#CE93D8",
+          "order": 5,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5cd7854273fa4fd989b",
+      "name": "Racquet",
+      "price": 4,
+      "tax": 7,
+      "layouts": [
+        {
+          "color": "#CE93D8",
+          "order": 6,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5cd7854273fa4fd989b",
+      "name": "Bat",
+      "price": 32,
+      "tax": 7,
+      "layouts": [
+        {
+          "color": "#CE93D8",
+          "order": 7,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5cd7854273fa4fd989b",
+      "name": "Stick",
+      "price": 3,
+      "tax": 19,
+      "layouts": [
+        {
+          "color": "#CE93D8",
+          "order": 8,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5cd7854273fa4fd989b",
+      "name": "Club",
+      "price": 42,
+      "tax": 19,
+      "layouts": [
+        {
+          "color": "#CE93D8",
+          "order": 9,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5e27854273fa4fd98a1",
+      "name": "Wood",
+      "price": 84,
+      "tax": 19,
+      "layouts": [
+        {
+          "color": "#B2EBF2",
+          "order": 0,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5e27854273fa4fd98a1",
+      "name": "Metal",
+      "price": 87,
+      "tax": 7,
+      "layouts": [
+        {
+          "color": "#B2EBF2",
+          "order": 1,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5e27854273fa4fd98a1",
+      "name": "Glass",
+      "price": 37,
+      "tax": 19,
+      "layouts": [
+        {
+          "color": "#B2EBF2",
+          "order": 2,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5e27854273fa4fd98a1",
+      "name": "Cement",
+      "price": 58,
+      "tax": 7,
+      "layouts": [
+        {
+          "color": "#B2EBF2",
+          "order": 3,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5e27854273fa4fd98a1",
+      "name": "Paper",
+      "price": 41,
+      "tax": 7,
+      "layouts": [
+        {
+          "color": "#B2EBF2",
+          "order": 4,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5e27854273fa4fd98a1",
+      "name": "Plastic",
+      "price": 78,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#B2EBF2",
+          "order": 5,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5e27854273fa4fd98a1",
+      "name": "Nilon",
+      "price": 70,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#B2EBF2",
+          "order": 6,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5e27854273fa4fd98a1",
+      "name": "Cotton",
+      "price": 73,
+      "tax": 7,
+      "layouts": [
+        {
+          "color": "#B2EBF2",
+          "order": 7,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5e27854273fa4fd98a1",
+      "name": "Bronze",
+      "price": 24,
+      "tax": 19,
+      "layouts": [
+        {
+          "color": "#B2EBF2",
+          "order": 8,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5e27854273fa4fd98a1",
+      "name": "Iron",
+      "price": 9,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#B2EBF2",
+          "order": 9,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5e27854273fa4fd98a1",
+      "name": "Silver",
+      "price": 13,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#B2EBF2",
+          "order": 10,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5e27854273fa4fd98a1",
+      "name": "Gold",
+      "price": 2,
+      "tax": 19,
+      "layouts": [
+        {
+          "color": "#B2EBF2",
+          "order": 11,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5ee7854273fa4fd98a4",
+      "name": "Laptop",
+      "price": 29,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#C8E6C9",
+          "order": 0,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5ee7854273fa4fd98a4",
+      "name": "Camera",
+      "price": 57,
+      "tax": 19,
+      "layouts": [
+        {
+          "color": "#C8E6C9",
+          "order": 1,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5ee7854273fa4fd98a4",
+      "name": "Refrigerator",
+      "price": 47,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#C8E6C9",
+          "order": 2,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5ee7854273fa4fd98a4",
+      "name": "Oven",
+      "price": 10,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#C8E6C9",
+          "order": 3,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5ee7854273fa4fd98a4",
+      "name": "Television",
+      "price": 91,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#C8E6C9",
+          "order": 4,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5ee7854273fa4fd98a4",
+      "name": "Radio",
+      "price": 68,
+      "tax": 7,
+      "layouts": [
+        {
+          "color": "#C8E6C9",
+          "order": 5,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5ee7854273fa4fd98a4",
+      "name": "MP3 player",
+      "price": 6,
+      "tax": 7,
+      "layouts": [
+        {
+          "color": "#C8E6C9",
+          "order": 6,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5ee7854273fa4fd98a4",
+      "name": "Fan",
+      "price": 41,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#C8E6C9",
+          "order": 7,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5ee7854273fa4fd98a4",
+      "name": "Mobile phone",
+      "price": 2,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#C8E6C9",
+          "order": 8,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5ee7854273fa4fd98a4",
+      "name": "Projector",
+      "price": 75,
+      "tax": 7,
+      "layouts": [
+        {
+          "color": "#C8E6C9",
+          "order": 9,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5ee7854273fa4fd98a4",
+      "name": "Monitor",
+      "price": 21,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#C8E6C9",
+          "order": 10,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5ee7854273fa4fd98a4",
+      "name": "Lamp",
+      "price": 33,
+      "tax": 19,
+      "layouts": [
+        {
+          "color": "#C8E6C9",
+          "order": 11,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5dd7854273fa4fd989e",
+      "name": "Brandy",
+      "price": 95,
+      "tax": 7,
+      "layouts": [
+        {
+          "color": "#DCE775",
+          "order": 0,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5dd7854273fa4fd989e",
+      "name": "Baijiu",
+      "price": 12,
+      "tax": 7,
+      "layouts": [
+        {
+          "color": "#DCE775",
+          "order": 1,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5dd7854273fa4fd989e",
+      "name": "Whiskey",
+      "price": 40,
+      "tax": 7,
+      "layouts": [
+        {
+          "color": "#DCE775",
+          "order": 2,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5dd7854273fa4fd989e",
+      "name": "Vermouth",
+      "price": 18,
+      "tax": 7,
+      "layouts": [
+        {
+          "color": "#DCE775",
+          "order": 3,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5dd7854273fa4fd989e",
+      "name": "Mezcal",
+      "price": 66,
+      "tax": 19,
+      "layouts": [
+        {
+          "color": "#DCE775",
+          "order": 4,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5dd7854273fa4fd989e",
+      "name": "Pisco",
+      "price": 96,
+      "tax": 19,
+      "layouts": [
+        {
+          "color": "#DCE775",
+          "order": 5,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5dd7854273fa4fd989e",
+      "name": "Gin",
+      "price": 27,
+      "tax": 7,
+      "layouts": [
+        {
+          "color": "#DCE775",
+          "order": 6,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5dd7854273fa4fd989e",
+      "name": "Tequila",
+      "price": 43,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#DCE775",
+          "order": 7,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5dd7854273fa4fd989e",
+      "name": "Bourbon",
+      "price": 83,
+      "tax": 7,
+      "layouts": [
+        {
+          "color": "#DCE775",
+          "order": 8,
+          "device": "pos"
+        }
+      ]
+    },
+    {
+      "category": "5df6f5dd7854273fa4fd989e",
+      "name": "Vodka",
+      "price": 63,
+      "tax": 0,
+      "layouts": [
+        {
+          "color": "#DCE775",
+          "order": 9,
+          "device": "pos"
+        }
+      ]
+    }
+  ]
+}

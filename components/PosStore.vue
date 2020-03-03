@@ -180,7 +180,10 @@
 
       //<!--<editor-fold desc="Order screen">-->
       getAllCategories() {
-        return cms.getList('Category')
+        const categories = cms.getList('Category')
+        const posSettings = cms.getList('PosSetting')[0];
+        let favoriteArticle = posSettings.generalSetting.favoriteArticle;
+        return favoriteArticle ? categories : categories.filter(cat => cat.name !== 'Favourite')
       },
       async getActiveProducts() {
         // const products = cms.getList('Product').filter(product => product.category._id === this.activeCategory._id)
