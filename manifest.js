@@ -24,6 +24,12 @@ module.exports = {
         type: 'css-loader'
       },
       path: 'style/pos.css'
+    },
+    {
+      loader: {
+        type: 'backend-api'
+      },
+      path: 'backend/initDemoData/initDemoData.js'
     }
   ]
 };
