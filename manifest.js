@@ -33,31 +33,31 @@ module.exports = {
     },
     {
       loader: {
-        type: 'backend-ssr'
+        type: 'ssr'
       },
       path: 'components/Report/MonthReport.vue'
     },
     {
       loader: {
-        type: 'backend-ssr'
+        type: 'ssr'
       },
       path: 'components/Report/OrderReport.vue'
     },
     {
       loader: {
-        type: 'backend-ssr'
+        type: 'ssr'
       },
       path: 'components/Report/StaffReport.vue'
     },
     {
       loader: {
-        type: 'backend-ssr'
+        type: 'ssr'
       },
       path: 'components/Report/XReport.vue'
     },
     {
       loader: {
-        type: 'backend-ssr'
+        type: 'ssr'
       },
       path: 'components/Report/ZReport.vue'
     }
