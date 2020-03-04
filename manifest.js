@@ -15,12 +15,6 @@ module.exports = {
     },
     {
       loader: {
-        type: 'vue-singleton'
-      },
-      path: 'components/test/TestSingleton.vue'
-    },
-    {
-      loader: {
         type: 'css-loader'
       },
       path: 'style/pos.css'
