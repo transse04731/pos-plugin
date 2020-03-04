@@ -3,7 +3,7 @@
     <div class="g-pagination-text">Rows per page:</div>
     <div class="g-pagination-input">
       <g-select :items="computedRowsPerPageItems"
-                v-model="selectLimit"
+                :value="selectLimit"
                 @input="changeLimitRow($event)"
       />
     </div>
@@ -143,13 +143,14 @@
       padding: 0 4px;
       background: #fff;
 
-      ::v-deep .g-tf-wrapper {
-        margin: 4px 0 !important;
+      ::v-deep .g-tf-wrapper::before ,
+      ::v-deep .g-tf-wrapper::after {
+        display: none;
+      }
 
-        .g-tf::before ,
-        .g-tf::after {
-          display: none;
-        }
+      ::v-deep .g-tf-wrapper {
+        height: 30px;
+        margin: 4px 0 !important;
 
         .g-tf-input {
           font-size: 13px;
@@ -158,7 +159,7 @@
 
       ::v-deep .g-select {
         input {
-          display: none;
+          height: 0;
         }
       }
     }

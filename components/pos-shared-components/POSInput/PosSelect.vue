@@ -18,9 +18,12 @@
     .g-tf-wrapper {
       margin: 32px 4px 12px;
       width: calc(100% - 10px);
+      height: 38px;
+      border: 1px solid #ced4da;
 
-      fieldset {
-        border: 1px solid #ced4da;
+      .input-slot {
+        font-size: 14px;
+        margin-left: 14px;
       }
     }
 
@@ -28,7 +31,6 @@
       background-color: #F0F0F0;
       border-radius: 2px;
     }
-
 
     .g-tf::before, .g-tf::after {
       display: none;
@@ -83,6 +85,7 @@
       flex-grow: 1;
       flex-basis: 0%;
       padding: 0;
+      height: 0;
     }
 
   }
