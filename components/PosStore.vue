@@ -34,41 +34,41 @@
         //settings screen
         sidebarData: [
           {
-            title: 'Product', icon: 'icon-liefer_packet', svgIcon: true, badge: '3', badgeColor: '#FF9529',
+            title: 'Product', icon: 'icon-liefer_packet', svgIcon: true, /*badge: '3', badgeColor: '#FF9529',*/
             items: [
               { title: 'Articles', icon: 'radio_button_unchecked', iconType: 'small', isView: true },
               { title: 'Category', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/category' */ },
               { title: 'Product Layout', icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-article', appendIcon: 'open_in_new' },
             ]
           },
-          { title: 'Reporting', icon: 'icon-bar_chart', svgIcon: true },
+          /*{ title: 'Reporting', icon: 'icon-bar_chart', svgIcon: true },*/
           { title: 'User', icon: 'person', isView: true /*href: '/setting/user'*/ },
           {
-            title: 'Settings', icon: 'icon-cog', svgIcon: true, badge: '3', badgeColor: '#9C24AC',
+            title: 'Settings', icon: 'icon-cog', svgIcon: true, /*badge: '3', badgeColor: '#9C24AC',*/
             items: [
               { title: 'General', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/general'*/ },
-              { title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small' },
-              { title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small' },
+              /*{ title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small' },
+              { title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small' },*/
               { title: 'Payment Layout', icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-payment-config', appendIcon: 'open_in_new' },
               { title: 'Function Layout', icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-fn-button', appendIcon: 'open_in_new' },
               {
                 title: 'Terminal 1', icon: 'radio_button_unchecked', iconType: 'small',
                 items: [
-                  { title: 'POS', icon: ' ' },
                   { title: 'Thermal Printer', isView: true, icon: ' ' },
+                  /*{ title: 'POS', icon: ' ' },
                   { title: 'Customer Display', icon: ' ' },
-                  { title: 'A4 Printer', icon: ' ' },
+                  { title: 'A4 Printer', icon: ' ' },*/
                 ]
               }
             ]
           },
           {
-            title: 'Advanced settings', icon: 'icon-switch', svgIcon: true, badge: '3', badgeColor: '#FF4081',
+            title: 'Advanced settings', icon: 'icon-switch', svgIcon: true,/* badge: '3', badgeColor: '#FF4081',*/
             items: [
               { title: 'Company Info', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/company'*/ },
               { title: 'Payment', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/payment'*/ },
               { title: 'Tax', icon: 'radio_button_unchecked', iconType: 'small', isView: true },
-              { title: 'License', icon: 'radio_button_unchecked', iconType: 'small' },
+              /*{ title: 'License', icon: 'radio_button_unchecked', iconType: 'small' },*/
             ]
           },
         ],

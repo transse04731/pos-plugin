@@ -4,10 +4,10 @@
       <g-icon class="mr-2" svg>icon-back</g-icon>
       Back
     </g-btn>
-    <g-btn :uppercase="false" background-color="white" class="mr-3">
-      <g-icon class="mr-2" svg>icon-menu</g-icon>
-      More
-    </g-btn>
+<!--    <g-btn :uppercase="false" background-color="white" class="mr-3">-->
+<!--      <g-icon class="mr-2" svg>icon-menu</g-icon>-->
+<!--      More-->
+<!--    </g-btn>-->
     <g-badge overlay color="#FF4452" v-if="savedOrders && savedOrders.length > 0">
       <template v-slot:badge>
         <span>{{savedOrders.length}}</span>

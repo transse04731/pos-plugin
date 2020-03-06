@@ -18,7 +18,7 @@
         <div class="row-flex mx-2">
           <g-text-field solo outlined dense v-model="ipAddress" @click="showKeyboard = true">
             <template v-slot:append-inner>
-              <g-icon svg>icon-keyboard</g-icon>
+              <g-icon svg style="cursor: pointer" @click.stop.prevent="showKeyboard = !showKeyboard">icon-keyboard</g-icon>
             </template>
           </g-text-field>
           <g-btn :uppercase="false" outlined height="auto" class="mt-3 mb-4" @click="setupPrinter">

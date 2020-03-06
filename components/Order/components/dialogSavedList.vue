@@ -48,7 +48,7 @@
           Are you sure you want to delete Saved order <b>"{{listToDelete && listToDelete.id}}"</b>?
         </g-card-text>
         <g-card-actions>
-          <g-btn :uppercase="false" flat outlined>Cancel</g-btn>
+          <g-btn :uppercase="false" flat outlined @click="dialogDeleteSave = false">Cancel</g-btn>
           <g-btn :uppercase="false" flat background-color="red lighten 2" text-color="white" @click="removeList()">OK</g-btn>
         </g-card-actions>
       </g-card>

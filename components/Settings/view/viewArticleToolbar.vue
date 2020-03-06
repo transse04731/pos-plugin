@@ -1,17 +1,17 @@
 <template>
   <fragment>
-    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-3">
-      <g-icon class="mr-2" svg>
-        icon-menu
-      </g-icon>
-      More
-    </g-btn>
-    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-3">
-      <g-icon class="mr-2" svg>
-        icon-sort
-      </g-icon>
-      Sort
-    </g-btn>
+<!--    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-3">-->
+<!--      <g-icon class="mr-2" svg>-->
+<!--        icon-menu-->
+<!--      </g-icon>-->
+<!--      More-->
+<!--    </g-btn>-->
+<!--    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-3">-->
+<!--      <g-icon class="mr-2" svg>-->
+<!--        icon-sort-->
+<!--      </g-icon>-->
+<!--      Sort-->
+<!--    </g-btn>-->
     <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-3" @click="openDialogEditProduct" :disabled="selectedProductIDs.length === 0">
       <g-icon class="mr-2" color="red">
         edit
