@@ -10,6 +10,20 @@
       }
     }
   ],
+  "Terminal": [
+    {
+      "_id": "5dfb2023874421344a7203c2",
+      "name": "Terminal 1",
+      "thermalPrinters": [
+        {
+          "_id": "5dfb217296714b382ee3ed83",
+          "printerType": "ip",
+          "ip": "192.168.1.1",
+          "merge": "true"
+        }
+      ]
+    }
+  ],
   "Category": [
     {
       "_id": "5df6f31ba037304c8b0df66c",

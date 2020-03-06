@@ -41,26 +41,19 @@
     margin-top: 23px;
 
     ::v-deep .g-tf-wrapper {
-      display: block;
       cursor: text;
       width: calc(100% - 10px);
       margin: 4px 4px 8px;
+      background-color: #F0F0F0;
+      padding-left: 6px;
+      padding-right: 6px;
+      border: 1px solid #ced4da !important;
+      flex-basis: 100%;
+      width: 100%;
+      align-items: center;
+      transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 
-      fieldset {
-        background-color: #F0F0F0;
-        padding-left: 6px;
-        padding-right: 6px;
-        border: 1px solid #ced4da !important;
-        flex-basis: 100%;
-        width: 100%;
-        align-items: center;
-      }
-
-      .g-tf::before {
-        display: none;
-      }
-
-      .g-tf::after {
+      &.g-tf::before, &.g-tf::after {
         display: none;
       }
 
@@ -100,7 +93,6 @@
         padding: 6px 8px;
         line-height: 24px;
         font-size: 14px;
-        background-color: #F0F0F0;
         background-clip: padding-box;
         color: #000000;
         transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;

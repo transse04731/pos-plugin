@@ -44,7 +44,7 @@
 </script>
 
 <style lang="scss" scoped>
-  ::v-deep .g-tf .inputGroup .g-tf-input {
+  ::v-deep .g-tf-input {
     text-align: center;
     font-size: 24px;
     letter-spacing: 12px;

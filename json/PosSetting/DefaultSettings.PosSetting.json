@@ -645,7 +645,7 @@
       ],
       "_id": "5df89f71ac2798029d7369bc",
       "text": "Product Lookup",
-      "buttonFunction": "changePrice",
+      "buttonFunction": "productLookup",
       "backgroundColor": "#FFFFFF",
       "textColor": "#000000",
       "buyback": {}
