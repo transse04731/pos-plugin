@@ -10,16 +10,13 @@
                             :key="`${category}_window_item_${windowIndex}`"
                             @input="activeProductWindows[category] = $event"
         >
-          <g-btn :uppercase="false" flat
-                 v-for="(item, i) in window"
-                 :key="`btn_${i}`"
-                 :background-color="(item.layout && item.layout.color)|| '#FFFFFF'"
-                 :style="getItemStyle(item)"
-                 height="100%"
-                 @click.native.stop="addProduct(item)"
-          >
+          <div class="btn"
+               v-for="(item, i) in window"
+               :key="`btn_${i}`"
+               :style="getItemStyle(item)"
+               @click.stop="addProduct(item)">
             {{item.name}}
-          </g-btn>
+          </div>
         </scroll-window-item>
       </scroll-window>
       <g-item-group area="delimiter"
@@ -109,7 +106,8 @@
       getItemStyle(item) {
         if (item.layout) return {
           order: item.layout.order,
-          ...item.layout.color === '#FFFFFF' || !item.layout.color && {border: '1px solid #979797'}
+          ...item.layout.color === '#FFFFFF' || !item.layout.color && {border: '1px solid #979797', backgroundColor: '#FFF'},
+          ...item.layout.color && item.layout.color !== '#FFFFFF' && {backgroundColor: item.layout.color}
         }
       }
     },
@@ -118,15 +116,15 @@
 
       posStore.changeProductList = (newValue, oldValue) => {
         if (newValue) {
-          const newCategory = newValue.name
-          const oldCategory = oldValue && oldValue.name
+          const newCategory = newValue.name;
+          const oldCategory = oldValue && oldValue.name;
 
           if (newCategory && this.$refs[`window_${newCategory}`]) {
             this.$refs[`window_${newCategory}`][0].style.zIndex = '1'
           }
 
           if (oldCategory) {
-            if (newCategory === oldCategory) return
+            if (newCategory === oldCategory) return;
             const oldRef = this.$refs[`window_${oldCategory}`];
 
             if (oldRef && oldRef.length > 0) {
@@ -134,11 +132,11 @@
             }
           }
         }
-      }
+      };
 
       this.unwatch = posStore.$watch('scrollWindowProducts', (newValue, oldValue) => {
         if (!_.isEqual(newValue, oldValue)) {
-          const tempValue = Object.assign({}, this.productWindows, newValue)
+          const tempValue = Object.assign({}, this.productWindows, newValue);
           for (const category in tempValue) {
             if (tempValue.hasOwnProperty(category)) {
               tempValue[category] = tempValue[category].map(window => window.map(product => ({
@@ -148,23 +146,23 @@
             }
           }
 
-          this.productWindows = Object.assign({}, this.productWindows, tempValue)
+          this.productWindows = Object.assign({}, this.productWindows, tempValue);
           this.activeProductWindows = Object.keys(newValue).reduce((obj, key) => {
-            this.$set(obj, key, 0)
+            this.$set(obj, key, 0);
             return obj
           }, {})
         }
       }, { immediate: true, deep: true, sync: true })
     },
     async activated() {
-      this.shouldForceUpdate = true
-      await this.$getService('PosStore:getScrollWindowProducts')()
+      this.shouldForceUpdate = true;
+      await this.$getService('PosStore:getScrollWindowProducts')();
       this.$nextTick(() => {
         this.shouldForceUpdate = false
       })
     },
     async mounted() {
-      await this.$getService('PosStore:getScrollWindowProducts')()
+      await this.$getService('PosStore:getScrollWindowProducts')();
       this.$nextTick(() => {
         this.shouldForceUpdate = false
       })
@@ -201,14 +199,16 @@
 				grid-gap: 6px;
 				margin-right: 6px;
 
-        ::v-deep .g-btn {
+        .btn {
           white-space: normal;
-          padding: 0 !important;
-
-          .g-btn__content {
-            flex: 0 1 auto;
-            line-height: 0.9;
-          }
+          padding: 0 8px !important;
+          line-height: 0.9;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          cursor: pointer;
         }
 			}
 		}
