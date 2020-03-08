@@ -19,7 +19,7 @@
 			</div>
 		</div>
 		<div class="col-5 offset-1">
-			<div class="row-flex align-items-center justify-center mb-3">
+			<div class="row-flex align-items-center mb-3">
 				<span class="mr-4">Quick Function Rows</span>
 				<div :class="['btn-fn-row', quickFnRows === (i-1) && 'selected']" v-for="i in 3" :key="i" @click="updateFnRows(i-1)">
 					{{i-1}}

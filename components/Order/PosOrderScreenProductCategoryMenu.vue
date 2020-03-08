@@ -1,5 +1,5 @@
 <template>
-  <div area="menu">
+  <div area="menu" ref="menu">
     <g-btn :uppercase="false" v-for="(item, i) in menu" :key="i" elevation="0" background-color="#fff" text-color="#1d1d26" height="100%"
            @click.native.stop="select(item)" :ref="`button_${item.name}`">
       {{item.name}}
@@ -17,17 +17,15 @@
     },
     methods: {
       select(item) {
-        const posStore = this.$getService('PosStore')
-        posStore.changeCategory(item, posStore.activeCategory)
-        posStore.changeProductList(item, posStore.activeCategory)
-        posStore.activeCategory = item;
+        this.posStore.changeCategory(item, this.posStore.activeCategory)
+        this.posStore.changeProductList(item, this.posStore.activeCategory)
+        this.posStore.activeCategory = item;
       },
     },
-    created() {
-      const posStore = this.$getService('PosStore');
-      this.menu = posStore.getAllCategories()
+    async created() {
+      this.posStore = this.$getService('PosStore');
 
-      posStore.changeCategory = (newValue, oldValue) => {
+      this.posStore.changeCategory = (newValue, oldValue) => {
         if (newValue) {
           const newCategory = newValue.name
           const oldCategory = oldValue && oldValue.name
@@ -45,12 +43,18 @@
         }
       }
     },
-    mounted() {
-      this.select(this.menu[0])
+    async mounted() {
+      this.menu = await this.posStore.getAllCategories()
+      this.$nextTick(() => {
+        this.select(this.menu[0])
+      })
     },
-    activated() {
-      const posStore = this.$getService('PosStore');
-      this.menu = posStore.getAllCategories()
+    async activated() {
+      this.menu = await this.posStore.getAllCategories()
+      if(this.menu.length < 5 && this.$refs) {
+        this.$refs.menu.style['grid-auto-flow'] = 'row'
+        this.$refs.menu.style['grid-template-columns'] = 'repeat(3, 1fr)'
+      }
     }
   }
 </script>

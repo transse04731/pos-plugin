@@ -721,8 +721,8 @@
         2
       ],
       "_id": "5df89f71ac2798029d7369b9",
-      "text": "Credit Card",
-      "buttonFunction": "pay",
+      "text": "",
+      "buttonFunction": "",
       "backgroundColor": "#FFFFFF",
       "textColor": "black",
       "buyback": {}
@@ -746,8 +746,8 @@
         3
       ],
       "_id": "5df89f71ac2798029d7369b8",
-      "text": "Plastic Refund",
-      "buttonFunction": "buybackProduct",
+      "text": "",
+      "buttonFunction": "",
       "backgroundColor": "#FFFFFF",
       "textColor": "#000000"
     },

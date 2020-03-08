@@ -4,6 +4,16 @@
   export default {
     name: 'PosTextField',
     mixins: [GTextFieldBs],
+    mounted() {
+      this.$nextTick(() => {
+        const input = this.$refs.input
+        input.addEventListener('keydown', e => {
+          if(e.keyCode === 13) {
+            this.$emit('enterpressed', input.value)
+          }
+        })
+      })
+    }
   }
 </script>
 

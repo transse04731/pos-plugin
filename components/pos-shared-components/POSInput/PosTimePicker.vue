@@ -43,13 +43,12 @@
     ::v-deep .g-tf-wrapper {
       cursor: text;
       width: calc(100% - 10px);
-      margin: 4px 4px 8px;
+      margin: 0;
       background-color: #F0F0F0;
       padding-left: 6px;
       padding-right: 6px;
       border: 1px solid #ced4da !important;
       flex-basis: 100%;
-      width: 100%;
       align-items: center;
       transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 
@@ -65,7 +64,7 @@
         line-height: 16px;
         font-weight: 400;
         top: -23px;
-        left: -7px;
+        left: -1px;
       }
 
       .g-tf-label__active {

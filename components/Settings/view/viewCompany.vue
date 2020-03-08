@@ -193,6 +193,10 @@
 				padding: 8px;
 			}
 		}
+
+		.g-icon.icon-keyboard {
+			cursor: pointer;
+		}
 	}
 
 	.g-tf-wrapper {

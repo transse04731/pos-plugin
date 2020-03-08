@@ -57,8 +57,10 @@
 				<td class="ta-center" @click.stop="selectProduct(product)">{{product.id}}</td>
 				<td @click.stop="selectProduct(product)">{{product.name}}</td>
 				<td class="ta-right" @click.stop="selectProduct(product)">€ {{product.price.toFixed(2)}}</td>
-				<td class="ta-center" @click.stop="selectProduct(product)">{{product.category.name}}</td>
+				<td class="ta-center" @click.stop="selectProduct(product)">{{product.category && product.category.name}}</td>
 				<td class="ta-center" @click.stop="selectProduct(product)">{{product.barcode}}</td>
+
+
 			</tr>
 		</g-simple-table>
 		<pos-table-pagination @execQueryByPage="updatePagination"

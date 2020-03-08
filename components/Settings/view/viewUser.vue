@@ -41,7 +41,7 @@
           <pos-switch @change="save" dense label="View Others Reports" v-model="selectedUser.viewOtherReport"/>
         </div>
         <div class="edit__item" v-if="!isAdmin">
-          <pos-switch @change="save" dense label="Edit Article, Edit Table Layout" v-model="selectedUser.editArticle"/>
+          <pos-switch @change="save" dense label="Edit Article Layout" v-model="selectedUser.editArticle"/>
         </div>
         <div class="edit__item" v-if="!isAdmin">
           <pos-switch @change="save" dense label="Access Z-Report" v-model="selectedUser.accessZReport"/>
@@ -49,9 +49,9 @@
         <div class="edit__item" v-if="!isAdmin">
           <pos-switch @change="save" dense label="Item Cancellation" v-model="selectedUser.itemCancellation"/>
         </div>
-        <div class="edit__item" v-if="!isAdmin">
-          <pos-switch @change="save" dense label="Allow Table Takeover" v-model="selectedUser.allowTableTakeover"/>
-        </div>
+<!--        <div class="edit__item" v-if="!isAdmin">-->
+<!--          <pos-switch @change="save" dense label="Allow Table Takeover" v-model="selectedUser.allowTableTakeover"/>-->
+<!--        </div>-->
         <div class="edit__item" v-if="!isAdmin">
           <p class="mt-3 ml-1">Employee iButton Key</p>
           <p class="mt-2 ml-1">
@@ -59,9 +59,9 @@
             <g-icon class="ml-1" size="20" svg>icon-redo</g-icon>
           </p>
         </div>
-        <div class="edit__item" v-if="!isAdmin">
-          <pos-switch @change="save" dense label="Allow Item Cancellation after reactivate paid Table" style="max-width: 200px" v-model="selectedUser.itemCancellationReactivePaidTable"/>
-        </div>
+<!--        <div class="edit__item" v-if="!isAdmin">-->
+<!--          <pos-switch @change="save" dense label="Allow Item Cancellation after reactivate paid Table" style="max-width: 200px" v-model="selectedUser.itemCancellationReactivePaidTable"/>-->
+<!--        </div>-->
         <div class="edit__item">
           <pos-text-field @click="editPasscode" label="Passcode" v-model="selectedUser.passcode">
             <template v-slot:append>
@@ -69,15 +69,15 @@
             </template>
           </pos-text-field>
         </div>
-        <div class="edit__item" v-if="!isAdmin">
-          <pos-switch @change="save" dense label="Allow Move Item" v-model="selectedUser.allowMoveItem"/>
-        </div>
-        <div class="edit__item" v-if="!isAdmin">
-          <pos-switch @change="save" dense label="Reactivate paid Table" v-model="selectedUser.reactivePaidTable"/>
-        </div>
-        <div class="edit__item" v-if="!isAdmin">
-          <pos-switch @change="save" dense label="Allow Table Switch" v-model="selectedUser.allowTableSwitch"/>
-        </div>
+<!--        <div class="edit__item" v-if="!isAdmin">-->
+<!--          <pos-switch @change="save" dense label="Allow Move Item" v-model="selectedUser.allowMoveItem"/>-->
+<!--        </div>-->
+<!--        <div class="edit__item" v-if="!isAdmin">-->
+<!--          <pos-switch @change="save" dense label="Reactivate paid Table" v-model="selectedUser.reactivePaidTable"/>-->
+<!--        </div>-->
+<!--        <div class="edit__item" v-if="!isAdmin">-->
+<!--          <pos-switch @change="save" dense label="Allow Table Switch" v-model="selectedUser.allowTableSwitch"/>-->
+<!--        </div>-->
         <div class="edit__item" v-if="!isAdmin">
           <pos-switch @change="save" dense label="Open Cash Drawer Manually" v-model="selectedUser.openCashdrawerManually"/>
         </div>
@@ -179,6 +179,7 @@
 
 		.g-list {
 			border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+      padding: 0;
 
 			::v-deep .g-list-item-text {
 				font-size: 13px;

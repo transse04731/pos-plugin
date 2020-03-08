@@ -66,10 +66,10 @@
           </div>
         </div>
 
-        <div class="accordion">
-          <g-expansion :items="expansions" accordion item-header="name" v-model="expansionItem">
-          </g-expansion>
-        </div>
+<!--        <div class="accordion">-->
+<!--          <g-expansion :items="expansions" accordion item-header="name" v-model="expansionItem">-->
+<!--          </g-expansion>-->
+<!--        </div>-->
         <g-toolbar absolute bottom color="grey lighten 3">
           <g-spacer/>
           <g-btn :uppercase="false" @click="back()" class="mr-2" outlined width="120">Cancel</g-btn>
@@ -204,7 +204,7 @@
     },
     methods: {
       async loadData() {
-        this.categories = (await cms.getModel('Category').find()).map(c => ({
+        this.categories = (await cms.getModel('Category').find({name: {'$ne': 'Favourite'}})).map(c => ({
           ...c,
           value: c.name,
         }));

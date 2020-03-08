@@ -179,9 +179,9 @@
       //<!--</editor-fold>-->
 
       //<!--<editor-fold desc="Order screen">-->
-      getAllCategories() {
-        const categories = cms.getList('Category')
-        const posSettings = cms.getList('PosSetting')[0];
+      async getAllCategories() {
+        const categories = await cms.getModel('Category').find()
+        const posSettings = (await cms.getModel('PosSetting').find())[0];
         let favoriteArticle = posSettings.generalSetting.favoriteArticle;
         return favoriteArticle ? categories : categories.filter(cat => cat.name !== 'Favourite')
       },

@@ -25,7 +25,7 @@
                 <div style="display: flex; justify-content: center; align-items: center;">
                   <p>{{index + 1}}</p>
                 </div>
-                <div style="display: flex; justify-content: center; align-items: center;">
+                <div style="display: flex; justify-content: center; align-items: center; flex: 1">
                   <div style="padding: 20px;">
                     <div><p>#{{product.id}}</p></div>
                     <div><p><b>{{product.name}}</b></p></div>
@@ -136,8 +136,8 @@
                 _id: result._id,
                 id: result.id,
                 name: result.name,
-                unit: Array.isArray(result.unit) ? result.unit : [result.unit],
-                selectedUnit: Array.isArray(result.unit) ? result.unit[0] : result.unit,
+                ...result.unit && { unit: Array.isArray(result.unit) ? result.unit : [result.unit]},
+                ...result.unit && {selectedUnit: Array.isArray(result.unit) ? result.unit[0] : result.unit},
                 ...hasAttributes && { attributes: computedAttributes },
                 ...hasAttributes && { selectedAttributes }
               }

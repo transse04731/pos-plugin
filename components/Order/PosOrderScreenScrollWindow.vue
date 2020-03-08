@@ -106,7 +106,7 @@
       getItemStyle(item) {
         if (item.layout) return {
           order: item.layout.order,
-          ...item.layout.color === '#FFFFFF' || !item.layout.color && {border: '1px solid #979797', backgroundColor: '#FFF'},
+          ...(item.layout.color === '#FFFFFF' || !item.layout.color) && {border: '1px solid #979797', backgroundColor: '#FFF'},
           ...item.layout.color && item.layout.color !== '#FFFFFF' && {backgroundColor: item.layout.color}
         }
       }
