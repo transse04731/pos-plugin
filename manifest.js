@@ -54,6 +54,12 @@ module.exports = {
         type: 'ssr'
       },
       path: 'components/Report/ZReport.vue'
+    },
+    {
+      loader: {
+        type: 'i18n'
+      },
+      path: 'i18n/de.js'
     }
   ]
 };
