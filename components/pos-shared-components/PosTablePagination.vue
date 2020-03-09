@@ -11,11 +11,10 @@
       Page:
     </div>
     <div class="g-pagination-input">
-      <g-combobox
-          v-model="comboPage"
-          :items="listPageNumber"
-          @input="gotoPage($event)"
-          style="font-size: 13px;"
+      <g-combobox :value="comboPage"
+                  :items="listPageNumber"
+                  @input="gotoPage($event)"
+                  style="font-size: 13px;"
       ></g-combobox>
     </div>
     <div style="margin: 0 16px">Total: {{totalDocument}}</div>
@@ -69,6 +68,7 @@
       },
       gotoPage(v) {
         let value = parseInt(v);
+        this.comboPage = v;
         if (!isNaN(value) && value <= this.totalPage) {
           this.$emit('execQueryByPage');
         }

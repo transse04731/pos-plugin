@@ -77,13 +77,11 @@
           }
         },
         mounted() {
-          this._forceUpdate = this.$forceUpdate
-        },
-        watch: {
-          shouldForceUpdate(newVal) {
+          this._forceUpdate = this.$forceUpdate;
+          this.$watch('$forceUpdate', newVal => {
             this.$forceUpdate = newVal ? this._forceUpdate : () => null
-          }
-        }
+          }, { immediate: true })
+        },
       }
     },
     props: {

@@ -1225,7 +1225,7 @@
       const cachedPageSize = localStorage.getItem('orderHistoryPageSize')
       if (cachedPageSize) this.orderHistoryPagination.limit = parseInt(cachedPageSize)
       const cachedArticlePageSize = localStorage.getItem('viewArticlePageSize');
-      if (cachedArticlePageSize) this.productPagination.limite = parseInt(cachedArticlePageSize);
+      if (cachedArticlePageSize) this.productPagination.limit = parseInt(cachedArticlePageSize);
       this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
       this.user = cms.getList('PosSetting')[0].user[0]
       this.setDateInterval = setInterval(() => this.systemDate = new Date(), 10000)
