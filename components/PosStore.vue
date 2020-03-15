@@ -51,15 +51,15 @@
               { title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small' },*/
               { title: 'Payment Layout', icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-payment-config', appendIcon: 'open_in_new' },
               { title: 'Function Layout', icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-fn-button', appendIcon: 'open_in_new' },
-              {
-                title: 'Terminal 1', icon: 'radio_button_unchecked', iconType: 'small',
-                items: [
-                  { title: 'Thermal Printer', isView: true, icon: ' ' },
-                  /*{ title: 'POS', icon: ' ' },
-                  { title: 'Customer Display', icon: ' ' },
-                  { title: 'A4 Printer', icon: ' ' },*/
-                ]
-              }
+            ]
+          },
+          {
+            title: 'Hardware', icon: 'icon-hardware', svgIcon: true,
+            items: [
+              { title: 'Thermal Printer', isView: true, icon: 'radio_button_unchecked', iconType: 'small' },
+              /*{ title: 'POS', icon: ' ' },
+              { title: 'Customer Display', icon: ' ' },
+              { title: 'A4 Printer', icon: ' ' },*/
             ]
           },
           {
@@ -82,6 +82,7 @@
         totalProducts: null,
         productPagination: { limit: 15, currentPage: 1 },
         selectedProduct: null,
+        productSortCondition: {},
         //payment view
         listPayments: [],
         selectedPayment: null,
@@ -180,10 +181,10 @@
 
       //<!--<editor-fold desc="Order screen">-->
       async getAllCategories() {
-        const categories = await cms.getModel('Category').find()
+        const categories = _.orderBy(await cms.getModel('Category').find(), ['position'])
         const posSettings = (await cms.getModel('PosSetting').find())[0];
         let favoriteArticle = posSettings.generalSetting.favoriteArticle;
-        return favoriteArticle ? categories : categories.filter(cat => cat.name !== 'Favourite')
+        return favoriteArticle ? categories : categories.filter(cat => cat.name !== 'Favourite').map(c => ({...c, position: c.position - 1}))
       },
       async getActiveProducts() {
         // const products = cms.getList('Product').filter(product => product.category._id === this.activeCategory._id)
@@ -465,18 +466,41 @@
 
       //<!--<editor-fold desc="Settings screen">-->
       //category view
-      async updateCategory(oldID, newName) {
+      async updateCategory(oldID, newName, newPosition) {
         const categoryModel = cms.getModel('Category');
         if (oldID && !newName) {
-          await categoryModel.deleteOne({ '_id': oldID });
+          const deletedCategory = this.listCategories.find(c => c._id === oldID);
+          let res = await categoryModel.deleteOne({ '_id': oldID });
+          if(res.deletedCount === 1) {
+            const ids = this.listCategories.filter(c => c.position > deletedCategory.position).map(c => c._id)
+            await categoryModel.updateMany({'_id': {'$in': ids}}, {'$inc': {position: -1}})
+          }
         } else if (!oldID && newName) {
-          await categoryModel.create({ name: newName });
+          await categoryModel.create({ name: newName, position: newPosition });
         } else {
           await categoryModel.findOneAndUpdate({ '_id': oldID }, { name: newName });
         }
-        this.listCategories = await categoryModel.find();
+        this.listCategories = await this.getAllCategories();
+      },
+      async swapCategoryPosition(direction) {
+        const categoryModel = cms.getModel('Category')
+        const position = this.selectedCategory.position
+        if(direction === 'down') {
+          const swapItem = this.listCategories.find(c => c.position === (position + 1))
+          await categoryModel.updateOne({_id: this.selectedCategory._id}, {'$inc': { position: 1}})
+          await categoryModel.updateOne({_id: swapItem._id}, {'$inc': { position: -1}})
+        } else if (direction === 'up') {
+          const swapItem = this.listCategories.find(c => c.position === (position - 1))
+          await categoryModel.updateOne({_id: this.selectedCategory._id}, {'$inc': { position: -1}})
+          await categoryModel.updateOne({_id: swapItem._id}, {'$inc': { position: 1}})
+        }
+        this.listCategories = await this.getAllCategories()
+        this.selectedCategory = this.listCategories.find(c => c._id === this.selectedCategory._id)
       },
       //article view
+      async findCategoryByName(name) {
+        return cms.getModel('Category').find({name: {$regex: name, $options: 'i'}})
+      },
       updateProductFilters(filter) {
         const index = this.productFilters.findIndex(f => f.title === filter.title);
         if (index > -1) {
@@ -490,7 +514,7 @@
         const productModel = cms.getModel('Product');
         const condition = this.productFilters.reduce((acc, filter) => ({ ...acc, ...filter['condition'] }), {});
         const { limit, currentPage } = this.productPagination;
-        this.listProducts = await productModel.find(condition).skip(limit * (currentPage - 1)).limit(limit);
+        this.listProducts = await productModel.find(condition).sort(this.productSortCondition).skip(limit * (currentPage - 1)).limit(limit);
       },
       async getTotalProducts() {
         const productModel = cms.getModel('Product');
@@ -1297,6 +1321,7 @@
         listCategories: this.listCategories,
         selectedCategory: this.selectedCategory,
         updateCategory: this.updateCategory,
+        swapCategoryPosition: this.swapCategoryPosition,
         //article view
         getListProducts: this.getListProducts,
         listProducts: this.listProducts,
@@ -1312,6 +1337,7 @@
         selectedProduct: this.selectedProduct,
         isEditProduct: this.isEditProduct,
         updateProduct: this.updateProduct,
+        findCategoryByName: this.findCategoryByName,
         //payment view
         listPayments: this.listPayments,
         getListPayments: this.getListPayments,

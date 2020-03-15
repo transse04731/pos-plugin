@@ -96,9 +96,11 @@
         }
       })
 
-      this.$nextTick(() => {
+      posStore.updateTableRows = (() => {this.$nextTick(() => {
         this.viewportRows = Math.floor(this.$el.querySelector('.table-wrapper').clientHeight / 44)
-      })
+      })})
+
+      posStore.updateTableRows()
     }
   }
 </script>

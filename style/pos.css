@@ -269,3 +269,45 @@ body::-webkit-scrollbar {
   background-position: center;
 }
 
+.icon-hardware {
+  background-image: url("../assets/hardware.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-move-down {
+  background-image: url("../assets/move-down.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-move-up {
+  background-image: url("../assets/move-up.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-arrow-up-down {
+  background-image: url("../assets/arrow-up-down.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-arrow-down {
+  background-image: url("../assets/arrow-down.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-arrow-up {
+  background-image: url("../assets/arrow-up.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+

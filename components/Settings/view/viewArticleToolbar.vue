@@ -6,12 +6,12 @@
 <!--      </g-icon>-->
 <!--      More-->
 <!--    </g-btn>-->
-<!--    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-3">-->
-<!--      <g-icon class="mr-2" svg>-->
-<!--        icon-sort-->
-<!--      </g-icon>-->
-<!--      Sort-->
-<!--    </g-btn>-->
+    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-3" @click="dialogSort = true">
+      <g-icon class="mr-2" svg>
+        icon-sort
+      </g-icon>
+      Sort
+    </g-btn>
     <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-3" @click="openDialogEditProduct" :disabled="selectedProductIDs.length === 0">
       <g-icon class="mr-2" color="red">
         edit
@@ -28,6 +28,7 @@
       + Create new product
     </g-btn>
     <dialog-confirm-delete :type="selectedProductIDs.length + ' selected product(s)'" v-model="dialogConfirmDelete" @submit="deleteProducts"/>
+    <dialog-sort v-model="dialogSort" @submit="sort"/>
   </fragment>
 </template>
 
@@ -37,10 +38,13 @@
     injectService: [
         'PosStore:selectedProductIDs',
         'PosStore:deleteSelectedProducts',
+        'PosStore:productSortCondition',
+        'PosStore:getListProducts',
     ],
     data() {
       return {
-        dialogConfirmDelete: false
+        dialogConfirmDelete: false,
+        dialogSort: false,
       }
     },
     methods: {
@@ -58,6 +62,10 @@
       },
       back() {
         this.$router.push({ path: '/view/pos-dashboard' });
+      },
+      async sort(option) {
+        this.productSortCondition = option
+        await this.getListProducts()
       }
     }
   }

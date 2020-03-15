@@ -1,18 +1,20 @@
 <template>
-  <div ref="action">
-    <g-btn :uppercase="false" height="100%" elevation="0"
+  <div class="action" ref="action">
+    <div class="btn"
            v-for="(btn, i) in listBtn" :key="i"
            :style="{
               gridRow: btn.rows[0] + '/' + btn.rows[1],
               gridColumn: btn.cols[0] + '/' + btn.cols[1],
               backgroundColor: btn.backgroundColor,
               color: btn.backgroundColor !== '#FFFFFF' ? btn.textColor : '#000d',
-              border: btn.backgroundColor && btn.backgroundColor !== '#FFFFFF' ? null : '1px solid #979797'
+              border: btn.backgroundColor && btn.backgroundColor !== '#FFFFFF' ? null : '1px solid #979797',
+              pointerEvents: !isActiveBtn(btn) ? 'none' : 'auto', //disabled
+              opacity: !isActiveBtn(btn) ? '0.4' : '1', //disabled
+              cursor: !isActiveBtn(btn) ? 'none' : 'pointer'
             }"
-           :disabled="!isActiveBtn(btn)"
            @click="onClick(btn)">
       {{btn.text}}
-    </g-btn>
+    </div>
   </div>
 </template>
 
@@ -64,6 +66,11 @@
                 : btn);
           }
         }
+
+        const posStore = this.$getService('PosStore')
+        if(posStore && posStore.updateTableRows && typeof posStore.updateTableRows === 'function') {
+          posStore.updateTableRows()
+        }
       },
       isActiveBtn(btn) {
         return this.$getService('PosStore:isActiveFnBtn')(btn)
@@ -81,18 +88,14 @@
     padding: 9px 6px;
   }
 
-  .g-btn {
+  .btn {
     white-space: normal;
-    padding: 0 !important;
-
-    ::v-deep .g-btn__content {
-      flex: 0 1 auto;
-      line-height: 0.9;
-    }
-
-    &.g-btn__outlined {
-      border: 1px solid #979797;
-      background-color: #fafafa;
-    }
+    padding: 0 8px !important;
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 14px;
   }
 </style>

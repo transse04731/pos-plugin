@@ -30,6 +30,7 @@
     .g-tf {
       background-color: #F0F0F0;
       border-radius: 2px;
+      padding-left: 12px;
     }
 
     .g-tf::before, .g-tf::after {

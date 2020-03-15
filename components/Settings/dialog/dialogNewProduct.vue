@@ -217,7 +217,7 @@
           const p = this.selectedProduct;
           //update new dialog
           this.productName = p.name;
-          this.productCategory = this.categories.find(c => c._id === p.category._id);
+          this.productCategory = this.categories.find(c => p.category && c._id === p.category._id);
           this.taxCategory = this.taxes.find(t => t.value === p.tax);
           this.productID = p.id;
           this.productPrice = '' + p.price;
@@ -292,7 +292,8 @@
             active: this.active,
             showOnOrderScreen: this.showOnOrderScreen,
             manualPrice: this.manualPrice,
-          }
+          },
+          dateAdded: new Date()
         }
         this.dialogNewProduct = false;
         if (this.isEditProduct) {

@@ -23,22 +23,18 @@
 </template>
 
 <script>
-  /*import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
-  import PosFileInput from '../../pos-shared-components/POSInput/PosFileInputImage';
-  import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';*/
-
   export default {
     name: 'dialogNewCategory',
     injectService: [
       'PosStore:selectedCategory',
       'PosStore:updateCategory',
     ],
-    //components: { PosKeyboardFull, PosFileInput, PosTextField },
     data() {
       return {
         name: '',
 				isEditCategory: false,
 				internalValue: false,
+				position: 0,
       }
     },
     props: {
@@ -55,20 +51,21 @@
       },
     },
     methods: {
-    	open(isEdit) {
+    	open(isEdit, maxPosition) {
     		this.isEditCategory = isEdit;
 				if (this.isEditCategory && this.selectedCategory) {
 					this.name = this.selectedCategory.name;
 				} else {
 					this.name = '';
 				}
+				this.position = maxPosition + 1
     		this.dialogNewCategory = true;
 			},
       async save() {
         if (this.name) {
           let oldID;
           if (this.isEditCategory) oldID = this.selectedCategory && this.selectedCategory._id;
-          await this.updateCategory(oldID, this.name);
+          await this.updateCategory(oldID, this.name, this.position);
         }
         this.name = '';
         this.selectedCategory = null;

@@ -42,11 +42,13 @@
 							<g-chip v-for="(filter, i) in productFilters" :key="filter.title+i" label small background-color="white" close class="ma-1" @close="removeFilter(filter)">
 								<div>
 									<span class="chip-title">{{filter.title}}: </span>
-									<span class="chip-content">{{filter.text}}</span>
+									<span class="chip-content">'{{filter.text}}'</span>
 								</div>
 							</g-chip>
 						</div>
 						<g-btn :uppercase="false" text v-if="productFilters && productFilters.length > 0" @click="clearFilter"><u>Clear All</u></g-btn>
+						<g-spacer/>
+						<div class="btn-add-filter" @click="dialogAddFilter = true">+ Add Filter</div>
 					</div>
 				</td>
 			</tr>
@@ -66,7 +68,9 @@
 		<pos-table-pagination @execQueryByPage="updatePagination"
 													:total-document="totalProducts"
 													:limit.sync="limit"
-													:current-page.sync="currentPage"/>
+													:current-page.sync="currentPage"
+													:selected="selectedProductIDs.length"/>
+		<dialog-add-filter v-model="dialogAddFilter" @submit="addFilter"/>
 	</div>
 </template>
 
@@ -82,9 +86,11 @@
 		  'PosStore:getTotalProducts',
 		  'PosStore:productPagination',
 		  'PosStore:selectedProduct',
+		  'PosStore:updateProductFilters',
 		],
 		data () {
 			return {
+				dialogAddFilter: false
 			}
 		},
 		computed: {
@@ -114,6 +120,11 @@
 			}
 		},
 		methods: {
+    	async addFilter(filter) {
+    		this.updateProductFilters(filter)
+				await this.getTotalProducts()
+				await this.getListProducts()
+			},
       async clearFilter() {
         this.productFilters = [];
 				await this.getTotalProducts();
@@ -174,6 +185,10 @@
 		height: calc(100% - 64px);
 		margin-left: 1px;
 
+		::v-deep table {
+			table-layout: fixed;
+		}
+
 		thead tr th {
 			font-size: 14px;
 			color: #1d1d26;
@@ -197,11 +212,11 @@
 		tr {
 			td:nth-child(1),
 			th:nth-child(1)  {
-				width: 10%;
+				width: 6%;
 			}
 			td:nth-child(2):not(.filter-wrapper),
 			th:nth-child(2)  {
-				width: 15%;
+				width: 17%;
 			}
 			td:nth-child(3),
 			th:nth-child(3)  {
@@ -217,7 +232,7 @@
 			}
 			td:nth-child(6),
 			th:nth-child(6)  {
-				width: 20%;
+				width: 22%;
 			}
 		}
 
@@ -266,6 +281,15 @@
 						font-weight: 700;
 						font-size: 12px;
 					}
+				}
+
+				.btn-add-filter {
+					border-radius: 4px;
+					background-color: #2979ff;
+					color: white;
+					padding: 10px;
+					cursor: pointer;
+					font-size: 14px;
 				}
 			}
 		}

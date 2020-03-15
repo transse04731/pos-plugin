@@ -10,6 +10,13 @@
       "schemaType": "string",
       "key": "name",
       "type": "input"
+    },
+    {
+      "_id": "5e6622acac204918b3c6de12",
+      "schemaType": "number",
+      "clickable": true,
+      "key": "position",
+      "type": "input@number"
     }
   ],
   "id": "5c46e2b15889c52fe001ab83",
