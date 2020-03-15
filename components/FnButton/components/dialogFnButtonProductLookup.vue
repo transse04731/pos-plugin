@@ -21,10 +21,10 @@
         <g-simple-table fixed-header :class="tbLookup" ref="table">
           <thead>
           <tr>
-            <th>Name</th>
-            <th>Barcode</th>
-            <th>Unit</th>
-            <th>Attribute</th>
+            <th>{{$t('article.name')}}</th>
+            <th>{{$t('article.barcode')}}</th>
+            <th>{{$t('article.unit')}}</th>
+            <th>{{$t('article.attribute')}}</th>
           </tr>
           </thead>
           <tbody>

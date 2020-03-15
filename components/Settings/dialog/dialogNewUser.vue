@@ -2,16 +2,16 @@
   <g-dialog v-model="dialogNewUser" overlay-color="#6b6f82" overlay-opacity="0.95" width="90%" eager>
     <div class="dialog-new-user w-100">
       <div class="header">
-        <span>Add New User</span>
+        <span>{{$t('settings.addUser')}}</span>
         <g-icon svg size="20" @click="dialogNewUser = false">icon-close</g-icon>
       </div>
       <div class="form">
         <div class="input">
-          <pos-text-field ref="username" @click="check = 'username'" large label="User Name" v-model="name"/>
-          <pos-text-field ref="passcode" @click="check = 'passcode'" large label="Passcode" v-model="passcode"/>
+          <pos-text-field ref="username" @click="check = 'username'" large :label="$t('settings.userName')" v-model="name"/>
+          <pos-text-field ref="passcode" @click="check = 'passcode'" large :label="$t('settings.passcode')" v-model="passcode"/>
         </div>
         <div class="avatar">
-          <p class="title">Select User Avatar</p>
+          <p class="title">{{$t('settings.selectAvatar')}}</p>
           <g-item-group :items="listAvatars" v-model="selectedAvatar">
             <template v-slot:item="{item, toggle, active}">
               <g-badge v-model="active" overlay>
@@ -26,8 +26,10 @@
           </g-item-group>
         </div>
         <div class="action">
-          <g-btn :uppercase="false" outlined class="mr-3" width="120" @click="dialogNewUser = false">Cancel</g-btn>
-          <g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" width="120" :disabled="!valid" @click="submit">OK</g-btn>
+          <g-btn :uppercase="false" outlined class="mr-3" width="120" @click="dialogNewUser = false">{{$t('ui.cancel')}}</g-btn>
+          <g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" width="120" :disabled="!valid" @click="submit">
+            {{$t('ui.ok')}}
+          </g-btn>
         </div>
       </div>
       <div class="bg-grey-lighten-1 pa-2">

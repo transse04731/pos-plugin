@@ -14,19 +14,19 @@
           <span>{{selectedDate}}</span>
         </div>
         <div class="eod-info">
-          <span class="eod-info-important">Z - Number:</span>
+          <span class="eod-info-important">{{$t('report.zNumber')}}:</span>
           <span>{{item.z}}</span>
         </div>
         <div class="eod-info">
-          <span class="eod-info-important">First Order:</span>
+          <span class="eod-info-important">{{$t('report.firstOrder')}}:</span>
           <span>{{item.begin}}</span>
         </div>
         <div class="eod-info">
-          <span class="eod-info-important">Last Order:</span>
+          <span class="eod-info-important">{{$t('report.lastOrder')}}:</span>
           <span>{{item.end}}</span>
         </div>
         <div class="eod-info">
-          <span class="eod-info-important">Total Sales:</span>
+          <span class="eod-info-important">{{$t('report.totalSales')}}:</span>
           <span class="eod-info-total-sale">€ {{item.sum.toFixed(2)}}</span>
         </div>
       </g-tab-item>

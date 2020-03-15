@@ -3,28 +3,28 @@
     <g-simple-table striped fixed-header>
       <thead>
       <tr>
-        <th class="ta-right" @click="openOrderNumberLookup">Order No.
+        <th class="ta-right" @click="openOrderNumberLookup">{{$t('orderHistory.orderNo')}}
           <g-icon size="12">mdi-magnify</g-icon>
         </th>
-        <th @click="openDateTimePicker">Date Time
+        <th @click="openDateTimePicker">{{$t('common.datetime')}}
           <g-icon size="12">mdi-filter</g-icon>
         </th>
-        <th @click="openBarcodeLookup">Barcode
+        <th @click="openBarcodeLookup">{{$t('orderHistory.barcode')}}
           <g-icon size="12">mdi-magnify</g-icon>
         </th>
-        <th class="ta-right" @click="openAmountFilter">Amount
+        <th class="ta-right" @click="openAmountFilter">{{$t('orderHistory.amount')}}
           <g-icon size="12">mdi-filter</g-icon>
         </th>
-        <th class="ta-left" @click="openStaffFilter">Staff
+        <th class="ta-left" @click="openStaffFilter">{{$t('orderHistory.staff')}}
           <g-icon size="12">mdi-magnify</g-icon>
         </th>
-        <th>Info</th>
+        <th>{{$t('orderHistory.info')}}</th>
       </tr>
       </thead>
       <tr v-if="orderHistoryFilters && orderHistoryFilters.length > 0">
         <td colspan="6" class="td__sticky">
           <div class="filter-list">
-            <span class="ml-1">Filter</span>
+            <span class="ml-1">{{$t('orderHistory.filter')}}</span>
             <div class="group-chip">
               <g-chip v-for="filter in orderHistoryFilters" :key="filter.title" label small background-color="white" close class="ma-1" @close="removeFilter(filter)">
                 <div>

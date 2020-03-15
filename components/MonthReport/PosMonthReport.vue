@@ -9,7 +9,7 @@
           <span>€ {{amount | convertMoney}}</span>
         </div>
         <div class="total">
-          <span>Total</span>
+          <span>{{$t('common.total')}}</span>
           <span><u>€ {{total | convertMoney}}</u></span>
         </div>
       </div>
@@ -19,17 +19,17 @@
           <tr v-for="(z, i) in zNumbers" :key="`zNumber${i}`" class="z-number">
             <td>
               <div class="row-flex justify-between">
-                <span>Z-Number {{z.z}}:</span>
+                <span>{{$t('report.zNumber')}} {{z.z}}:</span>
                 <span class="ml-2">€ {{z.sum | convertMoney}}</span>
               </div>
             </td>
-            <td class="pl-3">Date: {{z.date}}</td>
+            <td class="pl-3">{{$t('common.date')}}: {{z.date}}</td>
           </tr>
         </table>
         <g-divider dashed color="black"/>
       </div>
       <div v-if="showProductSold" class="report__product">
-        <div class="title">Product Sold</div>
+        <div class="title">{{$t('report.productSold')}}</div>
         <g-divider dashed color="black"/>
         <div v-for="({products, sum}, category) in salesByCategory" :key="`category${category}`">
           <p class="category">

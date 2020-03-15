@@ -1,6 +1,6 @@
 <template>
   <p class="info__left" v-if="lastPayment > 0">
-    Last Pay:
+    {{$t('order.lastPay')}}:
     <span>€{{lastPayment | formatNumber}}</span>
   </p>
 </template>

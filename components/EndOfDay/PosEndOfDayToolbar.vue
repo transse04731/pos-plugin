@@ -2,7 +2,7 @@
   <g-toolbar color="#eee" style="z-index: 2">
     <g-btn :uppercase="false" @click="back">
       <g-icon class="mr-2" svg>icon-back</g-icon>
-      Back
+      {{$t('ui.back')}}
     </g-btn>
     <g-spacer/>
 
@@ -10,7 +10,7 @@
       <template v-slot:activator="{open, close}">
         <g-btn :uppercase="false" class="mr-2" v-if="showReprint" @click="open">
           <g-icon class="mr-2" svg>icon-print2</g-icon>
-          Reprint
+          {{$t('reprint')}}
         </g-btn>
       </template>
     </pos-end-of-day-reprint-z-report>
@@ -18,13 +18,13 @@
     <pos-end-of-day-print-dialog>
       <template v-slot:activator="{open, close}">
         <g-btn :uppercase="false" @click="open(selectedReportDate.date)" width="139px" class="mr-2" v-if="showRunEndOfDay">
-          X-Report
+          {{$t('report.xReport')}}
         </g-btn>
       </template>
     </pos-end-of-day-print-dialog>
 
     <g-btn :uppercase="false" @click="runEndOfDay" background-color="#E57373" text-color="#FFFFFF" v-if="showRunEndOfDay">
-      Run End-of-Day
+      {{$t('report.runEndOfDay')}}
     </g-btn>
 
     <pos-end-of-day-print-pending-z-report @confirmed="save" v-model="showPendingEndOfDayConfirmDialog"></pos-end-of-day-print-pending-z-report>

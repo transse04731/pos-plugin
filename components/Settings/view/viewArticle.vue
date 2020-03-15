@@ -5,23 +5,23 @@
 			<tr>
 				<th></th>
 				<th class="ta-left" @click="openIDFilters">
-					Product ID
+					{{$t('article.productId')}}
 					<g-icon size="12">mdi-magnify</g-icon>
 				</th>
 				<th class="ta-left" @click="openNameFilters">
-					Name
+					{{$t('article.name')}}
 					<g-icon size="12">mdi-filter</g-icon>
 				</th>
 				<th class="ta-right" @click="openPriceFilters">
-					Price
+					{{$t('article.price')}}
 					<g-icon size="12">mdi-filter</g-icon>
 				</th>
 				<th @click="openCategoryFilters">
-					Category
+					{{$t('article.category')}}
 					<g-icon size="12">mdi-magnify</g-icon>
 				</th>
 				<th @click="openBarcodeFilters">
-					Bar Code
+					{{$t('article.barcode')}}
 					<g-icon size="12">mdi-magnify</g-icon>
 				</th>
 			</tr>
@@ -37,7 +37,7 @@
 				</td>
 				<td colspan="6" class="filter-wrapper" style="height: 48px">
 					<div class="filter">
-						Filter
+						{{$t('settings.filter')}}
 						<div class="group-chip">
 							<g-chip v-for="(filter, i) in productFilters" :key="filter.title+i" label small background-color="white" close class="ma-1" @close="removeFilter(filter)">
 								<div>
@@ -46,7 +46,7 @@
 								</div>
 							</g-chip>
 						</div>
-						<g-btn :uppercase="false" text v-if="productFilters && productFilters.length > 0" @click="clearFilter"><u>Clear All</u></g-btn>
+						<g-btn :uppercase="false" text v-if="productFilters && productFilters.length > 0" @click="clearFilter"><u>{{$t('settings.clearAll')}}</u></g-btn>
 						<g-spacer/>
 						<div class="btn-add-filter" @click="dialogAddFilter = true">+ Add Filter</div>
 					</div>

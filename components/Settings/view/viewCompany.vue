@@ -2,39 +2,39 @@
 	<fragment>
 		<div class="main">
 			<div class="main__item">
-				<pos-text-field label="Company Name" v-model="name" @click="dialogCompanyName = true">
+				<pos-text-field :label="$t('settings.companyName')" v-model="name" @click="dialogCompanyName = true">
 					<template v-slot:append>
 						<g-icon svg>icon-keyboard</g-icon>
 					</template>
 				</pos-text-field>
 			</div>
 			<div class="main__item">
-				<pos-text-field label="Address" v-model="address" @click="dialogCompanyAddress = true">
+				<pos-text-field :label="$t('settings.address')" v-model="address" @click="dialogCompanyAddress = true">
 					<template v-slot:append>
 						<g-icon svg>icon-keyboard</g-icon>
 					</template>
 				</pos-text-field>
 			</div>
 			<div class="main__item">
-				<pos-text-field label="Telephone" v-model="telephone" @click="dialogCompanyTelephone = true">
+				<pos-text-field :label="$t('settings.tel')" v-model="telephone" @click="dialogCompanyTelephone = true">
 					<template v-slot:append>
 						<g-icon svg>icon-keyboard</g-icon>
 					</template>
 				</pos-text-field>
 			</div>
 			<div class="main__item">
-				<pos-text-field label="Tax Number" v-model="taxNumber" @click="dialogCompanyTaxNumber = true">
+				<pos-text-field :label="$t('settings.taxNo')" v-model="taxNumber" @click="dialogCompanyTaxNumber = true">
 					<template v-slot:append>
 						<g-icon svg>icon-keyboard</g-icon>
 					</template>
 				</pos-text-field>
 			</div>
 			<div class="main__item">
-				<p class="item-label">Logo</p>
+				<p class="item-label">{{$t('settings.logo')}}</p>
 				<g-file-input outlined filled dense prependInnerIcon="icon-upload" svg-icon v-model="file" @change="convertImg" accept="image/*" placeholder="Upload"></g-file-input>
 			</div>
 			<div class="main__item">
-				<p class="item-label">Logo size</p>
+				<p class="item-label">{{$t('settings.logoSize')}}</p>
 				<div class="logo">
 					<div v-for="i in 6" :key="i" :class="['item', logoSize === i && 'item__selected']" @click="changeLogoSize(i)">
 						{{i}}
@@ -42,16 +42,16 @@
 				</div>
 			</div>
 			<div class="main__item item__big">
-				<p class="item-label">Logo Preview</p>
+				<p class="item-label">{{$t('settings.logoPreview')}}</p>
 				<div class="preview-wrapper">
 					<img alt :style="imgStyle" :src="logo">
 				</div>
 			</div>
 		</div>
-		<dialog-text-filter label="Company Name" :default-value="name" v-model="dialogCompanyName" @submit="changeName($event)"/>
-		<dialog-text-filter label="Address" :default-value="address" v-model="dialogCompanyAddress" @submit="changeAddress($event)"/>
-		<dialog-text-filter label="Telephone" :default-value="telephone" v-model="dialogCompanyTelephone" @submit="changeTelephone($event)"/>
-		<dialog-text-filter label="Tax Number" :default-value="taxNumber" v-model="dialogCompanyTaxNumber" @submit="changeTaxNumber($event)"/>
+		<dialog-text-filter :label="$t('settings.companyName')" :default-value="name" v-model="dialogCompanyName" @submit="changeName($event)"/>
+		<dialog-text-filter :label="$t('settings.address')" :default-value="address" v-model="dialogCompanyAddress" @submit="changeAddress($event)"/>
+		<dialog-text-filter :label="$t('settings.tel')" :default-value="telephone" v-model="dialogCompanyTelephone" @submit="changeTelephone($event)"/>
+		<dialog-text-filter :label="$t('settings.taxNo')" :default-value="taxNumber" v-model="dialogCompanyTaxNumber" @submit="changeTaxNumber($event)"/>
 	</fragment>
 </template>
 

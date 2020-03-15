@@ -2,19 +2,19 @@
   <div class="h-100 r">
     <div class="configuration">
       <div class="config">
-        <p class="title mb-3">Thermal Printer</p>
+        <p class="title mb-3">{{$t('settings.thermalPrinter')}}</p>
         <div class="row-flex flex-wrap">
           <div v-for="(type, i) in printerTypes" :key="i" :class="['printer', selectedPrinterType === type && 'printer__active']" @click="select(type)">
             {{type.name}}
           </div>
           <div class="printer" @click="resetPrinter">
-            Reset
+            {{$t('settings.reset')}}
           </div>
         </div>
       </div>
       <g-divider inset/>
       <div v-if="selectedPrinterType && selectedPrinterType.value === 'ip'" class="config">
-        <p class="title">IP Address</p>
+        <p class="title">{{$t('settings.ipAddress')}}</p>
         <div class="row-flex mx-2">
           <g-text-field solo outlined dense v-model="ipAddress" @click="showKeyboard = true">
             <template v-slot:append-inner>
@@ -22,11 +22,11 @@
             </template>
           </g-text-field>
           <g-btn :uppercase="false" outlined height="auto" class="mt-3 mb-4" @click="setupPrinter">
-            Setup Printer
+            {{$t('settings.setupPrinter')}}
           </g-btn>
         </div>
         <g-btn :uppercase="false" text-color="white" background-color="blue accent 3" class="ml-2">
-          Test Printer
+          {{$t('settings.testPrinter')}}
         </g-btn>
       </div>
     </div>

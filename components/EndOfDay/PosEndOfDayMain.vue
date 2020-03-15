@@ -27,7 +27,7 @@
     }),
     methods: {
       getDay(date) {
-        const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+        const daysOfWeek = this.$t('dates.daysOfWeek');
         let i = new Date(date).getDay();
         return daysOfWeek[i]
       },

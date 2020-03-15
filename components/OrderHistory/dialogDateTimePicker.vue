@@ -2,16 +2,16 @@
   <g-dialog v-model="internalValue" width="900px" eager>
     <div class="wrapper">
       <div class="dialog-title">
-        <span>Datetime Selection</span>
+        <span>{{$t('orderHistory.dateTimeSelection')}}</span>
         <g-icon size="20" svg @click="internalValue = false">icon-close</g-icon>
       </div>
       <g-date-range-picker v-model="selectedDatetime"/>
       <div class="action">
         <g-btn :uppercase="false" text @click="internalValue = false" outlined width="120" class="mr-2">
-          Cancel
+          {{$t('ui.cancel')}}
         </g-btn>
         <g-btn :uppercase="false" text @click="submit" backgroundColor="#2979FF" text-color="#FFFFFF" width="120">
-          OK
+          {{$t('ui.ok')}}
         </g-btn>
       </div>
     </div>

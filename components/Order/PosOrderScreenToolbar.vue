@@ -2,7 +2,7 @@
   <g-toolbar color="#eee" elevation="0" height="100%">
     <g-btn :uppercase="false" background-color="white" class="mr-3" style="margin-left: -4px" @click.stop="back">
       <g-icon class="mr-2" svg>icon-back</g-icon>
-      Back
+      {{$t('ui.back')}}
     </g-btn>
 <!--    <g-btn :uppercase="false" background-color="white" class="mr-3">-->
 <!--      <g-icon class="mr-2" svg>icon-menu</g-icon>-->
@@ -14,12 +14,12 @@
       </template>
       <g-btn :uppercase="false" background-color="white" @click="openDialogSavedList">
         <g-icon class="mr-2" svg>icon-folder</g-icon>
-        Saved list
+        {{$t('order.savedList')}}
       </g-btn>
     </g-badge>
     <g-btn :uppercase="false" v-else background-color="white" @click="openDialogSavedList">
       <g-icon class="mr-2" svg>icon-folder</g-icon>
-      Saved list
+      {{$t('order.savedList')}}
     </g-btn>
   </g-toolbar>
 </template>

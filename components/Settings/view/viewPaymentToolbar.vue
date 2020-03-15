@@ -4,16 +4,16 @@
       <g-icon class="mr-2" color="red">
         edit
       </g-icon>
-      Edit
+      {{$t('ui.edit')}}
     </g-btn>
     <g-btn :uppercase="false" background-color="white" class="mr-3" :disabled="!selectedPayment" text-color="#1d1d26" @click="openDialogDelete">
       <g-icon class="mr-2" svg>
         icon-trash
       </g-icon>
-      Delete
+      {{$t('settings.delete')}}
     </g-btn>
     <g-btn :uppercase="false" background-color="#4CAF50" text-color="#FFFFFF" @click="openDialogNewPayment">
-      + Create new payment
+      + {{$t('settings.createPayment')}}
     </g-btn>
     <dialog-confirm-delete type="payment" :label="selectedPayment ? selectedPayment.name : ''" v-model="dialogConfirmDelete" @submit="deletePayment"/>
   </fragment>

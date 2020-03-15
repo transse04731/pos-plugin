@@ -3,7 +3,7 @@
     <div area="button-name">
       <pos-text-field :value="textFieldValue"
                       @input="updateButton($event, 'text'); debounceUpdate()"
-                      label="Button Name"
+                      :label="$t('fnBtn.btnName')"
                       placeholder="Fill your text">
         <template v-slot:append>
           <g-icon color="#757575">mdi-keyboard</g-icon>
@@ -14,7 +14,7 @@
     <div area="button-name-clear">
       <g-btn :uppercase="false" @click="resetSelectedButton" background-color="white" elevation="0" height="100%" text-color="red">
         <g-icon size="16" style="margin-right: 8px">fas fa-undo</g-icon>
-        Clear button
+        {{$t('fnBtn.clearBtn')}}
       </g-btn>
     </div>
 
@@ -25,7 +25,7 @@
                   clearable
                   item-text="text"
                   item-value="value"
-                  placeholder="Select"
+                  :placeholder="$t('fnBtn.select')"
                   v-model="selectedFunction"
       >
       </pos-select>
@@ -36,19 +36,19 @@
           :value="textFieldFunctionValue"
           @input="updateButton($event, 'buttonFunctionValue'), debounceUpdate()"
           label="Value"
-          placeholder="Fill your value"
+          :placeholder="$t('fnBtn.fillValue')"
           v-if="isButtonSelected && !isInConfigLayoutMode && showFunctionValue"
       ></pos-text-field>
     </div>
 
     <div area="color">
-      <p class="title">Color</p>
+      <p class="title">{{$t('fnBtn.color')}}</p>
       <g-grid-select :grid="false" :items="buttonColors" return-object v-model="selectedColor">
         <template #default="{toggleSelect, item, index}">
           <g-btn :key="index" :ripple="false"
                  :style="computeColorStyle(item)"
                  :uppercase="false"
-                 @click="toggleSelect(item); updateButtonItems();"></g-btn>
+                 @click="toggleSelect(item); updateButtonItems()"></g-btn>
         </template>
         <template #selected="{toggleSelect, item, index}">
           <g-badge :badge-size="12" overlay style="margin-right: 14px;">
@@ -67,9 +67,9 @@
     <div area="left-layout-overlay" v-show="selectedButtons.length >= 2 || isButtonSelected === false || mergeMode || splitMode">
       <div class="left-layout-overlay-info" v-show="!isButtonSelected || mergeMode || splitMode">
         <g-icon size="62" svg>icon-info-green</g-icon>
-        <p class="overlay-instruction-line" v-if="!isInConfigLayoutMode && !isButtonSelected">Select a button to configure</p>
-        <p class="overlay-instruction-line" v-else-if="mergeMode">Select multiple buttons to merge</p>
-        <p class="overlay-instruction-line" v-else="splitMode">Select a button to split</p>
+        <p class="overlay-instruction-line" v-if="!isInConfigLayoutMode && !isButtonSelected">{{$t('fnBtn.selectBtn')}}</p>
+        <p class="overlay-instruction-line" v-else-if="mergeMode">{{$t('fnBtn.selectMergeBtns')}}</p>
+        <p class="overlay-instruction-line" v-else="splitMode">{{$t('fnBtn.selectSplitBtn')}}</p>
       </div>
     </div>
 
@@ -77,14 +77,14 @@
       <div class="payment-details-textfield-container">
         <div class="balance-due-textfield">
           <div class="title-holder">
-            <p>Balance Due</p>
-            <p style="margin-left: auto">Amount Tendered</p>
+            <p>{{$t('payment.balanceDue')}}</p>
+            <p style="margin-left: auto">{{$t('payment.amountTendered')}}</p>
           </div>
           <div class="payment-detail-textfield"></div>
         </div>
         <div class="change-textfield">
           <div class="title-holder">
-            <p>Change</p>
+            <p>{{$t('payment.change')}}</p>
           </div>
           <div class="payment-detail-textfield"></div>
         </div>
@@ -128,40 +128,40 @@
     <div area="toolbar">
       <g-btn :uppercase="false" @click="$router.push({ path: '/view/pos-settings' })" background-color="white" class="mr-3">
         <g-icon class="mr-2" svg>icon-back</g-icon>
-        <span style="color: rgba(0, 0, 0, 0.87)">Back</span>
+        <span style="color: rgba(0, 0, 0, 0.87)">{{$t('ui.back')}}</span>
       </g-btn>
 
       <g-menu nudge-top="5" top v-model="showMenu">
         <template v-slot:activator="{toggleContent}">
           <g-btn :uppercase="false" @click="toggleContent" background-color="white" class="mr-3" v-if="!isInConfigLayoutMode">
             <g-icon class="mr-2" svg>icon-menu</g-icon>
-            <span style="color: rgba(0, 0, 0, 0.87)">More</span>
+            <span style="color: rgba(0, 0, 0, 0.87)">{{$t('ui.more')}}</span>
           </g-btn>
 
           <g-btn :uppercase="false" @click="toggleMode('cancel')" background-color="white" class="mr-3" v-if="isInConfigLayoutMode">
             <g-icon class="mr-2" color="red">mdi-close-circle</g-icon>
-            <span style="color: rgba(0, 0, 0, 0.87)">Cancel</span>
+            <span style="color: rgba(0, 0, 0, 0.87)">{{$t('ui.cancel')}}</span>
           </g-btn>
         </template>
         <div style="display: flex; flex-direction: column;">
           <g-btn :uppercase="false" @click="toggleMode('merge')">
             <g-icon style="margin-right: 5px;" svg>icon-merge</g-icon>
-            Merge Mode
+            {{$t('fnBtn.mergeMode')}}
           </g-btn>
           <g-btn :uppercase="false" @click="toggleMode('split')">
             <g-icon style="margin-right: 5px" svg>icon-split</g-icon>
-            Split Mode
+            {{$t('fnBtn.splitMode')}}
           </g-btn>
         </div>
       </g-menu>
       <g-spacer/>
       <g-btn :disabled="selectedButtons.length <= 1" :uppercase="false" @click="onMerge" background-color="#1976D2" text-color="white" v-if="mergeMode">
         <g-icon style="margin-right: 5px;" svg>icon-merge</g-icon>
-        Merge
+        {{$t('fnBtn.merge')}}
       </g-btn>
       <g-btn :disabled="validateSplit()" :uppercase="false" @click="onSplit" background-color="#1976D2" text-color="white" v-if="splitMode">
         <g-icon style="margin-right: 5px" svg>icon-split</g-icon>
-        Split
+        {{$t('fnBtn.split')}}
       </g-btn>
 
     </div>
@@ -174,7 +174,6 @@
   import PosTextField from '../pos-shared-components/POSInput/PosTextField';
   import PosSelect from '../pos-shared-components/POSInput/PosSelect';
   import layoutConfigMixin from './common/layoutConfigMixin';
-
 
   export default {
     name: 'PosPaymentLayoutConfig',
@@ -435,6 +434,14 @@
           this.mapFetchedButtons(this.posSettings['paymentFunctionButtons'], this.buttonItems);
         }
       }
+    },
+    created() {
+      const i18n = this.$i18n;
+      const localeMessages = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
+      this.listButtonFunctions = this.listButtonFunctions.map(item => ({
+        ...item,
+        text: localeMessages['fnBtn']['paymentFunctions'][item.value]
+      }))
     },
     mounted() {
       this.refreshData();

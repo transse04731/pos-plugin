@@ -14,7 +14,7 @@
            @click.stop="logout"
     >
       <g-icon svg>icon-logout</g-icon>
-      <span class="ml-2">Log Out</span>
+      <span class="ml-2">{{ $t("dashboard.logOut") }}</span>
     </g-btn>
   </g-sidebar>
 </template>

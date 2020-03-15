@@ -3,7 +3,7 @@
     <template v-if="showErrorMessage" v-slot:input-message>
       <div class="invalid-passcode-message">
         <g-icon color="red" size="16px" style="margin-right: 8px">mdi-close-circle</g-icon>
-        <p style="color: #F44336;">Passcode is incorrect</p>
+        <p style="color: #F44336;">{{ $t("login.errorPasscode") }}</p>
       </div>
     </template>
   </g-text-field>

@@ -2,16 +2,16 @@
   <div style="position:relative;">
     <div style="position:absolute; contain:content; width:100%; height:100%; display:flex;">
       <div class="report-column">
-        <span>Discount (€)</span>
+        <span>{{$t('common.discount')}} ({{$t('common.currency')}})</span>
         <span class="number">{{paymentDiscount | formatNumber}}</span>
-        <span>Tax (€)</span>
+        <span>{{$t('common.tax')}} ({{$t('common.currency')}})</span>
         <span class="number">{{paymentTax | formatNumber}}</span>
       </div>
       <g-divider inset vertical color="#979797"></g-divider>
       <div class="report-column">
-        <span>Sub Total (€)</span>
+        <span>{{$t('common.subtotal')}} (€)</span>
         <span class="number">{{paymentSubTotal | formatNumber}}</span>
-        <span>Total (€)</span>
+        <span>{{$t('common.total')}} (€)</span>
         <span class="number__important">{{paymentTotal | formatNumber}}</span>
       </div>
     </div>

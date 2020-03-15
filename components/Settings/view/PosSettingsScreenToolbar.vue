@@ -4,7 +4,7 @@
       <g-icon class="mr-2" svg>
         icon-back
       </g-icon>
-      Back
+      {{$t('ui.back')}}
     </g-btn>
     <g-spacer/>
     <slot :name="internalValue"></slot>

@@ -4,16 +4,16 @@
       <g-icon class="mr-2" color="red">
         edit
       </g-icon>
-      Edit
+      {{$t('ui.edit')}}
     </g-btn>
     <g-btn :uppercase="false" class="mr-3" background-color="white" :disabled="!selectedTaxCategory" text-color="#1d1d26" @click="openDialogDelete">
       <g-icon class="mr-2" svg>
         icon-trash
       </g-icon>
-      Delete
+      {{$t('ui.delete')}}
     </g-btn>
     <g-btn :uppercase="false" background-color="#4CAF50" text-color="#FFFFFF" @click="openDialogNewTaxCategory">
-      + Create new category
+      + {{$t('settings.createCategory')}}
     </g-btn>
     <dialog-confirm-delete type="tax category" :label="selectedTaxCategory ? selectedTaxCategory.value + '%' : ''" v-model="dialogConfirmDelete" @submit="deleteTaxCategory"/>
   </fragment>

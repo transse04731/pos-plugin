@@ -52,7 +52,7 @@
           >
             <td>{{product.name}}</td>
             <td>{{product.barcode ? product.barcode : '-'}}</td>
-            <td style="text-transform: capitalize">{{product.unit ? product.unit : '-s'}}</td>
+            <td style="text-transform: capitalize">{{product.unit ? product.unit : '-'}}</td>
             <td>
               <div v-if="product.attribute">
                 <span v-for="(val, attr) in product.attribute" :key="`${attr}_${val}`" class="td-attr">

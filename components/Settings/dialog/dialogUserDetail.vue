@@ -3,12 +3,12 @@
     <div class="dialog-user w-100">
       <div class="form">
         <div class="input">
-          <pos-text-field ref="username" @click="check = 'username'" large label="User Name" v-model="name"/>
-          <pos-text-field ref="passcode" @click="check = 'passcode'" large label="Passcode" v-model="passcode"/>
+          <pos-text-field ref="username" @click="check = 'username'" large :label="$t('settings.userName')" v-model="name"/>
+          <pos-text-field ref="passcode" @click="check = 'passcode'" large :label="$t('settings.passcode')" v-model="passcode"/>
         </div>
         <div class="action">
-          <g-btn :uppercase="false" outlined class="mr-3" width="120" @click="dialogUserDetail = false">Cancel</g-btn>
-          <g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" width="120" @click="submit">OK</g-btn>
+          <g-btn :uppercase="false" outlined class="mr-3" width="120" @click="dialogUserDetail = false">{{$t('ui.cancel')}}</g-btn>
+          <g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" width="120" @click="submit">{{$t('ui.ok')}}</g-btn>
         </div>
       </div>
       <div class="bg-grey-lighten-1 pa-2">

@@ -2,8 +2,8 @@
 	<div class="view-category-wrapper">
 		<g-simple-table striped>
 			<tr>
-				<th>Name</th>
-				<th>Position</th>
+			<th>{{$t('article.name')}}</th>
+				<th>{{$t('settings.position')}}</th>
 			</tr>
 			<tr v-for="category in listCategories" :class="[(selectedCategory && selectedCategory._id === category._id) && 'bordered']" @click="select(category)">
 				<td>{{category.name}}</td>
@@ -11,7 +11,7 @@
 			</tr>
 		</g-simple-table>
 		<div class="category-menu--preview">
-			<div v-for="(category, i) in listCategories" :key="i"
+			<div v-for="category in listCategories" :key="`${category._id}`"
 					 :class="['menu', (selectedCategory && selectedCategory._id === category._id) && 'menu__active']"
 					 @click="select(category)">
 				{{category.name}} ({{category.position}})

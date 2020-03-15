@@ -4,14 +4,15 @@
 			<div class="form">
 				<p class="ml-1 mb-3">
 					{{ isEditCategory && selectedCategory ? 'Edit' : 'Create New' }}
-					Category</p>
+					{{$t('article.category')}}
+				</p>
 				<pos-text-field style="width: 268px" label="Name" placeholder="Category name" v-model="name"/>
 				<div class="row-flex justify-end py-5">
 					<g-btn :uppercase="false" outlined class="mr-3" width="120" @click="dialogNewCategory = false">
-						Cancel
+						{{$t('ui.cancel')}}
 					</g-btn>
 					<g-btn :uppercase="false" flat background-color="blue accent 3" width="120" text-color="white" :disabled="!name" @click="save">
-						OK
+						{{$t('ui.ok')}}
 					</g-btn>
 				</div>
 			</div>

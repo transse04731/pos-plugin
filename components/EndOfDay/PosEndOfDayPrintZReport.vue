@@ -3,12 +3,15 @@
     <slot :close="close" :open="open" name="activator"></slot>
     <g-dialog eager v-model="dialog" width="45%" overlay-color="#6B6F82" overlay-opacity="0.95">
       <div class="print-confirm-dialog">
-        <p class="title">Confirmation</p>
-        <p class="confirmation-content">Are you sure to print Z-Report <br/> (End of Day)?</p>
+        <p class="title">{{$t('confirmation')}}</p>
+        <p class="confirmation-content">{{$t('confirmationPrintZ1')}} <br/> {{$t('confirmationPrintZ2')}}?</p>
         <div class="confirmation-buttons">
-          <g-btn @click="close()" :uppercase="false" background-color="#fff" class="mr-2" flat style="border: 1px solid #979797" text-color="#1D1D26" width="120px">Cancel
+          <g-btn @click="close()" :uppercase="false" background-color="#fff" class="mr-2" flat style="border: 1px solid #979797" text-color="#1D1D26" width="120px">
+            {{$t('ui.cancel')}}
           </g-btn>
-          <g-btn @click="close(true)" :uppercase="false" background-color="#E57373" class="mr-2" flat text-color="#FFFFFF" width="120px">OK</g-btn>
+          <g-btn @click="close(true)" :uppercase="false" background-color="#E57373" class="mr-2" flat text-color="#FFFFFF" width="120px">
+            {{$t('ui.ok')}}
+          </g-btn>
         </div>
       </div>
     </g-dialog>

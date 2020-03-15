@@ -1,19 +1,19 @@
 <template>
   <div>
     <div class="two-head">
-      <p>Balance due</p>
-      <p>Amount Tendered</p>
+      <p>{{$t('payment.balanceDue')}}</p>
+      <p>{{$t('payment.amountTendered')}}</p>
     </div>
-    <div>Change</div>
+    <div>{{$t('payment.change')}}</div>
     <div class="input two-head">
       <p class="balance">€ {{paymentTotal | formatNumber}}</p>
       <p class="amount">€ {{paymentAmountTendered || 0}}</p>
     </div>
     <div class="input change">
-      € {{paymentChange | formatNumber}}
+      {{$t('common.currency')}} {{paymentChange | formatNumber}}
     </div>
     <div>
-      Tip
+      {{$t('payment.tip')}}
       <span class="tip">€ {{paymentTip}}</span>
     </div>
   </div>

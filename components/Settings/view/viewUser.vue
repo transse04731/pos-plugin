@@ -11,51 +11,51 @@
           <g-avatar size="40">
             <g-icon svg>icon-add_user</g-icon>
           </g-avatar>
-          <p class="ml-3 text-red fs-small">Add User</p>
+          <p class="ml-3 text-red fs-small">{{$t('settings.addUser')}}</p>
         </div>
       </div>
       <div area="edit">
         <div area="title" class="row-flex align-items-center pl-4 fw-700">
-          Edit User
+          {{$t('settings.editUser')}}
         </div>
         <div class="edit__item">
-          <pos-text-field @click="editUsername" label="Name" v-model="selectedUser.name">
+          <pos-text-field @click="editUsername" :label="$t('settings.name')" v-model="selectedUser.name">
             <template v-slot:append>
               <g-icon svg>icon-keyboard</g-icon>
             </template>
           </pos-text-field>
         </div>
         <div class="edit__item" v-if="!isAdmin">
-          <p class="mb-2">User Avatar</p>
+          <p class="mb-2">{{$t('settings.userAvatar')}}</p>
           <div class="row-flex align-items-center" style="height: 40px">
             <g-avatar class="mr-2" size="40" v-if="selectedUser && selectedUser.avatar">
               <img :src="selectedUser.avatar" alt/>
             </g-avatar>
-            <a @click="dialogSelectAvatar = true" class="link-change">Change</a>
+            <a @click="dialogSelectAvatar = true" class="link-change">{{$t('ui.change')}}</a>
           </div>
         </div>
         <div class="edit__item" v-if="!isAdmin">
-          <pos-switch @change="save" dense label="View Own Report" v-model="selectedUser.viewOwnReport"/>
+          <pos-switch @change="save" dense :label="$t('settings.viewOwnReport')" v-model="selectedUser.viewOwnReport"/>
         </div>
         <div class="edit__item" v-if="!isAdmin">
-          <pos-switch @change="save" dense label="View Others Reports" v-model="selectedUser.viewOtherReport"/>
+          <pos-switch @change="save" dense :label="$t('settings.viewOtherReport')" v-model="selectedUser.viewOtherReport"/>
         </div>
         <div class="edit__item" v-if="!isAdmin">
-          <pos-switch @change="save" dense label="Edit Article Layout" v-model="selectedUser.editArticle"/>
+          <pos-switch @change="save" dense :label="$t('settings.editArticle')" v-model="selectedUser.editArticle"/>
         </div>
         <div class="edit__item" v-if="!isAdmin">
-          <pos-switch @change="save" dense label="Access Z-Report" v-model="selectedUser.accessZReport"/>
+          <pos-switch @change="save" dense :label="$t('settings.accessZReport')" v-model="selectedUser.accessZReport"/>
         </div>
         <div class="edit__item" v-if="!isAdmin">
-          <pos-switch @change="save" dense label="Item Cancellation" v-model="selectedUser.itemCancellation"/>
+          <pos-switch @change="save" dense :label="$t('settings.itemCancellation')" v-model="selectedUser.itemCancellation"/>
         </div>
 <!--        <div class="edit__item" v-if="!isAdmin">-->
 <!--          <pos-switch @change="save" dense label="Allow Table Takeover" v-model="selectedUser.allowTableTakeover"/>-->
 <!--        </div>-->
         <div class="edit__item" v-if="!isAdmin">
-          <p class="mt-3 ml-1">Employee iButton Key</p>
+          <p class="mt-3 ml-1">{{$t('settings.iBtn')}}</p>
           <p class="mt-2 ml-1">
-            <span class="fs-small text-green-accent-4">Registered!</span>
+            <span class="fs-small text-green-accent-4">{{$t('settings.registered')}}</span>
             <g-icon class="ml-1" size="20" svg>icon-redo</g-icon>
           </p>
         </div>
@@ -63,7 +63,7 @@
 <!--          <pos-switch @change="save" dense label="Allow Item Cancellation after reactivate paid Table" style="max-width: 200px" v-model="selectedUser.itemCancellationReactivePaidTable"/>-->
 <!--        </div>-->
         <div class="edit__item">
-          <pos-text-field @click="editPasscode" label="Passcode" v-model="selectedUser.passcode">
+          <pos-text-field @click="editPasscode" :label="$t('settings.passcode')" v-model="selectedUser.passcode">
             <template v-slot:append>
               <g-icon svg>icon-keyboard</g-icon>
             </template>
@@ -79,13 +79,13 @@
 <!--          <pos-switch @change="save" dense label="Allow Table Switch" v-model="selectedUser.allowTableSwitch"/>-->
 <!--        </div>-->
         <div class="edit__item" v-if="!isAdmin">
-          <pos-switch @change="save" dense label="Open Cash Drawer Manually" v-model="selectedUser.openCashdrawerManually"/>
+          <pos-switch @change="save" dense :label="$t('settings.openCashdrawerManually')" v-model="selectedUser.openCashdrawerManually"/>
         </div>
         <div class="edit__item" v-if="!isAdmin">
-          <pos-switch @change="save" dense label="Discount" v-model="selectedUser.discount"/>
+          <pos-switch @change="save" dense :label="$t('settings.discount')" v-model="selectedUser.discount"/>
         </div>
         <div class="edit__item" v-if="!isAdmin">
-          <pos-switch @change="save" dense label="Cancel Invoice" v-model="selectedUser.cancelInvoice"/>
+          <pos-switch @change="save" dense :label="$t('settings.cancelInvoice')" v-model="selectedUser.cancelInvoice"/>
         </div>
       </div>
     </g-grid-layout>

@@ -2,31 +2,31 @@
 	<div class="row-flex pa-5" style="font-size: 13px; line-height: 16px">
 		<div class="col-5 px-3">
 			<div class="row-flex align-items-center justify-between">
-				<span>Barcode</span>
+				<span>{{$t('settings.companyBarcode')}}</span>
 				<g-switch v-model="barcode" @change="changeSetting"/>
 			</div>
 			<div class="row-flex align-items-center justify-between">
-				<span>Favorite article</span>
+				<span>{{$t('settings.showFav')}}</span>
 				<g-switch v-model="favoriteArticle" @change="changeSetting"/>
 			</div>
 			<div class="row-flex align-items-center justify-between">
-				<span>Virtual keyboard</span>
+				<span>{{$t('settings.virtualKb')}}</span>
 				<g-switch v-model="virtualKeyboard" @change="changeSetting"/>
 			</div>
 			<div class="row-flex align-items-center justify-between">
-				<span>Cashdrawer opens automatically</span>
+				<span>{{$t('settings.autoCashdrawer')}}</span>
 				<g-switch v-model="automaticCashdrawer" @change="changeSetting"/>
 			</div>
 		</div>
 		<div class="col-5 offset-1">
 			<div class="row-flex align-items-center mb-3">
-				<span class="mr-4">Quick Function Rows</span>
+				<span class="mr-4">{{$t('settings.quickFnRows')}}</span>
 				<div :class="['btn-fn-row', quickFnRows === (i-1) && 'selected']" v-for="i in 3" :key="i" @click="updateFnRows(i-1)">
 					{{i-1}}
 				</div>
 			</div>
 			<div class="row-flex align-items-center justify-center">
-				<pos-time-picker label="New day starts at" v-model="beginHour" @change="changeSetting">
+				<pos-time-picker :label="$t('settings.beginHour')" v-model="beginHour" @change="changeSetting">
 					<template v-slot:append>
 						<g-icon>access_time</g-icon>
 					</template>

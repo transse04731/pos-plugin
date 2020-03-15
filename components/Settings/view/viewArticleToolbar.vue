@@ -10,24 +10,24 @@
       <g-icon class="mr-2" svg>
         icon-sort
       </g-icon>
-      Sort
+      {{$t('ui.sort')}}
     </g-btn>
     <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-3" @click="openDialogEditProduct" :disabled="selectedProductIDs.length === 0">
       <g-icon class="mr-2" color="red">
         edit
       </g-icon>
-      Edit
+      {{$t('ui.edit')}}
     </g-btn>
     <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" @click="openDialogDelete" class="mr-3" :disabled="selectedProductIDs.length === 0">
       <g-icon class="mr-2" svg>
         icon-trash
       </g-icon>
-      Delete
+      {{$t('ui.delete')}}
     </g-btn>
     <g-btn :uppercase="false" background-color="green" text-color="white" @click="openDialogNewProduct">
-      + Create new product
+      + {{$t('settings.createProduct')}}
     </g-btn>
-    <dialog-confirm-delete :type="selectedProductIDs.length + ' selected product(s)'" v-model="dialogConfirmDelete" @submit="deleteProducts"/>
+    <dialog-confirm-delete :type="`${selectedProductIDs.length} ${$t('settings.createProduct')}`" v-model="dialogConfirmDelete" @submit="deleteProducts"/>
     <dialog-sort v-model="dialogSort" @submit="sort"/>
   </fragment>
 </template>

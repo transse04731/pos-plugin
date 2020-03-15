@@ -4,7 +4,7 @@
       <div class="dialog-product w-100">
         <div class="form">
           <div class="title">
-            Create New Product
+            {{$t('settings.createProduct')}}
           </div>
           <div class="input">
             <!--            Name-->
@@ -13,7 +13,7 @@
 
             <!--            Tax-->
             <div class="input__tax">
-              <p class="label">Tax <span class="text-red">*</span></p>
+              <p class="label">{{$t('common.tax')}} <span class="text-red">*</span></p>
               <div class="row-flex">
                 <div :class="['tax', taxCategory && tax.value === taxCategory.value && 'selected__tax']" :key="i"
                      @click="selectTax(tax)"
@@ -22,13 +22,13 @@
                 </div>
               </div>
             </div>
-            <pos-text-field @click="openDialogDetail('id')" disabled label="Product ID" placeholder="Auto generate" v-model="productID"/>
-            <pos-text-field :key="'pPrice'+key" @click="openDialogDetail('price')" label="Price" placeholder="Price" required v-model="productPrice">
+            <pos-text-field @click="openDialogDetail('id')" disabled :label="$t('article.productId')" :placeholder="$t('settings.productIdPlaceholder')" v-model="productID"/>
+            <pos-text-field :key="'pPrice'+key" @click="openDialogDetail('price')" :label="$t('article.price')" :placeholder="$t('article.price')" required v-model="productPrice">
               <template v-slot:append>
-                <span style="color: #1471ff">€</span>
+                <span style="color: #1471ff">{{$t('common.currency')}}</span>
               </template>
             </pos-text-field>
-            <pos-select :items="units" class="unit-input" label="Unit" v-model="unit"/>
+            <pos-select :items="units" class="unit-input" :label="$t('article.unit')" v-model="unit"/>
             <pos-text-field @click="openDialogDetail('barcode')" class="barcode-input" label="Barcode/PLU" placeholder="Barcode" v-model="productBarcode">
               <template v-slot:append>
                 <g-icon svg>icon-scanning_barcode</g-icon>
@@ -37,31 +37,31 @@
 
             <div class="switch-input switch-input-1">
               <pos-switch dense v-model="favorite"/>
-              <p class="switch-title">Favourite</p>
+              <p class="switch-title">{{$t('settings.favourite')}}</p>
             </div>
             <div class="switch-input switch-input-2">
               <pos-switch dense v-model="itemIsVoucher"/>
-              <p class="switch-title">Item is a voucher</p>
+              <p class="switch-title">{{$t('settings.itemIsVoucher')}}</p>
             </div>
 
             <div class="switch-input switch-input-3">
               <pos-switch dense v-model="active"/>
-              <p class="switch-title">Active</p>
+              <p class="switch-title">{{$t('settings.active')}}</p>
             </div>
 
             <div class="switch-input switch-input-1">
               <pos-switch dense v-model="nonRefundable"/>
-              <p class="switch-title">Non-Refundable</p>
+              <p class="switch-title">{{$t('settings.nonRefundable')}}</p>
             </div>
 
             <div class="switch-input switch-input-2">
               <pos-switch dense v-model="showOnOrderScreen"/>
-              <p class="switch-title">Show on "Order Screen"</p>
+              <p class="switch-title">{{$t('settings.showOnOrderScreen')}}</p>
             </div>
 
             <div class="switch-input switch-input-3">
               <pos-switch dense v-model="manualPrice"/>
-              <p class="switch-title">Manual Price</p>
+              <p class="switch-title">{{$t('settings.manualPrice')}}</p>
             </div>
           </div>
         </div>
@@ -72,8 +72,8 @@
 <!--        </div>-->
         <g-toolbar absolute bottom color="grey lighten 3">
           <g-spacer/>
-          <g-btn :uppercase="false" @click="back()" class="mr-2" outlined width="120">Cancel</g-btn>
-          <g-btn :disabled="!valid" :uppercase="false" @click="submit" background-color="blue accent 3" flat text-color="white" width="120">Submit</g-btn>
+          <g-btn :uppercase="false" @click="back()" class="mr-2" outlined width="120">{{$t('ui.cancel')}}</g-btn>
+          <g-btn :disabled="!valid" :uppercase="false" @click="submit" background-color="blue accent 3" flat text-color="white" width="120">{{$t('ui.submit')}}</g-btn>
         </g-toolbar>
       </div>
     </g-dialog>
@@ -82,20 +82,20 @@
         <div class="form__detail">
           <div class="input__detail">
             <div>
-              <pos-text-field :rules="[rules.required]" @click="keyboardFocus = 'name'" label="Name" placeholder="Product Name" ref="name" required v-model="name"/>
+              <pos-text-field :rules="[rules.required]" @click="keyboardFocus = 'name'" :label="$t('article.name')" :placeholder="$t('settings.productName')" ref="name" required v-model="name"/>
             </div>
             <div>
-              <pos-text-field @click="keyboardFocus = 'id'" label="Product ID" placeholder="Auto generate" ref="productID" v-model="productID"/>
+              <pos-text-field @click="keyboardFocus = 'id'" :label="$t('article.productId')" placeholder="$t('product.productIdPlaceHolder')" ref="productID" v-model="productID"/>
             </div>
             <div>
-              <pos-text-field :rules="[rules.number, rules.required]" @click="keyboardFocus = 'price'" label="Price" placeholder="Price" ref="price" required v-model="price">
+              <pos-text-field :rules="[rules.number, rules.required]" @click="keyboardFocus = 'price'" :label="$t('article.price')" :placeholder="$t('article.price')" ref="price" required v-model="price">
                 <template v-slot:append>
-                  <span style="color: #1471ff">€</span>
+                  <span style="color: #1471ff">{{$t('common.currency')}}</span>
                 </template>
               </pos-text-field>
             </div>
             <div>
-              <pos-text-field @click="keyboardFocus = 'barcode'" label="Barcode/PLU" placeholder="Barcode" ref="barcode" v-model="barcode">
+              <pos-text-field @click="keyboardFocus = 'barcode'" :label="$t('settings.barcode')" :placeholder="$t('article.barcode')" ref="barcode" v-model="barcode">
                 <template v-slot:append>
                   <g-icon svg>icon-scanning_barcode</g-icon>
                 </template>
@@ -103,8 +103,8 @@
             </div>
           </div>
           <div class="action">
-            <g-btn :uppercase="false" @click="dialogNewProductDetail = false" class="mr-3" outlined width="120">Cancel</g-btn>
-            <g-btn :uppercase="false" @click="save" background-color="blue accent 3" flat text-color="white" width="120">OK</g-btn>
+            <g-btn :uppercase="false" @click="dialogNewProductDetail = false" class="mr-3" outlined width="120">{{$t('ui.cancel')}}</g-btn>
+            <g-btn :uppercase="false" @click="save" background-color="blue accent 3" flat text-color="white" width="120">{{$t('ui.ok')}}</g-btn>
           </div>
         </div>
         <div class="bg-grey-lighten-1 pa-2">
