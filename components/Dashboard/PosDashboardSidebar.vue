@@ -6,39 +6,42 @@
           <g-img :src="srcImg"></g-img>
         </g-avatar>
         <span class="username">{{userName}}</span>
+        <g-spacer/>
+        <span>{{ now }}</span>
       </div>
     </template>
-    <g-side-bar-tree-view :data="sideBardata" v-model="sidebar"></g-side-bar-tree-view>
+    <slot name="above-tree-view"/>
+    <g-side-bar-tree-view
+        :data="items"
+        v-model="sidebar"
+        @node-selected="node => node.onClick()"/>
+    <slot name="above-spacer"/>
     <g-spacer></g-spacer>
-    <g-btn :uppercase="false" large text background-color="white" text-color="#424242" width="100%"
-           @click.stop="logout"
-    >
-      <g-icon svg>icon-logout</g-icon>
-      <span class="ml-2">Log Out</span>
-    </g-btn>
+    <slot name="below-spacer"/>
+    <slot name="footer">
+      <g-btn :uppercase="false" large text background-color="white" text-color="#424242" width="100%" @click.stop="logout">
+        <g-icon svg>icon-logout</g-icon>
+        <span class="ml-2">Log Out</span>
+      </g-btn>
+    </slot>
   </g-sidebar>
 </template>
 
 <script>
+  import _ from 'lodash'
+
   export default {
     name: 'PosDashboardSidebar',
-    injectService: ['PosStore:user'],
     props: {
       title: {
         type: String,
         default: 'Admin'
       },
+      items: Array
     },
     data() {
       return {
-        sideBardata: [
-          {
-            title: 'Dashboard', icon: 'mdi-cart-outline',
-            items: [
-              { title: 'Retail', icon: 'radio_button_unchecked', iconType: 'small' },
-            ]
-          }
-        ],
+        now: '',
         sidebar: ''
       }
     },
