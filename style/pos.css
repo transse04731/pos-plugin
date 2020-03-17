@@ -311,3 +311,79 @@ body::-webkit-scrollbar {
   background-position: center;
 }
 
+.icon-delivery {
+  background-image: url("../assets/delivery.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-edit-menu-card {
+  background-image: url("../assets/edit-menu-card.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-edit-table-plan {
+  background-image: url("../assets/edit-table-plan.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-fast-checkout {
+  background-image: url("../assets/fast-checkout.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-printer-setting {
+  background-image: url("../assets/printer-setting.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-staff-report {
+  background-image: url("../assets/staff-report.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-support-2 {
+  background-image: url("../assets/support-2.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-restaurant {
+  background-image: url("../assets/restaurant.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-manual-table {
+  background-image: url("../assets/manual-table.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-reservation {
+  background-image: url("../assets/reservation.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-functions {
+  background-image: url("../assets/functions.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
