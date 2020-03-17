@@ -600,8 +600,18 @@
               "component": "VTag",
               "content": {
                 "props": {
-                  "html": "This order has already applied discount in items"
-                }
+                  "html": {
+                    "_code_": "\n            module.exports = function() {\n              return $t('payment.alertDiscount')\n            }",
+                    "_code_type_": "commonJs",
+                    "_metadata_": {
+                      "text": "payment.alertDiscount"
+                    }
+                  },
+                  "_htmlType_": "i18n"
+                },
+                "preprocess": [
+                  "html"
+                ]
               },
               "binding": [],
               "slotScopeBinding": []

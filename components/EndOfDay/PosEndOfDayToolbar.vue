@@ -10,7 +10,7 @@
       <template v-slot:activator="{open, close}">
         <g-btn :uppercase="false" class="mr-2" v-if="showReprint" @click="open">
           <g-icon class="mr-2" svg>icon-print2</g-icon>
-          {{$t('reprint')}}
+          {{$t('ui.reprint')}}
         </g-btn>
       </template>
     </pos-end-of-day-reprint-z-report>

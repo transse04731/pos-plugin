@@ -8,7 +8,7 @@
         <span class="username">{{userName}}</span>
       </div>
     </template>
-    <g-side-bar-tree-view :data="sideBardata" v-model="sidebar"></g-side-bar-tree-view>
+    <g-side-bar-tree-view :data="sideBarData" v-model="sidebar"></g-side-bar-tree-view>
     <g-spacer></g-spacer>
     <g-btn :uppercase="false" large text background-color="white" text-color="#424242" width="100%"
            @click.stop="logout"
@@ -30,12 +30,15 @@
       },
     },
     data() {
+      const i18n = this.$i18n;
+      const {dashboard} = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
+
       return {
-        sideBardata: [
+        sideBarData: [
           {
-            title: 'Dashboard', icon: 'mdi-cart-outline',
+            title: dashboard.dashboard, icon: 'mdi-cart-outline',
             items: [
-              { title: 'Retail', icon: 'radio_button_unchecked', iconType: 'small' },
+              { title: dashboard.retail, icon: 'radio_button_unchecked', iconType: 'small' },
             ]
           }
         ],

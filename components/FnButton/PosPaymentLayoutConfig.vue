@@ -90,19 +90,13 @@
         </div>
       </div>
 
-      <div style="height: 15%">
-        <g-btn :uppercase="false" background-color="#2979FF" border-radius="4px"
-               flat height="100%" style="pointer-events: none; margin-right: 16px" text-color="#fff" width="130px">
-          <g-icon class="mr-2" svg>icon-cash</g-icon>
-          Cash
+      <g-row>
+        <g-btn v-for="item in listPayments" :uppercase="false" x-large outlined text-color="#1271ff" disabled
+               style="flex-basis: 30%; margin: 0 0.8em 0.8em 0">
+          <img :src="item.icon" style="width: 20px; height: 20px"/>
+          <span class="ml-2 text-black" style="text-transform: capitalize">{{item.name}}</span>
         </g-btn>
-
-        <g-btn :uppercase="false" border-radius="4px" flat
-               height="100%" style="border: 1px solid #1271FF; pointer-events: none;" width="130px">
-          <g-icon class="mr-2" svg>icon-credit_card</g-icon>
-          Card
-        </g-btn>
-      </div>
+      </g-row>
     </div>
 
     <g-button-merger :items="buttonItems" :received-merge-map="mergeMap" :received-merged-buttons="mergedButtons" :value="selectedButtons" @input="updateButtonItems" @merged="setMergedButtons" area="button-merger" cols="1fr 1fr 1fr 1fr 1fr" ref="paymentMerger" rows="1fr 1fr 1fr 1fr 1fr" style="height: 100%; padding: 4px;">
@@ -178,7 +172,7 @@
   export default {
     name: 'PosPaymentLayoutConfig',
     components: { PosSelect, PosTextField, GButtonMerger },
-    injectService: ['PosStore:( updatePosSettings )'],
+    injectService: ['PosStore:( updatePosSettings, listPayments )'],
     mixins: [layoutConfigMixin],
     data: () => ({
       layout: paymentLayout,
@@ -428,8 +422,8 @@
       debounceUpdate: _.debounce(function (e) {
         this.updateButtonItems();
       }, 500),
-      refreshData() {
-        this.posSettings = cms.getList('PosSetting')[0];
+      async refreshData() {
+        this.posSettings = await this.$getService('PosStore:getPosSetting')();
         if (this.posSettings) {
           this.mapFetchedButtons(this.posSettings['paymentFunctionButtons'], this.buttonItems);
         }
@@ -443,12 +437,14 @@
         text: localeMessages['fnBtn']['paymentFunctions'][item.value]
       }))
     },
-    mounted() {
-      this.refreshData();
+    async mounted() {
+      await this.$getService('PosStore:getListPayments')()
+      await this.refreshData();
       this.selectedButtons = [];
     },
-    activated() {
-      this.refreshData();
+    async activated() {
+      await this.$getService('PosStore:getListPayments')()
+      await this.refreshData();
       this.selectedButtons = [];
 
     }

@@ -3,7 +3,7 @@
     <div class="dialog-new-tax w-100">
       <div class="form">
         <div class="input">
-          <pos-text-field @click="check = 'tax'" large :label="$t('article.tax')" v-model="tax" :rules="[rules.number, rules.range]" suffix="%"/>
+          <pos-text-field @click="check = 'tax'" large :label="$t('common.tax')" v-model="tax" :rules="[rules.number, rules.range]" suffix="%"/>
           <pos-text-field @click="check = 'letter'" large :label="$t('settings.invoiceLetter')" v-model="computedLetter"/>
         </div>
         <div class="action">

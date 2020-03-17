@@ -3,7 +3,7 @@
     <slot :close="close" :open="open" name="activator"></slot>
     <g-dialog eager overlay-color="#6B6F82" overlay-opacity="0.95" v-model="dialog" width="45%">
       <div class="print-confirm-dialog">
-        <p class="head-title">{{$t('reprintZReport')}}</p>
+        <p class="head-title">{{$t('report.reprintZReport')}}</p>
         <div class="printed-list">
           <div :key="index" class="report-item" style="display: flex" v-for="(item, index) in reports">
             <p>{{item.begin}} - {{item.end}} : Z-Number {{item.z}}</p>

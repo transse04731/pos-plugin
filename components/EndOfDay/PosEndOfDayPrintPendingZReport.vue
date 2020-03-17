@@ -3,7 +3,7 @@
     <slot :close="close" :open="open" name="activator"></slot>
     <g-dialog eager v-model="dialog" width="45%" overlay-color="#6B6F82" overlay-opacity="0.95">
       <div class="print-confirm-dialog">
-        <p class="title">{{$t('notification')}}</p>
+        <p class="title">{{$t('ui.notification')}}</p>
         <div class="confirmation-content">
           <p>{{$t('report.pendingPrintLine1', {date: pendingReport && pendingReport.date | formatDate})}}</p>
           <p>{{$t('report.pendingPrintLine2', {date: pendingReport && pendingReport.date | formatDate})}}</p></div>

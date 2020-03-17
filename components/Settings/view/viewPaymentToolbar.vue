@@ -10,7 +10,7 @@
       <g-icon class="mr-2" svg>
         icon-trash
       </g-icon>
-      {{$t('settings.delete')}}
+      {{$t('ui.delete')}}
     </g-btn>
     <g-btn :uppercase="false" background-color="#4CAF50" text-color="#FFFFFF" @click="openDialogNewPayment">
       + {{$t('settings.createPayment')}}

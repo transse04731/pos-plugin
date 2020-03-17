@@ -10,8 +10,16 @@ module.exports = {
     },
     //dashboard
     dashboard: {
+      dashboard: 'Dashboard',
+      retail: 'Retail',
       welcome: 'Welcome!',
-      logOut: 'Log Out'
+      logOut: 'Log Out',
+      cashRegister: 'Cash Register',
+      orderHistory: 'Order History',
+      adminDashboard: 'Admin Dashboard',
+      staffReport: 'Staff Report',
+      endOfDay: 'End of Day',
+      monthlyReport: 'Monthly Report'
     },
 
     //article view
@@ -28,6 +36,7 @@ module.exports = {
       category: 'Category',
       unit: 'Unit',
       price: 'Price',
+      tax: 'Tax',
       barcode: 'Barcode',
       attributes: 'Attributes',
       attribute: 'Attribute',
@@ -107,7 +116,6 @@ module.exports = {
       discount: 'Discount',
       tax: 'Tax',
       subtotal: 'Subtotal',
-
     },
 
     //reports
@@ -159,6 +167,7 @@ module.exports = {
       change: 'Change',
       tip: 'Tip',
       selectCustomer: 'Select Customer',
+      alertDiscount: 'This order has already applied discount in items'
     },
 
     settings: {
@@ -193,13 +202,13 @@ module.exports = {
       filter: 'Filter',
       clearAll: 'Clear All',
       viewOwnReport: 'View Own Report',
-      viewOthersReports: 'View Others Reports',
-      editArticleLayout: 'Edit Article Layout',
-      openCashDrawerManually: 'Open Cash Drawer Manually',
+      viewOtherReport: 'View Others Reports',
+      editArticle: 'Edit Article Layout',
+      openCashdrawerManually: 'Open Cash Drawer Manually',
       discount: 'Discount',
       cancelInvoice: 'Cancel Invoice',
-      itemCancel: 'Item Cancellation',
-      accessZ: 'Access Z-Report',
+      accessZReport: 'Access Z-Report',
+      itemCancellation: 'Item Cancellation',
       iBtn: 'Employee iButton Key',
       registered: 'Registered!',
       //company

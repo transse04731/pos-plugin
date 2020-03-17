@@ -11,6 +11,9 @@
     name: 'PosStore',
     props: {},
     data() {
+      const i18n = this.$i18n;
+      const {sidebar} = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
+
       return {
         systemDate: new Date(),
         user: null,
@@ -34,40 +37,40 @@
         //settings screen
         sidebarData: [
           {
-            title: 'Product', icon: 'icon-liefer_packet', svgIcon: true, /*badge: '3', badgeColor: '#FF9529',*/
+            title: sidebar.product, icon: 'icon-liefer_packet', svgIcon: true, /*badge: '3', badgeColor: '#FF9529',*/
             items: [
-              { title: 'Articles', icon: 'radio_button_unchecked', iconType: 'small', isView: true },
-              { title: 'Category', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/category' */ },
-              { title: 'Product Layout', icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-article', appendIcon: 'open_in_new' },
+              { title: sidebar.articles, icon: 'radio_button_unchecked', iconType: 'small', isView: true },
+              { title: sidebar.category, icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/category' */ },
+              { title: sidebar.productLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-article', appendIcon: 'open_in_new' },
             ]
           },
           /*{ title: 'Reporting', icon: 'icon-bar_chart', svgIcon: true },*/
-          { title: 'User', icon: 'person', isView: true /*href: '/setting/user'*/ },
+          { title: sidebar.user, icon: 'person', isView: true /*href: '/setting/user'*/ },
           {
-            title: 'Settings', icon: 'icon-cog', svgIcon: true, /*badge: '3', badgeColor: '#9C24AC',*/
+            title: sidebar.settings, icon: 'icon-cog', svgIcon: true, /*badge: '3', badgeColor: '#9C24AC',*/
             items: [
-              { title: 'General', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/general'*/ },
+              { title: sidebar.general, icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/general'*/ },
               /*{ title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small' },
               { title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small' },*/
-              { title: 'Payment Layout', icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-payment-config', appendIcon: 'open_in_new' },
-              { title: 'Function Layout', icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-fn-button', appendIcon: 'open_in_new' },
+              { title: sidebar.paymentLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-payment-config', appendIcon: 'open_in_new' },
+              { title: sidebar.functionLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-fn-button', appendIcon: 'open_in_new' },
             ]
           },
           {
-            title: 'Hardware', icon: 'icon-hardware', svgIcon: true,
+            title: sidebar.hardware, icon: 'icon-hardware', svgIcon: true,
             items: [
-              { title: 'Thermal Printer', isView: true, icon: 'radio_button_unchecked', iconType: 'small' },
+              { title: sidebar.thermalPrinter, isView: true, icon: 'radio_button_unchecked', iconType: 'small' },
               /*{ title: 'POS', icon: ' ' },
               { title: 'Customer Display', icon: ' ' },
               { title: 'A4 Printer', icon: ' ' },*/
             ]
           },
           {
-            title: 'Advanced settings', icon: 'icon-switch', svgIcon: true,/* badge: '3', badgeColor: '#FF4081',*/
+            title: sidebar.advancedSettings, icon: 'icon-switch', svgIcon: true,/* badge: '3', badgeColor: '#FF4081',*/
             items: [
-              { title: 'Company Info', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/company'*/ },
-              { title: 'Payment', icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/payment'*/ },
-              { title: 'Tax', icon: 'radio_button_unchecked', iconType: 'small', isView: true },
+              { title: sidebar.companyInfo, icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/company'*/ },
+              { title: sidebar.payment, icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/payment'*/ },
+              { title: sidebar.tax, icon: 'radio_button_unchecked', iconType: 'small', isView: true },
               /*{ title: 'License', icon: 'radio_button_unchecked', iconType: 'small' },*/
             ]
           },
@@ -1177,7 +1180,7 @@
               [`${dbButtonList}.$.buttonFunction`]: item.buttonFunction,
               [`${dbButtonList}.$.buttonFunctionValue`]: item.buttonFunctionValue,
               [`${dbButtonList}.$.containedButtons`]: mergeMap && mergeMap[item.buttonId] ? mergeMap[item.buttonId] : [],
-              ...(item.buyback && {[`${dbButtonList}.$.buyback`]: item.buyback}),
+              [`${dbButtonList}.$.buyback`]: item.buyback,
             }
           });
         } catch (e) {
@@ -1245,48 +1248,6 @@
       }
     },
     async created() {
-      const i18n = this.$i18n;
-      const {sidebar} = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
-      this.sidebarData = [
-        {
-          title: sidebar.product, icon: 'icon-liefer_packet', svgIcon: true, /*badge: '3', badgeColor: '#FF9529',*/
-          items: [
-            { title: sidebar.articles, icon: 'radio_button_unchecked', iconType: 'small', isView: true },
-            { title: sidebar.category, icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/category' */ },
-            { title: sidebar.productLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-article', appendIcon: 'open_in_new' },
-          ]
-        },
-        /*{ title: 'Reporting', icon: 'icon-bar_chart', svgIcon: true },*/
-        { title: sidebar.user, icon: 'person', isView: true /*href: '/setting/user'*/ },
-        {
-          title: sidebar.settings, icon: 'icon-cog', svgIcon: true, /*badge: '3', badgeColor: '#9C24AC',*/
-          items: [
-            { title: sidebar.general, icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/general'*/ },
-            /*{ title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small' },
-            { title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small' },*/
-            { title: sidebar.paymentLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-payment-config', appendIcon: 'open_in_new' },
-            { title: sidebar.functionLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-fn-button', appendIcon: 'open_in_new' },
-          ]
-        },
-        {
-          title: sidebar.hardware, icon: 'icon-hardware', svgIcon: true,
-          items: [
-            { title: sidebar.thermalPrinter, isView: true, icon: 'radio_button_unchecked', iconType: 'small' },
-            /*{ title: 'POS', icon: ' ' },
-            { title: 'Customer Display', icon: ' ' },
-            { title: 'A4 Printer', icon: ' ' },*/
-          ]
-        },
-        {
-          title: sidebar.advancedSettings, icon: 'icon-switch', svgIcon: true,/* badge: '3', badgeColor: '#FF4081',*/
-          items: [
-            { title: sidebar.companyInfo, icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/company'*/ },
-            { title: sidebar.payment, icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/payment'*/ },
-            { title: sidebar.tax, icon: 'radio_button_unchecked', iconType: 'small', isView: true },
-            /*{ title: 'License', icon: 'radio_button_unchecked', iconType: 'small' },*/
-          ]
-        },
-      ]
       const cachedPageSize = localStorage.getItem('orderHistoryPageSize')
       if (cachedPageSize) this.orderHistoryPagination.limit = parseInt(cachedPageSize)
       const cachedArticlePageSize = localStorage.getItem('viewArticlePageSize');

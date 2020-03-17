@@ -481,8 +481,8 @@
 
         return this.buttonGroupItems.find((x) => x.buttonId === button.buttonId) || this.sideButtonItems.find((x) => x.buttonId === button.buttonId);
       },
-      refreshData() {
-        this.posSettings = cms.getList('PosSetting')[0];
+      async refreshData() {
+        this.posSettings = await this.$getService('PosStore:getPosSetting')();
         if (this.posSettings) {
           this.quickFnRows = this.posSettings['generalSetting']['quickFnRows'] || 0;
           this.numberOfConfigBtn = 4 * this.quickFnRows;
@@ -503,12 +503,12 @@
         text: localeMessages['fnBtn']['orderFunctions'][item.value]
       }))
     },
-    mounted() {
-      this.refreshData();
+    async mounted() {
+      await this.refreshData();
       this.selectedButtons = [];
     },
-    activated() {
-      this.refreshData();
+    async activated() {
+      await this.refreshData();
       this.selectedButtons = [];
     }
   }

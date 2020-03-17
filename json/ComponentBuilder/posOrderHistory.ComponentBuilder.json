@@ -168,7 +168,10 @@
                     "_code_": "module.exports = function() {\n  this.$router.push({path: '/view/pos-dashboard'})\n}",
                     "_code_type_": "commonJs"
                   }
-                }
+                },
+                "preprocess": [
+                  "html"
+                ]
               },
               "binding": [],
               "slotScopeBinding": [],
@@ -190,12 +193,22 @@
                   "component": "VTag",
                   "content": {
                     "props": {
-                      "html": "Back",
+                      "html": {
+                        "_code_": "\n            module.exports = function() {\n              return $t('ui.back')\n            }",
+                        "_code_type_": "commonJs",
+                        "_metadata_": {
+                          "text": "ui.back"
+                        }
+                      },
                       "tag": "span",
                       "class": [
                         "ml-2"
-                      ]
-                    }
+                      ],
+                      "_htmlType_": "i18n"
+                    },
+                    "preprocess": [
+                      "html"
+                    ]
                   },
                   "binding": [],
                   "slotScopeBinding": []
@@ -248,12 +261,22 @@
                   "component": "VTag",
                   "content": {
                     "props": {
-                      "html": "Delete Order",
+                      "html": {
+                        "_code_": "\n            module.exports = function() {\n              return $t('ui.delete')\n            }",
+                        "_code_type_": "commonJs",
+                        "_metadata_": {
+                          "text": "ui.delete"
+                        }
+                      },
                       "tag": "span",
                       "class": [
                         "ml-2"
-                      ]
-                    }
+                      ],
+                      "_htmlType_": "i18n"
+                    },
+                    "preprocess": [
+                      "html"
+                    ]
                   },
                   "binding": [],
                   "slotScopeBinding": []
@@ -297,12 +320,22 @@
                   "component": "VTag",
                   "content": {
                     "props": {
-                      "html": "Print",
+                      "html": {
+                        "_code_": "\n            module.exports = function() {\n              return $t('ui.print')\n            }",
+                        "_code_type_": "commonJs",
+                        "_metadata_": {
+                          "text": "ui.print"
+                        }
+                      },
                       "tag": "span",
                       "class": [
                         "ml-2"
-                      ]
-                    }
+                      ],
+                      "_htmlType_": "i18n"
+                    },
+                    "preprocess": [
+                      "html"
+                    ]
                   },
                   "binding": [],
                   "slotScopeBinding": []

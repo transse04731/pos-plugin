@@ -549,22 +549,35 @@
           "binding": [],
           "slotScopeBinding": [],
           "slot": "header",
-          "items": []
+          "items": [],
+          "url": "plugins/pos-plugin/components/Dashboard/PosDashboardToolbar.vue",
+          "path": "components/Dashboard/PosDashboardToolbar.vue",
+          "pluginName": "pos-plugin"
         },
         {
           "choice": "view",
           "component": "VTag",
           "content": {
             "props": {
-              "html": "Welcome!",
               "tag": "div",
               "style": {
                 "padding": "8px 24px",
                 "font-size": "24px",
                 "font-weitght": 700,
                 "color": "#424242"
+              },
+              "_htmlType_": "i18n",
+              "html": {
+                "_code_": "\n        module.exports = function() {\n          return $t('dashboard.welcome')\n        }\n        ",
+                "_code_type_": "commonJs",
+                "_metadata_": {
+                  "text": "dashboard.welcome"
+                }
               }
-            }
+            },
+            "preprocess": [
+              "html"
+            ]
           },
           "binding": [],
           "slotScopeBinding": [],
@@ -585,7 +598,10 @@
                 "_code_": "module.exports = function () {\n  this.$router.push({path: `/view/pos-order`})\n}",
                 "_code_type_": "commonJs"
               }
-            }
+            },
+            "preprocess": [
+              "html"
+            ]
           },
           "binding": [],
           "slotScopeBinding": [],
@@ -621,7 +637,13 @@
                   "component": "VTag",
                   "content": {
                     "props": {
-                      "html": "Cash Register",
+                      "html": {
+                        "_code_": "\n            module.exports = function() {\n              return $t('dashboard.cashRegister')\n            }",
+                        "_code_type_": "commonJs",
+                        "_metadata_": {
+                          "text": "dashboard.cashRegister"
+                        }
+                      },
                       "tag": "div",
                       "style": {
                         "font-size": "16px",
@@ -629,8 +651,12 @@
                         "color": "#424242",
                         "margin-top": "20px",
                         "white-space": "pre-wrap"
-                      }
-                    }
+                      },
+                      "_htmlType_": "i18n"
+                    },
+                    "preprocess": [
+                      "html"
+                    ]
                   },
                   "binding": [],
                   "slotScopeBinding": [],
@@ -656,7 +682,10 @@
                 "_code_": "module.exports = function () {\n  this.$router.push({path: `/view/pos-order-history`})\n}",
                 "_code_type_": "commonJs"
               }
-            }
+            },
+            "preprocess": [
+              "html"
+            ]
           },
           "binding": [],
           "slotScopeBinding": [],
@@ -692,7 +721,13 @@
                   "component": "VTag",
                   "content": {
                     "props": {
-                      "html": "Order History",
+                      "html": {
+                        "_code_": "\n        module.exports = function() {\n          return $t('dashboard.orderHistory')\n        }\n        ",
+                        "_code_type_": "commonJs",
+                        "_metadata_": {
+                          "text": "dashboard.orderHistory"
+                        }
+                      },
                       "tag": "div",
                       "style": {
                         "font-size": "16px",
@@ -700,8 +735,12 @@
                         "color": "#424242",
                         "margin-top": "20px",
                         "white-space": "pre-wrap"
-                      }
-                    }
+                      },
+                      "_htmlType_": "i18n"
+                    },
+                    "preprocess": [
+                      "html"
+                    ]
                   },
                   "binding": [],
                   "slotScopeBinding": [],
@@ -764,7 +803,13 @@
                   "component": "VTag",
                   "content": {
                     "props": {
-                      "html": "Admin Dashboard",
+                      "html": {
+                        "_code_": "\n            module.exports = function() {\n              return $t('dashboard.adminDashboard')\n            }",
+                        "_code_type_": "commonJs",
+                        "_metadata_": {
+                          "text": "dashboard.adminDashboard"
+                        }
+                      },
                       "tag": "div",
                       "style": {
                         "font-size": "16px",
@@ -772,8 +817,12 @@
                         "color": "#424242",
                         "margin-top": "20px",
                         "white-space": "pre-wrap"
-                      }
-                    }
+                      },
+                      "_htmlType_": "i18n"
+                    },
+                    "preprocess": [
+                      "html"
+                    ]
                   },
                   "binding": [],
                   "slotScopeBinding": [],
@@ -836,7 +885,13 @@
                   "component": "VTag",
                   "content": {
                     "props": {
-                      "html": "End of Day",
+                      "html": {
+                        "_code_": "\n            module.exports = function() {\n              return $t('dashboard.endOfDay')\n            }",
+                        "_code_type_": "commonJs",
+                        "_metadata_": {
+                          "text": "dashboard.endOfDay"
+                        }
+                      },
                       "tag": "div",
                       "style": {
                         "font-size": "16px",
@@ -844,8 +899,12 @@
                         "color": "#424242",
                         "margin-top": "20px",
                         "white-space": "pre-wrap"
-                      }
-                    }
+                      },
+                      "_htmlType_": "i18n"
+                    },
+                    "preprocess": [
+                      "html"
+                    ]
                   },
                   "binding": [],
                   "slotScopeBinding": [],
@@ -908,7 +967,13 @@
                   "component": "VTag",
                   "content": {
                     "props": {
-                      "html": "Monthly Report",
+                      "html": {
+                        "_code_": "\n            module.exports = function() {\n              return $t('dashboard.monthlyReport')\n            }",
+                        "_code_type_": "commonJs",
+                        "_metadata_": {
+                          "text": "dashboard.monthlyReport"
+                        }
+                      },
                       "tag": "div",
                       "style": {
                         "font-size": "16px",
@@ -917,8 +982,12 @@
                         "margin-top": "20px",
                         "white-space": "pre-wrap"
                       },
-                      "class": []
-                    }
+                      "class": [],
+                      "_htmlType_": "i18n"
+                    },
+                    "preprocess": [
+                      "html"
+                    ]
                   },
                   "binding": [],
                   "slotScopeBinding": [],
@@ -981,7 +1050,13 @@
                   "component": "VTag",
                   "content": {
                     "props": {
-                      "html": "Staff Report",
+                      "html": {
+                        "_code_": "\n            module.exports = function() {\n              return $t('dashboard.staffReport')\n            }",
+                        "_code_type_": "commonJs",
+                        "_metadata_": {
+                          "text": "dashboard.staffReport"
+                        }
+                      },
                       "tag": "div",
                       "style": {
                         "font-size": "16px",
@@ -990,8 +1065,12 @@
                         "margin-top": "20px",
                         "white-space": "pre-wrap"
                       },
-                      "class": []
-                    }
+                      "class": [],
+                      "_htmlType_": "i18n"
+                    },
+                    "preprocess": [
+                      "html"
+                    ]
                   },
                   "binding": [],
                   "slotScopeBinding": [],
