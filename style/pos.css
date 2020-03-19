@@ -150,6 +150,13 @@ body::-webkit-scrollbar {
   background-position: center;
 }
 
+.icon-keyboard-red {
+  background-image: url("../assets/keyboard-red.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
 .icon-liefer_packet {
   background-image: url("../assets/liefer_packet.svg");
   background-repeat: no-repeat;
