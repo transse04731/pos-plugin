@@ -257,7 +257,12 @@
       },
 
       back() {
-        this.$router.go(-1)
+        // TODO: Use go back instead
+        // Issue: go back return exactly previous page (Dashboard -> Functions)
+        // but the problem is it doesn't refresh the UI
+        // so in case we add or remove room, the change will not be updated
+        // in Dashboard page
+        this.$router.push('/view/pos-dashboard')
       }
     },
     created() {
