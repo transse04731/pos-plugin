@@ -1,70 +1,111 @@
 <template>
   <div style="display: flex; height: 100vh; width: 100vw">
-    <pos-dashboard-sidebar :items="sidebarData" :title="user.username">
+    <!-- side bar -->
+    <pos-dashboard-sidebar :items="sidebarData" :title="user.username" @toggle="onSidebarToggle">
       <template v-slot:above-spacer>
-        <div class="edit-table-plan__add-new-room-btn-wrapper">
+        <!-- Add more room -->
+        <div v-if="showAddNewRoomBtn"
+             class="edit-table-plan__add-new-room-btn-wrapper">
           <g-btn @click="addNewRoom"
                  outlined
                  flat dashed
                  border-radius="4"
                  text-color="#2979FF"
-                 class="edit-table-plan__add-new-room-btn">+ Add new room</g-btn>
+                 class="edit-table-plan__add-new-room-btn">+ Add new room
+          </g-btn>
         </div>
 
-        <div v-if="selectedRoom && !selectedRoomObject">
-          <div>Room name *:</div>
-          <g-text-field :value="selectedRoom.name" @input="changeRoomName"></g-text-field>
+        <!-- Room info -->
+        <div v-if="room && !roomObj" class="card-info">
+          <pos-text-field v-model="room.name" label="Room name *:"
+                          @input="changeRoomName"
+                          @click="dialog.showRoomNameKbd = true">
+            <template v-slot:append>
+              <g-icon svg color="#F00">icon-keyboard-red</g-icon>
+            </template>
+          </pos-text-field>
+          <div style="display: flex; justify-content: flex-end; margin-right: 5px">
+            <g-btn @click="removeRoom" background-color="#FF4452" text-color="#FFF"><g-icon>delete</g-icon>Delete</g-btn>
+          </div>
         </div>
 
-        <div v-if="selectedRoomObject">
-          <template v-if="isTable(selectedRoomObject)">
-            <div> Table name:</div>
-            <g-text-field v-model="selectedRoomObject.name" @input="changeTableName"/>
-            <div> Color: </div>
-            <color-selector :value="selectedRoomObject.bgColor" :values="tableColors" @input="updateColor" :item-size="18" :badge-size="12"/>
-            <div>Take away: <g-switch/></div>
-            <div>
-              <g-btn @click="duplicateTable">[] Duplicate</g-btn>
-              <g-btn @click="removeTable">[] Delete</g-btn>
+        <!-- Room object info -->
+        <div v-if="roomObj" class="card-info">
+          <!-- table -->
+          <template v-if="isTable(roomObj)">
+            <pos-text-field v-model="roomObj.name" label="Table name: "
+                            @input="changeTableName"
+                            @click="dialog.showTableNameKbd = true">
+              <template v-slot:append>
+                <g-icon svg color="#F00">icon-keyboard-red</g-icon>
+              </template>
+            </pos-text-field>
+            <div style="margin: 5px">
+              <div> Color:</div>
+              <color-selector :value="roomObj.bgColor" :values="tableColors" @input="changeRoomObjColor" :item-size="18" :badge-size="12"/>
+              <div style="display: flex; align-items: center">
+                <span style="margin-right: 10px">Take away:</span>
+                <g-switch v-model="roomObj.takeAway" @change="changeRoomObjTakeAway"/>
+              </div>
             </div>
           </template>
-          <template v-else-if="isWall(selectedRoomObject)">
-            <div> Color: </div>
-            <color-selector :value="selectedRoomObject.bgColor" :values="wallColors" @input="updateColor" :item-size="18" :badge-size="12"/>
+
+          <!-- wall -->
+          <template v-else-if="isWall(roomObj)">
+            <div style="margin: 5px">
+              <div> Color:</div>
+              <color-selector :value="roomObj.bgColor" :values="wallColors" @input="changeRoomObjColor" :item-size="18" :badge-size="12"/>
+            </div>
           </template>
+          <div style="display: flex; margin: 5px; justify-content: space-between">
+            <g-btn @click="duplicateRoomObj" width="48%" style="font-size: 13px" outlined flat text-color="#2979FF">
+              <g-icon size="13">fas fa-clone</g-icon>
+              Duplicate
+            </g-btn>
+            <g-btn @click="removeRoomObj" width="48%" background-color="#FF4452" text-color="#FFF" style="margin-left: 5px; font-size: 13px">
+              <g-icon size="13">delete</g-icon>
+              Delete
+            </g-btn>
+          </div>
         </div>
       </template>
+
       <template v-slot:footer>
-        <div>
-          <g-btn outlined flat @click="addNewWall">+ Wall</g-btn>
-          <g-btn flat @click="addNewTable">+ Table</g-btn>
+        <!-- Add new room object -->
+        <div style="display: flex; margin: 5px; justify-content: space-between" v-if="room">
+          <g-btn outlined flat @click="addNewWall" width="48%" text-color="#2979FF">+ Wall</g-btn>
+          <g-btn flat @click="addNewTable" width="48%" background-color="#2979FF" text-color="#FFF">+ Table</g-btn>
         </div>
-        <div>
-          <g-btn outlined flat @click="goBack">Back</g-btn>
+
+        <!-- Go back -->
+        <div style="display: flex; margin: 5px; justify-content: space-between">
+          <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" @click="back" style="flex: 1">
+            <g-icon class="mr-2" svg>
+              icon-back
+            </g-icon>
+            Back
+          </g-btn>
         </div>
       </template>
     </pos-dashboard-sidebar>
-    <room v-if="selectedRoom"
-          :name="selectedRoom.name"
-          style="width: 100%; height: 100%"
+
+    <!-- room view -->
+    <room v-if="room"
+          :name="room.name"
           mode="edit"
-          :room-objects="selectedRoom.roomObjects"
-          :room-object-container-style="{borderRadius: '4px'}"
-          @selectroomobject="onRoomObjectSelected"
-          @roomobjectchanged="onRoomObjectChanged">
+          :room-objects="room.roomObjects"
+          @selectRoomObject="selectRoomObj"
+          @roomObjectChanged="changeRoomObjUI">
       <template #room-object="{roomObject}">
-        <div class="room__object__content" :style="getRoomObjectStyle(roomObject)">
-          <div v-if="isTable(roomObject)">
-            <div>{{ roomObject.clock }}</div>
-            <div>{{ roomObject.name }}</div>
-            <div>{{ roomObject.minute }}</div>
-          </div>
-          <div v-else-if="!isWall(roomObject)">
-            <div>{{ roomObject.name }}</div>
-          </div>
+        <div v-if="isTable(roomObject) || !isWall(roomObject)">
+          <div>{{ roomObject.name }}</div>
         </div>
       </template>
     </room>
+    <template>
+      <dialog-text-filter label="Room name" v-if="room" :default-value="room.name" v-model="dialog.showRoomNameKbd" @submit="changeRoomName"/>
+      <dialog-text-filter label="Table name" v-if="roomObj" :default-value="roomObj.name" v-model="dialog.showTableNameKbd" @submit="changeTableName"/>
+    </template>
   </div>
 </template>
 <script>
@@ -74,31 +115,45 @@
   import DialogChangeValue from '../pos-shared-components/dialogChangeValue';
   import GButtonMerger from '../FnButton/components/GButtonMerger';
   import ColorSelector from '../common/ColorSelector';
+  import PosTextField from '../pos-shared-components/POSInput/PosTextField';
+  import DialogTextFilter from '../pos-shared-components/dialogFilter/dialogTextFilter';
 
   export default {
     name: 'EditTablePlan',
-    components: { ColorSelector, GButtonMerger, DialogChangeValue, PosDashboardSidebar, Room },
+    components: { DialogTextFilter, PosTextField, ColorSelector, GButtonMerger, DialogChangeValue, PosDashboardSidebar, Room },
     injectService: ['PosStore:user'],
     props: {},
     data: function () {
+      const toColorModel = colors => _.map(colors, (c, i) => ({ index: i, text: c, value: c }))
       return {
-        selectedRoom: null,
-        selectedRoomObject: null,
-        sidebarData: [{
-          title: 'Restaurant', icon: 'icon-restaurant', items: []
-        }],
-        tableColors: this.convertToColorSelectorModel(['#FFFFFF', '#FBE4EC', '#EDE7F6', '#E1F5FE', '#FFFDE7', '#E8F5E9', '#EFEBE9', '#F5F5F5']),
-        wallColors: this.convertToColorSelectorModel(['#FFFFFF', '#CCCCCC', '#4D0019', '#404040', '#86592D', '#A6A6A6', '#FFD480', '#E4E4E4'])
+        rooms: null,
+        room: null,
+        roomObj: null,
+        tableColors: toColorModel(['#FFFFFF', '#FBE4EC', '#EDE7F6', '#E1F5FE', '#FFFDE7', '#E8F5E9', '#EFEBE9', '#F5F5F5']),
+        wallColors: toColorModel(['#FFFFFF', '#CCCCCC', '#4D0019', '#404040', '#86592D', '#A6A6A6', '#FFD480', '#E4E4E4']),
+        showAddNewRoomBtn: false,
+        dialog: {
+          showRoomNameKbd: false,
+          showTableNameKbd: false,
+        }
+      }
+    },
+    computed: {
+      sidebarData() {
+        return [{
+          title: 'Restaurant', icon: 'icon-restaurant',
+          items: _.map(this.rooms, this.convertRoomToSideBarItem)
+        }]
       }
     },
     methods: {
-      convertToColorSelectorModel(colors) {
-        return _.map(colors, (c, i) => ({ index:i, text: c, value: c}))
-      },
-      // room
       async loadRooms() {
-        const rooms = await cms.getModel('Room').find({})
-        this.updateSidebarItems(_.map(rooms, this.convertRoomToSideBarItem))
+        this.rooms = await cms.getModel('Room').find({})
+      },
+      onSidebarToggle(path, toggled) {
+        // in this window, only Restaurant item is collapsible so we don't need to care about path
+        // just update the visibility of Add new button depend on toggled state
+        this.showAddNewRoomBtn = toggled
       },
       convertRoomToSideBarItem(room) {
         return {
@@ -106,114 +161,104 @@
           icon: 'radio_button_unchecked',
           iconType: 'small',
           onClick: () => {
-            this.selectedRoom = room
-            this.selectedRoomObject = null
+            this.room = room;
+            this.roomObj = null
           }
         }
       },
-      updateSidebarItems(newSideBarItems) {
-        this.sidebarData[0].items.splice(0, this.sidebarData[0].items.length, ...newSideBarItems)
-      },
-
-      // room objects
-      isTable(roomObject) {
-        return roomObject.type === 'table'
-      },
-      isWall(roomObject) {
-        return roomObject.type === 'wall'
-      },
-      getRoomObjectStyle(roomObj) {
-        const roomObjStyle = {
-          backgroundColor: roomObj.bgColor,
-          width: '100%',
-          height: '100%'
-        };
-
-        if (this.isTable(roomObj)) {
-          roomObjStyle.width = '100%';
-          roomObjStyle.height = '100%';
-          roomObjStyle.boxShadow = '0px 2px 4px rgba(131, 146, 167, 0.2)';
-          roomObjStyle.borderRadius = `4px`;
-        }
-
-        return roomObjStyle
-      },
-      onRoomObjectSelected(roomObj) {
-        console.log('room selected')
-        this.selectedRoomObject = roomObj;
-      },
-      async onRoomObjectChanged(roomObj) {
-        await cms.getModel('Room').findOneAndUpdate({_id: this.selectedRoom._id}, { roomObjects: this.selectedRoom.roomObjects })
-      },
-
-      // above spacer
       async addNewRoom() {
-        await cms.getModel('Room').create({ name: 'New Room' });
-        await this.loadRooms()
+        const createdRoom = await cms.getModel('Room').create({ name: 'New Room' });
+        this.rooms.push(createdRoom)
+      },
+      async removeRoom() {
+        // todo: verify
+        await cms.getModel('Room').remove({ _id: this.room._id })
+        const roomIndex = _.findIndex(this.rooms, r => r === this.room)
+        this.rooms.splice(roomIndex, 1)
+      },
+      async changeRoomName(name) {
+        await cms.getModel('Room').findOneAndUpdate({ _id: this.room._id }, { name });
+        this.room.name = name
       },
 
-      async changeRoomName(value) {
-        this.selectedRoom.name = value
-        await cms.getModel('Room').findOneAndUpdate({_id: this.selectedRoom._id}, { name: this.selectedRoom.name })
+      // room object helper methods
+      isTable(roomObj) {
+        return roomObj.type === 'table'
+      },
+      isWall(roomObj) {
+        return roomObj.type === 'wall'
       },
 
-      async changeTableName() {
-        await cms.getModel('Room').findOneAndUpdate({_id: this.selectedRoom._id}, { roomObjects: this.selectedRoom.roomObjects })
+      selectRoomObj(roomObj) {
+        console.log('select room')
+        this.roomObj = roomObj;
       },
 
-      async updateColor(color) {
-        if (color === null)
-          color = 'black'
-        this.selectedRoomObject.bgColor = color
-        await cms.getModel('Room').findOneAndUpdate(
-            { 'roomObjects._id': this.selectedRoomObject._id },
-            { '$set': { 'roomObjects.$.bgColor': color } })
-      },
-
-      // table info
-      async duplicateTable() {
-        const newTable = {
-          ..._.cloneDeep(this.selectedRoomObject),
-          _id: null,
-          location: { x: 0, y: 0 }
-        };
-        console.log('duplicate table', newTable)
-        await this._addNewTable(newTable)
-      },
-      async removeTable() {
-        // TODO: Prevent serving table item
-      },
-
-      //
+      // add room object
       async addNewWall() {
-        const newWall = {
-          location: { x: 0, y: 0 },
-          size: { width: 300, height: 10 },
-          type: 'wall',
-          bgColor: 'black'
-        };
-        const roomObjects = [...this.selectedRoom.roomObjects, newWall]
-        await cms.getModel('Room').findOneAndUpdate({_id: this.selectedRoom._id}, {roomObjects});
-        this.selectedRoom.roomObjects.push(newWall)
+        await this._addRoomObj({ size: { width: 300, height: 10 }, location: { x: 0, y: 0 }, type: 'wall', bgColor: 'black' })
       },
       async addNewTable() {
-        const newTable = {
-          name: 'New Table',
-          location: { x: 0, y: 0 },
-          size: { width: 100, height: 100 },
-          type: 'table',
-          bgColor: 'white'
-        };
-        await this._addNewTable(newTable)
+        await this._addRoomObj({ size: { width: 100, height: 100 }, location: { x: 0, y: 0 }, type: 'table', bgColor: 'white', name: 'New Table', takeAway: false })
       },
-      async _addNewTable(table) {
-        const roomObjects = [...this.selectedRoom.roomObjects, table]
-        await cms.getModel('Room').findOneAndUpdate({_id: this.selectedRoom._id}, {roomObjects});
-        this.selectedRoom.roomObjects.push(table)
+      async duplicateRoomObj() {
+        await this._addRoomObj({ ..._.cloneDeep(this.roomObj), _id: null, location: { x:0, y: 0 } })
+      },
+      async removeRoomObj() {
+        if (this.isTable(this.roomObj)) {
+          // do smt to check if delete is allowed
+        }
+        const idOfRoomObj = _.findIndex(this.room.roomObjects, ro => ro === this.roomObj);
+        this.room.roomObjects.splice(idOfRoomObj, 1)
+        this.roomObj = null;
+        // TODO: Remove item in Array using $pull
+        await cms.getModel('Room').findOneAndUpdate({ _id: this.room._id }, { roomObjects: this.room.roomObjects })
+      },
+      async _addRoomObj(ro) {
+        // TODO: Do sth if update fail
+        const result = await cms.getModel('Room').findOneAndUpdate(
+            { _id: this.room._id },
+            { $push: { roomObjects: ro } },
+            { new : true });
+        this.room.roomObjects.push(_.last(result.roomObjects))
       },
 
-      goBack() {
-        // TODO: ...
+      // update room object
+      async changeRoomObjTakeAway(takeAway) {
+        await this._updateRoomObject({ takeAway });
+      },
+      async changeRoomObjColor(bgColor) {
+        if (bgColor === null) bgColor = 'black';
+        await this._updateRoomObject({ bgColor });
+        this.roomObj.bgColor = bgColor
+      },
+      async changeRoomObjUI() {
+        console.log('change object ui')
+        await this._updateRoomObject({
+          location: this.roomObj.location,
+          size: this.roomObj.size,
+          bgColor: this.roomObj.bgColor,
+          rotate: this.roomObj.rotate || 0
+        });
+      },
+      async changeTableName(name) {
+        await this._updateRoomObject({name});
+        this.roomObj.name = name
+      },
+
+      async _updateRoomObject(change) {
+        const qry = { 'roomObjects._id': this.roomObj._id }
+
+        const setObj = {}
+        _.each(_.keys(change), k => setObj[`roomObjects.$.${k}`] = change[k]);
+        const set =  { $set: setObj }
+
+        console.log('update', qry, 'set', set)
+        await cms.getModel('Room').findOneAndUpdate(qry, set)
+      },
+
+      back() {
+        this.$router.push('/view/pos-dashboard')
       }
     },
     created() {
@@ -238,27 +283,20 @@
     }
   }
 
+  .card-info {
+    margin: 5px;
+    padding-bottom: 13px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1398);
+    border-radius: 4px;
+  }
 
-  .room__object__content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    pointer-events: none;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
+  .keyboard {
+    position: absolute;
+    bottom: 0;
+    background-color: #efefef;
+    padding: 8px;
+    width: 100%;
+    box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.15);
+    z-index: 1;
   }
 </style>
-
-
-<!--&:before {-->
-<!--  content: '';-->
-<!--  width: 50px;-->
-<!--  height: 50px;-->
-<!--  position: absolute;-->
-<!--  top: 0;-->
-<!--  right: 0;-->
-<!--  background-color: #0ECBEE;-->
-<!--  transform: translate(50%, -50%) rotate(45deg);-->
-<!--  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1398);-->
-<!--}-->
