@@ -28,7 +28,7 @@
 
   export default {
     name: 'PosEndOfDayReprintZReport',
-    injectService: ['PosStore:selectedReportDate'],
+    injectService: ['ReportsStore:selectedReportDate'],
     props: {
       value: null
     },
@@ -46,7 +46,7 @@
         }
       },
       async print(z) {
-        await this.$getService('PosStore:printZReport')(z)
+        await this.$getService('ReportsStore:printZReport')(z)
       }
     },
     setup() {

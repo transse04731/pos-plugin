@@ -35,10 +35,10 @@
 	export default {
     name: 'viewCategoryToolbar',
 		injectService: [
-      'PosStore:selectedCategory',
-      'PosStore:updateCategory',
-      'PosStore:swapCategoryPosition',
-      'PosStore:listCategories',
+      'SettingsStore:selectedCategory',
+      'SettingsStore:updateCategory',
+      'SettingsStore:swapCategoryPosition',
+      'SettingsStore:listCategories',
     ],
 		data() {
     	return {

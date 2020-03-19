@@ -13,7 +13,7 @@
 <script>
   export default {
     name: 'PosMonthSelect',
-    injectService: ['PosStore:(monthReportFrom,monthReportTo,selectedMonth)'],
+    injectService: ['ReportsStore:(monthReportFrom,monthReportTo,selectedMonth,getMonthReport)'],
     computed: {
       month() {
         if (this.monthReportFrom && this.monthReportTo) {
@@ -43,7 +43,7 @@
         && dayjs().isBefore(this.selectedMonth.endOf('month'))
           ? dayjs().format('YYYY-MM-DD')
           : this.selectedMonth.endOf('month').format('YYYY-MM-DD');
-        await this.$getService('PosStore:getMonthReport')();
+        await this.getMonthReport();
       }
     },
     async created() {

@@ -20,7 +20,7 @@
   export default {
     name: 'PosEndOfDayMain',
     components: { PosEndOfDayDatePicker },
-    injectService: ['PosStore:(selectedReportDate,listOfDatesWithReports)'],
+    injectService: ['ReportsStore:(selectedReportDate,listOfDatesWithReports)'],
     data: () => ({
       date: null,
       eventDates: []
@@ -38,11 +38,11 @@
 
         this.selectedReportDate = Object.assign({}, this.selectedReportDate, {
           date: dayjs(value, 'YYYY-MM-DD').toDate(),
-          reports: this.$getService('PosStore:getDailyReports')(value)
+          reports: this.$getService('ReportsStore:getDailyReports')(value)
         })
       },
       async getDatesWithReport(date) {
-        this.eventDates = await this.$getService('PosStore:getDatesWithReports')(date)
+        this.eventDates = await this.$getService('ReportsStore:getDatesWithReports')(date)
       }
     },
     async mounted() {

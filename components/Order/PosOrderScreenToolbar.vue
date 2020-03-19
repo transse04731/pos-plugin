@@ -27,14 +27,14 @@
 <script>
   export default {
     name: 'PosOrderScreenToolbar',
-    injectService: ['PosStore:(savedOrders,getSavedOrders)'],
+    injectService: ['OrderStore:(savedOrders,getSavedOrders)'],
     methods: {
       async openDialogSavedList() {
         await this.getSavedOrders()
         this.$getService('dialogSavedList:setActive')(true)
       },
       back() {
-        this.$getService('PosStore:resetOrderData')()
+        this.$getService('OrderStore:resetOrderData')()
         this.$router.push({path: '/view/pos-dashboard'})
       }
     },
@@ -57,7 +57,6 @@
       margin-left: 0;
     }
   }
-
 
   .g-toolbar-background > div {
     box-shadow: inset -8px 0 8px -8px rgba(0, 0, 0, 0.25);

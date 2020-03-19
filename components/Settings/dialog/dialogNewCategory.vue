@@ -27,8 +27,8 @@
   export default {
     name: 'dialogNewCategory',
     injectService: [
-      'PosStore:selectedCategory',
-      'PosStore:updateCategory',
+      'SettingsStore:selectedCategory',
+      'SettingsStore:updateCategory',
     ],
     data() {
       return {

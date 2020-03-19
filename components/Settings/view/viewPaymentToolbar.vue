@@ -23,8 +23,8 @@
   export default {
     name: 'viewPaymentToolbar',
     injectService:[
-      'PosStore:selectedPayment',
-      'PosStore:updatePayment'
+      'SettingsStore:selectedPayment',
+      'SettingsStore:updatePayment'
     ],
     data() {
       return {

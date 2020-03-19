@@ -22,9 +22,9 @@
   export default {
     name: 'viewPayment',
     injectService: [
-      'PosStore:listPayments',
-      'PosStore:getListPayments',
-      'PosStore:selectedPayment',
+      'SettingsStore:listPayments',
+      'SettingsStore:getListPayments',
+      'SettingsStore:selectedPayment',
     ],
     data() {
       return {}

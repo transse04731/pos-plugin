@@ -88,7 +88,7 @@
   export default {
     name: "dialogAddFilter",
     injectService: [
-        'PosStore:findCategoryByName'
+        'SettingsStore:findCategoryByName'
     ],
     props: {
       value: Boolean,

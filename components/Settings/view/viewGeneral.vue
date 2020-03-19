@@ -42,83 +42,83 @@
     name: 'viewGeneral',
 		components: { PosTimePicker },
 		injectService: [
-      'PosStore:generalSetting',
-      'PosStore:getGeneralSetting',
-      'PosStore:updateSetting',
+      'SettingsStore:generalSettings',
+      'SettingsStore:getGeneralSettings',
+      'SettingsStore:updateSettings',
       'PosStore:resetLayoutFnBtn',
     ],
     computed: {
       barcode: {
         get() {
-          if (this.generalSetting) {
-            return this.generalSetting.barcode;
+          if (this.generalSettings) {
+            return this.generalSettings.barcode;
           }
         },
         set(val) {
-					this.$set(this.generalSetting, 'barcode', val)
+					this.$set(this.generalSettings, 'barcode', val)
         }
       },
       favoriteArticle: {
         get() {
-          if (this.generalSetting) {
-            return this.generalSetting.favoriteArticle;
+          if (this.generalSettings) {
+            return this.generalSettings.favoriteArticle;
           }
         },
         set(val) {
-					this.$set(this.generalSetting, 'favoriteArticle', val)
+					this.$set(this.generalSettings, 'favoriteArticle', val)
         }
       },
       virtualKeyboard: {
         get() {
-          if (this.generalSetting) {
-            return this.generalSetting.virtualKeyboard;
+          if (this.generalSettings) {
+            return this.generalSettings.virtualKeyboard;
           }
         },
         set(val) {
-					this.$set(this.generalSetting, 'virtualKeyboard', val)
+					this.$set(this.generalSettings, 'virtualKeyboard', val)
 				}
       },
       automaticCashdrawer: {
         get() {
-          if (this.generalSetting) {
-            return this.generalSetting.automaticCashdrawer;
+          if (this.generalSettings) {
+            return this.generalSettings.automaticCashdrawer;
           }
         },
         set(val) {
-					this.$set(this.generalSetting, 'automaticCashdrawer', val)
+					this.$set(this.generalSettings, 'automaticCashdrawer', val)
 				}
       },
 			quickFnRows: {
       	get() {
-      		if (this.generalSetting) {
-      			return this.generalSetting.quickFnRows;
+      		if (this.generalSettings) {
+      			return this.generalSettings.quickFnRows;
 					}
 				},
 				set(val) {
-					this.$set(this.generalSetting, 'quickFnRows', val)
+					this.$set(this.generalSettings, 'quickFnRows', val)
 				}
 			},
 			beginHour: {
       	get() {
-      		return (this.generalSetting && this.generalSetting.beginHour) || '00:00'
+      		return (this.generalSettings && this.generalSettings.beginHour) || '00:00'
 				},
 				set(val) {
-      		this.$set(this.generalSetting, 'beginHour', val)
+      		this.$set(this.generalSettings, 'beginHour', val)
 				}
 			}
     },
     methods: {
       async changeSetting() {
-        await this.updateSetting()
+        await this.updateSettings()
       },
 			async updateFnRows(number) {
 				this.quickFnRows = number;
-				await this.updateSetting();
+				await this.updateSettings();
 				await this.resetLayoutFnBtn('leftFunctionButtons');
 			}
     },
     created() {
-      this.getGeneralSetting();
+      this.getGeneralSettings();
     }
   }
 </script>

@@ -1,8 +1,8 @@
 <template>
   <div class="action" ref="action">
     <div class="btn"
-           v-for="(btn, i) in listBtn" :key="i"
-           :style="{
+         v-for="(btn, i) in listBtn" :key="i"
+         :style="{
               gridRow: btn.rows[0] + '/' + btn.rows[1],
               gridColumn: btn.cols[0] + '/' + btn.cols[1],
               backgroundColor: btn.backgroundColor,
@@ -12,7 +12,7 @@
               opacity: !isActiveBtn(btn) ? '0.4' : '1', //disabled
               cursor: !isActiveBtn(btn) ? 'none' : 'pointer'
             }"
-           @click="onClick(btn)">
+         @click="onClick(btn)">
       {{btn.text}}
     </div>
   </div>
@@ -22,7 +22,7 @@
   export default {
     name: 'PosOrderScreenAction',
     injectService: [
-      'PosStore:(getPosSetting,chooseFunction,activeTableProduct)',
+      'OrderStore:(chooseFunction,activeTableProduct)', 'SettingsStore:getPosSetting'
     ],
     data() {
       return {
@@ -67,17 +67,17 @@
           }
         }
 
-        const posStore = this.$getService('PosStore')
-        if(posStore && posStore.updateTableRows && typeof posStore.updateTableRows === 'function') {
+        const posStore = this.$getService('OrderStore')
+        if (posStore && posStore.updateTableRows && typeof posStore.updateTableRows === 'function') {
           posStore.updateTableRows()
         }
       },
       isActiveBtn(btn) {
-        return this.$getService('PosStore:isActiveFnBtn')(btn)
+        return this.$getService('OrderStore:isActiveFnBtn')(btn)
       },
       onClick(btn) {
         if (!btn || !btn.buttonFunction) return
-        this.$getService('PosStore:chooseFunction')(btn.buttonFunction)(btn.buttonFunctionValue)
+        this.$getService('OrderStore:chooseFunction')(btn.buttonFunction)(btn.buttonFunctionValue)
       }
     }
   }

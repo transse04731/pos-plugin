@@ -25,7 +25,7 @@
       },
     },
     async created() {
-      this.posStore = this.$getService('PosStore');
+      this.posStore = this.$getService('OrderStore');
 
       this.posStore.changeCategory = (newValue, oldValue) => {
         if (newValue) {
@@ -46,13 +46,13 @@
       }
     },
     async mounted() {
-      this.menu = await this.posStore.getAllCategories()
+      this.menu = await this.$getService('SettingsStore:getAllCategories')()
       this.$nextTick(() => {
         this.select(this.menu[0])
       })
     },
     async activated() {
-      this.menu = await this.posStore.getAllCategories()
+      this.menu = await this.$getService('SettingsStore:getAllCategories')()
     }
   }
 </script>

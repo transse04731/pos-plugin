@@ -8,10 +8,7 @@
 <script>
   export default {
     name: 'PosOrderScreenInfoLeft',
-    injectService: [
-      'PosStore:paymentTotal',
-      'PosStore:lastPayment'
-    ]
+    injectService: ['OrderStore:(paymentTotal,lastPayment)']
   }
 </script>
 

@@ -22,7 +22,7 @@
   export default {
     name: 'PosOrderScreenButtonGroup',
     injectService: [
-      'PosStore:(chooseFunction,activeTableProduct,getPosSetting,currentOrder)'
+      'OrderStore:(chooseFunction,activeTableProduct,currentOrder)', 'SettingsStore:getPosSetting'
     ],
     data() {
       return {
@@ -47,11 +47,11 @@
         }
       },
       isActiveBtn(btn) {
-        return this.$getService('PosStore:isActiveFnBtn')(btn)
+        return this.$getService('OrderStore:isActiveFnBtn')(btn)
       },
       onClick(btn) {
         if (!btn || !btn.buttonFunction) return
-        this.$getService('PosStore:chooseFunction')(btn.buttonFunction)(btn.buttonFunctionValue)
+        this.$getService('OrderStore:chooseFunction')(btn.buttonFunction)(btn.buttonFunctionValue)
       }
     },
     async activated() {

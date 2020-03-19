@@ -10,7 +10,7 @@
 <script>
   export default {
     name: 'PosArticleLayoutOverlay',
-    injectService: ['PosStore:( articleSelectedProductButton)'],
+    injectService: ['SettingsStore:articleSelectedProductButton'],
 
   }
 </script>

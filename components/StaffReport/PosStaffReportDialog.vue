@@ -33,9 +33,12 @@
             <div v-if="orderSalesByStaff && orderSalesByStaff['groupByTax']">
               <div v-for="(entry, key, index) in orderSalesByStaff['groupByTax']">
                 <p class="sales-entry sales-type">{{$t('common.tax')}} {{key}}%:</p>
-                <p><span class="sales-entry sales-type">{{$t('common.total')}}</span> <span class="sales-entry sales-amount">{{entry.gross | formatNumber}}</span></p>
-                <p><span class="sales-entry sales-type">{{$t('common.subtotal')}}</span> <span class="sales-entry sales-amount">{{entry.net | formatNumber}}</span></p>
-                <p><span class="sales-entry sales-type">{{$t('common.tax')}}</span> <span class="sales-entry sales-amount">{{entry.salesTax | formatNumber}}</span></p>
+                <p><span class="sales-entry sales-type">{{$t('common.total')}}</span> <span class="sales-entry sales-amount">{{entry.gross |
+                  formatNumber}}</span></p>
+                <p><span class="sales-entry sales-type">{{$t('common.subtotal')}}</span> <span class="sales-entry sales-amount">{{entry.net |
+                  formatNumber}}</span></p>
+                <p><span class="sales-entry sales-type">{{$t('common.tax')}}</span> <span class="sales-entry sales-amount">{{entry.salesTax |
+                  formatNumber}}</span></p>
                 <br/>
               </div>
             </div>
@@ -85,7 +88,11 @@
     props: {
       value: null
     },
-    injectService: ['PosStore:( getListUsers, listUsers, getOrderSalesByStaff, systemDate )'],
+    injectService: [
+      'PosStore:systemDate',
+      'ReportsStore:(getOrderSalesByStaff, printStaffReport)',
+      'SettingsStore:(getListUsers, listUsers)'
+    ],
     data: () => ({
       selectedStaff: null,
       staffs: [],
@@ -102,7 +109,7 @@
           if (!newVal) {
             return []
           }
-          this.orderSalesByStaff = await this.$getService('PosStore:getOrderSalesByStaff')(newVal.name, this.systemDate)
+          this.orderSalesByStaff = await this.getOrderSalesByStaff(newVal.name, this.systemDate)
         },
         sync: true
       }
@@ -115,7 +122,7 @@
         if (!this.orderSalesByStaff) {
           return
         }
-        return await this.$getService('PosStore:printStaffReport')(this.orderSalesByStaff)
+        return await this.printStaffReport(this.orderSalesByStaff)
       }
     },
     async mounted() {

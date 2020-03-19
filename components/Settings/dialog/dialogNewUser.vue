@@ -55,10 +55,10 @@
       }
     },
     injectService: [
-      'PosStore:selectedUser',
-      'PosStore:updateUser',
-      'PosStore:getListAvatar',
-      'PosStore:listUsers',
+      'SettingsStore:selectedUser',
+      'SettingsStore:updateUser',
+      'SettingsStore:getListAvatar',
+      'SettingsStore:listUsers',
     ],
     computed: {
       dialogNewUser: {

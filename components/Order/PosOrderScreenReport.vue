@@ -29,12 +29,7 @@
         return 0
       },
     },
-    injectService: [
-      'PosStore:paymentTax',
-      'PosStore:paymentTotal',
-      'PosStore:paymentSubTotal',
-      'PosStore:paymentDiscount',
-    ]
+    injectService: ['OrderStore:(paymentTax,paymentTotal,paymentSubTotal,paymentDiscount)',]
   }
 </script>
 

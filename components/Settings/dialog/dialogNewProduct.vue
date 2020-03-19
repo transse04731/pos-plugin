@@ -85,7 +85,7 @@
               <pos-text-field :rules="[rules.required]" @click="keyboardFocus = 'name'" :label="$t('article.name')" :placeholder="$t('settings.productName')" ref="name" required v-model="name"/>
             </div>
             <div>
-              <pos-text-field @click="keyboardFocus = 'id'" :label="$t('article.productId')" placeholder="$t('product.productIdPlaceholder')" ref="productID" v-model="productID"/>
+              <pos-text-field @click="keyboardFocus = 'id'" :label="$t('article.productId')" :placeholder="$t('settings.productIdPlaceholder')" ref="productID" v-model="productID"/>
             </div>
             <div>
               <pos-text-field :rules="[rules.number, rules.required]" @click="keyboardFocus = 'price'" :label="$t('article.price')" :placeholder="$t('article.price')" ref="price" required v-model="price">
@@ -120,12 +120,12 @@
   export default {
     name: 'dialogNewProduct',
     injectService: [
-      'PosStore:createNewProduct',
-      'PosStore:getAllTaxCategory',
-      'PosStore:getHighestProductOrder',
-      'PosStore:selectedProduct',
-      'PosStore:updateProduct',
-      'PosStore:getHighestFavouriteProductOrder'
+      'SettingsStore:createNewProduct',
+      'SettingsStore:getAllTaxCategory',
+      'SettingsStore:getHighestProductOrder',
+      'SettingsStore:selectedProduct',
+      'SettingsStore:updateProduct',
+      'SettingsStore:getHighestFavouriteProductOrder'
     ],
     data() {
       return {

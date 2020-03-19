@@ -20,7 +20,7 @@
     </div>
     <div class="product-content-right">
       <div>
-        <p class="sub-title">{{$t($t('article.barcode'))}} </p>
+        <p class="sub-title">{{$t('article.barcode')}} </p>
         <p class="product-info" v-if="articleSelectedProductButton && articleSelectedProductButton.barcode">{{ articleSelectedProductButton.barcode }}</p>
       </div>
       <div style="margin-top: 5px;">
@@ -41,7 +41,7 @@
 
   export default {
     name: 'PosArticleProductInfo',
-    injectService: ['PosStore:(activeCategory, articleSelectedProductButton )'],
+    injectService: ['SettingsStore:(activeCategory, articleSelectedProductButton)'],
     methods: {
       mergeAttributes(attributes) {
         return _.map(_.groupBy(attributes, 'key'),

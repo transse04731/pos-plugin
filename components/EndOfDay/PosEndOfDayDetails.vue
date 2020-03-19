@@ -46,7 +46,7 @@
   export default {
     name: 'PosEndOfDayDetails',
     injectService: [
-      'PosStore:selectedReportDate',
+      'ReportsStore:selectedReportDate',
     ],
     data() {
       return {
@@ -72,9 +72,9 @@
       }
     },
     created() {
-      const posStore = this.$getService('PosStore')
+      const reportsStore = this.$getService('ReportsStore')
 
-      this.unwatch = posStore.$watch('selectedReportDate', newVal => {
+      this.unwatch = reportsStore.$watch('selectedReportDate', newVal => {
         if (newVal.reports && newVal.reports.length) {
           this.zNumberReports = newVal.reports.map(report => ({
             begin: dayjs(report.begin).format('HH:mm'),

@@ -78,7 +78,7 @@
 
   export default {
     name: 'dialogProductLookup',
-    injectService: ['PosStore:(productNameQuery,productNameQueryResults,queryProductsByName,addProductToOrder)'],
+    injectService: ['OrderStore:(productNameQuery,productNameQueryResults,queryProductsByName,addProductToOrder)'],
     props: {
       value: Boolean,
     },

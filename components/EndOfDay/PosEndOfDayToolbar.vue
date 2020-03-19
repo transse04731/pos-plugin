@@ -42,8 +42,8 @@
     name: 'PosEndOfDayToolbar',
     components: { PosEndOfDayReprintZReport, PosEndOfDayPrintPendingZReport, PosEndOfDayPrintDialog, PosEndOfDayPrintZReport },
     injectService: [
-      'PosStore:selectedReportDate',
-      'PosStore:listOfDatesWithReports',
+      'ReportsStore:selectedReportDate',
+      'ReportsStore:listOfDatesWithReports',
     ],
     data() {
       return {
@@ -67,7 +67,7 @@
         this.$router.push({ path: '/view/pos-dashboard' })
       },
       async runEndOfDay() {
-        const oldestPendingReport = await this.$getService('PosStore:getOldestPendingReport')()
+        const oldestPendingReport = await this.$getService('ReportsStore:getOldestPendingReport')()
         if (oldestPendingReport && oldestPendingReport.date < this.selectedReportDate.date) {
           this.showPendingEndOfDayConfirmDialog = true
           return
@@ -75,8 +75,8 @@
         this.showEndOfDayConfirmDialog = true
       },
       async save(reports) {
-        await this.$getService('PosStore:finalizeReport')(reports)
-        await this.$getService('PosStore:getDatesWithReports')(this.selectedReportDate.date || new Date())
+        await this.$getService('ReportsStore:finalizeReport')(reports)
+        await this.$getService('ReportsStore:getDatesWithReports')(this.selectedReportDate.date || new Date())
       }
     }
   }

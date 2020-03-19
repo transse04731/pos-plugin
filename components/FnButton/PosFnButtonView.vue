@@ -482,7 +482,7 @@
         return this.buttonGroupItems.find((x) => x.buttonId === button.buttonId) || this.sideButtonItems.find((x) => x.buttonId === button.buttonId);
       },
       async refreshData() {
-        this.posSettings = await this.$getService('PosStore:getPosSetting')();
+        this.posSettings = await this.$getService('SettingsStore:getPosSetting')();
         if (this.posSettings) {
           this.quickFnRows = this.posSettings['generalSetting']['quickFnRows'] || 0;
           this.numberOfConfigBtn = 4 * this.quickFnRows;
