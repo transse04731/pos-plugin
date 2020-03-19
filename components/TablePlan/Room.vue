@@ -62,7 +62,7 @@
         if (change.offsetX === 0 && change.offsetY === 0)
           return;
 
-        this.action(change);
+        this.action && this.action(change);
 
         // update last position
         this.lastPos = { x: e.clientX, y: e.clientY }
