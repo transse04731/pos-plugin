@@ -233,7 +233,6 @@
         this.roomObj.bgColor = bgColor
       },
       async changeRoomObjUI() {
-        console.log('change object ui')
         await this._updateRoomObject({
           location: this.roomObj.location,
           size: this.roomObj.size,
@@ -253,12 +252,12 @@
         _.each(_.keys(change), k => setObj[`roomObjects.$.${k}`] = change[k]);
         const set =  { $set: setObj }
 
-        console.log('update', qry, 'set', set)
+        // console.log('update', qry, 'set', set)
         await cms.getModel('Room').findOneAndUpdate(qry, set)
       },
 
       back() {
-        this.$router.push('/view/pos-dashboard')
+        this.$router.go(-1)
       }
     },
     created() {
