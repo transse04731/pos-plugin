@@ -92,8 +92,8 @@
     <!-- room view -->
     <room v-if="room"
           :name="room.name"
-          mode="edit"
           :room-objects="room.roomObjects"
+          editable
           @selectRoomObject="selectRoomObj"
           @roomObjectChanged="changeRoomObjUI">
       <template #room-object="{roomObject}">

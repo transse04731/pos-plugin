@@ -13,7 +13,7 @@
       <div :style="getRoomObjectStyle(roomObject)">
         <slot name="room-object" v-bind:roomObject="roomObject"/>
       </div>
-      <div v-if="inEditMode && (selectingObj === roomObject)"
+      <div v-if="editable && (selectingObj === roomObject)"
            @mousedown.prevent.stop="e => onMouseDown(e, roomObject, actions.resize)"
            @touchstart.prevent.stop="e => onMouseDown(e, roomObject, actions.resize)"
            class="room__object__resizer" >
@@ -30,7 +30,7 @@
     name: 'Room',
     props: {
       name: String,
-      mode: String, // view | edit
+      editable: Boolean,
       edge: {
         type: Number,
         default: 6
@@ -48,11 +48,6 @@
         },
         action: null, // current action -- see list of available action above
         lastPos: null, // store last mouse clientX, Y position which already handled by "applyChange throttle"
-      }
-    },
-    computed: {
-      inEditMode() {
-        return this.mode === 'edit'
       }
     },
     created() {
@@ -85,7 +80,7 @@
           cursor: 'pointer'
         };
 
-        if (this.inEditMode && (this.selectingObj === roomObj)) {
+        if (this.editable && (this.selectingObj === roomObj)) {
           style.border = '1px solid #1271FF'
         }
 
@@ -122,7 +117,7 @@
 
       // action trigger
       onMouseDown(e, roomObject, action) {
-        if (this.inEditMode) {
+        if (this.editable) {
           this.selectingObj = roomObject;
           mouseEventUtil.normalizeEvent(e);
           this.action = action;
