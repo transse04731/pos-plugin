@@ -10,7 +10,9 @@
          @mousedown.prevent.stop="e => onMouseDown(e, roomObject, actions.move)"
          @touchstart.prevent.stop="e => onMouseDown(e, roomObject, actions.move)"
          :style="getRoomObjectContainerStyle(roomObject)">
-      <slot name="room-object" v-bind:roomObject="roomObject"/>
+      <div :style="getRoomObjectStyle(roomObject)">
+        <slot name="room-object" v-bind:roomObject="roomObject"/>
+      </div>
       <div v-if="inEditMode && (selectingObj === roomObject)"
            @mousedown.prevent.stop="e => onMouseDown(e, roomObject, actions.resize)"
            @touchstart.prevent.stop="e => onMouseDown(e, roomObject, actions.resize)"
@@ -80,16 +82,44 @@
           transform: `rotate(${roomObj.rotate}deg)`,
           transformOrigin: '50% 50%',
           border: '1px solid transparent',
-          cursor: 'pointer',
-          borderRadius: '4px'
+          cursor: 'pointer'
         };
 
         if (this.inEditMode && (this.selectingObj === roomObj)) {
           style.border = '1px solid #1271FF'
         }
 
+        if (this.isTable(roomObj)) {
+          style.borderRadius = `4px`;
+          style.boxShadow = '0px 2px 4px rgba(131, 146, 167, 0.2)';
+        }
+
         return style
       },
+      getRoomObjectStyle(roomObj) {
+        const style = {
+          backgroundColor: roomObj.bgColor,
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          pointerEvents: 'none',
+          textAlign: 'center',
+          position: 'relative',
+          overflow: 'hidden'
+        };
+
+        if (this.isTable(roomObj)) {
+          style.borderRadius = `4px`;
+        }
+
+        return style
+      },
+      isTable(roomObj) {
+        return roomObj.type === 'table'
+      },
+
       // action trigger
       onMouseDown(e, roomObject, action) {
         if (this.inEditMode) {
@@ -97,10 +127,9 @@
           mouseEventUtil.normalizeEvent(e);
           this.action = action;
           this.lastPos = { x: e.clientX, y: e.clientY };
-          this.$emit('selectRoomObject', roomObject)
-        } else {
-          this.$emit('selectRoomObject', roomObject)
         }
+
+        this.$emit('selectRoomObject', roomObject)
       },
       onMouseMove(e) {
         if (this.action) {
