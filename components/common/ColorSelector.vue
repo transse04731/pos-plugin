@@ -1,20 +1,23 @@
 <template>
   <g-grid-select :grid="false" :items="values" :value="internalColor" @input="updateColor" style="padding: 5px">
+
     <template #default="{toggleSelect, item, index}">
-      <div style="margin-right: 8px">
+      <div style="margin-right: 5px">
         <div :key="index" :ripple="false" :style="getColorItemStyle(item)" @click="toggleSelect(item)"/>
       </div>
     </template>
+
     <template #selected="{toggleSelect, item, index}">
-      <div :style="`margin-right: 8px; line-height: ${itemSize}px`">
-        <g-badge :badge-size="badgeSize" overlay>
+      <div :style="`margin-right: 5px`">
+        <g-badge :badge-size="badgeSize" overlay nudge-top="-2" nudge-right="-2">
           <template v-slot:badge>
             <g-icon color="#FFF">done</g-icon>
           </template>
-          <div :style="getColorItemStyle(item)" @click="toggleSelect(item)"/>
+          <div :key="index" :ripple="false" :style="getColorItemStyle(item)" @click="toggleSelect(item)"/>
         </g-badge>
       </div>
     </template>
+
   </g-grid-select>
 </template>
 
