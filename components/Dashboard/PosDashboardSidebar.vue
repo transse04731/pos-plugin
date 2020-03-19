@@ -12,9 +12,12 @@
     </template>
     <slot name="above-tree-view"/>
     <g-side-bar-tree-view
+        ref="tree"
+        :item-children="itemChildren"
         :data="items"
         v-model="sidebar"
-        @node-selected="node => node.onClick()"/>
+        @node-selected="onNodeSelected"
+        @node-expansion-toggled="(path, toggled) => $emit('toggle', path, toggled)"/>
     <slot name="above-spacer"/>
     <g-spacer></g-spacer>
     <slot name="below-spacer"/>
@@ -32,12 +35,14 @@
 
   export default {
     name: 'PosDashboardSidebar',
+    injectService: [ 'PosStore:user' ],
     props: {
       title: {
         type: String,
         default: 'Admin'
       },
-      items: Array
+      items: Array,
+      value: Object
     },
     data() {
       return {
@@ -54,13 +59,19 @@
       }
     },
     methods: {
+      itemChildren(node) {
+        if (node.children) {
+          return node.children.bind(this)();
+        }
+        return node.items;
+      },
+      onNodeSelected(node) {
+        node.onClick && node.onClick.bind(this)();
+      },
       logout() {
         this.$router.push('/view/pos-login')
         this.user = null
       }
-    },
-    mounted() {
-      this.sidebar = "items.0.items.0";
     }
   }
 </script>
