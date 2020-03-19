@@ -138,6 +138,8 @@
 <style scoped lang="scss">
   .room {
     position: relative;
+    width: 100%;
+    height: 100%;
     background-image: url('/plugins/pos-plugin/assets/background.png');
 
     &__object__resizer {
