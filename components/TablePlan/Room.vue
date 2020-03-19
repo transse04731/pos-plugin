@@ -7,13 +7,13 @@
        ref="room">
     <div v-for="(roomObject, index) in roomObjects"
          :key="index"
-         @mousedown.prevent.stop="e => onMouseDown(e, roomObject, 'move')"
-         @touchstart.prevent.stop="e => onMouseDown(e, roomObject, 'move')"
+         @mousedown.prevent.stop="e => onMouseDown(e, roomObject, actions.move)"
+         @touchstart.prevent.stop="e => onMouseDown(e, roomObject, actions.move)"
          :style="getRoomObjectContainerStyle(roomObject)">
       <slot name="room-object" v-bind:roomObject="roomObject"/>
-      <div v-if="selectingObj === roomObject"
-           @mousedown.prevent.stop="e => onMouseDown(e, roomObject, 'resize')"
-           @touchstart.prevent.stop="e => onMouseDown(e, roomObject, 'resize')"
+      <div v-if="(selectingObj === roomObject) && inEditMode"
+           @mousedown.prevent.stop="e => onMouseDown(e, roomObject, actions.resize)"
+           @touchstart.prevent.stop="e => onMouseDown(e, roomObject, actions.resize)"
            class="room__object__resizer" >
         <img src="/plugins/pos-plugin/assets/resize.svg" draggable="false"/>
       </div>
@@ -22,6 +22,8 @@
 </template>
 <script>
   import _ from 'lodash'
+  import * as mouseEventUtil from '../../utils/mouseEventUtil'
+
   export default {
     name: 'Room',
     props: {
@@ -37,42 +39,30 @@
     data: function () {
       return {
         selectingObj: null,
-        action: null, // move | resize
-        actionActivated: false,
-        lastPos: null,
-        cursor: 'pointer'
+        // define a list of action available
+        actions: {
+          move: this.moveAction,
+          resize: this.resizeAction,
+        },
+        action: null, // current action -- see list of available action above
+        lastPos: null, // store last mouse clientX, Y position which already handled by "applyChange throttle"
       }
     },
-    computed: {},
+    computed: {
+      inEditMode() {
+        return this.mode === 'edit'
+      }
+    },
     created() {
       this.applyChange = _.throttle(e => {
         const change = {
           offsetX: e.clientX - this.lastPos.x,
-          offsetY: e.clientY - this.lastPos.y
-        };
-        if (change.offsetX === 0 && change.offsetY === 0) {
-          return;
-        }
+          offsetY: e.clientY - this.lastPos.y };
 
-        if (this.action === 'move') {
-          this.selectingObj.location.x += change.offsetX;
-          this.selectingObj.location.y += change.offsetY;
-          // prevent out of bound
-          if (this.selectingObj.location.x < 0)
-            this.selectingObj.location.x = 0
-          if (this.selectingObj.location.y < 0)
-            this.selectingObj.location.y = 0
-          const viewportRect = this.$refs['room'].getBoundingClientRect()
-          if (this.selectingObj.location.x + this.selectingObj.size.width > viewportRect.width)
-            this.selectingObj.location.x = viewportRect.width - this.selectingObj.size.width
-          if (this.selectingObj.location.y + this.selectingObj.size.height > viewportRect.height)
-            this.selectingObj.location.y = viewportRect.height - this.selectingObj.size.height
-        } else if (this.action === 'resize') {
-          this.selectingObj.size.width += change.offsetX;
-          this.selectingObj.size.height += change.offsetY;
-        } else {
-          console.log('Undetermined action')
-        }
+        if (change.offsetX === 0 && change.offsetY === 0)
+          return;
+
+        this.action(change);
 
         // update last position
         this.lastPos = { x: e.clientX, y: e.clientY }
@@ -90,10 +80,10 @@
           transform: `rotate(${roomObj.rotate}deg)`,
           transformOrigin: '50% 50%',
           border: '1px solid transparent',
-          cursor: this.cursor
+          cursor: 'pointer'
         };
 
-        if (this.selectingObj === roomObj) {
+        if ((this.selectingObj === roomObj) && this.inEditMode) {
           style.border = '1px solid #1271FF'
         }
 
@@ -106,46 +96,48 @@
 
         return style
       },
+      // action trigger
       onMouseDown(e, roomObject, action) {
         this.selectingObj = roomObject;
         this.action = action;
-        if (this._normalizeEvent(e)) {
-          if (this.mode === 'edit') {
-            this.actionActivated = true;
-            this.lastPos = { x: e.clientX, y: e.clientY };
-            this.$emit('selectroomobject', roomObject)
-          } else {
-            this.$emit('selectroomobject', roomObject)
-          }
+        mouseEventUtil.normalizeEvent(e);
+        if (this.inEditMode) {
+          this.lastPos = { x: e.clientX, y: e.clientY };
+          this.$emit('selectroomobject', roomObject)
+        } else {
+          this.$emit('selectroomobject', roomObject)
         }
       },
       onMouseMove(e) {
-        if (this._normalizeEvent(e)) {
-          if (this.actionActivated) {
-            this.applyChange(e)
-          }
-        }
+        mouseEventUtil.normalizeEvent(e);
+        if (this.action)
+          this.applyChange(e)
       },
       onMouseUp(e) {
-        if (this.actionActivated) {
-          this.$emit('roomobjectchanged', this.selectingObj)
-          this.actionActivated = false
+        // clear the action
+        if (this.action) {
+          this.$emit('roomobjectchanged', this.selectingObj);
+          this.action = null
         }
       },
-      _normalizeEvent(e) {
-        if (e instanceof TouchEvent) {
-          if (e.touches.length > 0) {
-            e.clientX = e.touches[0].clientX
-            e.clientY = e.touches[0].clientY
-            const { left, top } = e.target.getBoundingClientRect()
-            e.offsetX = e.touches[0].clientX - left
-            e.offsetY = e.touches[0].clientY - top
-            return true
-          }
-          //
-          return false
-        }
-        return true
+      // actions
+      moveAction(change) {
+        this.selectingObj.location.x += change.offsetX;
+        this.selectingObj.location.y += change.offsetY;
+        // prevent out of bound
+        if (this.selectingObj.location.x < 0)
+          this.selectingObj.location.x = 0;
+        if (this.selectingObj.location.y < 0)
+          this.selectingObj.location.y = 0;
+        const viewportRect = this.$refs['room'].getBoundingClientRect();
+        if (this.selectingObj.location.x + this.selectingObj.size.width > viewportRect.width)
+          this.selectingObj.location.x = viewportRect.width - this.selectingObj.size.width;
+        if (this.selectingObj.location.y + this.selectingObj.size.height > viewportRect.height)
+          this.selectingObj.location.y = viewportRect.height - this.selectingObj.size.height
+      },
+      resizeAction(change) {
+        this.selectingObj.size.width += change.offsetX;
+        this.selectingObj.size.height += change.offsetY;
       }
     }
   }
