@@ -11,7 +11,7 @@
          @touchstart.prevent.stop="e => onMouseDown(e, roomObject, actions.move)"
          :style="getRoomObjectContainerStyle(roomObject)">
       <slot name="room-object" v-bind:roomObject="roomObject"/>
-      <div v-if="(selectingObj === roomObject) && inEditMode"
+      <div v-if="inEditMode && (selectingObj === roomObject)"
            @mousedown.prevent.stop="e => onMouseDown(e, roomObject, actions.resize)"
            @touchstart.prevent.stop="e => onMouseDown(e, roomObject, actions.resize)"
            class="room__object__resizer" >
@@ -37,6 +37,7 @@
     },
     data: function () {
       return {
+        // selecting room object -- only use in edit mode
         selectingObj: null,
         // define a list of action available
         actions: {
@@ -83,7 +84,7 @@
           borderRadius: '4px'
         };
 
-        if ((this.selectingObj === roomObj) && this.inEditMode) {
+        if (this.inEditMode && (this.selectingObj === roomObj)) {
           style.border = '1px solid #1271FF'
         }
 
@@ -91,25 +92,26 @@
       },
       // action trigger
       onMouseDown(e, roomObject, action) {
-        this.selectingObj = roomObject;
-        this.action = action;
-        mouseEventUtil.normalizeEvent(e);
         if (this.inEditMode) {
+          this.selectingObj = roomObject;
+          mouseEventUtil.normalizeEvent(e);
+          this.action = action;
           this.lastPos = { x: e.clientX, y: e.clientY };
-          this.$emit('selectroomobject', roomObject)
+          this.$emit('selectRoomObject', roomObject)
         } else {
-          this.$emit('selectroomobject', roomObject)
+          this.$emit('selectRoomObject', roomObject)
         }
       },
       onMouseMove(e) {
-        mouseEventUtil.normalizeEvent(e);
-        if (this.action)
+        if (this.action) {
+          mouseEventUtil.normalizeEvent(e);
           this.applyChange(e)
+        }
       },
       onMouseUp(e) {
         // clear the action
         if (this.action) {
-          this.$emit('roomobjectchanged', this.selectingObj);
+          this.$emit('roomObjectChanged', this.selectingObj);
           this.action = null
         }
       },
