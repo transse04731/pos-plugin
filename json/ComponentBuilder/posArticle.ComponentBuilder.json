@@ -1,7 +1,6 @@
 {
   "events": [],
   "_id": "5dd910ed3781db3e0a1c7e62",
-  "__v": 0,
   "isProduction": true,
   "items": [
     {
@@ -744,7 +743,7 @@
         },
         {
           "choice": "view",
-          "component": "PosArticleNumpad",
+          "component": "PosOrderScreenNumberKeyboard",
           "binding": [],
           "slotScopeBinding": [],
           "slot": "keyboard",
@@ -777,7 +776,7 @@
         },
         {
           "choice": "view",
-          "component": "PosArticleFunctionButton",
+          "component": "PosOrderScreenButtonGroup",
           "binding": [],
           "slotScopeBinding": [],
           "slot": "buttons",

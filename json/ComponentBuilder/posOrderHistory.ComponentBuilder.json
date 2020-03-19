@@ -1,7 +1,6 @@
 {
   "events": [],
   "_id": "5ddba2ae9be9ab0ed00958a4",
-  "__v": 0,
   "items": [
     {
       "choice": "view",
@@ -385,7 +384,7 @@
         },
         "events": {
           "submit": {
-            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Order No',\n    text: val,\n    condition: {$where: '/.*'+val+'.*/.test(this.id)'}\n  }\n  this.$getService('PosStore:updateOrderHistoryFilter')(filter);\n  await this.$getService('PosStore:getOrderHistory')();\n  await this.$getService('PosStore:getTotalOrders')();\n}",
+            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Order No',\n    text: val,\n    condition: {$where: '/.*'+val+'.*/.test(this.id)'}\n  }\n  this.$getService('OrderStore:updateOrderHistoryFilter')(filter);\n  await this.$getService('OrderStore:getOrderHistory')();\n  await this.$getService('OrderStore:getTotalOrders')();\n}",
             "_code_type_": "commonJs"
           }
         }
@@ -413,14 +412,14 @@
           "label": "Barcode",
           "rules": [
             {
-              "_code_": "module.exports = function (val) {\n  const orders = root.$getService('PosStore:orderHistoryOrders');\n  const index = orders.findIndex(o => o.barcode.includes(val))\n  return index !== -1 || 'Not found'\n}",
+              "_code_": "module.exports = function (val) {\n  const orders = root.$getService('OrderStore:orderHistoryOrders');\n  const index = orders.findIndex(o => o.barcode.includes(val))\n  return index !== -1 || 'Not found'\n}",
               "_code_type_": "commonJs"
             }
           ]
         },
         "events": {
           "submit": {
-            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Barcode',\n    text: val,\n    condition: {barcode: {\"$regex\": val}}\n  }\n  this.$getService('PosStore:updateOrderHistoryFilter')(filter);\n  await this.$getService('PosStore:getOrderHistory')();\n  await this.$getService('PosStore:getTotalOrders')();\n}",
+            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Barcode',\n    text: val,\n    condition: {barcode: {\"$regex\": val}}\n  }\n  this.$getService('OrderStore:updateOrderHistoryFilter')(filter);\n  await this.$getService('OrderStore:getOrderHistory')();\n  await this.$getService('OrderStore:getTotalOrders')();\n}",
             "_code_type_": "commonJs"
           }
         }
@@ -450,7 +449,7 @@
         },
         "events": {
           "submit": {
-            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Staff',\n    text: val,\n    condition: {'user.name': { '$regex': val, $options: 'i'}}\n  }\n  this.$getService('PosStore:updateOrderHistoryFilter')(filter);\n  await this.$getService('PosStore:getOrderHistory')();\n  await this.$getService('PosStore:getTotalOrders')();\n}",
+            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Staff',\n    text: val,\n    condition: {'user.name': { '$regex': val, $options: 'i'}}\n  }\n  this.$getService('OrderStore:updateOrderHistoryFilter')(filter);\n  await this.$getService('OrderStore:getOrderHistory')();\n  await this.$getService('OrderStore:getTotalOrders')();\n}",
             "_code_type_": "commonJs"
           }
         }
@@ -480,7 +479,7 @@
         },
         "events": {
           "submit": {
-            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Amount',\n    text: val[0] + ' - ' + val[1],\n    condition: {vSum: { '$gte': val[0], '$lte': val[1] }}\n  }\n  this.$getService('PosStore:updateOrderHistoryFilter')(filter);\n  await this.$getService('PosStore:getOrderHistory')();\n  await this.$getService('PosStore:getTotalOrders')();\n}",
+            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Amount',\n    text: val[0] + ' - ' + val[1],\n    condition: {vSum: { '$gte': val[0], '$lte': val[1] }}\n  }\n  this.$getService('OrderStore:updateOrderHistoryFilter')(filter);\n  await this.$getService('OrderStore:getOrderHistory')();\n  await this.$getService('OrderStore:getTotalOrders')();\n}",
             "_code_type_": "commonJs"
           }
         }
@@ -520,7 +519,7 @@
       "content": {
         "events": {
           "submit": {
-            "_code_": "module.exports = async function () {\n  await this.$getService('PosStore:deleteOrder')();\n}",
+            "_code_": "module.exports = async function () {\n  await this.$getService('OrderStore:deleteOrder')();\n}",
             "_code_type_": "commonJs"
           }
         },

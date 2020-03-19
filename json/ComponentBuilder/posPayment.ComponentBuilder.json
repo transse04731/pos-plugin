@@ -1,7 +1,6 @@
 {
   "events": [],
   "_id": "5ddb9759b7744b22a49b5afa",
-  "__v": 0,
   "items": [
     {
       "choice": "view",
@@ -520,7 +519,7 @@
       "content": {
         "events": {
           "submit": {
-            "_code_": "module.exports = function(val) {\n  this.$getService('PosStore:discountCurrentOrder')(val)\n}",
+            "_code_": "module.exports = function(val) {\n  this.$getService('OrderStore:discountCurrentOrder')(val)\n}",
             "_code_type_": "commonJs"
           }
         }

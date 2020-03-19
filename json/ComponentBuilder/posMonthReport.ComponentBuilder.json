@@ -244,7 +244,7 @@
                 },
                 "events": {
                   "click": {
-                    "_code_": "module.exports = async function () {\n  try {\n    const posStore = this.$getService('PosStore');\n    const {monthReport, showAllZNumber,showProductSold, monthReportFrom, monthReportTo} = posStore;\n    const { salesByPayment, zNumbers, salesByCategory, total } = monthReport\n    const date = `${dayjs(monthReportFrom).format('D MMM YYYY')} - ${dayjs(monthReportTo).format('D MMM YYYY')}`;\n    const report = {\n      total,\n      salesByPayment,\n      date,\n      ...showAllZNumber && {zNumbers},\n      ...showProductSold && {salesByCategory}\n    };\n\n    await this.$getService('PosStore:printMonthlyReport')(report);\n  } catch(e) {\n    console.error(e)\n  }\n}",
+                    "_code_": "module.exports = async function () {\n  try {\n    const posStore = this.$getService('ReportsStore');\n    const {monthReport, showAllZNumber,showProductSold, monthReportFrom, monthReportTo} = posStore;\n    const { salesByPayment, zNumbers, salesByCategory, total } = monthReport\n    const date = `${dayjs(monthReportFrom).format('D MMM YYYY')} - ${dayjs(monthReportTo).format('D MMM YYYY')}`;\n    const report = {\n      total,\n      salesByPayment,\n      date,\n      ...showAllZNumber && {zNumbers},\n      ...showProductSold && {salesByCategory}\n    };\n\n    await this.$getService('ReportsStore:printMonthlyReport')(report);\n  } catch(e) {\n    console.error(e)\n  }\n}",
                     "_code_type_": "commonJs"
                   }
                 }
