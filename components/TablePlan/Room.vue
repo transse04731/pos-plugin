@@ -34,7 +34,6 @@
         default: 6
       },
       roomObjects: Array, // table and wall
-      roomObjectContainerStyle: Object
     },
     data: function () {
       return {
@@ -80,18 +79,12 @@
           transform: `rotate(${roomObj.rotate}deg)`,
           transformOrigin: '50% 50%',
           border: '1px solid transparent',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          borderRadius: '4px'
         };
 
         if ((this.selectingObj === roomObj) && this.inEditMode) {
           style.border = '1px solid #1271FF'
-        }
-
-        if (this.roomObjectContainerStyle) {
-          style = {
-            ...style,
-            ...this.roomObjectContainerStyle
-          }
         }
 
         return style
