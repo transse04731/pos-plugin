@@ -36,10 +36,7 @@
         if (this.selectedReportDate && this.selectedReportDate.date === value) return
         this.date = value
 
-        this.selectedReportDate = Object.assign({}, this.selectedReportDate, {
-          date: dayjs(value, 'YYYY-MM-DD').toDate(),
-          reports: this.$getService('ReportsStore:getDailyReports')(value)
-        })
+        this.$getService('ReportsStore:getDailyReports')(dayjs(value, 'YYYY-MM-DD').toDate())
       },
       async getDatesWithReport(date) {
         this.eventDates = await this.$getService('ReportsStore:getDatesWithReports')(date)

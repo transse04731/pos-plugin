@@ -75,8 +75,10 @@
         this.showEndOfDayConfirmDialog = true
       },
       async save(reports) {
+        const date = this.selectedReportDate.date || new Date()
         await this.$getService('ReportsStore:finalizeReport')(reports)
-        await this.$getService('ReportsStore:getDatesWithReports')(this.selectedReportDate.date || new Date())
+        await this.$getService('ReportsStore:getDatesWithReports')(date)
+        this.$getService('ReportsStore:getDailyReports')(date)
       }
     }
   }
