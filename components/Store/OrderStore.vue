@@ -5,6 +5,7 @@
 <script>
   import orderUtil from '../logic/orderUtil';
   import { getProductGridOrder, getLatestOrderId, getBookingNumber, getVDate } from '../logic/productUtils';
+  import { getProvided } from '../logic/commonUtils';
 
   export default {
     name: 'OrderStore',
@@ -420,54 +421,17 @@
 
       // this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
     },
+    watch: {
+      'orderHistoryPagination.limit'(newVal) {
+        localStorage.setItem('orderHistoryPageSize', newVal)
+      },
+    },
     provide() {
       return {
-        activeProductWindow: this.activeProductWindow,
-        activeTableProduct: this.activeTableProduct,
-        scrollWindowProducts: this.scrollWindowProducts,
-        activeProduct: this.activeProduct,
-        addItemQuantity: this.addItemQuantity,
-        removeItemQuantity: this.removeItemQuantity,
-        currentOrder: this.currentOrder,
-        calculateNewPrice: this.calculateNewPrice,
-        resetOrderData: this.resetOrderData,
-        savePaidOrder: this.savePaidOrder,
-        removeSavedOrder: this.removeSavedOrder,
-        selectSavedOrder: this.selectSavedOrder,
-        savedOrders: this.savedOrders,
-        productIdQuery: this.productIdQuery,
-        productIdQueryResults: this.productIdQueryResults,
-        queryProductsById: this.queryProductsById,
-        productNameQuery: this.productNameQuery,
-        productNameQueryResults: this.productNameQueryResults,
-        queryProductsByName: this.queryProductsByName,
-        chooseFunction: this.chooseFunction,
-        isActiveFnBtn: this.isActiveFnBtn,
-        compactOrder: this.compactOrder,
-        updateNewPrice: this.updateNewPrice,
-        discountCurrentOrder: this.discountCurrentOrder,
-        //order history screen
-        orderHistoryOrders: this.orderHistoryOrders,
-        orderHistoryFilters: this.orderHistoryFilters,
-        orderHistoryCurrentOrder: this.orderHistoryCurrentOrder,
-        deleteOrder: this.deleteOrder,
-        getOrderHistory: this.getOrderHistory,
-        updateOrderHistoryFilter: this.updateOrderHistoryFilter,
-        totalOrders: this.totalOrders,
-        orderHistoryPagination: this.orderHistoryPagination,
-        getTotalOrders: this.getTotalOrders,
-        printOrderReport: this.printOrderReport,
-        //payment screen
-        paymentTotal: this.paymentTotal,
-        paymentAmountTendered: this.paymentAmountTendered,
-        paymentTip: this.paymentTip,
-        paymentChange: this.paymentChange,
-        paymentDiscount: this.paymentDiscount,
-        paymentTax: this.paymentTax,
-        paymentSubTotal: this.paymentSubTotal,
-        paymentOrderDetail: this.paymentOrderDetail,
-        lastPayment: this.lastPayment,
-      };
+        ...getProvided(this.$data, this),
+        ...getProvided(this.$options.methods, this),
+        ...getProvided(this.$options.computed, this)
+      }
     }
   }
 </script>

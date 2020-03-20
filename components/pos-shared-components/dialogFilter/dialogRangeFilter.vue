@@ -8,7 +8,7 @@
 			<pos-range-slider :min="min" :max="max" v-model="filter"/>
 			<div class="range-value">
 				<span>{{min === 0 ? min : '€ ' + min}}</span>
-				<span>€ {{max}}</span>
+				<span>{{$t('common.currency')}} {{max}}</span>
 			</div>
 			<div class="buttons">
 				<g-btn :uppercase="false" text @click="internalValue = false" outlined width="120" style="margin-right: 8px">{{$t('ui.cancel')}}</g-btn>

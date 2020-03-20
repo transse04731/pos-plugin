@@ -26,7 +26,7 @@
 				</div>
 			</div>
 			<div class="row-flex align-items-center justify-center">
-				<pos-time-picker :label="$t('settings.beginHour')" v-model="beginHour" @change="changeSetting">
+				<pos-time-picker :label="$t('settings.beginHour')" :value="beginHour" @input="beginHour = $event; changeSetting()">
 					<template v-slot:append>
 						<g-icon>access_time</g-icon>
 					</template>
@@ -45,7 +45,7 @@
       'SettingsStore:generalSettings',
       'SettingsStore:getGeneralSettings',
       'SettingsStore:updateSettings',
-      'PosStore:resetLayoutFnBtn',
+      'SettingsStore:resetLayoutFnBtn',
     ],
     computed: {
       barcode: {

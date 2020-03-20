@@ -231,7 +231,7 @@
   export default {
     name: 'PosFnButtonView',
     components: { DialogFnButtonProductLookup, PosTextField },
-    injectService: ['PosStore:( updatePosSettings )'],
+    injectService: ['updatePosSettings:updatePosSettings'],
     mixins: [layoutConfigMixin],
     data: () => ({
       layout: fnButtonLayout,

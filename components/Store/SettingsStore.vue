@@ -4,6 +4,7 @@
 
 <script>
   import { getHighestFavouriteProductOrder, getHighestProductOrder, getProductGridOrder } from '../logic/productUtils';
+  import { getProvided } from '../logic/commonUtils';
 
   export default {
     name: 'SettingsStore',
@@ -11,7 +12,7 @@
     injectService: ['PosStore:user'],
     data() {
       const i18n = this.$i18n;
-      const {sidebar} = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
+      const { sidebar } = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
 
       return {
         sidebarData: [
@@ -113,9 +114,9 @@
         if (oldID && !newName) {
           const deletedCategory = this.listCategories.find(c => c._id === oldID);
           let res = await categoryModel.deleteOne({ '_id': oldID });
-          if(res.deletedCount === 1) {
+          if (res.deletedCount === 1) {
             const ids = this.listCategories.filter(c => c.position > deletedCategory.position).map(c => c._id)
-            await categoryModel.updateMany({'_id': {'$in': ids}}, {'$inc': {position: -1}})
+            await categoryModel.updateMany({ '_id': { '$in': ids } }, { '$inc': { position: -1 } })
           }
         } else if (!oldID && newName) {
           await categoryModel.create({ name: newName, position: newPosition });
@@ -132,15 +133,15 @@
         const swapItem = this.listCategories.find(c => c.position === (position - increment))
         if (!swapItem) return
 
-        await categoryModel.updateOne({_id: this.selectedCategory._id}, {'$inc': { position: -increment}})
-        await categoryModel.updateOne({_id: swapItem._id}, {'$inc': { position: increment}})
+        await categoryModel.updateOne({ _id: this.selectedCategory._id }, { '$inc': { position: -increment } })
+        await categoryModel.updateOne({ _id: swapItem._id }, { '$inc': { position: increment } })
 
         this.listCategories = await this.getAllCategories()
         this.selectedCategory = this.listCategories.find(c => c._id === this.selectedCategory._id)
       },
       //article view
       async findCategoryByName(name) {
-        return cms.getModel('Category').find({name: {$regex: name, $options: 'i'}})
+        return cms.getModel('Category').find({ name: { $regex: name, $options: 'i' } })
       },
       updateProductFilters(filter) {
         const index = this.productFilters.findIndex(f => f.title === filter.title);
@@ -561,76 +562,33 @@
       },
       //<!--</editor-fold>-->
 
-
+      // utils
+      getHighestProductOrder,
+      getHighestFavouriteProductOrder,
+      async updatePosSettings(item, dbButtonList, mergeMap) {
+        try {
+          await cms.getModel('PosSetting').findOneAndUpdate({ [`${dbButtonList}._id`]: item.buttonId }, {
+            '$set': {
+              [`${dbButtonList}.$.backgroundColor`]: item.style.backgroundColor,
+              [`${dbButtonList}.$.text`]: item.text,
+              [`${dbButtonList}.$.rows`]: item.row,
+              [`${dbButtonList}.$.cols`]: item.col,
+              [`${dbButtonList}.$.textColor`]: ['#73F8F8', '#FFFFFF'].includes(item.style.backgroundColor) ? '#000000' : '#FFFFFF',
+              [`${dbButtonList}.$.buttonFunction`]: item.buttonFunction,
+              [`${dbButtonList}.$.buttonFunctionValue`]: item.buttonFunctionValue,
+              [`${dbButtonList}.$.containedButtons`]: mergeMap && mergeMap[item.buttonId] ? mergeMap[item.buttonId] : [],
+              [`${dbButtonList}.$.buyback`]: item.buyback,
+            }
+          });
+        } catch (e) {
+          console.log('Error updating updatePosSettings', e);
+        }
+      },
     },
     provide() {
       return {
-        //settings screen
-        sidebarData: this.sidebarData,
-        //category view
-        listCategories: this.listCategories,
-        selectedCategory: this.selectedCategory,
-        updateCategory: this.updateCategory,
-        swapCategoryPosition: this.swapCategoryPosition,
-        //article view
-        getListProducts: this.getListProducts,
-        listProducts: this.listProducts,
-        productFilters: this.productFilters,
-        updateProductFilters: this.updateProductFilters,
-        productSortCondition: this.productSortCondition,
-        selectedProductIDs: this.selectedProductIDs,
-        deleteSelectedProducts: this.deleteSelectedProducts,
-        totalProducts: this.totalProducts,
-        getTotalProducts: this.getTotalProducts,
-        createNewProduct: this.createNewProduct,
-        getAllTaxCategory: this.getAllTaxCategory,
-        getHighestProductOrder,
-        getHighestFavouriteProductOrder,
-        selectedProduct: this.selectedProduct,
-        isEditProduct: this.isEditProduct,
-        updateProduct: this.updateProduct,
-        findCategoryByName: this.findCategoryByName,
-        productPagination: this.productPagination,
-        //payment view
-        listPayments: this.listPayments,
-        getListPayments: this.getListPayments,
-        selectedPayment: this.selectedPayment,
-        updatePayment: this.updatePayment,
-        //general setting view
-        generalSettings: this.generalSettings,
-        getGeneralSettings: this.getGeneralSettings,
-        updateSettings: this.updateSettings,
-        //company info view
-        companyInfo: this.companyInfo,
-        getCompanyInfo: this.getCompanyInfo,
-        updateCompanyInfo: this.updateCompanyInfo,
-        //user view
-        listUsers: this.listUsers,
-        selectedUser: this.selectedUser,
-        getListUsers: this.getListUsers,
-        updateUser: this.updateUser,
-        getListAvatar: this.getListAvatar,
-        //printer view
-        thermalPrinter: this.thermalPrinter,
-        getThermalPrinter: this.getThermalPrinter,
-        updateThermalPrinter: this.updateThermalPrinter,
-        //tax category view
-        selectedTaxCategory: this.selectedTaxCategory,
-        listTaxCategories: this.listTaxCategories,
-        updateTaxCategory: this.updateTaxCategory,
-        // article config
-        activeCategory: this.activeCategory,
-        activeCategoryProducts: this.activeCategoryProducts,
-        getActiveProducts: this.getActiveProducts,
-        getAllCategories: this.getAllCategories,
-        selectArticle: this.selectArticle,
-        articleSelectedProductButton: this.articleSelectedProductButton,
-        setSelectedArticleColor: this.setSelectedArticleColor,
-        articleSelectedColor: this.articleSelectedColor,
-        switchProductOrder: this.switchProductOrder,
-        updateArticleOrders: this.updateArticleOrders,
-        getProductLayout: this.getProductLayout,
-        getPosSetting: this.getPosSetting,
+        ...getProvided(this.$data, this),
+        ...getProvided(this.$options.methods, this),
       }
     }
   }

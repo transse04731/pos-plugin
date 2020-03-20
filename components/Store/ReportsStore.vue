@@ -4,6 +4,7 @@
 
 <script>
   import * as jsonfn from 'json-fn';
+  import { getProvided } from '../logic/commonUtils';
 
   export default {
     name: 'ReportsStore',
@@ -208,28 +209,8 @@
     },
     provide() {
       return {
-        //daily reports
-        selectedReportDate: this.selectedReportDate,
-        listOfDatesWithReports: this.listOfDatesWithReports,
-        getDatesWithReports: this.getDatesWithReports,
-        getDailyReports: this.getDailyReports,
-        getOldestPendingReport: this.getOldestPendingReport,
-        finalizeReport: this.finalizeReport,
-        printZReport: this.printZReport,
-        getXReport: this.getXReport,
-        printXReport: this.printXReport,
-        //month report screen
-        selectedMonth: this.selectedMonth,
-        monthReportFrom: this.monthReportFrom,
-        monthReportTo: this.monthReportTo,
-        showProductSold: this.showProductSold,
-        showAllZNumber: this.showAllZNumber,
-        monthReport: this.monthReport,
-        getMonthReport: this.getMonthReport,
-        printMonthlyReport: this.printMonthlyReport,
-        //Staff Report Screen
-        getOrderSalesByStaff: this.getOrderSalesByStaff,
-        printStaffReport: this.printStaffReport,
+        ...getProvided(this.$data, this),
+        ...getProvided(this.$options.methods, this),
       }
     }
   }

@@ -5,6 +5,7 @@
 <script>
   import _ from 'lodash'
   import customParseFormat from 'dayjs/plugin/customParseFormat'
+  import { getProvided } from '../logic/commonUtils';
 
   dayjs.extend(customParseFormat)
 
@@ -44,28 +45,7 @@
         }
       },
       //<!--</editor-fold>-->
-
-
       //Layout config views
-      async updatePosSettings(item, dbButtonList, mergeMap) {
-        try {
-          await cms.getModel('PosSetting').findOneAndUpdate({ [`${dbButtonList}._id`]: item.buttonId }, {
-            '$set': {
-              [`${dbButtonList}.$.backgroundColor`]: item.style.backgroundColor,
-              [`${dbButtonList}.$.text`]: item.text,
-              [`${dbButtonList}.$.rows`]: item.row,
-              [`${dbButtonList}.$.cols`]: item.col,
-              [`${dbButtonList}.$.textColor`]: ['#73F8F8', '#FFFFFF'].includes(item.style.backgroundColor) ? '#000000' : '#FFFFFF',
-              [`${dbButtonList}.$.buttonFunction`]: item.buttonFunction,
-              [`${dbButtonList}.$.buttonFunctionValue`]: item.buttonFunctionValue,
-              [`${dbButtonList}.$.containedButtons`]: mergeMap && mergeMap[item.buttonId] ? mergeMap[item.buttonId] : [],
-              [`${dbButtonList}.$.buyback`]: item.buyback,
-            }
-          });
-        } catch (e) {
-          console.log('Error updating updatePosSettings', e);
-        }
-      },
     },
     async created() {
       this.user = cms.getList('PosSetting')[0].user[0]
@@ -74,21 +54,10 @@
     beforeDestroy() {
       this.setDateInterval && clearInterval(this.setDateInterval)
     },
-    watch: {
-      'orderHistoryPagination.limit'(newVal) {
-        localStorage.setItem('orderHistoryPageSize', newVal)
-      },
-    },
     provide() {
       return {
-        // login
-        loginPassword: this.loginPassword,
-        login: this.login,
-        resetIncorrectPasscodeFlag: this.resetIncorrectPasscodeFlag,
-        user: this.user,
-        systemDate: this.systemDate,
-        //Layout config views
-        updatePosSettings: this.updatePosSettings,
+        ...getProvided(this.$data, this),
+        ...getProvided(this.$options.methods, this),
       }
     }
   }

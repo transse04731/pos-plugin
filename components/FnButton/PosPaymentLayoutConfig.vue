@@ -172,7 +172,7 @@
   export default {
     name: 'PosPaymentLayoutConfig',
     components: { PosSelect, PosTextField, GButtonMerger },
-    injectService: ['PosStore:updatePosSettings', 'SettingsStore:listPayments'],
+    injectService: ['SettingsStore:(listPayments, updatePosSettings)'],
     mixins: [layoutConfigMixin],
     data: () => ({
       layout: paymentLayout,
