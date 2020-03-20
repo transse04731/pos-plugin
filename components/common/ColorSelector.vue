@@ -22,23 +22,15 @@
 </template>
 
 <script>
+  import _ from 'lodash'
 
   export default {
     name: 'ColorSelector',
     props: {
       value: String,
-      values: {
+      colors: {
         type: Array,
-        default: () => [
-          { id: 1, text: '#FBE4EC', value: '#FBE4EC' },
-          { id: 2, text: '#CE93D8', value: '#CE93D8' },
-          { id: 3, text: '#B2EBF2', value: '#B2EBF2' },
-          { id: 4, text: '#C8E6C9', value: '#C8E6C9' },
-          { id: 5, text: '#DCE775', value: '#DCE775' },
-          { id: 6, text: '#FFF59D', value: '#FFF59D' },
-          { id: 7, text: '#FFCC80', value: '#FFCC80' },
-          { id: 8, text: '#FFAB91', value: '#FFAB91' },
-        ]
+        default: () => ['#FBE4EC', '#CE93D8', '#B2EBF2', '#C8E6C9', '#DCE775', '#FFF59D', '#FFCC80', '#FFAB91' ]
       },
       itemSize: {
         type: [Number, String],
@@ -54,8 +46,10 @@
       }
     },
     data: function () {
+      const toColorModel = colors => _.map(colors, (c, i) => ({ index: i, text: c, value: c }))
       return {
-        internalColor: this.value
+        internalColor: this.value,
+        values: toColorModel(this.colors)
       }
     },
     methods: {

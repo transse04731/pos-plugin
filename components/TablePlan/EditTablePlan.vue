@@ -42,7 +42,7 @@
             </pos-text-field>
             <div style="margin: 5px">
               <div> Color:</div>
-              <color-selector :value="roomObj.bgColor" :values="tableColors" @input="changeRoomObjColor" :item-size="18" :badge-size="12"/>
+              <color-selector :value="roomObj.bgColor" :colors="tableColors" @input="changeRoomObjColor" :item-size="18" :badge-size="12"/>
               <div style="display: flex; align-items: center">
                 <span style="margin-right: 10px">Take away:</span>
                 <g-switch v-model="roomObj.takeAway" @change="changeRoomObjTakeAway"/>
@@ -54,7 +54,7 @@
           <template v-else-if="isWall(roomObj)">
             <div style="margin: 5px">
               <div> Color:</div>
-              <color-selector :value="roomObj.bgColor" :values="wallColors" @input="changeRoomObjColor" :item-size="18" :badge-size="12"/>
+              <color-selector :value="roomObj.bgColor" :colors="wallColors" @input="changeRoomObjColor" :item-size="18" :badge-size="12"/>
             </div>
           </template>
           <div style="display: flex; margin: 5px; justify-content: space-between">
@@ -124,13 +124,12 @@
     injectService: ['PosStore:user'],
     props: {},
     data: function () {
-      const toColorModel = colors => _.map(colors, (c, i) => ({ index: i, text: c, value: c }))
       return {
         rooms: null,
         room: null,
         roomObj: null,
-        tableColors: toColorModel(['#FFFFFF', '#FBE4EC', '#EDE7F6', '#E1F5FE', '#FFFDE7', '#E8F5E9', '#EFEBE9', '#F5F5F5']),
-        wallColors: toColorModel(['#FFFFFF', '#CCCCCC', '#4D0019', '#404040', '#86592D', '#A6A6A6', '#FFD480', '#E4E4E4']),
+        tableColors: ['#FFFFFF', '#FBE4EC', '#EDE7F6', '#E1F5FE', '#FFFDE7', '#E8F5E9', '#EFEBE9', '#F5F5F5'],
+        wallColors: ['#FFFFFF', '#CCCCCC', '#4D0019', '#404040', '#86592D', '#A6A6A6', '#FFD480', '#E4E4E4'],
         showAddNewRoomBtn: false,
         dialog: {
           showRoomNameKbd: false,
