@@ -1,5 +1,6 @@
 <template>
   <div class="product-editor">
+    <!-- Product basic info -->
     <div class="product-editor__prop-grid">
       <div>Type:</div>
       <g-select v-model="selectedProduct.type" :items="types" @input="updateProduct({ type: $event })"/>
@@ -18,21 +19,19 @@
     </div>
 
     <!-- Printer -->
-    <div class="product-editor__prop">
-      <span class="product-editor__label">Printer</span> <g-btn @click="add2Printer">+2.Printer</g-btn>
-    </div>
     <div>
-      <g-grid-select mandatory multiple v-model="selectedProduct.groupPrinter" item-text="name" item-value="_id" :items="printers">
-        <template #default="{ toggleSelect, item, index }">
-          <g-btn style="margin-right: 4px" @click="toggleSelect(item)">{{item.name}}</g-btn>
-        </template>
-        <template #selected="{ toggleSelect, item, index }">
-          <g-btn style="margin-right: 4px"  @click="toggleSelect(item)" background-color="blue" text-color="white">{{item.name}}</g-btn>
-        </template>
-      </g-grid-select>
+      <div class="product-editor__prop">
+        <span class="product-editor__label">Printer</span> <g-btn v-if="showAddPrinter2" @click="add2Printer">+2.Printer</g-btn>
+      </div>
+      <div>
+        <div v-for="(item, index) in printers" :key="index">
+          <g-btn :style="getPrinterStyle(item)" @click="selectPrinter(item)" />
+        </div>
+        <g-btn @click="deselectPrinter">No Printer</g-btn>
+      </div>
     </div>
 
-    <!-- -->
+    <!-- Tax -->
     <div style="display: flex">
       <div style="width: 50%">
         <div>Dine in Tax</div>
@@ -59,23 +58,32 @@
       </div>
     </div>
 
-    <div>Color</div>
-    <color-selector :value="selectedProduct.color" :colors="colors" :item-size="25" @input="updateProductLayout({ color: $event })"/>
-
-    <div>Happy Hour</div>
-    <div>14:00 - 17:00 : 20%</div>
-    <div>Mo Di Mi Do Fr Sa So</div>
-
-    <div>Category</div>
+    <!-- Color -->
     <div>
-      <g-grid-select madatory multiple v-model="selectedProduct.category" item-text="name" item-value="value" :items="categories">
-        <template #default="{ toggleSelect, item, index }">
-          <g-btn style="margin-right: 4px" @click="toggleSelect(item)">{{item.name}}</g-btn>
-        </template>
-        <template #selected="{ toggleSelect, item, index }">
-          <g-btn style="margin-right: 4px"  @click="toggleSelect(item)" background-color="blue" text-color="white">{{item.name}}</g-btn>
-        </template>
-      </g-grid-select>
+      <div>Color</div>
+      <color-selector :value="selectedProduct.color" :colors="colors" :item-size="25" @input="updateProductLayout({ color: $event })"/>
+    </div>
+
+    <!-- Happy hour -->
+    <div>
+      <div>Happy Hour</div>
+      <div>14:00 - 17:00 : 20%</div>
+      <div>Mo Di Mi Do Fr Sa So</div>
+    </div>
+
+    <!-- Category -->
+    <div>
+      <div>Category</div>
+      <div>
+        <g-grid-select madatory multiple v-model="selectedProduct.category" item-text="name" item-value="value" :items="categories">
+          <template #default="{ toggleSelect, item, index }">
+            <g-btn style="margin-right: 4px" @click="toggleSelect(item)">{{item.name}}</g-btn>
+          </template>
+          <template #selected="{ toggleSelect, item, index }">
+            <g-btn style="margin-right: 4px"  @click="toggleSelect(item)" background-color="blue" text-color="white">{{item.name}}</g-btn>
+          </template>
+        </g-grid-select>
+      </div>
     </div>
 
     <template>
@@ -86,10 +94,11 @@
 <script>
   import _ from 'lodash';
   import ColorSelector from '../common/ColorSelector';
+  import GGridItemSelector from '../FnButton/components/GGridItemSelector';
 
   export default {
     name: 'ProductEditor',
-    components: { ColorSelector },
+    components: { GGridItemSelector, ColorSelector },
     props: {
       orderLayout: Object,
       selectedCategoryLayout: Object,
@@ -102,6 +111,8 @@
         //
         types: _.map([ 'Article', 'Div.Article', 'Text', 'Menu' ], toGSelectModel),
         //
+        showAddPrinter2: true,
+        isPrinter2Select: false,
         printers: [{ id:1, name:'Bar', value: 'Bar'}, { id: 2, name: 'Kitchen', value: 'Kitchen'}, { id: 3, name: 'No Printer', value: 'No Printer' }],
         //
         dineInTaxes: [{ id: 1, name: '19%', value: '19%' }, { id: 1, name: '7%', value: '7%' }],
@@ -131,8 +142,41 @@
       }
     },
     methods: {
+      getPrinterStyle(printer) {
+        if (printer === this.selectedProduct.groupPrinter) {
+          return {
+            backgroundColor: 'red'
+          }
+        } else if (printer === this.selectedProduct.groupPrinter2) {
+          return {
+            backgroundColor: 'blue'
+          }
+        }
+      },
       add2Printer() {
-
+        this.isPrinter2Select = true
+      },
+      async selectPrinter(printer) {
+        if (this.isPrinter2Select) {
+          this.selectedProduct.groupPrinter2 = printer
+        } else {
+          this.selectedProduct.groupPrinter = printer;
+          this.selectedProduct.groupPrinter2 = null
+        }
+        await this.updateProduct({
+          groupPrinter: this.selectedProduct.groupPrinter,
+          groupPrinter2: this.selectedProduct.groupPrinter2
+        })
+      },
+      async deselectPrinter() {
+        this.showAddPrinter2 = false;
+        this.isPrinter2Select = false;
+        this.selectedProduct.groupPrinter = null;
+        this.selectedProduct.groupPrinter2 = null;
+        await this.updateProduct({
+          groupPrinter: null,
+          groupPrinter2: null
+        })
       },
 
       async changeProductName(name) {
