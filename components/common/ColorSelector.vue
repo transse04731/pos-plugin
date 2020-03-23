@@ -52,6 +52,11 @@
         values: toColorModel(this.colors)
       }
     },
+    watch: {
+      value(newVal) {
+        this.internalColor = newVal
+      }
+    },
     methods: {
       updateColor(color) {
         this.internalColor = color
