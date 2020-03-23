@@ -38,16 +38,6 @@
       "flex": "md4"
     },
     {
-      "_id": "5dddfbd26387aac1c8e1d050",
-      "schemaType": "objectId",
-      "key": "category",
-      "ref": "Category",
-      "autopopulate": true,
-      "type": "ref-select",
-      "labelProp": "name",
-      "editable": true
-    },
-    {
       "_id": "5c5eda4514922b1ee01777a3",
       "schemaType": "number",
       "type": "input@select:number",
@@ -90,6 +80,17 @@
       ],
       "key": "tax2",
       "flex": "md4"
+    },
+    {
+      "_id": "5e782f1efbe5dc038265be12",
+      "schemaType": "objectId",
+      "key": "category",
+      "ref": "Category",
+      "autopopulate": true,
+      "type": "ref-select",
+      "label": "name",
+      "labelProp": "name",
+      "clipboardType": "cut"
     },
     {
       "_id": "5ddce0a012b6deb726104504",
@@ -152,44 +153,21 @@
       "autopopulate": true,
       "type": "ref-select",
       "flex": null,
-      "labelProp": "_id",
+      "labelProp": "name",
       "addable": false,
       "editable": true
     },
     {
-      "_id": "5dde399503adeaca5263a27d",
-      "schemaType": "array",
-      "key": "layouts",
-      "type": "array",
-      "fields": [
-        {
-          "schemaType": "string",
-          "key": "color",
-          "type": "input"
-        },
-        {
-          "schemaType": "number",
-          "key": "order",
-          "type": "input@number"
-        },
-        {
-          "schemaType": "boolean",
-          "key": "favourite",
-          "type": "input@checkbox"
-        },
-        {
-          "schemaType": "string",
-          "key": "device",
-          "default": "pos",
-          "type": "input@select",
-          "optionsType": "onlyValue",
-          "options": [
-            "pos",
-            "mobile"
-          ]
-        }
-      ],
-      "flex": "md12"
+      "_id": "5e7844d0fbe5dc038265bebb",
+      "schemaType": "objectId",
+      "key": "groupPrinter2",
+      "ref": "GroupPrinter",
+      "autopopulate": true,
+      "type": "ref-select",
+      "label": "",
+      "labelProp": "name",
+      "addable": null,
+      "editable": true
     },
     {
       "_id": "5df1b99ffdeb6602ac49d3d6",
@@ -233,10 +211,9 @@
       "addable": true
     },
     {
-      "_id": "5e78674886e3ec0997b5e4d9",
+      "_id": "5e74bab077c3dd141336469f",
       "schemaType": "boolean",
-      "key": "isItemNote",
-      "type": "input@switch"
+      "key": "isModifier"
     }
   ],
   "id": "5c46e1c05889c52fe001ab7b",
