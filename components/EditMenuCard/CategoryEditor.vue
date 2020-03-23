@@ -95,15 +95,16 @@
       async updateCategory(change) {
         if (!this.selectedCategoryLayout.isEmpty) {
           const qry = { 'categories._id': this.selectedCategoryLayout._id }
-          const setObj = {};
-          _.each(_.keys(change), k => setObj[`categories.$.${k}`] = change[k]);
-          const set =  { $set: setObj };
+          const set =  { $set: _.reduce(change, (result, value, key) => {
+            result[`categories.$.${key}`] = value;
+            return result
+          }, {}) };
           console.log('update', qry, 'set', set);
           await cms.getModel('OrderLayout').findOneAndUpdate(qry, set);
         }
         // TODO: Show notification after each update
         // TODO: sync between db and in-memory object
-        _.each(_.keys(change), k => this.selectedCategoryLayout[k] = change[k]);
+        _.assign(this.selectedCategoryLayout, change)
       },
     }
   }
