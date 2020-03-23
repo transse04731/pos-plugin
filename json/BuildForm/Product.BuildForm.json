@@ -226,6 +226,12 @@
       "schemaType": "boolean",
       "key": "isNoPrint",
       "type": "input@switch"
+    },
+    {
+      "_id": "5e788d6a5d78da15459b9810",
+      "schemaType": "boolean",
+      "key": "isDivArticle",
+      "type": "input@switch"
     }
   ],
   "id": "5c46e1c05889c52fe001ab7b",
