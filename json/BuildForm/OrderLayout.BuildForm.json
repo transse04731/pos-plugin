@@ -79,6 +79,36 @@
               "schemaType": "number",
               "key": "left",
               "type": "input@number"
+            },
+            {
+              "schemaType": "string",
+              "key": "type",
+              "type": "input@select",
+              "addable": true,
+              "optionsType": "textValue",
+              "options": [
+                {
+                  "value": "Article",
+                  "text": "Article"
+                },
+                {
+                  "value": "Div.Article",
+                  "text": "Div.Article"
+                },
+                {
+                  "value": "Menu",
+                  "text": "Menu"
+                },
+                {
+                  "value": "Text",
+                  "text": "Text"
+                }
+              ]
+            },
+            {
+              "schemaType": "string",
+              "key": "text",
+              "type": "input"
             }
           ],
           "type": "tableArray"
