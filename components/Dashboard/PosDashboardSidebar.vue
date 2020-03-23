@@ -42,7 +42,7 @@
         default: 'Admin'
       },
       items: Array,
-      value: Object
+      view: null
     },
     data() {
       return {
