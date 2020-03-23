@@ -214,6 +214,18 @@
       "_id": "5e74bab077c3dd141336469f",
       "schemaType": "boolean",
       "key": "isModifier"
+    },
+    {
+      "_id": "5e7871894eddea12eaf34bd2",
+      "schemaType": "boolean",
+      "key": "isItemNote",
+      "type": "input@switch"
+    },
+    {
+      "_id": "5e7871894eddea12eaf34bd3",
+      "schemaType": "boolean",
+      "key": "isNoPrint",
+      "type": "input@switch"
     }
   ],
   "id": "5c46e1c05889c52fe001ab7b",
