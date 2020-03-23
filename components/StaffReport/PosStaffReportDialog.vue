@@ -15,8 +15,8 @@
           <div class="detail-header">{{$t('report.staffName')}}: {{item.name}}</div>
           <div v-if="orderSalesByStaff && orderSalesByStaff.user[orderSalesByStaff.name]">
             <div class="detail-header">{{$t('report.reportDate')}}: {{reportDate}}</div>
-            <div class="detail-time">{{$t('report.firstOrder')}}: {{ (orderSalesByStaff.user[orderSalesByStaff.name].from) | formatTime}}</div>
-            <div class="detail-time">{{$t('report.lastOrder')}}: {{ (orderSalesByStaff.user[orderSalesByStaff.name].to) | formatTime}}</div>
+            <div class="detail-time">{{$t('report.firstOrder')}}: {{ getFormattedTime(orderSalesByStaff.user[orderSalesByStaff.name].from)}}</div>
+            <div class="detail-time">{{$t('report.lastOrder')}}: {{ getFormattedTime(orderSalesByStaff.user[orderSalesByStaff.name].to)}}</div>
           </div>
 
           <div class="sales-details-header">{{$t('common.sales')}}</div>
@@ -89,7 +89,7 @@
       value: null
     },
     injectService: [
-      'PosStore:systemDate',
+      'PosStore:(systemDate, dateFormat, timeFormat)',
       'ReportsStore:(getOrderSalesByStaff, printStaffReport)',
       'SettingsStore:(getListUsers, listUsers)'
     ],
@@ -100,7 +100,7 @@
     }),
     computed: {
       reportDate() {
-        return dayjs(this.systemDate).format('DD/MM/YYYY')
+        return dayjs(this.systemDate).format(this.dateFormat)
       }
     },
     watch: {
@@ -123,6 +123,9 @@
           return
         }
         return await this.printStaffReport(this.orderSalesByStaff)
+      },
+      getFormattedTime(val) {
+        return val ? dayjs(val).format(`${this.dateFormat} ${this.timeFormat}`) : ''
       }
     },
     async mounted() {
@@ -138,9 +141,6 @@
     filters: {
       formatNumber: (val) => {
         return isNaN(val) ? '0.00' : val.toFixed(2)
-      },
-      formatTime: (val) => {
-        return val ? dayjs(val).format('DD/MM HH:mm') : ''
       }
     },
   }

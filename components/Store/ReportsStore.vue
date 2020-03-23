@@ -9,6 +9,7 @@
   export default {
     name: 'ReportsStore',
     domain: 'ReportsStore',
+    injectService: ['PosStore:dateFormat'],
     data() {
       return {
         selectedReportDate: null,
@@ -165,7 +166,7 @@
           }
         })
         zNumbers = _.reduce(zNumbers, (acc, data, date) => {
-          acc.push(..._.map(data, (sum, z) => ({ z, sum, date: dayjs(date, 'DD-MM-YYYY').format('DD.MM.YYYY') })))
+          acc.push(..._.map(data, (sum, z) => ({ z, sum, date: dayjs(date, 'DD-MM-YYYY').format(this.dateFormat) })))
           return acc
         }, [])
 

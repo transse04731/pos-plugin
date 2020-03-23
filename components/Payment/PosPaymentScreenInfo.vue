@@ -24,10 +24,10 @@
 <script>
   export default {
     name: 'PosPaymentScreenInfo',
-    injectService: ['PosStore:(user,systemDate)'],
+    injectService: ['PosStore:(user, systemDate, timeFormat, dateFormat)'],
     computed: {
       formattedDate() {
-        return dayjs(this.systemDate).format(`HH:mm ‧ MMM DD, YY`)
+        return dayjs(this.systemDate).format(`${this.timeFormat} ‧ ${this.dateFormat}`)
       },
     },
   }

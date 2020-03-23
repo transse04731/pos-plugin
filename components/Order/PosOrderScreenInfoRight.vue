@@ -13,13 +13,13 @@
 <script>
   export default {
     name: 'PosOrderScreenInfoRight',
-    injectService: ['PosStore:(user,systemDate)'],
+    injectService: ['PosStore:(user, systemDate, timeFormat, dateFormat)'],
     computed: {
       userName() {
         return this.user ? this.user.name : ''
       },
       formattedDate() {
-        return dayjs(this.systemDate).format(`HH:mm ‧ MMM DD, YY`)
+        return dayjs(this.systemDate).format(`${this.timeFormat} ‧ ${this.dateFormat}`)
       },
     }
   }

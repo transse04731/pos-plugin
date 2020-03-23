@@ -27,12 +27,13 @@
 
   export default {
     name: 'PosEndOfDayPrintPendingZReport',
+    injectService: ['PosStore:dateFormat'],
     props: {
       value: null
     },
     filters: {
       formatDate(date) {
-        return dayjs(date).format('DD/MM/YYYY')
+        return dayjs(date).format(this.dateFormat)
       }
     },
     setup() {

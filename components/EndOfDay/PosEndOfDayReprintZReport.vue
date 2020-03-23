@@ -28,7 +28,7 @@
 
   export default {
     name: 'PosEndOfDayReprintZReport',
-    injectService: ['ReportsStore:selectedReportDate'],
+    injectService: ['ReportsStore:selectedReportDate', 'PosStore:timeFormat'],
     props: {
       value: null
     },
@@ -58,8 +58,8 @@
         if (newVal) {
           this.reports = this.selectedReportDate.reports.map((value, index) => {
             return {
-              begin: dayjs(value.begin).format('HH:mm'),
-              end: dayjs(value.end).format('HH:mm'),
+              begin: dayjs(value.begin).format(this.timeFormat),
+              end: dayjs(value.end).format(this.timeFormat),
               z: value.z,
               sum: value.sum,
               pending: value.pending

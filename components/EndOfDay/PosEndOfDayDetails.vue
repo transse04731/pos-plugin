@@ -46,7 +46,7 @@
   export default {
     name: 'PosEndOfDayDetails',
     injectService: [
-      'ReportsStore:selectedReportDate',
+      'ReportsStore:selectedReportDate', 'PosStore:(timeFormat, dateFormat)'
     ],
     data() {
       return {
@@ -57,7 +57,7 @@
     computed: {
       selectedDate() {
         if (this.selectedReportDate && this.selectedReportDate.date) {
-          return dayjs(this.selectedReportDate.date).format('DD/MM/YYYY')
+          return dayjs(this.selectedReportDate.date).format(this.dateFormat)
         }
         return '';
       },
@@ -77,8 +77,8 @@
       this.unwatch = reportsStore.$watch('selectedReportDate', newVal => {
         if (newVal.reports && newVal.reports.length) {
           this.zNumberReports = newVal.reports.map(report => ({
-            begin: dayjs(report.begin).format('HH:mm'),
-            end: dayjs(report.end).format('HH:mm'),
+            begin: dayjs(report.begin).format(this.timeFormat),
+            end: dayjs(report.end).format(this.timeFormat),
             sum: report.sum,
             z: report.z
           }))

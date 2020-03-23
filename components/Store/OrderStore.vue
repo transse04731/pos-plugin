@@ -10,7 +10,7 @@
   export default {
     name: 'OrderStore',
     domain: 'OrderStore',
-    injectService: ['PosStore:user'],
+    injectService: ['PosStore:(user, timeFormat, dateFormat)'],
     data() {
       return {
         activeTableProduct: null,
@@ -303,7 +303,7 @@
           ...order,
           info: order.note,
           tax: order.vTax ? order.vTax : orderUtil.calOrderTax(order.items),
-          dateTime: dayjs(order.date).format('DD.MM HH:mm'),
+          dateTime: dayjs(order.date).format(`${this.dateFormat} ${this.timeFormat}`),
           amount: order.vSum ? order.vSum : orderUtil.calOrderTotal(order.items),
           staff: order.user,
           barcode: '',
