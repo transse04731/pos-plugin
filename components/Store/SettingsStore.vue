@@ -126,18 +126,22 @@
         this.listCategories = await this.getAllCategories();
       },
       async swapCategoryPosition(direction) {
-        const categoryModel = cms.getModel('Category')
-        const position = this.selectedCategory.position
+        try {
+          const categoryModel = cms.getModel('Category')
+          const selectedIndex = this.listCategories.indexOf(this.selectedCategory)
 
-        const increment = direction === 'down' ? -1 : 1
-        const swapItem = this.listCategories.find(c => c.position === (position - increment))
-        if (!swapItem) return
+          const increment = direction === 'down' ? -1 : 1
+          const swapItem = this.listCategories[selectedIndex - increment]
+          if (!swapItem) return
 
-        await categoryModel.updateOne({ _id: this.selectedCategory._id }, { '$inc': { position: -increment } })
-        await categoryModel.updateOne({ _id: swapItem._id }, { '$inc': { position: increment } })
+          await categoryModel.updateOne({ _id: this.selectedCategory._id }, { '$set': { position: swapItem.position } })
+          await categoryModel.updateOne({ _id: swapItem._id }, { '$set': { position: this.selectedCategory.position } })
 
-        this.listCategories = await this.getAllCategories()
-        this.selectedCategory = this.listCategories.find(c => c._id === this.selectedCategory._id)
+          this.listCategories = await this.getAllCategories()
+          this.selectedCategory = this.listCategories.find(c => c._id === this.selectedCategory._id)
+        } catch (e) {
+          console.error(e.message)
+        }
       },
       //article view
       async findCategoryByName(name) {
