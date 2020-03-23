@@ -1,7 +1,6 @@
 {
   "events": [],
-  "_id": "5ddb55dde59d660c478cd7e7",
-  "__v": 0,
+  "_id": "5e71e4ae91c0240483d1659a",
   "items": [
     {
       "choice": "view",
@@ -16,7 +15,7 @@
             "height": 0,
             "margin": "",
             "padding": "",
-            "bgColor": "hsl(53, 100%, 50%, 50%)",
+            "bgColor": "hsl(80, 100%, 50%, 50%)",
             "alignSelf": "",
             "justifySelf": "",
             "wrapInDiv": false,
@@ -36,12 +35,11 @@
             "justifyItems": "",
             "justifyContent": "",
             "columns": [
-              "minmax(200px, max-content)",
-              "3fr"
+              "220px",
+              "calc(100% - 220px)"
             ],
             "rows": [
-              "auto",
-              "1fr"
+              "100%"
             ],
             "columnGap": 0,
             "rowGap": 0,
@@ -51,34 +49,10 @@
                 "top": 1,
                 "left": 1,
                 "width": 1,
-                "height": 2,
-                "margin": "",
-                "padding": "",
-                "bgColor": "hsl(111, 100%, 50%, 50%)",
-                "alignSelf": "",
-                "justifySelf": "",
-                "wrapInDiv": false,
-                "displayFlex": false,
-                "flexDirection": "row",
-                "flexWrap": false,
-                "flexJustifyContent": "",
-                "flexAlignItems": "",
-                "flexAlignContent": "",
-                "flexOrder": "",
-                "flexGrow": "",
-                "flexShrink": "",
-                "flexBasis": "",
-                "flexAlignSelf": ""
-              },
-              {
-                "name": "header",
-                "top": 1,
-                "left": 2,
-                "width": 1,
                 "height": 1,
                 "margin": "",
                 "padding": "",
-                "bgColor": "hsl(285, 100%, 50%, 50%)",
+                "bgColor": "hsl(293, 100%, 50%, 50%)",
                 "alignSelf": "",
                 "justifySelf": "",
                 "wrapInDiv": false,
@@ -96,13 +70,13 @@
               },
               {
                 "name": "content",
-                "top": 2,
+                "top": 1,
                 "left": 2,
                 "width": 1,
                 "height": 1,
                 "margin": "",
                 "padding": "",
-                "bgColor": "hsl(39, 100%, 50%, 50%)",
+                "bgColor": "hsl(331, 100%, 50%, 50%)",
                 "alignSelf": "",
                 "justifySelf": "",
                 "wrapInDiv": false,
@@ -116,410 +90,10 @@
                 "flexGrow": "",
                 "flexShrink": "",
                 "flexBasis": "",
-                "flexAlignSelf": "",
-                "alignItems": "",
-                "alignContent": "",
-                "justifyItems": "",
-                "justifyContent": "",
-                "columns": [
-                  "1fr"
-                ],
-                "rows": [
-                  "44px",
-                  "1fr"
-                ],
-                "columnGap": 0,
-                "rowGap": 0,
-                "subAreas": [
-                  {
-                    "name": "welcome",
-                    "top": 1,
-                    "left": 1,
-                    "width": 1,
-                    "height": 1,
-                    "margin": "",
-                    "padding": "",
-                    "bgColor": "hsl(5, 100%, 50%, 50%)",
-                    "alignSelf": "",
-                    "justifySelf": "",
-                    "wrapInDiv": false,
-                    "displayFlex": false,
-                    "flexDirection": "row",
-                    "flexWrap": false,
-                    "flexJustifyContent": "",
-                    "flexAlignItems": "",
-                    "flexAlignContent": "",
-                    "flexOrder": "",
-                    "flexGrow": "",
-                    "flexShrink": "",
-                    "flexBasis": "",
-                    "flexAlignSelf": ""
-                  },
-                  {
-                    "name": "buttons",
-                    "top": 2,
-                    "left": 1,
-                    "width": 1,
-                    "height": 1,
-                    "margin": "",
-                    "padding": "24px",
-                    "bgColor": "hsl(141, 100%, 50%, 50%)",
-                    "alignSelf": "",
-                    "justifySelf": "",
-                    "wrapInDiv": false,
-                    "displayFlex": false,
-                    "flexDirection": "row",
-                    "flexWrap": false,
-                    "flexJustifyContent": "",
-                    "flexAlignItems": "",
-                    "flexAlignContent": "",
-                    "flexOrder": "",
-                    "flexGrow": "",
-                    "flexShrink": "",
-                    "flexBasis": "",
-                    "flexAlignSelf": "",
-                    "alignItems": "",
-                    "alignContent": "",
-                    "justifyItems": "",
-                    "justifyContent": "",
-                    "columns": [
-                      "1fr",
-                      "1fr",
-                      "1fr",
-                      "1fr"
-                    ],
-                    "rows": [
-                      "1fr",
-                      "1px",
-                      "1fr",
-                      "1fr"
-                    ],
-                    "columnGap": 10,
-                    "rowGap": 40,
-                    "subAreas": [
-                      {
-                        "name": "line",
-                        "top": 2,
-                        "left": 1,
-                        "width": 4,
-                        "height": 1,
-                        "margin": "",
-                        "padding": "",
-                        "bgColor": "hsl(217, 100%, 50%, 50%)",
-                        "alignSelf": "",
-                        "justifySelf": "",
-                        "wrapInDiv": false,
-                        "displayFlex": false,
-                        "flexDirection": "row",
-                        "flexWrap": false,
-                        "flexJustifyContent": "",
-                        "flexAlignItems": "",
-                        "flexAlignContent": "",
-                        "flexOrder": "",
-                        "flexGrow": "",
-                        "flexShrink": "",
-                        "flexBasis": "",
-                        "flexAlignSelf": ""
-                      },
-                      {
-                        "name": "btn1",
-                        "top": 1,
-                        "left": 1,
-                        "width": 1,
-                        "height": 1,
-                        "margin": "",
-                        "padding": "",
-                        "bgColor": "hsl(100, 100%, 50%, 50%)",
-                        "alignSelf": "",
-                        "justifySelf": "",
-                        "wrapInDiv": false,
-                        "displayFlex": false,
-                        "flexDirection": "row",
-                        "flexWrap": false,
-                        "flexJustifyContent": "",
-                        "flexAlignItems": "",
-                        "flexAlignContent": "",
-                        "flexOrder": "",
-                        "flexGrow": "",
-                        "flexShrink": "",
-                        "flexBasis": "",
-                        "flexAlignSelf": ""
-                      },
-                      {
-                        "name": "btn2",
-                        "top": 1,
-                        "left": 2,
-                        "width": 1,
-                        "height": 1,
-                        "margin": "",
-                        "padding": "",
-                        "bgColor": "hsl(240, 100%, 50%, 50%)",
-                        "alignSelf": "",
-                        "justifySelf": "",
-                        "wrapInDiv": false,
-                        "displayFlex": false,
-                        "flexDirection": "row",
-                        "flexWrap": false,
-                        "flexJustifyContent": "",
-                        "flexAlignItems": "",
-                        "flexAlignContent": "",
-                        "flexOrder": "",
-                        "flexGrow": "",
-                        "flexShrink": "",
-                        "flexBasis": "",
-                        "flexAlignSelf": ""
-                      },
-                      {
-                        "name": "btn3",
-                        "top": 1,
-                        "left": 3,
-                        "width": 1,
-                        "height": 1,
-                        "margin": "",
-                        "padding": "",
-                        "bgColor": "hsl(25, 100%, 50%, 50%)",
-                        "alignSelf": "",
-                        "justifySelf": "",
-                        "wrapInDiv": false,
-                        "displayFlex": false,
-                        "flexDirection": "row",
-                        "flexWrap": false,
-                        "flexJustifyContent": "",
-                        "flexAlignItems": "",
-                        "flexAlignContent": "",
-                        "flexOrder": "",
-                        "flexGrow": "",
-                        "flexShrink": "",
-                        "flexBasis": "",
-                        "flexAlignSelf": ""
-                      },
-                      {
-                        "name": "btn5",
-                        "top": 3,
-                        "left": 1,
-                        "width": 1,
-                        "height": 1,
-                        "margin": "",
-                        "padding": "",
-                        "bgColor": "hsl(169, 100%, 50%, 50%)",
-                        "alignSelf": "",
-                        "justifySelf": "",
-                        "wrapInDiv": false,
-                        "displayFlex": false,
-                        "flexDirection": "row",
-                        "flexWrap": false,
-                        "flexJustifyContent": "",
-                        "flexAlignItems": "",
-                        "flexAlignContent": "",
-                        "flexOrder": "",
-                        "flexGrow": "",
-                        "flexShrink": "",
-                        "flexBasis": "",
-                        "flexAlignSelf": ""
-                      },
-                      {
-                        "name": "btn6",
-                        "top": 3,
-                        "left": 2,
-                        "width": 1,
-                        "height": 1,
-                        "margin": "",
-                        "padding": "",
-                        "bgColor": "hsl(190, 100%, 50%, 50%)",
-                        "alignSelf": "",
-                        "justifySelf": "",
-                        "wrapInDiv": false,
-                        "displayFlex": false,
-                        "flexDirection": "row",
-                        "flexWrap": false,
-                        "flexJustifyContent": "",
-                        "flexAlignItems": "",
-                        "flexAlignContent": "",
-                        "flexOrder": "",
-                        "flexGrow": "",
-                        "flexShrink": "",
-                        "flexBasis": "",
-                        "flexAlignSelf": ""
-                      },
-                      {
-                        "name": "btn7",
-                        "top": 3,
-                        "left": 3,
-                        "width": 1,
-                        "height": 1,
-                        "margin": "",
-                        "padding": "",
-                        "bgColor": "hsl(129, 100%, 50%, 50%)",
-                        "alignSelf": "",
-                        "justifySelf": "",
-                        "wrapInDiv": false,
-                        "displayFlex": false,
-                        "flexDirection": "row",
-                        "flexWrap": false,
-                        "flexJustifyContent": "",
-                        "flexAlignItems": "",
-                        "flexAlignContent": "",
-                        "flexOrder": "",
-                        "flexGrow": "",
-                        "flexShrink": "",
-                        "flexBasis": "",
-                        "flexAlignSelf": ""
-                      },
-                      {
-                        "name": "btn8",
-                        "top": 3,
-                        "left": 4,
-                        "width": 1,
-                        "height": 1,
-                        "margin": "",
-                        "padding": "",
-                        "bgColor": "hsl(326, 100%, 50%, 50%)",
-                        "alignSelf": "",
-                        "justifySelf": "",
-                        "wrapInDiv": false,
-                        "displayFlex": false,
-                        "flexDirection": "row",
-                        "flexWrap": false,
-                        "flexJustifyContent": "",
-                        "flexAlignItems": "",
-                        "flexAlignContent": "",
-                        "flexOrder": "",
-                        "flexGrow": "",
-                        "flexShrink": "",
-                        "flexBasis": "",
-                        "flexAlignSelf": ""
-                      },
-                      {
-                        "name": "btn4",
-                        "top": 1,
-                        "left": 4,
-                        "width": 1,
-                        "height": 1,
-                        "margin": "",
-                        "padding": "",
-                        "bgColor": "hsl(154, 100%, 50%, 50%)",
-                        "alignSelf": "",
-                        "justifySelf": "",
-                        "wrapInDiv": false,
-                        "displayFlex": false,
-                        "flexDirection": "row",
-                        "flexWrap": false,
-                        "flexJustifyContent": "",
-                        "flexAlignItems": "",
-                        "flexAlignContent": "",
-                        "flexOrder": "",
-                        "flexGrow": "",
-                        "flexShrink": "",
-                        "flexBasis": "",
-                        "flexAlignSelf": ""
-                      },
-                      {
-                        "name": "btn9",
-                        "top": 4,
-                        "left": 1,
-                        "width": 1,
-                        "height": 1,
-                        "margin": "",
-                        "padding": "",
-                        "bgColor": "hsl(8, 100%, 50%, 50%)",
-                        "alignSelf": "",
-                        "justifySelf": "",
-                        "wrapInDiv": false,
-                        "displayFlex": false,
-                        "flexDirection": "row",
-                        "flexWrap": false,
-                        "flexJustifyContent": "",
-                        "flexAlignItems": "",
-                        "flexAlignContent": "",
-                        "flexOrder": "",
-                        "flexGrow": "",
-                        "flexShrink": "",
-                        "flexBasis": "",
-                        "flexAlignSelf": ""
-                      },
-                      {
-                        "name": "btn10",
-                        "top": 4,
-                        "left": 2,
-                        "width": 1,
-                        "height": 1,
-                        "margin": "",
-                        "padding": "",
-                        "bgColor": "hsl(121, 100%, 50%, 50%)",
-                        "alignSelf": "",
-                        "justifySelf": "",
-                        "wrapInDiv": false,
-                        "displayFlex": false,
-                        "flexDirection": "row",
-                        "flexWrap": false,
-                        "flexJustifyContent": "",
-                        "flexAlignItems": "",
-                        "flexAlignContent": "",
-                        "flexOrder": "",
-                        "flexGrow": "",
-                        "flexShrink": "",
-                        "flexBasis": "",
-                        "flexAlignSelf": ""
-                      },
-                      {
-                        "name": "btn11",
-                        "top": 4,
-                        "left": 3,
-                        "width": 1,
-                        "height": 1,
-                        "margin": "",
-                        "padding": "",
-                        "bgColor": "hsl(180, 100%, 50%, 50%)",
-                        "alignSelf": "",
-                        "justifySelf": "",
-                        "wrapInDiv": false,
-                        "displayFlex": false,
-                        "flexDirection": "row",
-                        "flexWrap": false,
-                        "flexJustifyContent": "",
-                        "flexAlignItems": "",
-                        "flexAlignContent": "",
-                        "flexOrder": "",
-                        "flexGrow": "",
-                        "flexShrink": "",
-                        "flexBasis": "",
-                        "flexAlignSelf": ""
-                      },
-                      {
-                        "name": "btn12",
-                        "top": 4,
-                        "left": 4,
-                        "width": 1,
-                        "height": 1,
-                        "margin": "",
-                        "padding": "",
-                        "bgColor": "hsl(135, 100%, 50%, 50%)",
-                        "alignSelf": "",
-                        "justifySelf": "",
-                        "wrapInDiv": false,
-                        "displayFlex": false,
-                        "flexDirection": "row",
-                        "flexWrap": false,
-                        "flexJustifyContent": "",
-                        "flexAlignItems": "",
-                        "flexAlignContent": "",
-                        "flexOrder": "",
-                        "flexGrow": "",
-                        "flexShrink": "",
-                        "flexBasis": "",
-                        "flexAlignSelf": ""
-                      }
-                    ]
-                  }
-                ]
+                "flexAlignSelf": ""
               }
             ]
-          },
-          "style": {
-            "height": "100%",
-            "background-color": "#f2f2f2"
-          },
-          "displayPreviewColor": false
+          }
         }
       },
       "binding": [],
@@ -528,505 +102,122 @@
         {
           "choice": "view",
           "component": "PosDashboardSidebar",
-          "binding": [],
-          "slotScopeBinding": [],
+          "binding": [
+            {
+              "type": ".sync",
+              "root": "view",
+              "local": "view"
+            }
+          ],
+          "slotScopeBinding": [
+            {
+              "type": "prop",
+              "slotScope": "id",
+              "local": "id"
+            }
+          ],
           "slot": "sidebar",
-          "clipboardType": "cut",
           "url": "plugins/pos-plugin/components/Dashboard/PosDashboardSidebar.vue",
           "path": "components/Dashboard/PosDashboardSidebar.vue",
           "pluginName": "pos-plugin",
-          "items": []
+          "items": [],
+          "content": {
+            "props": {
+              "items": [
+                {
+                  "choice": "dynamicItem",
+                  "title": "Restaurant",
+                  "icon": "icon-restaurant",
+                  "children": {
+                    "_code_": "module.exports = function () {\n  const result = cms.getList('Room').map(room => {\n    return {\n      title: room.name,\n      icon: 'radio_button_unchecked',\n      iconType: 'small',\n      onClick: () => {\n        this.$emit('update:view', {\n          name: 'Restaurant',\n          params: { \n            id: room._id\n          }\n        })\n      }\n    }\n  });\n\n  return result;\n}",
+                    "_code_type_": "commonJs"
+                  }
+                },
+                {
+                  "choice": "item",
+                  "title": "Manual Table",
+                  "icon": "icon-manual-table",
+                  "onClick": {
+                    "_code_": "module.exports = function() {\n  this.$emit('update:view', {\n    name: 'ManualTable',\n    params: ''\n  })\n}",
+                    "_code_type_": "commonJs"
+                  }
+                },
+                {
+                  "choice": "item",
+                  "title": "Functions",
+                  "icon": "icon-functions",
+                  "onClick": {
+                    "_code_": "module.exports = function() {\n  this.$emit('update:view', {\n    name: 'Functions',\n    params: ''\n  })\n}",
+                    "_code_type_": "commonJs"
+                  }
+                }
+              ]
+            }
+          }
         },
         {
           "choice": "view",
-          "component": "PosDashboardToolbar",
-          "content": {
-            "props": {
-              "gradient": "#3949AB,#4FC3F7",
-              "elevation": 0
+          "binding": [
+            {
+              "type": ".sync",
+              "root": "view",
+              "local": "view"
             }
-          },
-          "binding": [],
+          ],
           "slotScopeBinding": [],
-          "slot": "header",
-          "items": []
-        },
-        {
-          "choice": "view",
-          "component": "VTag",
-          "content": {
-            "props": {
-              "html": "Welcome!",
-              "tag": "div",
-              "style": {
-                "padding": "8px 24px",
-                "font-size": "24px",
-                "font-weitght": 700,
-                "color": "#424242"
-              }
-            }
-          },
-          "binding": [],
-          "slotScopeBinding": [],
-          "slot": "welcome"
-        },
-        {
-          "choice": "view",
-          "component": "GBtn",
-          "content": {
-            "props": {
-              "height": "100%",
-              "background-color": "white",
-              "text-color": "#424242",
-              "uppercase": false
-            },
-            "events": {
-              "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: `/view/pos-order`})\n}",
-                "_code_type_": "commonJs"
-              }
-            }
-          },
-          "binding": [],
-          "slotScopeBinding": [],
-          "slot": "btn1",
+          "slot": "content",
+          "component": "ContentRender",
+          "url": "plugins/pos-plugin/components/common/ContentRender.vue",
+          "path": "components/common/ContentRender.vue",
+          "pluginName": "pos-plugin",
           "items": [
             {
               "choice": "view",
-              "component": "VTag",
-              "content": {
-                "props": {
-                  "tag": "div"
-                }
-              },
+              "component": "PosOrderScreenAction",
               "binding": [],
               "slotScopeBinding": [],
-              "items": [
+              "slot": "ManualTable",
+              "url": "plugins/pos-plugin/components/Order/PosOrderScreenAction.vue",
+              "path": "components/Order/PosOrderScreenAction.vue",
+              "pluginName": "pos-plugin"
+            },
+            {
+              "choice": "view",
+              "component": "posFunctions",
+              "binding": [],
+              "slotScopeBinding": [],
+              "slot": "Functions"
+            },
+            {
+              "choice": "view",
+              "component": "RestaurantRoom",
+              "binding": [],
+              "slotScopeBinding": [
                 {
-                  "choice": "view",
-                  "component": "GIcon",
-                  "content": {
-                    "props": {
-                      "html": "icon-code",
-                      "svg": true,
-                      "size": 60
-                    }
-                  },
-                  "binding": [],
-                  "slotScopeBinding": [],
-                  "clipboardType": "cut"
-                },
-                {
-                  "choice": "view",
-                  "component": "VTag",
-                  "content": {
-                    "props": {
-                      "html": "Cash Register",
-                      "tag": "div",
-                      "style": {
-                        "font-size": "16px",
-                        "letter-spacing": 0,
-                        "color": "#424242",
-                        "margin-top": "20px",
-                        "white-space": "pre-wrap"
-                      }
-                    }
-                  },
-                  "binding": [],
-                  "slotScopeBinding": [],
-                  "key": "undefined_copy"
+                  "type": "prop",
+                  "slotScope": "id",
+                  "local": "id"
                 }
               ],
-              "key": "undefined_copy"
+              "isScopedSlot": true,
+              "slot": "Restaurant",
+              "url": "plugins/pos-plugin/components/Restaurant/RestaurantRoom.vue",
+              "path": "components/Restaurant/RestaurantRoom.vue",
+              "pluginName": "pos-plugin"
             }
           ]
-        },
-        {
-          "choice": "view",
-          "component": "GBtn",
-          "content": {
-            "props": {
-              "height": "100%",
-              "background-color": "white",
-              "text-color": "#424242",
-              "uppercase": false
-            },
-            "events": {
-              "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: `/view/pos-order-history`})\n}",
-                "_code_type_": "commonJs"
-              }
-            }
-          },
-          "binding": [],
-          "slotScopeBinding": [],
-          "slot": "btn2",
-          "items": [
-            {
-              "choice": "view",
-              "component": "VTag",
-              "content": {
-                "props": {
-                  "tag": "div"
-                }
-              },
-              "binding": [],
-              "slotScopeBinding": [],
-              "items": [
-                {
-                  "choice": "view",
-                  "component": "GIcon",
-                  "content": {
-                    "props": {
-                      "html": "icon-history",
-                      "svg": true,
-                      "size": 60
-                    }
-                  },
-                  "binding": [],
-                  "slotScopeBinding": [],
-                  "clipboardType": "cut"
-                },
-                {
-                  "choice": "view",
-                  "component": "VTag",
-                  "content": {
-                    "props": {
-                      "html": "Order History",
-                      "tag": "div",
-                      "style": {
-                        "font-size": "16px",
-                        "letter-spacing": 0,
-                        "color": "#424242",
-                        "margin-top": "20px",
-                        "white-space": "pre-wrap"
-                      }
-                    }
-                  },
-                  "binding": [],
-                  "slotScopeBinding": [],
-                  "key": "undefined_copy"
-                }
-              ],
-              "key": "undefined_copy"
-            }
-          ],
-          "key": "undefined_copy"
-        },
-        {
-          "choice": "view",
-          "component": "GBtn",
-          "content": {
-            "props": {
-              "height": "100%",
-              "background-color": "white",
-              "text-color": "#424242",
-              "uppercase": false
-            },
-            "events": {
-              "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: '/view/pos-settings'})\n}",
-                "_code_type_": "commonJs"
-              }
-            }
-          },
-          "binding": [],
-          "slotScopeBinding": [],
-          "slot": "btn5",
-          "items": [
-            {
-              "choice": "view",
-              "component": "VTag",
-              "content": {
-                "props": {
-                  "tag": "div"
-                }
-              },
-              "binding": [],
-              "slotScopeBinding": [],
-              "items": [
-                {
-                  "choice": "view",
-                  "component": "GIcon",
-                  "content": {
-                    "props": {
-                      "html": "icon-dashboard",
-                      "svg": true,
-                      "size": 60
-                    }
-                  },
-                  "binding": [],
-                  "slotScopeBinding": [],
-                  "clipboardType": "cut"
-                },
-                {
-                  "choice": "view",
-                  "component": "VTag",
-                  "content": {
-                    "props": {
-                      "html": "Admin Dashboard",
-                      "tag": "div",
-                      "style": {
-                        "font-size": "16px",
-                        "letter-spacing": 0,
-                        "color": "#424242",
-                        "margin-top": "20px",
-                        "white-space": "pre-wrap"
-                      }
-                    }
-                  },
-                  "binding": [],
-                  "slotScopeBinding": [],
-                  "key": "undefined_copy"
-                }
-              ],
-              "key": "undefined_copy"
-            }
-          ],
-          "key": "undefined_copy_copy_copy"
-        },
-        {
-          "choice": "view",
-          "component": "GBtn",
-          "content": {
-            "props": {
-              "height": "100%",
-              "background-color": "white",
-              "text-color": "#424242",
-              "uppercase": false
-            },
-            "events": {
-              "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: '/view/pos-eod-report'})\n}",
-                "_code_type_": "commonJs"
-              }
-            }
-          },
-          "binding": [],
-          "slotScopeBinding": [],
-          "slot": "btn7",
-          "items": [
-            {
-              "choice": "view",
-              "component": "VTag",
-              "content": {
-                "props": {
-                  "tag": "div"
-                }
-              },
-              "binding": [],
-              "slotScopeBinding": [],
-              "items": [
-                {
-                  "choice": "view",
-                  "component": "GIcon",
-                  "content": {
-                    "props": {
-                      "html": "icon-calendar",
-                      "svg": true,
-                      "size": 60
-                    }
-                  },
-                  "binding": [],
-                  "slotScopeBinding": [],
-                  "clipboardType": "cut"
-                },
-                {
-                  "choice": "view",
-                  "component": "VTag",
-                  "content": {
-                    "props": {
-                      "html": "End of Day",
-                      "tag": "div",
-                      "style": {
-                        "font-size": "16px",
-                        "letter-spacing": 0,
-                        "color": "#424242",
-                        "margin-top": "20px",
-                        "white-space": "pre-wrap"
-                      }
-                    }
-                  },
-                  "binding": [],
-                  "slotScopeBinding": [],
-                  "key": "undefined_copy"
-                }
-              ],
-              "key": "undefined_copy"
-            }
-          ],
-          "key": "undefined_copy_copy_copy_copy"
-        },
-        {
-          "choice": "view",
-          "component": "GBtn",
-          "content": {
-            "props": {
-              "height": "100%",
-              "background-color": "white",
-              "text-color": "#424242",
-              "uppercase": false
-            },
-            "events": {
-              "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: `/view/pos-month-report`})\n}",
-                "_code_type_": "commonJs"
-              }
-            }
-          },
-          "binding": [],
-          "slotScopeBinding": [],
-          "slot": "btn8",
-          "items": [
-            {
-              "choice": "view",
-              "component": "VTag",
-              "content": {
-                "props": {
-                  "tag": "div"
-                }
-              },
-              "binding": [],
-              "slotScopeBinding": [],
-              "items": [
-                {
-                  "choice": "view",
-                  "component": "GIcon",
-                  "content": {
-                    "props": {
-                      "html": "icon-month_report",
-                      "svg": true,
-                      "size": 60
-                    }
-                  },
-                  "binding": [],
-                  "slotScopeBinding": [],
-                  "clipboardType": "cut"
-                },
-                {
-                  "choice": "view",
-                  "component": "VTag",
-                  "content": {
-                    "props": {
-                      "html": "Monthly Report",
-                      "tag": "div",
-                      "style": {
-                        "font-size": "16px",
-                        "letter-spacing": 0,
-                        "color": "#424242",
-                        "margin-top": "20px",
-                        "white-space": "pre-wrap"
-                      },
-                      "class": []
-                    }
-                  },
-                  "binding": [],
-                  "slotScopeBinding": [],
-                  "key": "undefined_copy"
-                }
-              ],
-              "key": "undefined_copy"
-            }
-          ],
-          "key": "undefined_copy_copy_copy_copy_copy"
-        },
-        {
-          "choice": "view",
-          "component": "GBtn",
-          "content": {
-            "props": {
-              "height": "100%",
-              "background-color": "white",
-              "text-color": "#424242",
-              "uppercase": false
-            },
-            "events": {
-              "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: `/view/pos-staff-report`})\n}",
-                "_code_type_": "commonJs"
-              }
-            }
-          },
-          "binding": [],
-          "slotScopeBinding": [],
-          "slot": "btn6",
-          "items": [
-            {
-              "choice": "view",
-              "component": "VTag",
-              "content": {
-                "props": {
-                  "tag": "div"
-                }
-              },
-              "binding": [],
-              "slotScopeBinding": [],
-              "items": [
-                {
-                  "choice": "view",
-                  "component": "GIcon",
-                  "content": {
-                    "props": {
-                      "html": "icon-report2",
-                      "svg": true,
-                      "size": 60
-                    }
-                  },
-                  "binding": [],
-                  "slotScopeBinding": [],
-                  "clipboardType": "cut"
-                },
-                {
-                  "choice": "view",
-                  "component": "VTag",
-                  "content": {
-                    "props": {
-                      "html": "Staff Report",
-                      "tag": "div",
-                      "style": {
-                        "font-size": "16px",
-                        "letter-spacing": 0,
-                        "color": "#424242",
-                        "margin-top": "20px",
-                        "white-space": "pre-wrap"
-                      },
-                      "class": []
-                    }
-                  },
-                  "binding": [],
-                  "slotScopeBinding": [],
-                  "key": "undefined_copy"
-                }
-              ],
-              "key": "undefined_copy"
-            }
-          ],
-          "key": "undefined_copy_copy_copy_copy_copy_copy"
-        },
-        {
-          "choice": "view",
-          "component": "VTag",
-          "content": {
-            "props": {
-              "tag": "div",
-              "style": {
-                "_code_": "module.exports = {\n  backgroundColor: '#E0E0E0'\n}",
-                "_code_type_": "commonJs"
-              }
-            }
-          },
-          "binding": [],
-          "slotScopeBinding": [],
-          "slot": "line"
         }
       ]
     }
   ],
+  "name": "posDashboard",
   "props": {
     "fields": []
   },
-  "name": "posDashboard",
-  "isProduction": true,
   "renderToRoute": "pos-dashboard",
-  "renderInIframe": true
+  "isProduction": true,
+  "data": {
+    "_code_": "module.exports = {\n  view: null\n}",
+    "_code_type_": "commonJs"
+  }
 }

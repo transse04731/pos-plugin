@@ -1,7 +1,6 @@
 {
   "events": [],
   "_id": "5dd7b8219418e40d10e12857",
-  "__v": 0,
   "items": [
     {
       "choice": "view",
@@ -36,8 +35,8 @@
             "justifyItems": "",
             "justifyContent": "",
             "columns": [
-              "50%",
-              "50%"
+              "calc(100% - 300px)",
+              "300px"
             ],
             "rows": [
               "100%"
@@ -46,9 +45,9 @@
             "rowGap": 0,
             "subAreas": [
               {
-                "name": "layout__left",
+                "name": "layout__right",
                 "top": 1,
-                "left": 1,
+                "left": 2,
                 "width": 1,
                 "height": 1,
                 "margin": "",
@@ -288,9 +287,9 @@
                 ]
               },
               {
-                "name": "layout__right",
+                "name": "layout__left",
                 "top": 1,
-                "left": 2,
+                "left": 1,
                 "width": 1,
                 "height": 1,
                 "margin": "",
@@ -682,8 +681,8 @@
           "slotScopeBinding": [],
           "slot": "action",
           "clipboardType": "cut",
-          "url": "plugins/pos-plugin/components/Order/components/PosOrderScreenAction.vue",
-          "path": "components/Order/components/PosOrderScreenAction.vue",
+          "url": "plugins/pos-plugin/components/Order/PosOrderScreenAction.vue",
+          "path": "components/Order/PosOrderScreenAction.vue",
           "pluginName": "pos-plugin"
         }
       ]
@@ -778,5 +777,5 @@
   "isProduction": true,
   "name": "posOrder",
   "renderInAdminPage": true,
-  "renderToRoute": "pos-order"
+  "renderToRoute": "pos-order/:id"
 }

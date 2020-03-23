@@ -1,7 +1,6 @@
 {
   "events": [],
   "_id": "5dd78a797bcca8354bfcffbf",
-  "__v": 0,
   "isProduction": true,
   "items": [
     {
@@ -587,9 +586,10 @@
           "content": {
             "props": {
               "width": "100%",
-              "src": "https://s1.1zoom.me/b5050/259/Knife_Bell_pepper_Onion_Garlic_Carrots_Vegetables_572682_1600x1200.jpg",
+              "src": "/plugins/pos-plugin/assets/login-bg.png",
               "height": "100%",
-              "srcType": "src"
+              "srcType": "src",
+              "class": []
             }
           }
         },
