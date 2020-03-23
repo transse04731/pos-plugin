@@ -179,5 +179,6 @@
   "props": {
     "fields": []
   },
-  "renderToRoute": "pos-eod-report"
+  "renderToRoute": "pos-eod-report",
+  "registerAsVueComponent": true
 }
