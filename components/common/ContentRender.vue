@@ -8,19 +8,19 @@
   export default {
     name: 'ContentRender',
     props: {
-      value: {
+      view: {
         type: Object,
         default: () => ({ name: '', params: '' })
       },
     },
     computed: {
       viewName() {
-        if (this.value)
-          return this.value.name
+        if (this.view)
+          return this.view.name
       },
       viewParams() {
-        if (this.value)
-          return this.value.params
+        if (this.view)
+          return this.view.params
       }
     }
   }
