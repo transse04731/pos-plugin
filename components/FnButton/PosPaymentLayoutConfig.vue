@@ -99,7 +99,9 @@
       </g-row>
     </div>
 
-    <g-button-merger :items="buttonItems" :received-merge-map="mergeMap" :received-merged-buttons="mergedButtons" :value="selectedButtons" @input="updateButtonItems" @merged="setMergedButtons" area="button-merger" cols="1fr 1fr 1fr 1fr 1fr" ref="paymentMerger" rows="1fr 1fr 1fr 1fr 1fr" style="height: 100%; padding: 4px;">
+    <g-button-merger :items="buttonItems" :received-merge-map="mergeMap" :received-merged-buttons="mergedButtons"
+                     :value="selectedButtons" @input="updateButtonItems" @merged="setMergedButtons" area="button-merger"
+                     cols="1fr 1fr 1fr 1fr 1fr" ref="paymentMerger" rows="1fr 1fr 1fr 1fr 1fr" style="height: 100%; padding: 4px;">
       <template #default="{toggleSelect, item, index}">
         <g-btn :disabled="item.disabled"
                :style="computeButtonStyle(item)"
@@ -410,8 +412,11 @@
 
         let foundItem = this.findSelectedButton(this.selectedButtons[0]);
         if (foundItem) {
-          foundItem.style.backgroundColor = this.selectedColor ? this.selectedColor.value : null;
-          foundItem.style.textColor = this.selectedColor && ['#73F8F8', '#FFFFFF'].includes(this.selectedColor.value) ? '#000000' : '#FFFFFF';
+          this.$set(foundItem, 'style', {
+            ...this.selectedColor && {backgroundColor: this.selectedColor.value},
+            textColor: this.selectedColor && ['#73F8F8', '#FFFFFF'].includes(this.selectedColor.value) ? '#000000' : '#FFFFFF'
+          })
+
           try {
             this.updatePosSettings(foundItem, 'paymentFunctionButtons', this.mergeMap)
           } catch (e) {
