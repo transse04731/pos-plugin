@@ -8,7 +8,7 @@
              :key="index"
              :style="[getCategoryStyle(category), getAreaStyle(category)]"
              @click="e => selectCategory(category)">
-          {{ getName(category) }}
+          {{ getCategoryName(category) }}
         </div>
       </div>
     </div>
@@ -20,7 +20,7 @@
              :key="index"
              :style="[getAreaStyle(productLayout), getProductItemStyle(productLayout)]"
              @click="e => selectProduct(productLayout)">
-          {{ getName(productLayout.product) }}
+          {{ getProductName(productLayout) }}
         </div>
       </div>
     </div>
@@ -86,10 +86,6 @@
       await this.loadOrderLayout();
     },
     methods: {
-      getName(item) {
-        if (item)
-          return item.name
-      },
       async loadOrderLayout() {
         this.$emit('update:orderLayout', await cms.getModel('OrderLayout').findOne({}))
       },
@@ -120,6 +116,8 @@
                   name: null,
                   groupPrinter: null,
                   groupPrinter2: null,
+                  isNoPrint: null,
+                  isItemNote: null,
                   tax: null,
                   tax2: null,
                   category: null,
@@ -149,7 +147,7 @@
         }
       },
       getCategoryStyle(category) {
-        const isCategorySelected = this.isSelectedCategory(category);
+        const isCategorySelected = this.selectedCategoryLayout === category;
         return {
           backgroundColor: category.color,
           color: '#000',
@@ -170,8 +168,16 @@
       getGridTemplateFromNumber(num) {
         return _.join(_.map(_.range(0, num), c => '1fr'), ' ')
       },
-      isSelectedCategory(category) {
-        return this.selectedCategoryLayout === category
+      getCategoryName(item) {
+        if (item)
+          return item.name
+      },
+      getProductName(productLayout) {
+        if (productLayout.type === 'Text')
+          return productLayout.text
+
+        if (productLayout.product)
+          return productLayout.product.name
       },
       async selectCategory(categoryLayout) {
         this.$emit('update:selectedCategoryLayout', categoryLayout);
