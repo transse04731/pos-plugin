@@ -8,11 +8,11 @@
           <div class="screen">
             <pos-text-field v-model="productId" label="Product ID"/>
             <g-btn :uppercase="false" text @click="dialogAddFilter = false" outlined width="120" class="mr-2">
-              Cancel
+              {{$t('ui.cancel')}}
             </g-btn>
             <g-btn :uppercase="false" text @click="addProductIdFilter" backgroundColor="#2979FF" text-color="#FFFFFF"
                    width="120">
-              OK
+              {{$t('ui.ok')}}
             </g-btn>
           </div>
           <div class="keyboard" style="padding: 24px 30%">
@@ -23,11 +23,11 @@
           <div class="screen">
             <pos-text-field v-model="name" label="Name"/>
             <g-btn :uppercase="false" text @click="dialogAddFilter = false" outlined width="120" class="mr-2">
-              Cancel
+              {{$t('ui.cancel')}}
             </g-btn>
             <g-btn :uppercase="false" text @click="addNameFilter" backgroundColor="#2979FF" text-color="#FFFFFF"
                    width="120">
-              OK
+              {{$t('ui.ok')}}
             </g-btn>
           </div>
           <div class="keyboard">
@@ -38,14 +38,14 @@
           <pos-range-slider min="0" max="1000" v-model="price"/>
           <div class="range-value">
             <span>0</span>
-            <span>€ 1000</span>
+            <span>{{$t('common.currency')}} 1000</span>
           </div>
           <div class="buttons">
             <g-btn :uppercase="false" text @click="dialogAddFilter = false" outlined width="120"
-                   style="margin-right: 8px">Cancel
+                   style="margin-right: 8px">{{$t('ui.cancel')}}
             </g-btn>
             <g-btn :uppercase="false" text @click="addPriceFilter" backgroundColor="#2979FF" text-color="#FFFFFF"
-                   width="120">OK
+                   width="120">{{$t('ui.ok')}}
             </g-btn>
           </div>
         </g-tab-item>
@@ -53,11 +53,11 @@
           <div class="screen">
             <pos-text-field v-model="category" label="Category"/>
             <g-btn :uppercase="false" text @click="dialogAddFilter = false" outlined width="120" class="mr-2">
-              Cancel
+              {{$t('ui.cancel')}}
             </g-btn>
             <g-btn :uppercase="false" text @click="addCategoryFilter" backgroundColor="#2979FF" text-color="#FFFFFF"
                    width="120">
-              OK
+              {{$t('ui.ok')}}
             </g-btn>
           </div>
           <div class="keyboard">
@@ -68,11 +68,11 @@
           <div class="screen">
             <pos-text-field v-model="barcode" label="Barcode"/>
             <g-btn :uppercase="false" text @click="dialogAddFilter = false" outlined width="120" class="mr-2">
-              Cancel
+              {{$t('ui.cancel')}}
             </g-btn>
             <g-btn :uppercase="false" text @click="addBarcodeFilter" backgroundColor="#2979FF" text-color="#FFFFFF"
                    width="120">
-              OK
+              {{$t('ui.ok')}}
             </g-btn>
           </div>
           <div class="keyboard" style="padding: 24px 30%">
@@ -88,7 +88,7 @@
   export default {
     name: "dialogAddFilter",
     injectService: [
-        'PosStore:findCategoryByName'
+        'SettingsStore:findCategoryByName'
     ],
     props: {
       value: Boolean,

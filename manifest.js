@@ -4,7 +4,25 @@ module.exports = {
       loader: {
         type: 'vue-singleton'
       },
-      path: 'components/PosStore.vue',
+      path: 'components/Store/PosStore.vue',
+    },
+    {
+      loader: {
+        type: 'vue-singleton'
+      },
+      path: 'components/Store/OrderStore.vue',
+    },
+    {
+      loader: {
+        type: 'vue-singleton'
+      },
+      path: 'components/Store/ReportsStore.vue',
+    },
+    {
+      loader: {
+        type: 'vue-singleton'
+      },
+      path: 'components/Store/SettingsStore.vue',
     },
     {
       loader: {

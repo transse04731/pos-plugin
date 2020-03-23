@@ -241,7 +241,9 @@ module.exports = {
 
     //dates
     dates: {
-      daysOfWeek: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
+      daysOfWeek: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
+      timeFormat: 'HH:mm',
+      dateFormat: 'DD/MM/YYYY',
     },
 
     sidebar: {

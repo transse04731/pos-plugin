@@ -40,9 +40,9 @@
       }
     },
     injectService: [
-        'PosStore:selectedUser',
-        'PosStore:updateUser',
-        'PosStore:getListAvatar'
+      'SettingsStore:selectedUser',
+      'SettingsStore:updateUser',
+      'SettingsStore:getListAvatar'
     ],
     computed: {
       dialogSelectAvatar: {
@@ -68,13 +68,13 @@
     watch: {
       value: function () {
         let checkEqual = false;
-        for(const avatar of this.listAvatars) {
-          if(avatar.image === this.selectedUser.avatar) {
+        for (const avatar of this.listAvatars) {
+          if (avatar.image === this.selectedUser.avatar) {
             this.selectedAvatar = avatar;
             checkEqual = true;
           }
         }
-        if(!checkEqual) {
+        if (!checkEqual) {
           this.selectedAvatar = null;
         }
       }

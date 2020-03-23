@@ -21,9 +21,9 @@
               <g-icon svg style="cursor: pointer" @click.stop.prevent="showKeyboard = !showKeyboard">icon-keyboard</g-icon>
             </template>
           </g-text-field>
-          <g-btn :uppercase="false" outlined height="auto" class="mt-3 mb-4" @click="setupPrinter">
-            {{$t('settings.setupPrinter')}}
-          </g-btn>
+          <!--          <g-btn :uppercase="false" outlined height="auto" class="mt-3 mb-4">-->
+          <!--            {{$t('settings.setupPrinter')}}-->
+          <!--          </g-btn>-->
         </div>
         <g-btn :uppercase="false" text-color="white" background-color="blue accent 3" class="ml-2">
           {{$t('settings.testPrinter')}}
@@ -40,9 +40,7 @@
   export default {
     name: 'viewHardware',
     injectService: [
-      'PosStore:thermalPrinter',
-      'PosStore:getThermalPrinter',
-      'PosStore:updateThermalPrinter',
+      'SettingsStore:(thermalPrinter, getThermalPrinter, updateThermalPrinter)',
     ],
     data() {
       return {
@@ -59,13 +57,14 @@
     computed: {
       ipAddress: {
         get() {
-          if(this.thermalPrinter)
+          if (this.thermalPrinter) {
             return this.thermalPrinter.ip
+          }
           return ''
         },
         set(val) {
-          if(this.thermalPrinter) {
-            this.thermalPrinter.ip = val;
+          if (this.thermalPrinter) {
+            this.$set(this.thermalPrinter, 'ip', val)
           } else {
             this.thermalPrinter = {
               printerType: 'ip',
@@ -78,7 +77,7 @@
     methods: {
       select(type) {
         this.selectedPrinterType = type;
-        if(this.thermalPrinter) {
+        if (this.thermalPrinter) {
           this.thermalPrinter.printerType = type.value;
         } else {
           this.thermalPrinter = {
@@ -88,23 +87,28 @@
       },
       resetPrinter() {
         this.selectedPrinterType = null;
-        if(this.thermalPrinter) {
+        if (this.thermalPrinter) {
           this.thermalPrinter.printerType = null;
         } else {
           this.thermalPrinter = {
             printerType: null
           }
         }
-      },
-      async setupPrinter() {
-        await this.updateThermalPrinter(this.thermalPrinter._id, this.thermalPrinter);
       }
     },
     async created() {
       await this.getThermalPrinter();
-      if(this.thermalPrinter) {
+      if (this.thermalPrinter) {
         this.selectedPrinterType = this.printerTypes.find(t => t.value === this.thermalPrinter.printerType)
       }
+
+      const settingsStore = this.$getService('SettingsStore')
+      this.unwatch = settingsStore.$watch('thermalPrinter', async newVal => {
+        await this.updateThermalPrinter(newVal._id, newVal)
+      }, { deep: true })
+    },
+    beforeDestroy() {
+      this.unwatch()
     }
   }
 </script>

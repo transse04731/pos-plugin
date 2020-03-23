@@ -1,7 +1,6 @@
 {
   "events": [],
   "_id": "5ddccad0573f2a3748c045be",
-  "__v": 0,
   "isProduction": true,
   "items": [
     {
@@ -530,7 +529,7 @@
         },
         "events": {
           "submit": {
-            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Product ID',\n    text: val,\n    condition: {id: val}\n  }\n  this.$getService('PosStore:updateProductFilters')(filter);\n  await this.$getService('PosStore:getTotalProducts')();\n  await this.$getService('PosStore:getListProducts')();\n}",
+            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Product ID',\n    text: val,\n    condition: {id: val}\n  }\n  this.$getService('SettingsStore:updateProductFilters')(filter);\n  await this.$getService('SettingsStore:getTotalProducts')();\n  await this.$getService('SettingsStore:getListProducts')();\n}",
             "_code_type_": "commonJs"
           }
         }
@@ -558,7 +557,7 @@
         },
         "events": {
           "submit": {
-            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Barcode',\n    text: val,\n    condition: {barcode: {\"$regex\": val}}\n  }\n  this.$getService('PosStore:updateProductFilters')(filter);\n    await this.$getService('PosStore:getTotalProducts')();\n  await this.$getService('PosStore:getListProducts')();\n}",
+            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Barcode',\n    text: val,\n    condition: {barcode: {\"$regex\": val}}\n  }\n  this.$getService('SettingsStore:updateProductFilters')(filter);\n    await this.$getService('SettingsStore:getTotalProducts')();\n  await this.$getService('SettingsStore:getListProducts')();\n}",
             "_code_type_": "commonJs"
           }
         }
@@ -587,7 +586,7 @@
         },
         "events": {
           "submit": {
-            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Name',\n    text: val,\n    condition: {name: {\"$regex\": val, \"$options\": 'i'}}\n  }\n  this.$getService('PosStore:updateProductFilters')(filter);\n  await this.$getService('PosStore:getTotalProducts')();\n  await this.$getService('PosStore:getListProducts')();\n}",
+            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Name',\n    text: val,\n    condition: {name: {\"$regex\": val, \"$options\": 'i'}}\n  }\n  this.$getService('SettingsStore:updateProductFilters')(filter);\n  await this.$getService('SettingsStore:getTotalProducts')();\n  await this.$getService('SettingsStore:getListProducts')();\n}",
             "_code_type_": "commonJs"
           }
         }
@@ -616,7 +615,7 @@
         },
         "events": {
           "submit": {
-            "_code_": "module.exports = async function(val) {\n  const cate = await cms.models.Category.find({name: {$regex: val, $options: 'i'}});\n  const id = cate.map(c => c._id);\n  const filter = {\n    title: 'Category',\n    text: val,\n    condition: {\"category\": {\"$in\": id}}\n  }\n  this.$getService('PosStore:updateProductFilters')(filter);\n    await this.$getService('PosStore:getTotalProducts')();\n  await this.$getService('PosStore:getListProducts')();\n}",
+            "_code_": "module.exports = async function(val) {\n  const cate = await cms.models.Category.find({name: {$regex: val, $options: 'i'}});\n  const id = cate.map(c => c._id);\n  const filter = {\n    title: 'Category',\n    text: val,\n    condition: {\"category\": {\"$in\": id}}\n  }\n  this.$getService('SettingsStore:updateProductFilters')(filter);\n    await this.$getService('SettingsStore:getTotalProducts')();\n  await this.$getService('SettingsStore:getListProducts')();\n}",
             "_code_type_": "commonJs"
           }
         }
@@ -645,7 +644,7 @@
         },
         "events": {
           "submit": {
-            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Price',\n    text: val[0] + ' - ' + val[1],\n    condition: {price: { '$gte': val[0], '$lte': val[1] }}\n  }\n  this.$getService('PosStore:updateProductFilters')(filter);\n    await this.$getService('PosStore:getTotalProducts')();\n  await this.$getService('PosStore:getListProducts')();\n}",
+            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Price',\n    text: val[0] + ' - ' + val[1],\n    condition: {price: { '$gte': val[0], '$lte': val[1] }}\n  }\n  this.$getService('SettingsStore:updateProductFilters')(filter);\n    await this.$getService('SettingsStore:getTotalProducts')();\n  await this.$getService('SettingsStore:getListProducts')();\n}",
             "_code_type_": "commonJs"
           }
         }

@@ -10,7 +10,7 @@
 <script>
   export default {
     name: 'PosArticleProductCategoryMenu',
-    injectService: ['PosStore:(activeCategory,getActiveProducts,getAllCategories,articleSelectedProductButton,articleSelectedColor, updateArticleOrders)'],
+    injectService: [`SettingsStore:(activeCategory, getActiveProducts, getAllCategories, articleSelectedProductButton, articleSelectedColor, updateArticleOrders)`],
     data() {
       return {
         menu: [],

@@ -71,7 +71,7 @@
       async open(date) {
         this.dialog = true;
         this.date = date;
-        this.xReport = await this.$getService('PosStore:getXReport')(date)
+        this.xReport = await this.$getService('ReportsStore:getXReport')(date)
       },
       close() {
         this.dialog = false
@@ -81,7 +81,7 @@
         return _.reduce(paymentTypes, (res, value) => res + value, 0)
       },
       async print() {
-        await this.$getService('PosStore:printXReport')(this.date)
+        await this.$getService('ReportsStore:printXReport')(this.date)
       }
     },
     setup() {

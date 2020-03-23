@@ -35,10 +35,10 @@
 	export default {
     name: 'viewCategoryToolbar',
 		injectService: [
-      'PosStore:selectedCategory',
-      'PosStore:updateCategory',
-      'PosStore:swapCategoryPosition',
-      'PosStore:listCategories',
+      'SettingsStore:selectedCategory',
+      'SettingsStore:updateCategory',
+      'SettingsStore:swapCategoryPosition',
+      'SettingsStore:listCategories',
     ],
 		data() {
     	return {
@@ -51,7 +51,7 @@
 				await this.swapCategoryPosition(direction)
 			},
       openDialogNewCategory() {
-        this.$getService('dialogNewCategory:open')(false, this.listCategories.length)
+        this.$getService('dialogNewCategory:open')(true, this.listCategories.length)
       },
 			openDialogDelete() {
       	this.dialogConfirmDelete = true;
@@ -61,7 +61,7 @@
         this.selectedCategory = null;
       },
       openDialogEditCategory() {
-        this.$getService('dialogNewCategory:open')(true, this.listCategories.length)
+        this.$getService('dialogNewCategory:open')()
       },
 			back() {
 				this.$router.push({ path: '/view/pos-dashboard' })

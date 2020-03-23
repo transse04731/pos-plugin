@@ -18,9 +18,9 @@
   export default {
     name: 'viewTax',
     injectService: [
-        'PosStore:getAllTaxCategory',
-        'PosStore:selectedTaxCategory',
-        'PosStore:listTaxCategories',
+        'SettingsStore:getAllTaxCategory',
+        'SettingsStore:selectedTaxCategory',
+        'SettingsStore:listTaxCategories',
     ],
     methods: {
       select(tax) {

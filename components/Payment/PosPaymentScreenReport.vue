@@ -28,10 +28,10 @@
       },
     },
     injectService: [
-      'PosStore:paymentDiscount',
-      'PosStore:paymentTax',
-      'PosStore:paymentSubTotal',
-      'PosStore:paymentTotal',
+      'OrderStore:paymentDiscount',
+      'OrderStore:paymentTax',
+      'OrderStore:paymentSubTotal',
+      'OrderStore:paymentTotal',
     ]
   }
 </script>

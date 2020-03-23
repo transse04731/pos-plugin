@@ -32,9 +32,9 @@
 			}
 		},
 		injectService: [
-			'PosStore:selectedUser',
-			'PosStore:updateUser',
-			'PosStore:listUsers',
+			'SettingsStore:selectedUser',
+			'SettingsStore:updateUser',
+			'SettingsStore:listUsers',
 		],
     computed: {
       dialogUserDetail: {

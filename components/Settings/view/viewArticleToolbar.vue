@@ -36,10 +36,10 @@
   export default {
     name: 'viewArticleToolbar',
     injectService: [
-        'PosStore:selectedProductIDs',
-        'PosStore:deleteSelectedProducts',
-        'PosStore:productSortCondition',
-        'PosStore:getListProducts',
+        'SettingsStore:selectedProductIDs',
+        'SettingsStore:deleteSelectedProducts',
+        'SettingsStore:productSortCondition',
+        'SettingsStore:getListProducts',
     ],
     data() {
       return {

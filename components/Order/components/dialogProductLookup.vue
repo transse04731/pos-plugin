@@ -4,10 +4,9 @@
       <g-toolbar class="header" color="grey lighten 3" elevation="0">
         <g-text-field outlined clearable class="w-50" clear-icon="cancel"
                       style="color: #1d1d26"
-                      :value="productNameQuery"
+                      v-model="productNameQuery"
                       @enter="queryProductsByName"
                       @change="queryProductsByName"
-                      @input="query"
         ></g-text-field>
         <g-spacer></g-spacer>
         <g-btn :uppercase="false" icon style="box-shadow: none; border-radius: 50%" @click="close">
@@ -66,8 +65,7 @@
         </tbody>
       </g-simple-table>
       <div v-show="showKeyboard" class="keyboard-wrapper">
-        <pos-keyboard-full :value="productNameQuery"
-                           @input="query"/>
+        <pos-keyboard-full v-model="productNameQuery"/>
       </div>
     </div>
   </g-dialog>
@@ -78,7 +76,7 @@
 
   export default {
     name: 'dialogProductLookup',
-    injectService: ['PosStore:(productNameQuery,productNameQueryResults,queryProductsByName,addProductToOrder)'],
+    injectService: ['OrderStore:(productNameQuery,productNameQueryResults,queryProductsByName,addProductToOrder)'],
     props: {
       value: Boolean,
     },
@@ -89,7 +87,6 @@
       return {
         showKeyboard: true,
         selected: null,
-        query: null,
         productSliceLength: 15,
         lastRowIntersectArgs: null,
         lastRowIntersectValue: null,
@@ -122,12 +119,12 @@
       },
     },
     created() {
-      this.query = (e) => {
-        this.productNameQuery = e
+      const orderStore = this.$getService('OrderStore')
+      orderStore.$watch('productNameQuery', () => {
         this.queryProductsByName()
-      }
+      }, { immediate: true })
 
-      this.query('')
+      this.productNameQuery = ''
       this.lastRowIntersectArgs = { root: this.$el, threshold: 0.1 }
       this.lastRowIntersectValue = () => this.productSliceLength += 15
     },

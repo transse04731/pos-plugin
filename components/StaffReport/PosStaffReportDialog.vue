@@ -15,8 +15,8 @@
           <div class="detail-header">{{$t('report.staffName')}}: {{item.name}}</div>
           <div v-if="orderSalesByStaff && orderSalesByStaff.user[orderSalesByStaff.name]">
             <div class="detail-header">{{$t('report.reportDate')}}: {{reportDate}}</div>
-            <div class="detail-time">{{$t('report.firstOrder')}}: {{ (orderSalesByStaff.user[orderSalesByStaff.name].from) | formatTime}}</div>
-            <div class="detail-time">{{$t('report.lastOrder')}}: {{ (orderSalesByStaff.user[orderSalesByStaff.name].to) | formatTime}}</div>
+            <div class="detail-time">{{$t('report.firstOrder')}}: {{ getFormattedTime(orderSalesByStaff.user[orderSalesByStaff.name].from)}}</div>
+            <div class="detail-time">{{$t('report.lastOrder')}}: {{ getFormattedTime(orderSalesByStaff.user[orderSalesByStaff.name].to)}}</div>
           </div>
 
           <div class="sales-details-header">{{$t('common.sales')}}</div>
@@ -33,9 +33,12 @@
             <div v-if="orderSalesByStaff && orderSalesByStaff['groupByTax']">
               <div v-for="(entry, key, index) in orderSalesByStaff['groupByTax']">
                 <p class="sales-entry sales-type">{{$t('common.tax')}} {{key}}%:</p>
-                <p><span class="sales-entry sales-type">{{$t('common.total')}}</span> <span class="sales-entry sales-amount">{{entry.gross | formatNumber}}</span></p>
-                <p><span class="sales-entry sales-type">{{$t('common.subtotal')}}</span> <span class="sales-entry sales-amount">{{entry.net | formatNumber}}</span></p>
-                <p><span class="sales-entry sales-type">{{$t('common.tax')}}</span> <span class="sales-entry sales-amount">{{entry.salesTax | formatNumber}}</span></p>
+                <p><span class="sales-entry sales-type">{{$t('common.total')}}</span> <span class="sales-entry sales-amount">{{entry.gross |
+                  formatNumber}}</span></p>
+                <p><span class="sales-entry sales-type">{{$t('common.subtotal')}}</span> <span class="sales-entry sales-amount">{{entry.net |
+                  formatNumber}}</span></p>
+                <p><span class="sales-entry sales-type">{{$t('common.tax')}}</span> <span class="sales-entry sales-amount">{{entry.salesTax |
+                  formatNumber}}</span></p>
                 <br/>
               </div>
             </div>
@@ -85,7 +88,11 @@
     props: {
       value: null
     },
-    injectService: ['PosStore:( getListUsers, listUsers, getOrderSalesByStaff, systemDate )'],
+    injectService: [
+      'PosStore:(systemDate, dateFormat, timeFormat)',
+      'ReportsStore:(getOrderSalesByStaff, printStaffReport)',
+      'SettingsStore:(getListUsers, listUsers)'
+    ],
     data: () => ({
       selectedStaff: null,
       staffs: [],
@@ -93,7 +100,7 @@
     }),
     computed: {
       reportDate() {
-        return dayjs(this.systemDate).format('DD/MM/YYYY')
+        return dayjs(this.systemDate).format(this.dateFormat)
       }
     },
     watch: {
@@ -102,7 +109,7 @@
           if (!newVal) {
             return []
           }
-          this.orderSalesByStaff = await this.$getService('PosStore:getOrderSalesByStaff')(newVal.name, this.systemDate)
+          this.orderSalesByStaff = await this.getOrderSalesByStaff(newVal.name, this.systemDate)
         },
         sync: true
       }
@@ -115,7 +122,10 @@
         if (!this.orderSalesByStaff) {
           return
         }
-        return await this.$getService('PosStore:printStaffReport')(this.orderSalesByStaff)
+        return await this.printStaffReport(this.orderSalesByStaff)
+      },
+      getFormattedTime(val) {
+        return val ? dayjs(val).format(`${this.dateFormat} ${this.timeFormat}`) : ''
       }
     },
     async mounted() {
@@ -131,9 +141,6 @@
     filters: {
       formatNumber: (val) => {
         return isNaN(val) ? '0.00' : val.toFixed(2)
-      },
-      formatTime: (val) => {
-        return val ? dayjs(val).format('DD/MM HH:mm') : ''
       }
     },
   }

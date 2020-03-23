@@ -23,8 +23,8 @@
   export default {
     name: 'viewTaxToolbar',
     injectService: [
-      'PosStore:selectedTaxCategory',
-      'PosStore:updateTaxCategory',
+      'SettingsStore:selectedTaxCategory',
+      'SettingsStore:updateTaxCategory',
     ],
     data() {
       return {

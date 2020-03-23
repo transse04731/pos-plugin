@@ -102,10 +102,10 @@
     name: 'StaffPermission',
     injectService: [
       'PosStore:user',
-      'PosStore:selectedUser',
-      'PosStore:listUsers',
-      'PosStore:getListUsers',
-      'PosStore:updateUser',
+      'SettingsStore:selectedUser',
+      'SettingsStore:listUsers',
+      'SettingsStore:getListUsers',
+      'SettingsStore:updateUser',
     ],
     data() {
       return {

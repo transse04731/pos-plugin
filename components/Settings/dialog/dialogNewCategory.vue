@@ -3,7 +3,7 @@
 		<div class="dialog-payment w-100">
 			<div class="form">
 				<p class="ml-1 mb-3">
-					{{ isEditCategory && selectedCategory ? 'Edit' : 'Create New' }}
+					{{ isNewCategory ? 'Create New' : 'Edit' }}
 					{{$t('article.category')}}
 				</p>
 				<pos-text-field style="width: 268px" label="Name" placeholder="Category name" v-model="name"/>
@@ -27,13 +27,13 @@
   export default {
     name: 'dialogNewCategory',
     injectService: [
-      'PosStore:selectedCategory',
-      'PosStore:updateCategory',
+      'SettingsStore:selectedCategory',
+      'SettingsStore:updateCategory',
     ],
     data() {
       return {
         name: '',
-				isEditCategory: false,
+				isNewCategory: false,
 				internalValue: false,
 				position: 0,
       }
@@ -52,20 +52,21 @@
       },
     },
     methods: {
-    	open(isEdit, maxPosition) {
-    		this.isEditCategory = isEdit;
-				if (this.isEditCategory && this.selectedCategory) {
-					this.name = this.selectedCategory.name;
+    	open(isNew = false, position = 0) {
+    		this.isNewCategory = isNew;
+
+    		if (this.isNewCategory) {
+					this.name = ''
+					this.position = position
 				} else {
-					this.name = '';
+					this.name = this.selectedCategory && this.selectedCategory.name
 				}
-				this.position = maxPosition + 1
     		this.dialogNewCategory = true;
 			},
       async save() {
         if (this.name) {
           let oldID;
-          if (this.isEditCategory) oldID = this.selectedCategory && this.selectedCategory._id;
+          if (!this.isNewCategory && this.selectedCategory) oldID = this.selectedCategory._id;
           await this.updateCategory(oldID, this.name, this.position);
         }
         this.name = '';

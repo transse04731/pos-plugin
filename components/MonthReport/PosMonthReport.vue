@@ -47,7 +47,7 @@
 <script>
   export default {
     name: 'PosMonthReport',
-    injectService: ['PosStore:(monthReport,getMonthReport,showAllZNumber,showProductSold)'],
+    injectService: ['ReportsStore:(monthReport,getMonthReport,showAllZNumber,showProductSold)'],
     data() {
       return {
         total: 0,
@@ -62,8 +62,8 @@
       }
     },
     async created() {
-      const posStore = this.$getService('PosStore')
-      this.unwatch = posStore.$watch('monthReport', newVal => {
+      const reportsStore = this.$getService('ReportsStore')
+      this.unwatch = reportsStore.$watch('monthReport', newVal => {
         if (newVal) {
           const { total, salesByCategory, salesByPayment, zNumbers } = newVal
           this.total = total
@@ -73,10 +73,10 @@
         }
       })
 
-      await posStore.getMonthReport()
+      await reportsStore.getMonthReport()
     },
     async activated() {
-      await this.$getService('PosStore:getMonthReport')()
+      await this.getMonthReport()
     },
     beforeDestroy() {
       this.unwatch()

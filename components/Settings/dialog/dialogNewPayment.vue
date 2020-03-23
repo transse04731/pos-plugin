@@ -32,8 +32,8 @@
   export default {
     name: 'dialogNewPayment',
 		injectService: [
-			'PosStore:selectedPayment',
-			'PosStore:updatePayment',
+			'SettingsStore:selectedPayment',
+			'SettingsStore:updatePayment',
 		],
     data() {
       return {

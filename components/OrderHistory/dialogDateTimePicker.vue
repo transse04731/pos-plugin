@@ -25,9 +25,7 @@
       value: null
     },
     injectService: [
-      'PosStore:orderHistoryFilters',
-      'PosStore:getOrderHistory',
-      'PosStore:getTotalOrders',
+      'OrderStore:(orderHistoryFilters, getOrderHistory, getTotalOrders)',
     ],
     data: () => ({
       selectedDatetime: []

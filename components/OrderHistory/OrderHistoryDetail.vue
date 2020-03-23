@@ -40,7 +40,7 @@
     name: 'OrderHistoryDetail',
     props: {},
     injectService: [
-      'PosStore:orderHistoryCurrentOrder'
+      'OrderStore:orderHistoryCurrentOrder'
     ],
     computed: {
       promotionTotal() {

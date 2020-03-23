@@ -64,17 +64,8 @@
       value: null,
     },
     injectService: [
-      'PosStore:orderHistoryOrders',
-      'PosStore:orderHistoryFilters',
-      'PosStore:orderHistoryCurrentOrder',
-      'PosStore:getOrderHistory',
-      'PosStore:orderHistoryPagination',
-      'PosStore:getTotalOrders',
-      'PosStore:totalOrders',
+      'OrderStore:(orderHistoryOrders,orderHistoryFilters,orderHistoryCurrentOrder,getOrderHistory,orderHistoryPagination,getTotalOrders,totalOrders)'
     ],
-    data() {
-      return {}
-    },
     computed: {
       limit: {
         get() {

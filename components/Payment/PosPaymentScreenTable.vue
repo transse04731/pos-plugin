@@ -46,8 +46,8 @@
   export default {
     name: 'PosPaymentScreenTable',
     injectService: [
-      'PosStore:currentOrder',
-      'PosStore:compactOrder',
+      'OrderStore:currentOrder',
+      'OrderStore:compactOrder',
     ],
     computed: {
       productList() {

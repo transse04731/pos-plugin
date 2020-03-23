@@ -23,10 +23,10 @@
   export default {
     name: 'PosPaymentScreenBalance',
     injectService: [
-      'PosStore:paymentTotal',
-      'PosStore:paymentAmountTendered',
-      'PosStore:paymentTip',
-      'PosStore:paymentChange'
+      'OrderStore:paymentTotal',
+      'OrderStore:paymentAmountTendered',
+      'OrderStore:paymentTip',
+      'OrderStore:paymentChange'
     ]
   }
 </script>

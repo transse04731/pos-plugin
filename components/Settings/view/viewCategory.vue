@@ -24,9 +24,9 @@
   export default {
     name: 'viewCategory',
     injectService: [
-      'PosStore:listCategories',
-      'PosStore:selectedCategory',
-      'PosStore:getAllCategories',
+      'SettingsStore:listCategories',
+      'SettingsStore:selectedCategory',
+      'SettingsStore:getAllCategories',
     ],
     async created() {
       this.listCategories = await this.getAllCategories();

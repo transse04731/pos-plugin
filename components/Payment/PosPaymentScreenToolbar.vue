@@ -17,7 +17,7 @@
   export default {
     name: 'PosPaymentScreenToolbar',
     injectService: [
-      'PosStore:currentOrder'
+      'OrderStore:currentOrder'
     ],
     methods: {
       back() {

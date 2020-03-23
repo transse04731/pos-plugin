@@ -11,11 +11,11 @@
       </div>
       <div class="dialog-sort__action">
         <g-btn :uppercase="false" text @click="internalValue = false" outlined width="120" class="mr-2">
-          Cancel
+          {{$t('ui.cancel')}}
         </g-btn>
         <g-btn :uppercase="false" text @click="submit" backgroundColor="#2979FF" text-color="#FFFFFF"
                width="120">
-          OK
+          {{$t('ui.ok')}}
         </g-btn>
       </div>
     </div>

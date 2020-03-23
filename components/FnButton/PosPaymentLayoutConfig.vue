@@ -172,7 +172,7 @@
   export default {
     name: 'PosPaymentLayoutConfig',
     components: { PosSelect, PosTextField, GButtonMerger },
-    injectService: ['PosStore:( updatePosSettings, listPayments )'],
+    injectService: ['SettingsStore:(listPayments, updatePosSettings)'],
     mixins: [layoutConfigMixin],
     data: () => ({
       layout: paymentLayout,
@@ -423,7 +423,7 @@
         this.updateButtonItems();
       }, 500),
       async refreshData() {
-        this.posSettings = await this.$getService('PosStore:getPosSetting')();
+        this.posSettings = await this.$getService('SettingsStore:getPosSetting')();
         if (this.posSettings) {
           this.mapFetchedButtons(this.posSettings['paymentFunctionButtons'], this.buttonItems);
         }
@@ -438,12 +438,12 @@
       }))
     },
     async mounted() {
-      await this.$getService('PosStore:getListPayments')()
+      await this.$getService('SettingsStore:getListPayments')()
       await this.refreshData();
       this.selectedButtons = [];
     },
     async activated() {
-      await this.$getService('PosStore:getListPayments')()
+      await this.$getService('SettingsStore:getListPayments')()
       await this.refreshData();
       this.selectedButtons = [];
 

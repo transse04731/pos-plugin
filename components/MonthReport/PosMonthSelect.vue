@@ -13,14 +13,14 @@
 <script>
   export default {
     name: 'PosMonthSelect',
-    injectService: ['PosStore:(monthReportFrom,monthReportTo,selectedMonth)'],
+    injectService: ['ReportsStore:(monthReportFrom,monthReportTo,selectedMonth,getMonthReport)', 'PosStore:(dateFormat)'],
     computed: {
       month() {
         if (this.monthReportFrom && this.monthReportTo) {
           const start = dayjs(this.monthReportFrom);
           const end = dayjs(this.monthReportTo);
           if (!start.isSame(end, 'month')) {
-            return `${start.format('MMM DD YYYY')} - ${end.format('MMM DD YYYY')}`
+            return `${start.format(this.dateFormat)} - ${end.format(this.dateFormat)}`
           }
         }
         if (this.selectedMonth) {
@@ -43,7 +43,7 @@
         && dayjs().isBefore(this.selectedMonth.endOf('month'))
           ? dayjs().format('YYYY-MM-DD')
           : this.selectedMonth.endOf('month').format('YYYY-MM-DD');
-        await this.$getService('PosStore:getMonthReport')();
+        await this.getMonthReport();
       }
     },
     async created() {

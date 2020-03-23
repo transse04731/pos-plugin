@@ -27,12 +27,13 @@
 
   export default {
     name: 'PosEndOfDayPrintPendingZReport',
+    injectService: ['PosStore:dateFormat'],
     props: {
       value: null
     },
     filters: {
       formatDate(date) {
-        return dayjs(date).format('DD/MM/YYYY')
+        return dayjs(date).format(this.dateFormat)
       }
     },
     setup() {
@@ -47,7 +48,7 @@
       close(confirmed = false) {
         this.dialog = false
         if (confirmed) this.$emit('confirmed', _.map(this.pendingReport.reports, (value, key) => ({
-            z: key ? key : this.$getService('PosStore:getHighestZNumber')(),
+            z: key ? key : this.$getService('ReportsStore:getHighestZNumber')(),
             begin: dayjs(value.from).toDate(),
             end: dayjs(value.to).toDate(),
             sum: value.vSum,
@@ -58,7 +59,7 @@
     },
     watch: {
       async dialog(newVal) {
-        if (newVal) this.pendingReport = await this.$getService('PosStore:getOldestPendingReport')()
+        if (newVal) this.pendingReport = await this.$getService('ReportsStore:getOldestPendingReport')()
       }
     }
   }
