@@ -1,0 +1,66 @@
+{
+  "_id": "5e71d0cb91c0240483d163ce",
+  "name": "New Room74",
+  "roomObjects": [
+    {
+      "location": {
+        "x": 40.703125,
+        "y": 143.5
+      },
+      "size": {
+        "width": 95,
+        "height": 85
+      },
+      "_id": "5e71d29891c0240483d16433",
+      "type": "table",
+      "bgColor": "#E8F5E9",
+      "name": "2",
+      "takeAway": null,
+      "rotate": 0
+    },
+    {
+      "location": {
+        "x": 553,
+        "y": 236
+      },
+      "size": {
+        "width": 156,
+        "height": 127
+      },
+      "_id": null,
+      "type": "table",
+      "bgColor": "#E8F5E9",
+      "name": "3",
+      "takeAway": true,
+      "rotate": 0
+    },
+    {
+      "location": {
+        "x": 379,
+        "y": 117
+      },
+      "size": {
+        "width": 300,
+        "height": 10
+      },
+      "_id": "5e72ee1dbe94c10a2f2a87f4",
+      "type": "wall",
+      "bgColor": "black",
+      "rotate": 0
+    },
+    {
+      "location": {
+        "x": 21,
+        "y": 41
+      },
+      "size": {
+        "width": 300,
+        "height": 10
+      },
+      "_id": "5e72ee21be94c10a2f2a87f6",
+      "type": "wall",
+      "bgColor": "#FFFFFF",
+      "rotate": 0
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "_id": "5e71d1cd91c0240483d16430",
+  "name": "New Room 2",
+  "roomObjects": [
+    {
+      "location": {
+        "x": 283.15234375,
+        "y": 280.2109375
+      },
+      "size": {
+        "width": 126,
+        "height": 117
+      },
+      "_id": "5e71d43f91c0240483d16458",
+      "type": "table",
+      "bgColor": "#F5F5F5",
+      "name": "New Table",
+      "takeAway": false,
+      "rotate": 0
+    },
+    {
+      "location": {
+        "x": 411.5625,
+        "y": 114.6953125
+      },
+      "size": {
+        "width": 118,
+        "height": 100
+      },
+      "_id": "5e71d43f91c0240483d1645a",
+      "type": "table",
+      "bgColor": "#FBE4EC",
+      "name": "New Table",
+      "takeAway": false,
+      "rotate": 0
+    },
+    {
+      "location": {
+        "x": 655.90625,
+        "y": 158.2109375
+      },
+      "size": {
+        "width": 123,
+        "height": 100
+      },
+      "_id": "5e71d43f91c0240483d1645c",
+      "type": "table",
+      "bgColor": "#E8F5E9",
+      "name": "New Table",
+      "takeAway": false,
+      "rotate": 0
+    },
+    {
+      "location": {
+        "x": 67,
+        "y": 155.37890625
+      },
+      "size": {
+        "width": 100,
+        "height": 100
+      },
+      "_id": "5e71d44091c0240483d1645e",
+      "type": "table",
+      "bgColor": "#EDE7F6",
+      "name": "New Table",
+      "takeAway": false,
+      "rotate": 0
+    },
+    {
+      "location": {
+        "x": 237.6796875,
+        "y": 514.7890625
+      },
+      "size": {
+        "width": 300,
+        "height": 10
+      },
+      "_id": "5e71d44591c0240483d16464",
+      "type": "wall",
+      "bgColor": "black",
+      "rotate": 0
+    }
+  ]
+}
