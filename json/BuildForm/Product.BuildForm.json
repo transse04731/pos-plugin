@@ -231,6 +231,12 @@
       "key": "refundPrice",
       "type": "input@number",
       "addable": true
+    },
+    {
+      "_id": "5e78674886e3ec0997b5e4d9",
+      "schemaType": "boolean",
+      "key": "isItemNote",
+      "type": "input@switch"
     }
   ],
   "id": "5c46e1c05889c52fe001ab7b",
