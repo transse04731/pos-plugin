@@ -105,7 +105,7 @@
           "binding": [
             {
               "type": ".sync",
-              "root": "view",
+              "root": "data.view",
               "local": "view"
             }
           ],
@@ -160,7 +160,7 @@
           "binding": [
             {
               "type": ".sync",
-              "root": "view",
+              "root": "data.view",
               "local": "view"
             }
           ],
@@ -217,7 +217,7 @@
   "renderToRoute": "pos-dashboard",
   "isProduction": true,
   "data": {
-    "_code_": "module.exports = {\n  view: null\n}",
+    "_code_": "module.exports = {\n  data: {\n    view: null\n  }\n}",
     "_code_type_": "commonJs"
   }
 }
