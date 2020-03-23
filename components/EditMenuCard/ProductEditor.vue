@@ -116,7 +116,7 @@
     },
     computed: {
       selectedProduct() {
-        return this.selectedProductLayout.isEmpty ? {} : this.selectedProductLayout.product
+        return this.selectedProductLayout.product
       },
       selectedPrinters: {
         get() {
