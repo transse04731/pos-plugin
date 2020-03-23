@@ -1,0 +1,139 @@
+{
+  "_id": "5e734c40be94c10a2f2a8c58",
+  "categories": [
+    {
+      "products": [
+        {
+          "_id": "5e735aa2be94c10a2f2a8cfb",
+          "product": {
+            "option": {
+              "favorite": true
+            },
+            "_id": "5e6b45ecf6672b26b9f81d3d",
+            "category": {
+              "_id": "5df6f31ba037304c8b0df66c",
+              "name": "Soup"
+            },
+            "name": "Cola",
+            "price": 98,
+            "tax": 19,
+            "layouts": [
+              {
+                "_id": "5e6b45ecf6672b26b9f81d3e",
+                "color": "#FBE4EC",
+                "order": 1,
+                "device": "pos"
+              },
+              {
+                "_id": "5e72ff0bbe94c10a2f2a894a",
+                "color": "#FFFFFF",
+                "favourite": true,
+                "order": 1
+              }
+            ],
+            "id": "1",
+            "attributes": []
+          },
+          "color": "red",
+          "top": 0,
+          "left": 1
+        },
+        {
+          "_id": "5e735aa2be94c10a2f2a8cfc",
+          "product": {
+            "_id": "5e6b45ecf6672b26b9f81d41",
+            "category": {
+              "_id": "5df6f31ba037304c8b0df66c",
+              "name": "Soup"
+            },
+            "name": "Water",
+            "price": 67,
+            "tax": 7,
+            "layouts": [
+              {
+                "_id": "5e6b45ecf6672b26b9f81d42",
+                "color": "#FBE4EC",
+                "order": 3,
+                "device": "pos"
+              }
+            ],
+            "id": "3",
+            "attributes": []
+          },
+          "color": "blue",
+          "top": 1,
+          "left": 0
+        }
+      ],
+      "_id": "5e734c5cbe94c10a2f2a8c5a",
+      "name": "Soup",
+      "color": "#B2EBF2",
+      "columns": 6,
+      "rows": 10,
+      "top": 0,
+      "left": 0
+    },
+    {
+      "products": [],
+      "_id": "5e734f77be94c10a2f2a8c79",
+      "name": "Salad",
+      "columns": 6,
+      "rows": 10,
+      "color": "#FFF59D",
+      "top": 0,
+      "left": 1
+    },
+    {
+      "products": [],
+      "_id": "5e74af4777c3dd1413364599",
+      "name": "Drink",
+      "rows": 10,
+      "columns": 6,
+      "color": "#FFF59D",
+      "top": 0,
+      "left": 2
+    },
+    {
+      "products": [],
+      "_id": "5e74af5c77c3dd141336459d",
+      "name": "Fruit2",
+      "rows": 10,
+      "columns": 6,
+      "color": "#B2EBF2",
+      "top": 0,
+      "left": 3
+    },
+    {
+      "products": [],
+      "_id": "5e74b23a77c3dd14133645a3",
+      "name": "Cake",
+      "rows": 10,
+      "columns": 6,
+      "color": "#CE93D8",
+      "top": 0,
+      "left": 4
+    },
+    {
+      "products": [],
+      "_id": "5e74b37777c3dd14133645cc",
+      "name": "uy",
+      "rows": 9,
+      "columns": 6,
+      "color": "#FFAB91",
+      "top": 1,
+      "left": 2
+    },
+    {
+      "products": [],
+      "_id": "5e7825ddfbe5dc038265bdc3",
+      "name": "Fruit",
+      "rows": 10,
+      "columns": 6,
+      "color": "#FFAB91",
+      "top": 1,
+      "left": 3
+    }
+  ],
+  "columns": 5,
+  "rows": 2
+}
