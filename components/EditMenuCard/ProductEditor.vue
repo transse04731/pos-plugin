@@ -143,7 +143,10 @@
       async updateProductLayout(change) {
         if (this.selectedProductLayout._id) {
           const qry = { 'categories.products._id': this.selectedProductLayout._id }
-          const set =  { $set: _.reduce(change, (result, value, key) => result[`categories.products.$.${key}`] = value, {}) };
+          const set =  { $set: _.reduce(change, (result, value, key) => {
+              result[`categories.products.$.${key}`] = value
+              return result
+            }, {}) };
           console.log('update', qry, 'set', set);
           await cms.getModel('OrderLayout').findOneAndUpdate(qry, set);
         }
