@@ -37,6 +37,11 @@
           }
       }
     },
+    watch: {
+      value(newVal) {
+        this.internalValue = newVal
+      }
+    },
     created() {
       if (this.value < this.min || this.value > this.max)
         throw 'Value out of range'
