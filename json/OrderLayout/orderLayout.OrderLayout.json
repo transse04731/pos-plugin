@@ -6,32 +6,23 @@
         {
           "_id": "5e735aa2be94c10a2f2a8cfb",
           "product": {
-            "option": {
-              "favorite": true
-            },
-            "_id": "5e6b45ecf6672b26b9f81d3d",
+            "_id": "5e784d7786e3ec0997b5e33f",
             "category": {
               "_id": "5df6f31ba037304c8b0df66c",
-              "name": "Soup"
+              "name": "Drink"
             },
-            "name": "Cola",
-            "price": 98,
-            "tax": 19,
+            "name": "Pepsi",
+            "price": 35,
+            "tax": 0,
             "layouts": [
               {
-                "_id": "5e6b45ecf6672b26b9f81d3e",
+                "_id": "5e784d7786e3ec0997b5e340",
                 "color": "#FBE4EC",
                 "order": 1,
                 "device": "pos"
-              },
-              {
-                "_id": "5e72ff0bbe94c10a2f2a894a",
-                "color": "#FFFFFF",
-                "favourite": true,
-                "order": 1
               }
             ],
-            "id": "1",
+            "id": "2",
             "attributes": []
           },
           "color": "red",
@@ -41,23 +32,23 @@
         {
           "_id": "5e735aa2be94c10a2f2a8cfc",
           "product": {
-            "_id": "5e6b45ecf6672b26b9f81d41",
+            "_id": "5e784d7786e3ec0997b5e343",
             "category": {
               "_id": "5df6f31ba037304c8b0df66c",
-              "name": "Soup"
+              "name": "Drink"
             },
-            "name": "Water",
-            "price": 67,
-            "tax": 7,
+            "name": "Soda",
+            "price": 20,
+            "tax": 19,
             "layouts": [
               {
-                "_id": "5e6b45ecf6672b26b9f81d42",
+                "_id": "5e784d7786e3ec0997b5e344",
                 "color": "#FBE4EC",
                 "order": 3,
                 "device": "pos"
               }
             ],
-            "id": "3",
+            "id": "4",
             "attributes": []
           },
           "color": "blue",
@@ -67,7 +58,7 @@
       ],
       "_id": "5e734c5cbe94c10a2f2a8c5a",
       "name": "Soup",
-      "color": "#B2EBF2",
+      "color": "#FFF59D",
       "columns": 6,
       "rows": 10,
       "top": 0,
@@ -79,7 +70,7 @@
       "name": "Salad",
       "columns": 6,
       "rows": 10,
-      "color": "#FFF59D",
+      "color": "#DCE775",
       "top": 0,
       "left": 1
     },
@@ -134,6 +125,6 @@
       "left": 3
     }
   ],
-  "columns": 5,
+  "columns": 7,
   "rows": 2
 }
