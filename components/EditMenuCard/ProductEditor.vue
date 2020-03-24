@@ -16,7 +16,7 @@
         <div>Price:</div>
         <g-text-field outlined dense :value="selectedProduct.price" @input="updateProduct({ price: $event })" />
 
-        <g-switch :value="selectedProduct.isModifier" @change="updateProduct({ isModifier: $event })" />
+        <g-switch v-model="selectedProduct.isModifier" @change="updateProduct({ isModifier: $event })" />
         <div>Is Modifier</div>
       </template>
       <template v-else>
