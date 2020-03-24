@@ -4,7 +4,7 @@
     <div class="product-editor__prop-grid">
       <template v-if="types">
         <div>Type:</div>
-        <g-select v-model="type" :items="types"/>
+        <g-select v-model="type" :items="types" @input="changeType"/>
       </template>
       <template v-if="isProductLayout">
         <div>ID: </div>
@@ -135,6 +135,7 @@
       return {
         colors: '#FFFFFF,#CE93D8,#B2EBF2,#C8E6C9,#DCE775,#FFF59D,#FFCC80,#FFAB91'.split(','),
         // Product layout types
+        type: this.selectedProductLayout.type,
         types: _.map([ 'Article', 'Div.Article', 'Text', 'Menu' ], toGSelectModel),
         dineInTaxes: [{ text: '19%', value: 19 }, { text: '7%', value: 7 }],
         takeAwayTaxes: [{ text: '19%', value: 19 }, { text: '7%', value: 7 }],
@@ -153,6 +154,11 @@
     },
     computed: {
       selectedProduct() {
+        console.log('Get selected product')
+        if (!this.selectedProductLayout.product) {
+          console.log('Product is null, create default product')
+          this.$set(this.selectedProductLayout, 'product', createEmptyProductLayout())
+        }
         return this.selectedProductLayout.product
       },
       showAddPrinter2() {
@@ -162,14 +168,6 @@
             && !this.selectedProduct.isNoPrint
             && !this.isPrinter2Select
         )
-      },
-      type: {
-        get() {
-          return this.selectedProductLayout.type
-        },
-        set(value) {
-          this.changeType(value)
-        }
       },
       isProductLayout() {
         return this.type !== 'Text'
@@ -185,6 +183,11 @@
           'prop-option': true,
           'prop-option--1': this.selectedProduct.isItemNote,
         }
+      }
+    },
+    watch: {
+      selectedProductLayout(value) {
+        this.type = value.type
       }
     },
     async created() {
@@ -248,32 +251,30 @@
 
       // ----
       async changeType(type) {
-        if (!this.selectedProductLayout._id)
-          return
-
         if (this.selectedProductLayout.type === type)
           return
 
         if (type === 'Text') {
-          if (['Article', 'Div.Article'].includes(this.selectedProductLayout.type)) {
+          if (_.includes(['Article', 'Div.Article'], this.selectedProductLayout.type)) {
             // TODO: Article -> Text
             // pseudo:
             // 1. remove linked product
             // 2. add text to product layout
-            await this.updateProductLayout({type})
+
           }
-        } else if (['Article', 'Div.Article'].includes(type)) {
+        } else if (_.includes(['Article', 'Div.Article'], type)) {
           if (this.selectedProductLayout.type === 'Text') {
             // TODO: Text -> Article, Div.Article
             // pseudo:
             // 1. clear product layout text
             // 2. add new product
-            await this.updateProductLayout({type: type, product: createEmptyProductLayout()})
           } else {
             // Art, Div.Art -> Div.Art, Art
             await this.updateProduct({ isDivArticle: type === 'Div.Article' })
           }
         }
+
+        await this.updateProductLayout({type})
       },
 
       // update color, update text
@@ -302,7 +303,7 @@
 
       // update ...
       async updateProduct(change, forceCreate) {
-        console.log('storing change to internal variable this.selectedProduct')
+        console.log('storing', change ,'to internal variable this.selectedProduct')
         _.assign(this.selectedProduct, change)
 
         if (this.selectedProduct._id) {
