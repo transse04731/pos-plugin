@@ -192,12 +192,21 @@
           return productLayout.product.name
       },
       async selectCategory(categoryLayout) {
-        this.$emit('update:selectedCategoryLayout', categoryLayout);
-        this.$emit('update:view', { name: 'CategoryEditor' })
+        if (!this.editable) {
+          this.$emit('update:selectedCategoryLayout', categoryLayout);
+          this.$emit('update:view', { name: 'CategoryEditor' })
+        } else {
+          this.$emit('update:selectedCategoryLayout', categoryLayout);
+        }
       },
       async selectProduct(productLayout) {
-        this.$emit('update:selectedProductLayout', productLayout);
-        this.$emit('update:view', { name: 'ProductEditor' })
+        if (this.editable) {
+          this.$emit('update:view', { name: 'ProductEditor' })
+          this.$emit('update:selectedProductLayout', productLayout);
+        } else {
+          this.$emit('update:selectedProductLayout', productLayout);
+          this.$emit('productSelected', productLayout.product)
+        }
       }
     }
   }
