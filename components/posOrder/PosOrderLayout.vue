@@ -202,7 +202,13 @@
           this.$emit('update:selectedProductLayout', productLayout);
         } else {
           //this.$emit('update:selectedProductLayout', productLayout);
-          this.$emit('addProductToOrder', productLayout.product)
+          if(productLayout.product.isModifier) {
+            this.$emit('addModifierToProduct', {
+              name: productLayout.product.name,
+              price: productLayout.product.price
+            })
+          } else
+            this.$emit('addProductToOrder', productLayout.product)
         }
       }
     }

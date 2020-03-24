@@ -414,7 +414,17 @@
       //<!--</editor-fold>-->
 
       //<!--<editor-fold desc="Restaurant functions">-->
-
+      addModifierToProduct(modifier, productId) {
+        if (!this.currentOrder || !this.currentOrder.items || this.currentOrder.items.length === 0) return
+        let product
+        if(!productId) {
+          product = _.last(this.currentOrder.items)
+        } else {
+          product = _.find(this.currentOrder.items, item => item._id === productId)
+        }
+        if(product)
+          product.modifiers ? product.modifiers.push(modifier) : this.$set(product, 'modifiers', [modifier])
+      },
       //<!--</editor-fold>-->
 
     },
