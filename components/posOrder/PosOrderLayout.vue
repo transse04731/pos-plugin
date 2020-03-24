@@ -204,8 +204,8 @@
           this.$emit('update:view', { name: 'ProductEditor' })
           this.$emit('update:selectedProductLayout', productLayout);
         } else {
-          this.$emit('update:selectedProductLayout', productLayout);
-          this.$emit('productSelected', productLayout.product)
+          //this.$emit('update:selectedProductLayout', productLayout);
+          this.$emit('addProductToOrder', productLayout.product)
         }
       }
     }

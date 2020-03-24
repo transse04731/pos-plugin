@@ -14,7 +14,7 @@
       <div v-for="(item, i) in items" :key="i" class="item">
         <div class="item-detail">
           <div>
-            <p class="item-detail__name">{{item.name}}</p>
+            <p class="item-detail__name">{{item.id}}. {{item.name}}</p>
             <p>
               <span :class="['item-detail__price', item.newPrice && 'item-detail__discount']">€{{item.price}}</span>
               <span class="item-detail__price--new" v-if="item.newPrice">€ {{item.newPrice}}</span>
@@ -43,47 +43,7 @@
         username: 'Admin',
         table: 50,
         total: 256,
-        items: [
-          {
-            name: '31. Homemade Special',
-            price: 10,
-            option: 'Take away',
-            quantity: 10,
-            attachments: [
-              {title: 'Extra cheese', value: 1},
-              {title: 'Thin crust', value: 0},
-              {title: 'No onions', value: 0},
-              {title: 'No pepper', value: 0},
-            ]
-          },
-          {
-            name: '22. Beef Ravioli',
-            price: 12,
-            option: 'Take away',
-            quantity: 4
-          },
-          {
-            name: '31. Calamari',
-            price: 15,
-            newPrice: 12,
-            option: 'Gang: 2',
-            quantity: 2
-          },
-          {
-            name: '41. Classic Lasagna',
-            price: 20,
-            newPrice: 15,
-            option: 'Gang: 3',
-            quantity: 2
-          },
-          {
-            name: '1. Chicken & Sausage',
-            price: 25,
-            newPrice: 22,
-            option: 'Gang: 2',
-            quantity: 3
-          }
-        ]
+        items: []
       }
     }
   }

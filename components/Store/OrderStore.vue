@@ -412,6 +412,11 @@
         this.$router.push({ path: `/view/pos-payment` })
       },
       //<!--</editor-fold>-->
+
+      //<!--<editor-fold desc="Restaurant functions">-->
+
+      //<!--</editor-fold>-->
+
     },
     async created() {
       await this.getScrollWindowProducts()
