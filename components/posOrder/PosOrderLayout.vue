@@ -20,6 +20,7 @@
              :key="index"
              :style="[getAreaStyle(productLayout), getProductItemStyle(productLayout)]"
              @click="e => selectProduct(productLayout)">
+          <g-icon class="mr-1" v-if="productLayout.icon">{{productLayout.icon}}</g-icon>
           {{ getProductName(productLayout) }}
         </div>
       </div>
@@ -164,6 +165,10 @@
         };
         if (isProductSelected)
           style.boxShadow = '0px 0px 3px #0091FF';
+        if (product.type === 'Text') {
+          style.justifyContent = 'flex-start'
+          style.fontSize = '12px'
+        }
         return style;
       },
       getGridTemplateFromNumber(num) {
@@ -203,6 +208,7 @@
   .pol {
     display: flex;
     flex-direction: column;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.252295);
 
     &__cate {
       border-radius: 4px;
@@ -212,9 +218,13 @@
     }
 
     &__prod {
+      display: flex;
+      justify-content: center;
       text-align: center;
       align-items: center;
-      border-radius: 2px;
+      line-height: 0.9;
+      padding: 0 8px;
+      word-break: break-all;
     }
   }
 </style>
