@@ -104,13 +104,13 @@
           label="Product name"
           :default-value="selectedProduct.name"
           v-model="dialog.showProductNameKbd"
-          @submit="changeProductName"/>
+          @submit="updateProduct({ name: $event }, $event)"/>
       <dialog-text-filter
           v-else
           label="Text"
           :default-value="selectedProductLayout.text"
           v-model="dialog.showTextKbd"
-          @submit="changeText"/>
+          @submit="updateProductLayout({ text: $event, type: 'Text' }, $event)"/>
     </template>
   </div>
 </template>
@@ -135,8 +135,9 @@
         colors: '#FFFFFF,#CE93D8,#B2EBF2,#C8E6C9,#DCE775,#FFF59D,#FFCC80,#FFAB91'.split(','),
         // Product layout types
         type: this.selectedProductLayout.type,
-        dineInTaxes: _.map(['19%', '7%'], toGSelectModel),
-        takeAwayTaxes: _.map(['19%', '7%'], toGSelectModel),
+        types: _.map([ 'Article', 'Div.Article', 'Text', 'Menu' ], toGSelectModel),
+        dineInTaxes: [{ text: '19%', value: 19 }, { text: '7%', value: 7 }],
+        takeAwayTaxes: [{ text: '19%', value: 19 }, { text: '7%', value: 7 }],
         // indicate whether the +2. Printer button has been clicked or not
         isPrinter2Select: false,
         // GroupPrinter collection data
@@ -151,21 +152,6 @@
       }
     },
     computed: {
-      types() {
-        let type;
-
-        if (this.selectedProductLayout._id) {
-          if (this.selectedProductLayout.type === 'Text') {
-            return null
-          } else {
-            type = ['Article', 'Div.Article', 'Menu']
-          }
-        } else {
-          type = [ 'Article', 'Div.Article', 'Text', 'Menu' ]
-        }
-
-        return _.map(type, toGSelectModel)
-      },
       selectedProduct() {
         return this.selectedProductLayout.product
       },
@@ -254,76 +240,82 @@
 
       // ----
       async changeType(type) {
-        if (this.selectedProductLayout._id) {
-          if (this.selectedProductLayout.type === type)
-            return
-
-          if (type === 'Text') {
-            if (['Article', 'Div.Article'].includes(this.selectedProductLayout.type)) {
-              // TODO: Article -> Text
-              // pseudo:
-              // 1. remove linked product
-              // 2. add text to product layout
-            }
-          } else if (['Article', 'Div.Article'].includes(type)) {
-            if (this.selectedProductLayout.type === 'Text') {
-              // TODO: Text -> Article, Div.Article
-              // pseudo:
-              // 1. clear product layout text
-              // 2. add new product
-            }
-          }
-        } else {
-          switch (type) {
-            case 'Text':
-              await this.createNewProductLayoutText(this.selectedProductLayout.text)
-              break;
-            case 'Article':
-            case 'Div.Article':
-              if (this.selectedProduct.name) {
-                // pseudo:
-                // 1. create new product
-                // 2. create new product layout linked with created product
-                await this.createNewProductLayoutWithProduct()
-              }
-              break;
-          }
-        }
-      },
-
-      async changeText(newText) {
         if (!this.selectedProductLayout._id)
-          await this.createNewProductLayoutText(newText)
-        else
-          await this.updateProductLayout({ text: newText })
-      },
+          return
 
-      async createNewProductLayoutText(text) {
-        if (text)
-          await this.createNewProductLayout(null,{ text: text, type: 'Text' })
-      },
+        if (this.selectedProductLayout.type === type)
+          return
 
-      async createNewProductLayoutWithProduct() {
-        console.log('createNewProductLayoutWithProduct')
-        if (this.selectedProduct.name) {
-          const product = await cms.getModel('Product').create({ ...this.selectedProduct });
-          await this.createNewProductLayout(product._id)
+        if (type === 'Text') {
+          if (['Article', 'Div.Article'].includes(this.selectedProductLayout.type)) {
+            // TODO: Article -> Text
+            // pseudo:
+            // 1. remove linked product
+            // 2. add text to product layout
+            await this.updateProductLayout({type: type})
+          }
+        } else if (['Article', 'Div.Article'].includes(type)) {
+          if (this.selectedProductLayout.type === 'Text') {
+            // TODO: Text -> Article, Div.Article
+            // pseudo:
+            // 1. clear product layout text
+            // 2. add new product
+            await this.updateProductLayout({type: type})
+          } else {
+            // Art, Div.Art -> Div.Art, Art
+            await this.updateProduct({ isDivArticle: type === 'Div.Article' })
+          }
         }
       },
 
-      async changeProductName(name) {
-        switch (this.selectedProductLayout.type) {
-          case 'Article':
-          case 'Div.Article':
-            await this.updateProduct({ name })
-            break;
+      // update color, update text
+      async updateProductLayout(change, forceCreate) {
+        console.log('Store change into this.selectedProductLayout')
+        _.assign(this.selectedProductLayout, change)
+
+        if (this.selectedProductLayout._id) {
+          console.log('UpdateProductLayout', change)
+          console.log('Update product layout with id', this.selectedProductLayout._id)
+          const qry = { 'categories.products._id': this.selectedProductLayout._id }
+          const set =  { $set: _.reduce(change, (result, value, key) => {
+              result[`categories.$[cate].products.$[product].${key}`] = value
+              return result
+            }, {}) };
+          const filter = [{ 'cate._id': this.selectedCategoryLayout._id }, { 'product._id': this.selectedProductLayout._id }]
+          await cms.getModel('OrderLayout').findOneAndUpdate(qry, set, { arrayFilters: filter,  new: true });
+        } else {
+          if (forceCreate) {
+            await this.createNewProductLayout(null, change)
+          } else {
+            console.log('ProductLayout is not existed yet. skipped')
+          }
+        }
+      },
+
+      // update ...
+      async updateProduct(change, forceCreate) {
+        console.log('storing change to internal variable this.selectedProduct')
+        _.assign(this.selectedProduct, change)
+
+        if (this.selectedProduct._id) {
+          console.log('updateProduct', change)
+          await cms.getModel('Product').findOneAndUpdate({_id: this.selectedProduct._id}, change)
+        } else {
+          if (forceCreate) {
+            console.log('Create new Product')
+            const product = await cms.getModel('Product').create({ ...this.selectedProduct });
+            console.log('Create new ProductLayout linked to Product with id: ', product._id)
+            await this.createNewProductLayout(product._id)
+          } else {
+            console.log('Product is not existed yet. skipped')
+          }
         }
       },
 
       async createNewProductLayout(productId, extraInfo) {
         const productLayout = {
           product: productId,
-          ..._.pick(this.selectedProductLayout, ['top', 'left', 'color']),
+          ..._.pick(this.selectedProductLayout, ['top', 'left', 'color', 'type', 'text']),
           ...extraInfo
         }
         const result = await cms.getModel('OrderLayout').findOneAndUpdate(
@@ -332,31 +324,6 @@
             { new: true });
         // TODO: BUG: new orderLayout has been emitted but the result doesn't change in GUI
         this.$emit('update:orderLayout', result)
-      },
-
-      // update color, update text
-      async updateProductLayout(change) {
-        if (this.selectedProductLayout._id) {
-          const qry = { 'categories.products._id': this.selectedProductLayout._id }
-          const set =  { $set: _.reduce(change, (result, value, key) => {
-              result[`categories.$[cate].products.$[product].${key}`] = value
-              return result
-            }, {}) };
-          const filter = [{ 'cate._id': this.selectedCategoryLayout._id }, { 'product._id': this.selectedProductLayout._id }]
-          await cms.getModel('OrderLayout').findOneAndUpdate(qry, set, { arrayFilters: filter,  new: true });
-        }
-        _.assign(this.selectedProductLayout, change)
-      },
-
-      // update ...
-      async updateProduct(change) {
-        _.assign(this.selectedProduct, change);
-        if (!this.selectedProduct._id) {
-          if (!this.selectedProduct.name) return;
-          await this.createNewProductLayoutWithProduct()
-        } else {
-          await cms.getModel('Product').findOneAndUpdate({_id: this.selectedProduct._id}, change)
-        }
       },
     }
   }
