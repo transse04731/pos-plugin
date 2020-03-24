@@ -2,8 +2,8 @@
   <div>
     <g-simple-table striped>
       <tr>
-        <th>Tax</th>
-        <th>Invoice Note Letter</th>
+        <th>{{$t('common.tax')}}</th>
+        <th>{{$t('settings.noteLetter')}}</th>
       </tr>
       <tr v-for="(tax, i) in listTaxCategories" :key="i" @click="select(tax)"
           :class="[selectedTaxCategory && selectedTaxCategory._id === tax._id && 'bordered']">
@@ -18,9 +18,9 @@
   export default {
     name: 'viewTax',
     injectService: [
-        'PosStore:getAllTaxCategory',
-        'PosStore:selectedTaxCategory',
-        'PosStore:listTaxCategories',
+        'SettingsStore:getAllTaxCategory',
+        'SettingsStore:selectedTaxCategory',
+        'SettingsStore:listTaxCategories',
     ],
     methods: {
       select(tax) {

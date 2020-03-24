@@ -4,8 +4,8 @@
     <div area="button-name" v-show="isButtonSelected && !isInConfigLayoutMode">
       <pos-text-field :value="textFieldValue"
                       @input="updateButton($event, 'text'); debounceUpdate()"
-                      label="Button Name"
-                      placeholder="Fill your text">
+                      :label="$t('fnBtn.btnName')"
+                      :placeholder="$t('fnBtn.fillText')">
         <template v-slot:append>
           <g-icon color="#757575">mdi-keyboard</g-icon>
         </template>
@@ -15,25 +15,25 @@
     <div area="button-action">
       <g-btn :uppercase="false" @click="resetSelectedButton" background-color="white" elevation="0" height="100%" text-color="red" v-show="isButtonSelected && !isInConfigLayoutMode">
         <g-icon size="16" style="margin-right: 8px">fas fa-undo</g-icon>
-        Clear button
+        {{$t('fnBtn.clearBtn')}}
       </g-btn>
     </div>
 
     <div area="function" v-show="isButtonSelected && !isInConfigLayoutMode">
-      <p class="title">Functions</p>
+      <p class="title">{{$t('fnBtn.fns')}}</p>
       <pos-select :items="listButtonFunctions"
                   @input="updateButtonFunction"
                   clearable
                   item-text="text"
                   item-value="value"
-                  placeholder="Select"
+                  :placeholder="$t('fnBtn.select')"
                   v-model="selectedFunction"
       >
       </pos-select>
 
       <dialog-fn-button-product-lookup @selectProduct="productLookup">
         <template v-slot:activator="{open, close}">
-          <pos-text-field :value="buybackProductName" @click="open" label="Buyback" read-only v-if="selectedFunction === 'buybackProduct'">
+          <pos-text-field :value="buybackProductName" @click="open" :label="$t('fnBtn.buyback')" read-only v-if="selectedFunction === 'buybackProduct'">
             <template v-slot:append>
               <g-icon color="#757575" size="16px">fas fa-search</g-icon>
             </template>
@@ -46,20 +46,20 @@
     <div area="button-fn-value">
       <pos-text-field :rules="selectedFunction === 'discountSingleItemByPercent' ? [rules.minMax] : []"
                       @input="updateButton($event, 'buttonFunctionValue'); debounceUpdate()"
-                      label="Value"
-                      placeholder="Fill your value"
+                      :label="$t('fnBtn.value')"
+                      :placeholder="$t('fnBtn.fillValue')"
                       v-if="isButtonSelected && !isInConfigLayoutMode && showFunctionValue"
                       v-model.number="textFieldFunctionValue"></pos-text-field>
       <pos-text-field @input="debounceUpdate()"
-                      label="Price"
-                      placeholder="Fill your value"
+                      :label="$t('fnBtn.price')"
+                      :placeholder="$t('fnBtn.fillValue')"
                       style="height: fit-content; margin-top: auto;"
                       v-if="isButtonSelected && !isInConfigLayoutMode && selectedFunction === 'buybackProduct'"
                       v-model="buybackProductPrice"></pos-text-field>
     </div>
 
     <div area="color" v-show="isButtonSelected && !isInConfigLayoutMode">
-      <p class="title">Color</p>
+      <p class="title">{{$t('fnBtn.color')}}</p>
       <g-grid-select :grid="false" :items="buttonColors" return-object v-model="selectedColor">
         <template #default="{toggleSelect, item, index}">
           <g-btn :key="index" :ripple="false"
@@ -116,49 +116,49 @@
     <div area="left-layout-overlay" v-show="selectedButtons.length >= 2 || isButtonSelected === false || mergeMode || splitMode">
       <div class="left-layout-overlay-info" v-show="!isButtonSelected || mergeMode || splitMode">
         <g-icon size="62" svg>icon-info-green</g-icon>
-        <p style="margin-top: 10px" v-if="!isInConfigLayoutMode && !isButtonSelected">Select a button to configure</p>
-        <p style="margin-top: 10px" v-else-if="mergeMode">Select multiple buttons to merge</p>
-        <p style="margin-top: 10px" v-else="splitMode">Select a button to split</p>
+        <p style="margin-top: 10px" v-if="!isInConfigLayoutMode && !isButtonSelected">{{$t('fnBtn.selectBtn')}}</p>
+        <p style="margin-top: 10px" v-else-if="mergeMode">{{$t('fnBtn.selectMergeBtns')}}</p>
+        <p style="margin-top: 10px" v-else="splitMode">{{$t('fnBtn.selectSplitBtn')}}</p>
       </div>
     </div>
 
     <div area="button-control">
       <g-btn :uppercase="false" @click="$router.push({ path: '/view/pos-settings' })" background-color="white" class="mr-3">
         <g-icon class="mr-2" svg>icon-back</g-icon>
-        <span style="color: rgba(0, 0, 0, 0.87)">Back</span>
+        <span style="color: rgba(0, 0, 0, 0.87)">{{$t('ui.back')}}</span>
       </g-btn>
 
       <g-menu nudge-top="5" top v-model="showMenu">
         <template v-slot:activator="{toggleContent}">
           <g-btn :uppercase="false" @click="toggleContent" background-color="white" class="mr-3" v-if="!isInConfigLayoutMode">
             <g-icon class="mr-2" svg>icon-menu</g-icon>
-            <span style="color: rgba(0, 0, 0, 0.87)">More</span>
+            <span style="color: rgba(0, 0, 0, 0.87)">{{$t('ui.more')}}</span>
           </g-btn>
 
           <g-btn :uppercase="false" @click="toggleMode('cancel')" background-color="white" class="mr-3" v-if="isInConfigLayoutMode">
             <g-icon class="mr-2" color="red">mdi-close-circle</g-icon>
-            <span style="color: rgba(0, 0, 0, 0.87)">Cancel</span>
+            <span style="color: rgba(0, 0, 0, 0.87)">{{$t('ui.cancel')}}</span>
           </g-btn>
         </template>
         <div style="display: flex; flex-direction: column;">
           <g-btn :uppercase="false" @click="toggleMode('merge')">
             <g-icon style="margin-right: 5px;" svg>icon-merge</g-icon>
-            Merge Mode
+            {{$t('fnBtn.mergeMode')}}
           </g-btn>
           <g-btn :uppercase="false" @click="toggleMode('split')">
             <g-icon style="margin-right: 5px" svg>icon-split</g-icon>
-            Split Mode
+            {{$t('fnBtn.splitMode')}}
           </g-btn>
         </div>
       </g-menu>
       <g-spacer/>
       <g-btn :disabled="selectedButtons.length <= 1" :uppercase="false" @click="onMerge" background-color="#1976D2" text-color="white" v-if="mergeMode">
         <g-icon style="margin-right: 5px;" svg>icon-merge</g-icon>
-        Merge
+        {{$t('fnBtn.merge')}}
       </g-btn>
       <g-btn :disabled="validateSplit()" :uppercase="false" @click="onSplit" background-color="#1976D2" text-color="white" v-if="splitMode">
         <g-icon style="margin-right: 5px" svg>icon-split</g-icon>
-        Split
+        {{$t('fnBtn.split')}}
       </g-btn>
     </div>
     <div area="menu">
@@ -231,7 +231,7 @@
   export default {
     name: 'PosFnButtonView',
     components: { DialogFnButtonProductLookup, PosTextField },
-    injectService: ['PosStore:( updatePosSettings )'],
+    injectService: ['SettingsStore:updatePosSettings'],
     mixins: [layoutConfigMixin],
     data: () => ({
       layout: fnButtonLayout,
@@ -481,8 +481,8 @@
 
         return this.buttonGroupItems.find((x) => x.buttonId === button.buttonId) || this.sideButtonItems.find((x) => x.buttonId === button.buttonId);
       },
-      refreshData() {
-        this.posSettings = cms.getList('PosSetting')[0];
+      async refreshData() {
+        this.posSettings = await this.$getService('SettingsStore:getPosSetting')();
         if (this.posSettings) {
           this.quickFnRows = this.posSettings['generalSetting']['quickFnRows'] || 0;
           this.numberOfConfigBtn = 4 * this.quickFnRows;
@@ -495,12 +495,20 @@
         }
       }
     },
-    mounted() {
-      this.refreshData();
+    created() {
+      const i18n = this.$i18n;
+      const localeMessages = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
+      this.listButtonFunctions = this.listButtonFunctions.map(item => ({
+        ...item,
+        text: localeMessages['fnBtn']['orderFunctions'][item.value]
+      }))
+    },
+    async mounted() {
+      await this.refreshData();
       this.selectedButtons = [];
     },
-    activated() {
-      this.refreshData();
+    async activated() {
+      await this.refreshData();
       this.selectedButtons = [];
     }
   }

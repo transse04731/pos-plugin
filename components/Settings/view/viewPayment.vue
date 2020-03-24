@@ -3,8 +3,8 @@
     <div>
       <g-simple-table striped>
         <tr>
-          <th>Name</th>
-          <th>Icon</th>
+          <th>{{$t('settings.paymentName')}}</th>
+          <th>{{$t('settings.paymentIcon')}}</th>
         </tr>
         <tr v-for="payment in listPayments" @click="select(payment)"
             :class="[selectedPayment && selectedPayment._id === payment._id && 'bordered']">
@@ -22,9 +22,9 @@
   export default {
     name: 'viewPayment',
     injectService: [
-      'PosStore:listPayments',
-      'PosStore:getListPayments',
-      'PosStore:selectedPayment',
+      'SettingsStore:listPayments',
+      'SettingsStore:getListPayments',
+      'SettingsStore:selectedPayment',
     ],
     data() {
       return {}

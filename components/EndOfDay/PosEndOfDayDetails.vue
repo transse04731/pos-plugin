@@ -14,19 +14,19 @@
           <span>{{selectedDate}}</span>
         </div>
         <div class="eod-info">
-          <span class="eod-info-important">Z - Number:</span>
+          <span class="eod-info-important">{{$t('report.zNumber')}}:</span>
           <span>{{item.z}}</span>
         </div>
         <div class="eod-info">
-          <span class="eod-info-important">First Order:</span>
+          <span class="eod-info-important">{{$t('report.firstOrder')}}:</span>
           <span>{{item.begin}}</span>
         </div>
         <div class="eod-info">
-          <span class="eod-info-important">Last Order:</span>
+          <span class="eod-info-important">{{$t('report.lastOrder')}}:</span>
           <span>{{item.end}}</span>
         </div>
         <div class="eod-info">
-          <span class="eod-info-important">Total Sales:</span>
+          <span class="eod-info-important">{{$t('report.totalSales')}}:</span>
           <span class="eod-info-total-sale">€ {{item.sum.toFixed(2)}}</span>
         </div>
       </g-tab-item>
@@ -46,7 +46,7 @@
   export default {
     name: 'PosEndOfDayDetails',
     injectService: [
-      'PosStore:selectedReportDate',
+      'ReportsStore:selectedReportDate', 'PosStore:(timeFormat, dateFormat)'
     ],
     data() {
       return {
@@ -57,7 +57,7 @@
     computed: {
       selectedDate() {
         if (this.selectedReportDate && this.selectedReportDate.date) {
-          return dayjs(this.selectedReportDate.date).format('DD/MM/YYYY')
+          return dayjs(this.selectedReportDate.date).format(this.dateFormat)
         }
         return '';
       },
@@ -72,13 +72,13 @@
       }
     },
     created() {
-      const posStore = this.$getService('PosStore')
+      const reportsStore = this.$getService('ReportsStore')
 
-      this.unwatch = posStore.$watch('selectedReportDate', newVal => {
+      this.unwatch = reportsStore.$watch('selectedReportDate', newVal => {
         if (newVal.reports && newVal.reports.length) {
           this.zNumberReports = newVal.reports.map(report => ({
-            begin: dayjs(report.begin).format('HH:mm'),
-            end: dayjs(report.end).format('HH:mm'),
+            begin: dayjs(report.begin).format(this.timeFormat),
+            end: dayjs(report.end).format(this.timeFormat),
             sum: report.sum,
             z: report.z
           }))

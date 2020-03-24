@@ -4,7 +4,7 @@
       <g-icon class="mr-2" svg>
         icon-trash
       </g-icon>
-      Delete
+      {{$t('ui.delete')}}
     </g-btn>
     <dialog-confirm-delete type="user" :label="selectedUser ? selectedUser.name : ''" v-model="dialogConfirmDelete" @submit="deleteUser"/>
   </fragment>
@@ -14,9 +14,9 @@
   export default {
     name: 'viewUserToolbar',
     injectService: [
-      'PosStore:selectedUser',
-      'PosStore:updateUser',
-      'PosStore:listUsers',
+      'SettingsStore:selectedUser',
+      'SettingsStore:updateUser',
+      'SettingsStore:listUsers',
       'PosStore:user',
     ],
     data() {

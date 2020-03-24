@@ -33,7 +33,8 @@
   export default {
     name: 'PosPaymentScreenKeyboard',
     injectService: [
-      'PosStore:(paymentAmountTendered,savePaidOrder,selectedPayment,paymentTotal,getPosSetting,currentOrder)'
+      'OrderStore:(paymentAmountTendered,savePaidOrder,selectedPayment,paymentTotal,currentOrder)',
+      'SettingsStore:getPosSetting'
     ],
     data() {
       return {

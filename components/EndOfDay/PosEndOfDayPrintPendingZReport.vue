@@ -3,14 +3,17 @@
     <slot :close="close" :open="open" name="activator"></slot>
     <g-dialog eager v-model="dialog" width="45%" overlay-color="#6B6F82" overlay-opacity="0.95">
       <div class="print-confirm-dialog">
-        <p class="title">Notification</p>
+        <p class="title">{{$t('ui.notification')}}</p>
         <div class="confirmation-content">
-          <p>Day <span>{{pendingReport && pendingReport.date | formatDate}}</span> is not yet closed.</p>
-          <p>Do you want to run End-of-day on <span>{{pendingReport && pendingReport.date | formatDate}}</span>?</p></div>
+          <p>{{$t('report.pendingPrintLine1', {date: pendingReport && pendingReport.date | formatDate})}}</p>
+          <p>{{$t('report.pendingPrintLine2', {date: pendingReport && pendingReport.date | formatDate})}}</p></div>
         <div class="confirmation-buttons">
-          <g-btn @click="close()" :uppercase="false" background-color="#fff" class="mr-2" flat style="border: 1px solid #979797" text-color="#1D1D26" width="120px">Cancel
+          <g-btn @click="close()" :uppercase="false" background-color="#fff" class="mr-2" flat style="border: 1px solid #979797" text-color="#1D1D26" width="120px">
+            {{$t('ui.cancel')}}
           </g-btn>
-          <g-btn @click="close(true)" :uppercase="false" background-color="#E57373" class="mr-2" flat text-color="#FFFFFF" width="120px">OK</g-btn>
+          <g-btn @click="close(true)" :uppercase="false" background-color="#E57373" class="mr-2" flat text-color="#FFFFFF" width="120px">
+            {{$t('ui.ok')}}
+          </g-btn>
         </div>
       </div>
     </g-dialog>
@@ -24,12 +27,13 @@
 
   export default {
     name: 'PosEndOfDayPrintPendingZReport',
+    injectService: ['PosStore:dateFormat'],
     props: {
       value: null
     },
     filters: {
       formatDate(date) {
-        return dayjs(date).format('DD/MM/YYYY')
+        return dayjs(date).format(this.dateFormat)
       }
     },
     setup() {
@@ -44,7 +48,7 @@
       close(confirmed = false) {
         this.dialog = false
         if (confirmed) this.$emit('confirmed', _.map(this.pendingReport.reports, (value, key) => ({
-            z: key ? key : this.$getService('PosStore:getHighestZNumber')(),
+            z: key ? key : this.$getService('ReportsStore:getHighestZNumber')(),
             begin: dayjs(value.from).toDate(),
             end: dayjs(value.to).toDate(),
             sum: value.vSum,
@@ -55,7 +59,7 @@
     },
     watch: {
       async dialog(newVal) {
-        if (newVal) this.pendingReport = await this.$getService('PosStore:getOldestPendingReport')()
+        if (newVal) this.pendingReport = await this.$getService('ReportsStore:getOldestPendingReport')()
       }
     }
   }

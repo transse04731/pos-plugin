@@ -1,7 +1,7 @@
 <template>
   <div v-if="orderHistoryCurrentOrder" class="wrapper">
     <div>
-      <span class="order-title">Order No.</span>
+      <span class="order-title">{{$t('orderHistory.orderNo')}}</span>
       <span class="order-id">{{orderHistoryCurrentOrder.id}}</span>
     </div>
     <g-simple-table striped>
@@ -13,22 +13,21 @@
     </g-simple-table>
     <g-divider/>
     <div class="order-info my-2">
-      <span class="fw-700">Promotional
-        Applied </span>
+      <span class="fw-700">{{$t('orderHistory.promotionalApplied')}}</span>
       <span class="order-info-number">-{{promotionTotal > 0 ? (' € ' + promotionTotal.toFixed(2) ) : ''}}</span>
     </div>
     <g-divider/>
     <div class="order-info mt-2">
-      <span>Sub Total</span>
+      <span>{{$t('common.subtotal')}}</span>
       <span class="order-info-number">€ {{subTotal | formatNumber}}</span>
     </div>
     <div class="order-info mb-2">
-      <span>Tax</span>
+      <span>{{$t('common.tax')}}</span>
       <span class="order-info-number">€ {{orderHistoryCurrentOrder.tax | formatNumber}}</span>
     </div>
     <g-divider/>
     <div class="total">
-      <span>Total </span>
+      <span>{{$t('common.total')}} </span>
       <span class="total__important">€ {{orderHistoryCurrentOrder.amount | formatNumber}}</span>
     </div>
     <g-divider/>
@@ -41,7 +40,7 @@
     name: 'OrderHistoryDetail',
     props: {},
     injectService: [
-      'PosStore:orderHistoryCurrentOrder'
+      'OrderStore:orderHistoryCurrentOrder'
     ],
     computed: {
       promotionTotal() {

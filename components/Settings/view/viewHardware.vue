@@ -2,31 +2,31 @@
   <div class="h-100 r">
     <div class="configuration">
       <div class="config">
-        <p class="title mb-3">Thermal Printer</p>
+        <p class="title mb-3">{{$t('settings.thermalPrinter')}}</p>
         <div class="row-flex flex-wrap">
           <div v-for="(type, i) in printerTypes" :key="i" :class="['printer', selectedPrinterType === type && 'printer__active']" @click="select(type)">
             {{type.name}}
           </div>
           <div class="printer" @click="resetPrinter">
-            Reset
+            {{$t('settings.reset')}}
           </div>
         </div>
       </div>
       <g-divider inset/>
       <div v-if="selectedPrinterType && selectedPrinterType.value === 'ip'" class="config">
-        <p class="title">IP Address</p>
+        <p class="title">{{$t('settings.ipAddress')}}</p>
         <div class="row-flex mx-2">
           <g-text-field solo outlined dense v-model="ipAddress" @click="showKeyboard = true">
             <template v-slot:append-inner>
               <g-icon svg style="cursor: pointer" @click.stop.prevent="showKeyboard = !showKeyboard">icon-keyboard</g-icon>
             </template>
           </g-text-field>
-          <g-btn :uppercase="false" outlined height="auto" class="mt-3 mb-4" @click="setupPrinter">
-            Setup Printer
-          </g-btn>
+          <!--          <g-btn :uppercase="false" outlined height="auto" class="mt-3 mb-4">-->
+          <!--            {{$t('settings.setupPrinter')}}-->
+          <!--          </g-btn>-->
         </div>
         <g-btn :uppercase="false" text-color="white" background-color="blue accent 3" class="ml-2">
-          Test Printer
+          {{$t('settings.testPrinter')}}
         </g-btn>
       </div>
     </div>
@@ -40,9 +40,7 @@
   export default {
     name: 'viewHardware',
     injectService: [
-      'PosStore:thermalPrinter',
-      'PosStore:getThermalPrinter',
-      'PosStore:updateThermalPrinter',
+      'SettingsStore:(thermalPrinter, getThermalPrinter, updateThermalPrinter)',
     ],
     data() {
       return {
@@ -59,13 +57,14 @@
     computed: {
       ipAddress: {
         get() {
-          if(this.thermalPrinter)
+          if (this.thermalPrinter) {
             return this.thermalPrinter.ip
+          }
           return ''
         },
         set(val) {
-          if(this.thermalPrinter) {
-            this.thermalPrinter.ip = val;
+          if (this.thermalPrinter) {
+            this.$set(this.thermalPrinter, 'ip', val)
           } else {
             this.thermalPrinter = {
               printerType: 'ip',
@@ -78,7 +77,7 @@
     methods: {
       select(type) {
         this.selectedPrinterType = type;
-        if(this.thermalPrinter) {
+        if (this.thermalPrinter) {
           this.thermalPrinter.printerType = type.value;
         } else {
           this.thermalPrinter = {
@@ -88,23 +87,28 @@
       },
       resetPrinter() {
         this.selectedPrinterType = null;
-        if(this.thermalPrinter) {
+        if (this.thermalPrinter) {
           this.thermalPrinter.printerType = null;
         } else {
           this.thermalPrinter = {
             printerType: null
           }
         }
-      },
-      async setupPrinter() {
-        await this.updateThermalPrinter(this.thermalPrinter._id, this.thermalPrinter);
       }
     },
     async created() {
       await this.getThermalPrinter();
-      if(this.thermalPrinter) {
+      if (this.thermalPrinter) {
         this.selectedPrinterType = this.printerTypes.find(t => t.value === this.thermalPrinter.printerType)
       }
+
+      const settingsStore = this.$getService('SettingsStore')
+      this.unwatch = settingsStore.$watch('thermalPrinter', async newVal => {
+        await this.updateThermalPrinter(newVal._id, newVal)
+      }, { deep: true })
+    },
+    beforeDestroy() {
+      this.unwatch()
     }
   }
 </script>

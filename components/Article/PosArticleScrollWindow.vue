@@ -30,6 +30,7 @@
 
 <script>
   import _ from 'lodash'
+  import {getProductGridOrder} from '../logic/productUtils'
 
   export default {
     name: 'PosArticleScrollWindow',
@@ -39,7 +40,7 @@
         default: 0
       }
     },
-    injectService: ['PosStore:(activeCategory, activeCategoryProducts, getProductGridOrder, selectArticle, articleSelectedProductButton)'],
+    injectService: ['SettingsStore:(activeCategory, activeCategoryProducts, selectArticle, articleSelectedProductButton)'],
     data() {
       return {
         activeProductWindow: 0,
@@ -57,7 +58,7 @@
 
         return layout
           ? {
-            order: this.getProductGridOrder(item, this.isFavouriteCategory),
+            order: getProductGridOrder(item, this.isFavouriteCategory),
             backgroundColor: layout.color,
             border: !layout.color || layout.color === '#FFFFFF' || layout.color === 'white' ? '1px solid rgb(151, 151, 151)' : ''
           }
@@ -76,7 +77,7 @@
           if (this.articleSelectedProductButton) {
             return this.productWindows.findIndex(v => {
               return v.some((item) =>
-                this.getProductGridOrder(item, this.isFavouriteCategory) === this.getProductGridOrder(this.articleSelectedProductButton, this.isFavouriteCategory))
+                getProductGridOrder(item, this.isFavouriteCategory) === getProductGridOrder(this.articleSelectedProductButton, this.isFavouriteCategory))
             })
           }
           return this.activeProductWindow
@@ -88,7 +89,7 @@
     },
     async activated() {
       this.articleSelectedProductButton = null;
-      this.activeCategory && await this.$getService('PosStore:getActiveProducts')()
+      this.activeCategory && await this.$getService('SettingsStore:getActiveProducts')()
     }
   }
 </script>

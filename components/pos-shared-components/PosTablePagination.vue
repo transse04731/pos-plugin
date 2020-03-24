@@ -1,5 +1,7 @@
 <template>
   <div class="g-pagination-wrapper">
+    <div v-if="selected" class="g-pagination-text">Selected: {{selected}}</div>
+    <div class="g-pagination-text">Total: {{totalDocument}}</div>
     <div class="g-pagination-text">Rows per page:</div>
     <div class="g-pagination-input">
       <g-select :items="computedRowsPerPageItems"
@@ -10,7 +12,7 @@
     <div class="g-pagination-text">
       Page:
     </div>
-    <div class="g-pagination-input">
+    <div class="g-pagination-input" style="margin-right: 16px">
       <g-combobox
           v-model="comboPage"
           :items="listPageNumber"
@@ -18,7 +20,6 @@
           style="font-size: 13px;"
       ></g-combobox>
     </div>
-    <div style="margin: 0 16px">Total: {{totalDocument}}</div>
     <g-btn :uppercase="false" flat :disabled="disablePre" @click="gotoFirstPage">
       <g-icon>first_page</g-icon>
     </g-btn>
@@ -42,7 +43,8 @@
     props: {
       limit: Number,
       totalDocument: Number,
-      currentPage: Number
+      currentPage: Number,
+      selected: Number,
     },
     data: () => ({
       computedRowsPerPageItems: [10, 15, 20, 25, 50]

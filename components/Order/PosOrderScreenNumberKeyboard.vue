@@ -15,7 +15,7 @@
 <script>
   export default {
     name: 'PosOrderScreenNumberKeyboard',
-    injectService: ['PosStore:(productIdQuery,queryProductsById,productIdQueryResults,addProductToOrder)'],
+    injectService: ['OrderStore:(productIdQuery,queryProductsById,productIdQueryResults,addProductToOrder)'],
     data() {
       return {
         numpad_1: [

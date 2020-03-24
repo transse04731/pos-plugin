@@ -3,23 +3,23 @@
     <slot :close="close" :open="open" name="activator"></slot>
     <g-dialog eager overlay-color="#6B6F82" overlay-opacity="0.95" v-model="dialog" width="70%">
       <div style="width: 100%; background-color: #fff; position: relative; height: 75vh">
-        <p class="eod-header">X-Report</p>
+        <p class="eod-header">{{$t('report.xReport')}}</p>
         <div style="height: calc(100% - 145px); overflow-y: auto;">
           <div class="eod-dialog-main">
             <div class="eod-dialog-content" v-if="xReport">
-              <p class="section-title eod-title">Sales</p>
+              <p class="section-title eod-title">{{$t('common.sales')}}</p>
               <div class="eod-details">
                 <div class="details-content" v-for="(paymentValue, paymentName) in xReport.sumByPayment">
                   <p>{{paymentName}}</p>
                   <p>€ {{paymentValue | formatMoney}}</p>
                 </div>
                 <div class="total-content">
-                  <p class="eod-subtitle">Total</p>
+                  <p class="eod-subtitle">{{$t('common.total')}}</p>
                   <p style="text-decoration: underline; font-weight: 800;">€ {{getSum(xReport.sumByPayment) | formatMoney}}</p>
                 </div>
               </div>
 
-              <p class="section-title eod-title">Product Sold</p>
+              <p class="section-title eod-title">{{$t('report.productSold')}}</p>
               <div class="eod-details">
                 <div v-for="(items, category) in xReport.groupItemsByCategory">
                   <p class="eod-subtitle">{{category}} (€{{xReport.sumByCategory[category] | formatMoney}})</p>
@@ -34,11 +34,11 @@
           <g-toolbar bottom color="#eee">
             <g-spacer/>
             <g-btn :uppercase="false" @click="close" class="mr-2">
-              Cancel
+              {{$t('ui.cancel')}}
             </g-btn>
             <g-btn :uppercase="false" background-color="#2979FF" text-color="#fff" @click.stop="print">
               <g-icon class="mr-2" svg>icon-print</g-icon>
-              Print
+              {{$t('ui.print')}}
             </g-btn>
           </g-toolbar>
         </div>
@@ -71,7 +71,7 @@
       async open(date) {
         this.dialog = true;
         this.date = date;
-        this.xReport = await this.$getService('PosStore:getXReport')(date)
+        this.xReport = await this.$getService('ReportsStore:getXReport')(date)
       },
       close() {
         this.dialog = false
@@ -81,7 +81,7 @@
         return _.reduce(paymentTypes, (res, value) => res + value, 0)
       },
       async print() {
-        await this.$getService('PosStore:printXReport')(this.date)
+        await this.$getService('ReportsStore:printXReport')(this.date)
       }
     },
     setup() {

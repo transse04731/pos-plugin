@@ -25,10 +25,10 @@
   export default {
     name: 'PosPaymentScreenPaymentMethods',
     injectService: [
-      'PosStore:currentOrder',
-      'PosStore:listPayments',
-      'PosStore:getListPayments',
-      'PosStore:selectedPayment',
+      'OrderStore:currentOrder',
+      'SettingsStore:listPayments',
+      'SettingsStore:getListPayments',
+      'SettingsStore:selectedPayment',
     ],
     data() {
       return {

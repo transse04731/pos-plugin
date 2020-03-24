@@ -2,14 +2,17 @@
   <g-dialog v-model="dialog" overlay-color="#6b6f82" overlay-opacity="0.95" width="40%" eager>
     <g-card class="w-100">
       <g-card-title>
-        Confirmation
+        {{$t('ui.confirmation')}}
       </g-card-title>
       <g-card-text>
-        Are you sure you want to delete <span v-if="computedType">{{computedType}}</span> <b v-if="computedLabel">"{{computedLabel}}"</b>?
+        <i18n path="settings.deletePrompt">
+          <span v-if="computedType">{{computedType}}</span>
+          <b v-if="computedLabel">"{{computedLabel}}"</b>
+        </i18n>?
       </g-card-text>
       <g-card-actions>
-        <g-btn :uppercase="false" outlined @click="dialog = false">Cancel</g-btn>
-        <g-btn :uppercase="false" flat background-color="red lighten 2" text-color="white" @click="submit">OK</g-btn>
+        <g-btn :uppercase="false" outlined @click="dialog = false">{{$t('ui.cancel')}}</g-btn>
+        <g-btn :uppercase="false" flat background-color="red lighten 2" text-color="white" @click="submit">{{$t('ui.ok')}}</g-btn>
       </g-card-actions>
     </g-card>
   </g-dialog>

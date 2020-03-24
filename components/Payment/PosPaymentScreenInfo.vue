@@ -5,7 +5,7 @@
         <g-icon svg>icon-customer_ava</g-icon>
       </g-avatar>
       <p class="pa-1 ml-2" style="line-height: 16px">
-        Select Customer
+        {{$t('payment.selectCustomer')}}
       </p>
       <g-icon small>add_circle</g-icon>
     </div>
@@ -24,10 +24,10 @@
 <script>
   export default {
     name: 'PosPaymentScreenInfo',
-    injectService: ['PosStore:(user,systemDate)'],
+    injectService: ['PosStore:(user, systemDate, timeFormat, dateFormat)'],
     computed: {
       formattedDate() {
-        return dayjs(this.systemDate).format(`HH:mm ‧ MMM DD, YY`)
+        return dayjs(this.systemDate).format(`${this.timeFormat} ‧ ${this.dateFormat}`)
       },
     },
   }

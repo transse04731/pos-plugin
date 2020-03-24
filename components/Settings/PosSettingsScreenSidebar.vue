@@ -15,7 +15,7 @@
 <script>
   export default {
     name: 'PosSettingsScreenSidebar',
-    injectService: ['PosStore:(sidebarData,user)'],
+    injectService: ['PosStore:user', 'SettingsStore:sidebarData'],
     props: {
       value: null
     },

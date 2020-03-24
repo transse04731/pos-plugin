@@ -20,14 +20,14 @@
   export default {
     name: 'PosEndOfDayMain',
     components: { PosEndOfDayDatePicker },
-    injectService: ['PosStore:(selectedReportDate,listOfDatesWithReports)'],
+    injectService: ['ReportsStore:(selectedReportDate,listOfDatesWithReports)'],
     data: () => ({
       date: null,
       eventDates: []
     }),
     methods: {
       getDay(date) {
-        const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+        const daysOfWeek = this.$t('dates.daysOfWeek');
         let i = new Date(date).getDay();
         return daysOfWeek[i]
       },
@@ -36,13 +36,10 @@
         if (this.selectedReportDate && this.selectedReportDate.date === value) return
         this.date = value
 
-        this.selectedReportDate = Object.assign({}, this.selectedReportDate, {
-          date: dayjs(value, 'YYYY-MM-DD').toDate(),
-          reports: this.$getService('PosStore:getDailyReports')(value)
-        })
+        this.$getService('ReportsStore:getDailyReports')(dayjs(value, 'YYYY-MM-DD').toDate())
       },
       async getDatesWithReport(date) {
-        this.eventDates = await this.$getService('PosStore:getDatesWithReports')(date)
+        this.eventDates = await this.$getService('ReportsStore:getDatesWithReports')(date)
       }
     },
     async mounted() {

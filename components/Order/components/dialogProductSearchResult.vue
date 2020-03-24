@@ -104,7 +104,7 @@
     props: {
       value: null
     },
-    injectService: ['PosStore:(productIdQuery,productIdQueryResults)'],
+    injectService: ['OrderStore:(productIdQuery,productIdQueryResults)'],
     data: () => ({
       activeClass: 'active-attribute',
       queryResults: []
@@ -164,7 +164,7 @@
         const _product = _.clone(this.productIdQueryResults.find(i => i._id === product._id))
         _product.unit = product.selectedUnit
         _product.attributes = _.values(product.selectedAttributes)
-        this.$getService('PosStore:addProductToOrder')(_product)
+        this.$getService('OrderStore:addProductToOrder')(_product)
         this.dialogProductSearch = false
         this.productIdQuery = ''
       },

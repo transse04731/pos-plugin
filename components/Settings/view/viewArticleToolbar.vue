@@ -6,28 +6,29 @@
 <!--      </g-icon>-->
 <!--      More-->
 <!--    </g-btn>-->
-<!--    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-3">-->
-<!--      <g-icon class="mr-2" svg>-->
-<!--        icon-sort-->
-<!--      </g-icon>-->
-<!--      Sort-->
-<!--    </g-btn>-->
+    <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-3" @click="dialogSort = true">
+      <g-icon class="mr-2" svg>
+        icon-sort
+      </g-icon>
+      {{$t('ui.sort')}}
+    </g-btn>
     <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" class="mr-3" @click="openDialogEditProduct" :disabled="selectedProductIDs.length === 0">
       <g-icon class="mr-2" color="red">
         edit
       </g-icon>
-      Edit
+      {{$t('ui.edit')}}
     </g-btn>
     <g-btn :uppercase="false" background-color="white" text-color="#1d1d26" @click="openDialogDelete" class="mr-3" :disabled="selectedProductIDs.length === 0">
       <g-icon class="mr-2" svg>
         icon-trash
       </g-icon>
-      Delete
+      {{$t('ui.delete')}}
     </g-btn>
     <g-btn :uppercase="false" background-color="green" text-color="white" @click="openDialogNewProduct">
-      + Create new product
+      + {{$t('settings.createProduct')}}
     </g-btn>
-    <dialog-confirm-delete :type="selectedProductIDs.length + ' selected product(s)'" v-model="dialogConfirmDelete" @submit="deleteProducts"/>
+    <dialog-confirm-delete :type="`${selectedProductIDs.length} ${$t('settings.createProduct')}`" v-model="dialogConfirmDelete" @submit="deleteProducts"/>
+    <dialog-sort v-model="dialogSort" @submit="sort"/>
   </fragment>
 </template>
 
@@ -35,12 +36,15 @@
   export default {
     name: 'viewArticleToolbar',
     injectService: [
-        'PosStore:selectedProductIDs',
-        'PosStore:deleteSelectedProducts',
+        'SettingsStore:selectedProductIDs',
+        'SettingsStore:deleteSelectedProducts',
+        'SettingsStore:productSortCondition',
+        'SettingsStore:getListProducts',
     ],
     data() {
       return {
-        dialogConfirmDelete: false
+        dialogConfirmDelete: false,
+        dialogSort: false,
       }
     },
     methods: {
@@ -58,6 +62,10 @@
       },
       back() {
         this.$router.push({ path: '/view/pos-dashboard' });
+      },
+      async sort(option) {
+        this.productSortCondition = option
+        await this.getListProducts()
       }
     }
   }

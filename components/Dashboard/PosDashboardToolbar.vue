@@ -12,13 +12,13 @@
 <script>
   export default {
     name: 'PosDashboardToolbar',
-    injectService: ['PosStore:systemDate'],
+    injectService: ['PosStore:(systemDate, timeFormat, dateFormat)'],
     computed: {
       formattedDateTime() {
         const dateObj = dayjs(this.systemDate)
         return {
-          date:dayjs(dateObj).format('MMM DD, YY'),
-          time: dateObj.format('HH:mm')
+          date: dayjs(dateObj).format(this.dateFormat),
+          time: dateObj.format(this.timeFormat)
         }
       }
     }
