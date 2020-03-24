@@ -6,47 +6,42 @@
           <g-img :src="srcImg"></g-img>
         </g-avatar>
         <span class="username">{{userName}}</span>
-        <g-spacer/>
-        <span>{{ now }}</span>
       </div>
     </template>
-    <slot name="above-tree-view"/>
-    <g-side-bar-tree-view
-        ref="tree"
-        :item-children="itemChildren"
-        :data="items"
-        v-model="sidebar"
-        @node-selected="onNodeSelected"
-        @node-expansion-toggled="(path, toggled) => $emit('toggle', path, toggled)"/>
-    <slot name="above-spacer"/>
+    <g-side-bar-tree-view :data="sideBarData" v-model="sidebar"></g-side-bar-tree-view>
     <g-spacer></g-spacer>
-    <slot name="below-spacer"/>
-    <slot name="footer">
-      <g-btn :uppercase="false" large text background-color="white" text-color="#424242" width="100%" @click.stop="logout">
-        <g-icon svg>icon-logout</g-icon>
-      <span class="ml-2">Log Out</span>
-      </g-btn>
-    </slot>
+    <g-btn :uppercase="false" large text background-color="white" text-color="#424242" width="100%"
+           @click.stop="logout"
+    >
+      <g-icon svg>icon-logout</g-icon>
+      <span class="ml-2">{{ $t("dashboard.logOut") }}</span>
+    </g-btn>
   </g-sidebar>
 </template>
 
 <script>
-  import _ from 'lodash'
-
   export default {
     name: 'PosDashboardSidebar',
-    injectService: [ 'PosStore:user' ],
+    injectService: ['PosStore:user'],
     props: {
       title: {
         type: String,
         default: 'Admin'
       },
-      items: Array,
-      view: null
     },
     data() {
+      const i18n = this.$i18n;
+      const {dashboard} = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
+
       return {
-        now: '',
+        sideBarData: [
+          {
+            title: dashboard.dashboard, icon: 'mdi-cart-outline',
+            items: [
+              { title: dashboard.retail, icon: 'radio_button_unchecked', iconType: 'small' },
+            ]
+          }
+        ],
         sidebar: ''
       }
     },
@@ -59,19 +54,13 @@
       }
     },
     methods: {
-      itemChildren(node) {
-        if (node.children) {
-          return node.children.bind(this)();
-        }
-        return node.items;
-      },
-      onNodeSelected(node) {
-        node.onClick && node.onClick.bind(this)();
-      },
       logout() {
         this.$router.push('/view/pos-login')
         this.user = null
       }
+    },
+    mounted() {
+      this.sidebar = "items.0.items.0";
     }
   }
 </script>
