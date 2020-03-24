@@ -213,10 +213,11 @@
     {
       "_id": "5e74bab077c3dd141336469f",
       "schemaType": "boolean",
-      "key": "isModifier"
+      "key": "isModifier",
+      "type": "input@checkbox"
     },
     {
-      "_id": "5e7871894eddea12eaf34bd2",
+      "_id": "5e79bd36452c0b09364f6c91",
       "schemaType": "boolean",
       "key": "isItemNote",
       "type": "input@switch"
