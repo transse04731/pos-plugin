@@ -27,7 +27,7 @@
         </div>
         <div v-if="item.modifiers">
           <g-chip v-for="(modifier, index) in item.modifiers" :key="`${item._id}_${index}`"
-                  label small text-color="#616161" close @close="removeModifier(item, index)">
+                  label small text-color="#616161">
             {{modifier.name}} | €{{modifier.price}}
           </g-chip>
         </div>

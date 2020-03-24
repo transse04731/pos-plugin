@@ -228,6 +228,7 @@
           const order = {
             id,
             status: 'paid',
+            takeOut: this.currentOrder.takeOut,
             items: this.getComputedOrderItems(this.currentOrder.items, orderDateTime),
             user: this.currentOrder.user
               ? [...this.currentOrder.user, { name: this.user.name, date: orderDateTime }]

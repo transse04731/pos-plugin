@@ -1,6 +1,6 @@
 <template>
   <g-toolbar color="#eee" height="100%" elevation="0">
-    <g-btn-bs icon="icon-back">Back</g-btn-bs>
+    <g-btn-bs icon="icon-back" @click.stop="back">Back</g-btn-bs>
     <g-btn-bs icon="icon-menu">More</g-btn-bs>
     <g-btn-bs icon="icon-promotion">Promotion</g-btn-bs>
     <g-btn-bs icon="icon-cashier">Cashier drawer</g-btn-bs>
@@ -24,6 +24,9 @@
       }
     },
     methods: {
+      back() {
+        this.$router.push({path: '/view/pos-order-2'})
+      },
       pay() {
         this.$emit('pay')
       }
