@@ -408,3 +408,24 @@ body::-webkit-scrollbar {
   background-size: contain;
   background-position: center;
 }
+
+.icon-edit-menu-card-switch {
+  background-image: url("../assets/edit-menu-card-switch.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-edit-menu-card-copy {
+  background-image: url("../assets/edit-menu-card-copy.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-edit-menu-card-delete {
+  background-image: url("../assets/edit-menu-card-delete.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
