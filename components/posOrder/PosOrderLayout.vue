@@ -89,8 +89,12 @@
         console.log('orderLayout changed')
         if (this.selectedCategoryLayout) {
           const selectedCategoryLayout = _.find(this.orderLayout.categories, c => c.top === this.selectedCategoryLayout.top && c.left === this.selectedCategoryLayout.left)
-          console.log('update selected category layout', selectedCategoryLayout)
           this.$emit('update:selectedCategoryLayout', selectedCategoryLayout)
+        } else {
+          if (this.orderLayout.categories.length > 0) {
+            this.$emit('update:selectedCategoryLayout', _.first(this.orderLayout.categories))
+            this.editable && this.$emit('update:view', { name: 'CategoryEditor' })
+          }
         }
       }
     },
