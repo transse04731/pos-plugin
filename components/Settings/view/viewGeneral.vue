@@ -2,31 +2,31 @@
 	<div class="row-flex pa-5" style="font-size: 13px; line-height: 16px">
 		<div class="col-5 px-3">
 			<div class="row-flex align-items-center justify-between">
-				<span>Barcode</span>
+				<span>{{$t('settings.companyBarcode')}}</span>
 				<g-switch v-model="barcode" @change="changeSetting"/>
 			</div>
 			<div class="row-flex align-items-center justify-between">
-				<span>Favorite article</span>
+				<span>{{$t('settings.showFav')}}</span>
 				<g-switch v-model="favoriteArticle" @change="changeSetting"/>
 			</div>
 			<div class="row-flex align-items-center justify-between">
-				<span>Virtual keyboard</span>
+				<span>{{$t('settings.virtualKb')}}</span>
 				<g-switch v-model="virtualKeyboard" @change="changeSetting"/>
 			</div>
 			<div class="row-flex align-items-center justify-between">
-				<span>Cashdrawer opens automatically</span>
+				<span>{{$t('settings.autoCashdrawer')}}</span>
 				<g-switch v-model="automaticCashdrawer" @change="changeSetting"/>
 			</div>
 		</div>
 		<div class="col-5 offset-1">
 			<div class="row-flex align-items-center mb-3">
-				<span class="mr-4">Quick Function Rows</span>
+				<span class="mr-4">{{$t('settings.quickFnRows')}}</span>
 				<div :class="['btn-fn-row', quickFnRows === (i-1) && 'selected']" v-for="i in 3" :key="i" @click="updateFnRows(i-1)">
 					{{i-1}}
 				</div>
 			</div>
 			<div class="row-flex align-items-center justify-center">
-				<pos-time-picker label="New day starts at" v-model="beginHour" @change="changeSetting">
+				<pos-time-picker :label="$t('settings.beginHour')" :value="beginHour" @input="beginHour = $event; changeSetting()">
 					<template v-slot:append>
 						<g-icon>access_time</g-icon>
 					</template>
@@ -42,83 +42,83 @@
     name: 'viewGeneral',
 		components: { PosTimePicker },
 		injectService: [
-      'PosStore:generalSetting',
-      'PosStore:getGeneralSetting',
-      'PosStore:updateSetting',
-      'PosStore:resetLayoutFnBtn',
+      'SettingsStore:generalSettings',
+      'SettingsStore:getGeneralSettings',
+      'SettingsStore:updateSettings',
+      'SettingsStore:resetLayoutFnBtn',
     ],
     computed: {
       barcode: {
         get() {
-          if (this.generalSetting) {
-            return this.generalSetting.barcode;
+          if (this.generalSettings) {
+            return this.generalSettings.barcode;
           }
         },
         set(val) {
-					this.$set(this.generalSetting, 'barcode', val)
+					this.$set(this.generalSettings, 'barcode', val)
         }
       },
       favoriteArticle: {
         get() {
-          if (this.generalSetting) {
-            return this.generalSetting.favoriteArticle;
+          if (this.generalSettings) {
+            return this.generalSettings.favoriteArticle;
           }
         },
         set(val) {
-					this.$set(this.generalSetting, 'favoriteArticle', val)
+					this.$set(this.generalSettings, 'favoriteArticle', val)
         }
       },
       virtualKeyboard: {
         get() {
-          if (this.generalSetting) {
-            return this.generalSetting.virtualKeyboard;
+          if (this.generalSettings) {
+            return this.generalSettings.virtualKeyboard;
           }
         },
         set(val) {
-					this.$set(this.generalSetting, 'virtualKeyboard', val)
+					this.$set(this.generalSettings, 'virtualKeyboard', val)
 				}
       },
       automaticCashdrawer: {
         get() {
-          if (this.generalSetting) {
-            return this.generalSetting.automaticCashdrawer;
+          if (this.generalSettings) {
+            return this.generalSettings.automaticCashdrawer;
           }
         },
         set(val) {
-					this.$set(this.generalSetting, 'automaticCashdrawer', val)
+					this.$set(this.generalSettings, 'automaticCashdrawer', val)
 				}
       },
 			quickFnRows: {
       	get() {
-      		if (this.generalSetting) {
-      			return this.generalSetting.quickFnRows;
+      		if (this.generalSettings) {
+      			return this.generalSettings.quickFnRows;
 					}
 				},
 				set(val) {
-					this.$set(this.generalSetting, 'quickFnRows', val)
+					this.$set(this.generalSettings, 'quickFnRows', val)
 				}
 			},
 			beginHour: {
       	get() {
-      		return (this.generalSetting && this.generalSetting.beginHour) || '00:00'
+      		return (this.generalSettings && this.generalSettings.beginHour) || '00:00'
 				},
 				set(val) {
-      		this.$set(this.generalSetting, 'beginHour', val)
+      		this.$set(this.generalSettings, 'beginHour', val)
 				}
 			}
     },
     methods: {
       async changeSetting() {
-        await this.updateSetting()
+        await this.updateSettings()
       },
 			async updateFnRows(number) {
 				this.quickFnRows = number;
-				await this.updateSetting();
+				await this.updateSettings();
 				await this.resetLayoutFnBtn('leftFunctionButtons');
 			}
     },
     created() {
-      this.getGeneralSetting();
+      this.getGeneralSettings();
     }
   }
 </script>

@@ -4,7 +4,25 @@ module.exports = {
       loader: {
         type: 'vue-singleton'
       },
-      path: 'components/PosStore.vue',
+      path: 'components/Store/PosStore.vue',
+    },
+    {
+      loader: {
+        type: 'vue-singleton'
+      },
+      path: 'components/Store/OrderStore.vue',
+    },
+    {
+      loader: {
+        type: 'vue-singleton'
+      },
+      path: 'components/Store/ReportsStore.vue',
+    },
+    {
+      loader: {
+        type: 'vue-singleton'
+      },
+      path: 'components/Store/SettingsStore.vue',
     },
     {
       loader: {
@@ -60,6 +78,12 @@ module.exports = {
         type: 'i18n'
       },
       path: 'i18n/de.js'
+    },
+    {
+      loader: {
+        type: 'i18n'
+      },
+      path: 'i18n/en.js'
     }
   ]
 };

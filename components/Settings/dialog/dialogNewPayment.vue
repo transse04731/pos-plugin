@@ -2,7 +2,10 @@
 	<g-dialog v-model="dialogNewPayment" fullscreen eager>
 		<div class="dialog-payment w-100">
 			<div class="form">
-				<p class="ml-1 mb-3">{{ isEditPayment && selectedPayment ? 'Edit' : 'Create New' }} Payment</p>
+				<p class="ml-1 mb-3">{{ isEditPayment && selectedPayment
+					? $t('settings.editPayment')
+					: $t('settings.createPayment')  }}
+				</p>
 				<pos-text-field style="width: 268px" label="Name" placeholder="Payment name" v-model="name"/>
 				<pos-file-input-image label="Icon" v-model="src"/>
 			</div>
@@ -14,11 +17,11 @@
 					<g-icon class="mr-2" svg>
 						icon-back
 					</g-icon>
-					Back
+					{{$t('ui.back')}}
 				</g-btn>
 				<g-spacer/>
 				<g-btn :uppercase="false" background-color="blue accent 3" text-color="white" class="ma-2" @click="save">
-					Save
+					{{$t('ui.save')}}
 				</g-btn>
 			</g-toolbar>
 		</div>
@@ -29,8 +32,8 @@
   export default {
     name: 'dialogNewPayment',
 		injectService: [
-			'PosStore:selectedPayment',
-			'PosStore:updatePayment',
+			'SettingsStore:selectedPayment',
+			'SettingsStore:updatePayment',
 		],
     data() {
       return {

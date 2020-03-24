@@ -1,6 +1,6 @@
 <template>
   <p class="info__left" v-if="lastPayment > 0">
-    Last Pay:
+    {{$t('order.lastPay')}}:
     <span>€{{lastPayment | formatNumber}}</span>
   </p>
 </template>
@@ -8,10 +8,7 @@
 <script>
   export default {
     name: 'PosOrderScreenInfoLeft',
-    injectService: [
-      'PosStore:paymentTotal',
-      'PosStore:lastPayment'
-    ]
+    injectService: ['OrderStore:(paymentTotal,lastPayment)']
   }
 </script>
 

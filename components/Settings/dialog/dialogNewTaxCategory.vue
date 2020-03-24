@@ -3,12 +3,12 @@
     <div class="dialog-new-tax w-100">
       <div class="form">
         <div class="input">
-          <pos-text-field @click="check = 'tax'" large label="Tax" v-model="tax" :rules="[rules.number, rules.range]" suffix="%"/>
-          <pos-text-field @click="check = 'letter'" large label="Invoice Letter" v-model="computedLetter"/>
+          <pos-text-field @click="check = 'tax'" large :label="$t('common.tax')" v-model="tax" :rules="[rules.number, rules.range]" suffix="%"/>
+          <pos-text-field @click="check = 'letter'" large :label="$t('settings.invoiceLetter')" v-model="computedLetter"/>
         </div>
         <div class="action">
-          <g-btn :uppercase="false" outlined class="mr-3" width="120" @click="dialogNewTaxCategory = false">Cancel</g-btn>
-          <g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" width="120" @click="submit" :disabled="!valid">OK</g-btn>
+          <g-btn :uppercase="false" outlined class="mr-3" width="120" @click="dialogNewTaxCategory = false">{{$t('ui.cancel')}}</g-btn>
+          <g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" width="120" @click="submit" :disabled="!valid">{{$t('ui.ok')}}</g-btn>
         </div>
       </div>
       <div class="bg-grey-lighten-1 pa-2">
@@ -25,8 +25,8 @@
       value: null,
     },
     injectService: [
-      'PosStore:selectedTaxCategory',
-      'PosStore:updateTaxCategory',
+      'SettingsStore:selectedTaxCategory',
+      'SettingsStore:updateTaxCategory',
     ],
     data() {
       return {

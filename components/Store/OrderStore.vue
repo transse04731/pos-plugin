@@ -1,0 +1,437 @@
+<template>
+  <fragment/>
+</template>
+
+<script>
+  import orderUtil from '../logic/orderUtil';
+  import { getProductGridOrder, getLatestOrderId, getBookingNumber, getVDate } from '../logic/productUtils';
+  import { getProvided } from '../logic/commonUtils';
+
+  export default {
+    name: 'OrderStore',
+    domain: 'OrderStore',
+    injectService: ['PosStore:(user, timeFormat, dateFormat)'],
+    data() {
+      return {
+        activeTableProduct: null,
+        currentOrder: { items: [] },
+        savedOrders: [],
+        scrollWindowProducts: null,
+        productIdQuery: '',
+        productIdQueryResults: [],
+        productNameQuery: '',
+        productNameQueryResults: [],
+        //payment screen variables
+        paymentAmountTendered: '',
+        paymentTip: 0,
+        lastPayment: 0,
+        //order history screen variables
+        orderHistoryOrders: [],
+        orderHistoryFilters: [],
+        orderHistoryCurrentOrder: null,
+        totalOrders: null,
+        orderHistoryPagination: { limit: 15, currentPage: 1 },
+      }
+    },
+    computed: {
+      // order screen
+      paymentDiscount() {
+        if (this.currentOrder.items) {
+          return orderUtil.calOrderDiscount(this.currentOrder.items);
+        }
+      },
+      paymentChange() {
+        if (parseFloat(this.paymentAmountTendered) > this.paymentTotal) {
+          return parseFloat(this.paymentAmountTendered) - this.paymentTotal
+        }
+        return 0
+      },
+      paymentTotal() {
+        if (this.currentOrder) {
+          return orderUtil.calOrderTotal(this.currentOrder.items);
+        }
+        return 0
+      },
+      paymentTax() {
+        if (this.currentOrder) {
+          return orderUtil.calOrderTax(this.currentOrder.items);
+        }
+        return 0
+      },
+      paymentSubTotal() {
+        return this.paymentTotal - this.paymentTax
+      },
+      activeProduct() {
+        if (this.currentOrder.items && !_.isNil(this.activeTableProduct)) {
+          return this.currentOrder.items[this.activeTableProduct]
+        }
+      },
+    },
+    methods: {
+      //<!--<editor-fold desc="Order screen">-->
+      async getScrollWindowProducts() {
+        const products = {}
+        const allProducts = await cms.getModel('Product').find();
+        const groupedProducts = _.groupBy(allProducts, 'category.name')
+        const favouriteProducts = allProducts.filter(product => product.option && product.option.favorite)
+        .sort((cur, next) => getProductGridOrder(cur, true) - getProductGridOrder(next, true))
+        .map(product => ({
+          ..._.omit(product, 'attributes'),
+          originalPrice: product.price
+        }))
+        if (favouriteProducts) {
+          Object.assign(products, {
+            Favourite: _.chunk(favouriteProducts, 28)
+          })
+        }
+        if (groupedProducts) {
+          for (const key in groupedProducts) {
+            if (groupedProducts.hasOwnProperty(key)) {
+              const isFavourite = key === 'Favourite'
+              Object.assign(products, {
+                [key]: _.chunk(groupedProducts[key].sort((current, next) => {
+                  return getProductGridOrder(current, isFavourite) - getProductGridOrder(next, isFavourite)
+                }).map(product => ({
+                  ..._.omit(product, 'attributes'),
+                  originalPrice: product.price
+                })), 28)
+              })
+            }
+          }
+        }
+        this.scrollWindowProducts = products
+        return products
+      },
+      addProductToOrder(product) {
+        if (this.currentOrder && product) {
+          if (!Array.isArray(this.currentOrder.items)) this.currentOrder.items = []
+
+          const latestProduct = _.last(this.currentOrder.items);
+
+          if (_.isEqual(_.omit(latestProduct, 'quantity'), _.omit(product, 'quantity'))) {
+            latestProduct.quantity = latestProduct.quantity + (product.quantity || 1);
+          } else {
+            // this.currentOrder.items.push(Object.assign({}, { quantity: 1 }, product))
+            // replace (instead of mutate) to get old value in watcher for scrolling in order table
+            this.currentOrder.items = [...this.currentOrder.items, Object.assign({}, { quantity: 1 }, product)]
+          }
+        } else {
+          this.currentOrder = { items: [Object.assign({}, { quantity: 1 }, product)] }
+        }
+      },
+      addItemQuantity(item) {
+        const itemToUpdate = this.currentOrder.items.find(i => i === item)
+        itemToUpdate.quantity++
+      },
+      removeItemQuantity(item, all = false) {
+        const itemToUpdate = this.currentOrder.items.find(i => i === item)
+        if (all || itemToUpdate.quantity - 1 === 0) {
+          this.currentOrder.items.splice(this.currentOrder.items.indexOf(itemToUpdate), 1)
+          this.activeTableProduct = null
+        } else {
+          itemToUpdate.quantity--
+        }
+      },
+      calculateNewPrice(changeType, amount, update = false) {
+        if (this.activeProduct) {
+          let originalPrice = this.activeProduct.originalPrice;
+          let newPrice = originalPrice
+          if (changeType === 'percentage') {
+            newPrice = (originalPrice * (100 - amount)) / 100
+          }
+          if (changeType === 'amount') newPrice = originalPrice - amount
+          if (changeType === 'new') newPrice = amount
+
+          newPrice = +newPrice.toFixed(2)
+
+          if (update) {
+            this.$set(this.activeProduct, 'price', newPrice)
+            this.$set(this.activeProduct, 'discountUnit', changeType === 'percentage' ? 'percent' : 'amount')
+            this.$set(this.activeProduct, 'vDiscount', originalPrice - newPrice)
+          }
+          return newPrice
+        }
+      },
+      updateNewPrice({ difference, type, value }) {
+        if (this.activeProduct) {
+          this.$set(this.activeProduct, 'price', value)
+          this.$set(this.activeProduct, 'discountUnit', type === 'percentage' ? 'percent' : 'amount')
+          this.$set(this.activeProduct, 'vDiscount', difference)
+        }
+      },
+      queryProductsById() {
+        let quantity;
+        if (this.productIdQuery.includes('x')) {
+          const queryStrArr = this.productIdQuery.split(' ')
+          quantity = parseInt(queryStrArr[2]);
+          this.productIdQuery = queryStrArr[0]
+        }
+        const results = cms.getList('Product').filter(item => item.id === this.productIdQuery)
+        if (results) {
+          this.productIdQueryResults = results.map(product => ({
+            ...product,
+            originalPrice: product.price,
+            ...quantity && { quantity }
+          }))
+        }
+      },
+      queryProductsByName() {
+        const results = cms.getList('Product').filter(product => product.name.toLowerCase().includes(this.productNameQuery.trim().toLowerCase()))
+        this.productNameQueryResults = Object.freeze(results.map(product => ({
+          ...product,
+          originalPrice: product.price
+        })))
+      },
+      async getSavedOrders() {
+        try {
+          const orderModel = cms.getModel('Order')
+          this.savedOrders = await orderModel.find({ status: 'inProgress' })
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      async removeSavedOrder(order) {
+        try {
+          const orderModel = cms.getModel('Order')
+          await orderModel.findOneAndUpdate({ '_id': order._id }, { status: 'cancelled' });
+          const index = this.savedOrders.findIndex(o => o._id === order._id);
+          this.savedOrders.splice(index, 1);
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      async selectSavedOrder(order) {
+        await this.resetOrderData()
+        const orderModel = cms.getModel('Order')
+        this.currentOrder = await orderModel.findOne({ _id: order._id })
+      },
+      async resetOrderData() {
+        this.activeTableProduct = null
+        this.currentOrder = { items: [] }
+        this.paymentAmountTendered = ''
+        this.productIdQuery = ''
+        await this.getSavedOrders()
+      },
+      async savePaidOrder(paymentMethod) {
+        try {
+          if (!this.currentOrder || !this.currentOrder.items.length) return
+          const orderModel = cms.getModel('Order')
+          const orderDateTime = new Date()
+          const id = await getLatestOrderId()
+          const taxGroups = _.groupBy(this.currentOrder.items, 'tax')
+          const vTaxGroups = _.map(taxGroups, (val, key) => ({
+            taxType: key,
+            tax: orderUtil.calOrderTax(val),
+            sum: orderUtil.calOrderTotal(val)
+          }))
+
+          const order = {
+            id,
+            status: 'paid',
+            items: this.getComputedOrderItems(this.currentOrder.items, orderDateTime),
+            user: this.currentOrder.user
+              ? [...this.currentOrder.user, { name: this.user.name, date: orderDateTime }]
+              : [{ name: this.user.name, date: orderDateTime }],
+            date: orderDateTime,
+            vDate: getVDate(orderDateTime),
+            bookingNumber: getBookingNumber(orderDateTime),
+            payment: [paymentMethod || { ...this.currentOrder.payment, value: this.paymentTotal }],
+            vSum: this.paymentTotal.toFixed(2),
+            vTax: this.paymentTax.toFixed(2),
+            vTaxGroups,
+            vDiscount: this.paymentDiscount.toFixed(2),
+            receive: parseFloat(this.paymentAmountTendered),
+            cashback: this.paymentChange.toFixed(2)
+          }
+
+          const newOrder = this.currentOrder.status === 'inProgress'
+            ? await orderModel.findOneAndUpdate({ _id: this.currentOrder._id }, order)
+            : await orderModel.create(order);
+          newOrder && this.printOrderReport(newOrder._id)
+        } catch (e) {
+          console.error(e)
+          return
+        }
+        await this.resetOrderData();
+      },
+      compactOrder(products) {
+        let resultArr = [];
+        products.forEach(product => {
+          const existingProduct = resultArr.find(r =>
+            _.isEqual(_.omit(r, 'quantity'), _.omit(product, 'quantity'))
+          );
+          if (existingProduct) {
+            existingProduct.quantity = existingProduct.quantity + product.quantity
+          } else {
+            resultArr.push(_.cloneDeep(product));
+          }
+        })
+        return resultArr
+      },
+      discountCurrentOrder(change) {
+        this.$set(this.currentOrder, 'items', orderUtil.applyDiscountForOrder(this.compactOrder(this.currentOrder.items), change));
+        this.$set(this.currentOrder, 'isDiscountInTotal', true);
+      },
+      getComputedOrderItems(orderItems, date) {
+        const compactItems = this.compactOrder(orderItems)
+
+        return compactItems.map(item => ({
+          ..._.omit(item, 'category'),
+          product: item._id,
+          category: item.category.name ? item.category.name : item.category, // saved order then pay have a string category
+          date
+        }))
+      },
+      //<!--</editor-fold>-->
+
+      //<!--<editor-fold desc="Order history screen">-->
+      updateOrderHistoryFilter(filter) {
+        const index = this.orderHistoryFilters.findIndex(f => f.title === filter.title);
+        if (index > -1) {
+          this.orderHistoryFilters.splice(index, 1, filter);
+        } else {
+          this.orderHistoryFilters.unshift(filter);
+        }
+        this.orderHistoryPagination.currentPage = 1;
+      },
+      async getOrderHistory() {
+        const orderModel = cms.getModel('Order');
+        const condition = this.orderHistoryFilters.reduce((acc, filter) => ({ ...acc, ...filter['condition'] }), { status: 'paid' });
+        const { limit, currentPage } = this.orderHistoryPagination;
+        const orders = await orderModel.find(condition).sort({ date: -1 }).skip(limit * (currentPage - 1)).limit(limit);
+        this.orderHistoryOrders = orders.map(order => ({
+          ...order,
+          info: order.note,
+          tax: order.vTax ? order.vTax : orderUtil.calOrderTax(order.items),
+          dateTime: dayjs(order.date).format(`${this.dateFormat} ${this.timeFormat}`),
+          amount: order.vSum ? order.vSum : orderUtil.calOrderTotal(order.items),
+          staff: order.user,
+          barcode: '',
+          promotions: [],
+        }));
+        this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
+      },
+      async getTotalOrders() {
+        const orderModel = cms.getModel('Order');
+        const condition = this.orderHistoryFilters.reduce((acc, filter) => ({ ...acc, ...filter['condition'] }), { status: 'paid' });
+        this.totalOrders = await orderModel.count(condition);
+      },
+      async deleteOrder() {
+        try {
+          const orderModel = cms.getModel('Order');
+          await orderModel.findOneAndUpdate({ '_id': this.orderHistoryCurrentOrder._id }, { status: 'cancelled' });
+          const index = this.orderHistoryOrders.findIndex(o => o._id === this.orderHistoryCurrentOrder._id);
+          this.orderHistoryOrders.splice(index, 1);
+          this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      printOrderReport(orderId) {
+        return new Promise((resolve, reject) => {
+          if (_.isNil(orderId)) reject()
+          cms.socket.emit('printReport', 'OrderReport', { orderId }, ({ success, message }) => {
+            if (success) resolve()
+            reject(message)
+          })
+        })
+      },
+      //<!--</editor-fold>-->
+
+      //<!--<editor-fold desc="Button functions">-->
+      isActiveFnBtn(btn) {
+        if (!btn || !btn.buttonFunction) return
+        if (btn.buttonFunction === 'changePrice' || btn.buttonFunction.includes('discount')) {
+          return !_.isNil(this.activeTableProduct) && !this.activeTableProduct.discountResistance
+        }
+        if (['pay', 'quickCash', 'saveOrder'].includes(btn.buttonFunction)) {
+          return this.currentOrder.items.length > 0
+        }
+        return true;
+      },
+      chooseFunction(functionName) {
+        if (!functionName) return () => null
+        return this[functionName]
+      },
+      buybackProduct({ price, product, unit }) {
+        this.addProductToOrder(Object.assign(_.omit(product, 'attributes'), {
+          price: -price,
+          originalPrice: -price,
+          tax: 0,
+          discountResistance: true
+        }))
+      },
+      changePrice() {
+        this.$getService('dialogChangePrice:open')('new', this.activeProduct ? this.activeProduct.originalPrice : 0)
+      },
+      discountSingleItemDialog() {
+        this.$getService('dialogChangePrice:open')('percentage', this.activeProduct ? this.activeProduct.originalPrice : 0)
+      },
+      discountSingleItemByAmount(value) {
+        this.calculateNewPrice('amount', value, true)
+      },
+      discountSingleItemByPercent(value) {
+        this.calculateNewPrice('percentage', value, true)
+      },
+      productLookup() {
+        this.$getService('dialogProductLookup:setActive')(true)
+      },
+      async saveOrder() {
+        if (!this.currentOrder || !this.currentOrder.items.length) return
+        const orderModel = cms.getModel('Order')
+        const date = new Date();
+
+        const order = {
+          status: 'inProgress',
+          items: this.getComputedOrderItems(this.currentOrder.items, date),
+          date,
+          vDate: getVDate(date),
+          user: [{ name: this.user.name || '', date }]
+        }
+        if (this.currentOrder._id) {
+          const existingOrder = await orderModel.findOne({ _id: this.currentOrder._id })
+          if (existingOrder) {
+            await orderModel.findOneAndUpdate({ _id: this.currentOrder._id }, order)
+          } else {
+            await orderModel.create(order)
+          }
+        } else {
+          await orderModel.create(order)
+        }
+        this.currentOrder = {
+          items: []
+        }
+        this.resetOrderData()
+      },
+      async quickCash() {
+        this.lastPayment = +this.paymentTotal
+        this.paymentAmountTendered = this.paymentTotal.toString()
+        await this.savePaidOrder({ type: 'cash', value: this.lastPayment });
+      },
+      pay() {
+        this.$router.push({ path: `/view/pos-payment` })
+      },
+      //<!--</editor-fold>-->
+    },
+    async created() {
+      await this.getScrollWindowProducts()
+
+      const cachedPageSize = localStorage.getItem('orderHistoryPageSize')
+      if (cachedPageSize) this.orderHistoryPagination.limit = parseInt(cachedPageSize)
+
+      // this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
+    },
+    watch: {
+      'orderHistoryPagination.limit'(newVal) {
+        localStorage.setItem('orderHistoryPageSize', newVal)
+      },
+    },
+    provide() {
+      return {
+        ...getProvided(this.$data, this),
+        ...getProvided(this.$options.methods, this),
+        ...getProvided(this.$options.computed, this)
+      }
+    }
+  }
+</script>

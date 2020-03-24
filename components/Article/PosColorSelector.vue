@@ -20,7 +20,7 @@
 
   export default {
     name: 'PosColorSelector',
-    injectService: ['PosStore:(setSelectedArticleColor, articleSelectedColor, activeCategory )'],
+    injectService: ['SettingsStore:(setSelectedArticleColor, articleSelectedColor, activeCategory)'],
     watch: {
       activeCategory: function (newVal, oldVal) {
         if(newVal !== oldVal)

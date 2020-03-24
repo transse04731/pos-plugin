@@ -10,7 +10,7 @@
 <script>
   export default {
     name: 'PosMonthReportSetting',
-    injectService: ['PosStore:(selectedMonth,monthReportFrom,monthReportTo,showProductSold,showAllZNumber,getMonthReport)'],
+    injectService: ['ReportsStore:(selectedMonth,monthReportFrom,monthReportTo,showProductSold,showAllZNumber,getMonthReport)'],
     computed: {
       from: {
         get() {

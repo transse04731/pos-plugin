@@ -5,11 +5,11 @@
       <tr>
         <th style="color: inherit; padding: 0; background-color: white">
           <div class="row-flex" style="line-height: 1.75">
-            <span class="flex-grow-1 pa-2 ta-left">Name</span>
-            <span class="w-10 pa-2 ta-center">Unit</span>
-            <span class="w-10 pa-2 ta-right">Qty</span>
-            <span class="w-12 pa-2 ta-right">Each(€)</span>
-            <span class="pa-2 ta-right" style="width: 15%; max-width: 15%">Total(€)</span>
+            <span class="flex-grow-1 pa-2 ta-left">{{$t('order.name')}}</span>
+            <span class="w-10 pa-2 ta-center">{{$t('order.each')}}</span>
+            <span class="w-10 pa-2 ta-right">{{$t('order.quantity')}}</span>
+            <span class="w-12 pa-2 ta-right">{{$t('order.each')}}({{$t('common.currency')}})</span>
+            <span class="pa-2 ta-right" style="width: 15%; max-width: 15%">{{$t('common.total')}}({{$t('common.currency')}})</span>
           </div>
         </th>
       </tr>
@@ -46,8 +46,8 @@
   export default {
     name: 'PosPaymentScreenTable',
     injectService: [
-      'PosStore:currentOrder',
-      'PosStore:compactOrder',
+      'OrderStore:currentOrder',
+      'OrderStore:compactOrder',
     ],
     computed: {
       productList() {

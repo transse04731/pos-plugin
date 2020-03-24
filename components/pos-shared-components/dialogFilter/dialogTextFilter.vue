@@ -6,10 +6,10 @@
 				<pos-text-field v-model="screenValue" large :label="label" readOnly/>
 				<div class="buttons">
 					<g-btn :uppercase="false" text @click="internalValue = false" outlined width="120" class="mr-2">
-						Cancel
+						{{$t('ui.cancel')}}
 					</g-btn>
 					<g-btn :uppercase="false" text @click="submit" backgroundColor="#2979FF" text-color="#FFFFFF" width="120">
-						OK
+						{{$t('ui.ok')}}
 					</g-btn>
 				</div>
 			</div>

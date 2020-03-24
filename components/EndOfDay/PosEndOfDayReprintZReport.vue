@@ -3,7 +3,7 @@
     <slot :close="close" :open="open" name="activator"></slot>
     <g-dialog eager overlay-color="#6B6F82" overlay-opacity="0.95" v-model="dialog" width="45%">
       <div class="print-confirm-dialog">
-        <p class="head-title">Reprint Z-Report</p>
+        <p class="head-title">{{$t('report.reprintZReport')}}</p>
         <div class="printed-list">
           <div :key="index" class="report-item" style="display: flex" v-for="(item, index) in reports">
             <p>{{item.begin}} - {{item.end}} : Z-Number {{item.z}}</p>
@@ -13,7 +13,7 @@
               <g-icon class="mr-2" svg>
                 icon-print2
               </g-icon>
-              Print
+              {{$t('ui.print')}}
             </g-btn>
           </div>
         </div>
@@ -28,7 +28,7 @@
 
   export default {
     name: 'PosEndOfDayReprintZReport',
-    injectService: ['PosStore:selectedReportDate'],
+    injectService: ['ReportsStore:selectedReportDate', 'PosStore:timeFormat'],
     props: {
       value: null
     },
@@ -46,7 +46,7 @@
         }
       },
       async print(z) {
-        await this.$getService('PosStore:printZReport')(z)
+        await this.$getService('ReportsStore:printZReport')(z)
       }
     },
     setup() {
@@ -58,8 +58,8 @@
         if (newVal) {
           this.reports = this.selectedReportDate.reports.map((value, index) => {
             return {
-              begin: dayjs(value.begin).format('HH:mm'),
-              end: dayjs(value.end).format('HH:mm'),
+              begin: dayjs(value.begin).format(this.timeFormat),
+              end: dayjs(value.end).format(this.timeFormat),
               z: value.z,
               sum: value.sum,
               pending: value.pending

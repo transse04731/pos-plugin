@@ -6,11 +6,11 @@
         <tr>
           <th>
             <div class="row-flex" style="line-height: 1.75">
-              <span class="flex-grow-1 pa-2 ta-left">Name</span>
-              <span class="w-10 pa-2 ta-center">Unit</span>
-              <span class="w-10 pa-2 ta-right">Qty</span>
-              <span class="w-12 pa-2 ta-right">Each(€)</span>
-              <span class="pa-2 ta-right" style="width: 15%; max-width: 15%">Total(€)</span>
+              <span class="flex-grow-1 pa-2 ta-left">{{$t('order.name')}}</span>
+              <span class="w-10 pa-2 ta-center">{{$t('order.unit')}}</span>
+              <span class="w-10 pa-2 ta-right">{{$t('order.quantity')}}</span>
+              <span class="w-12 pa-2 ta-right">{{$t('order.each')}}({{$t('common.currency')}})</span>
+              <span class="pa-2 ta-right" style="width: 15%; max-width: 15%">{{$t('common.total')}}({{$t('common.currency')}})</span>
             </div>
           </th>
         </tr>
@@ -36,7 +36,7 @@
 <script>
   export default {
     name: 'PosOrderScreenTable',
-    injectService: ['PosStore:(currentOrder)'],
+    injectService: ['OrderStore:(currentOrder)'],
     data() {
       return {
         viewportRows: 0,
@@ -59,7 +59,7 @@
         return attrStringArr.join(', ')
       },
       toggle(index) {
-        const posStore = this.$getService('PosStore')
+        const posStore = this.$getService('OrderStore')
         if (index === posStore.activeTableProduct) {
           posStore.activeTableProduct = undefined
         } else if (!_.isNil(index)) {
@@ -67,16 +67,16 @@
         }
       },
       addItemQuantity(index) {
-        this.$getService('PosStore:addItemQuantity')(this.currentOrder.items[index])
+        this.$getService('OrderStore:addItemQuantity')(this.currentOrder.items[index])
       },
       removeItemQuantity(index, removeAll) {
-        this.$getService('PosStore:removeItemQuantity')(this.currentOrder.items[index], removeAll)
+        this.$getService('OrderStore:removeItemQuantity')(this.currentOrder.items[index], removeAll)
       }
     },
     mounted() {
-      const posStore = this.$getService('PosStore')
+      const orderStore = this.$getService('OrderStore')
 
-      posStore.$watch('currentOrder.items', (items, oldItems) => {
+      orderStore.$watch('currentOrder.items', (items, oldItems) => {
         if (this.$el) {
           const tableWrapper = this.$el.querySelector('.table-wrapper')
           if (items && items.length > oldItems.length) {
@@ -87,7 +87,7 @@
         }
       }, { deep: true })
 
-      posStore.$watch('activeTableProduct', (newValue, oldValue) => {
+      orderStore.$watch('activeTableProduct', (newValue, oldValue) => {
         if (!_.isNil(newValue) && newValue > -1 && this.$refs[`row_${newValue}`].length > 0) {
           this.$refs[`row_${newValue}`][0].$el.classList.add('g-expansion__active')
         }
@@ -96,9 +96,11 @@
         }
       })
 
-      this.$nextTick(() => {
+      orderStore.updateTableRows = (() => {this.$nextTick(() => {
         this.viewportRows = Math.floor(this.$el.querySelector('.table-wrapper').clientHeight / 44)
-      })
+      })})
+
+      orderStore.updateTableRows()
     }
   }
 </script>

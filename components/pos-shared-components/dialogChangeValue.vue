@@ -4,16 +4,16 @@
       <div class="dialog-change-content">
         <div class="header">
           <div class="header-side">
-            <p style="padding-bottom: 9px">Original</p>
+            <p style="padding-bottom: 9px">{{$t('dialogs.original')}}</p>
             <g-text-field read-only outlined :value="`€ ${originalValue}`"></g-text-field>
           </div>
           <div class="header-side">
-            <p style="padding-bottom: 9px">Effective</p>
+            <p style="padding-bottom: 9px">{{$t('dialogs.effective')}}</p>
             <g-text-field read-only outlined class="tf__effective" :value="`€ ${computedValue}`"></g-text-field>
           </div>
         </div>
         <g-radio-group name="basic" v-model="changeType">
-          <g-radio color="#1271ff" value="percentage" label="Discount by %"></g-radio>
+          <g-radio color="#1271ff" value="percentage" :label="`${$t('dialogs.effective')} %`"></g-radio>
           <div class="row-flex col-10 m-auto">
             <g-btn :uppercase="false" outlined :class="[disabledPercent && 'disabled']" :disabled="disabledPercent" @click="newPercent = '5'">- 5%</g-btn>
             <g-btn :uppercase="false" outlined :class="[disabledPercent && 'disabled']" :disabled="disabledPercent" @click="newPercent = '10'">- 10%</g-btn>
@@ -30,12 +30,12 @@
                           @click="showKeyboard = true"
                           :rules="[rules.percent]"></g-text-field>
           </div>
-          <g-radio color="#1271ff" value="amount" label="Discount by €"></g-radio>
+          <g-radio color="#1271ff" value="amount" :label="`${$t('dialogs.effective')} ${$t('common.currency')}`"></g-radio>
           <div class="row-flex col-10 m-auto">
-            <g-btn :uppercase="false" outlined :class="[disabledAmount && 'disabled']"  :disabled="disabledAmount || originalValue - 5 < 0" @click="newAmount = '5'">- € 5</g-btn>
-            <g-btn :uppercase="false" outlined :class="[disabledAmount && 'disabled']"  :disabled="disabledAmount || originalValue - 10 < 0" @click="newAmount = '10'">- € 10</g-btn>
-            <g-btn :uppercase="false" outlined :class="[disabledAmount && 'disabled']"  :disabled="disabledAmount || originalValue - 15 < 0" @click="newAmount = '15'">- € 15</g-btn>
-            <g-btn :uppercase="false" outlined :class="[disabledAmount && 'disabled']"  :disabled="disabledAmount || originalValue - 20 < 0" @click="newAmount = '20'">- € 20</g-btn>
+            <g-btn :uppercase="false" outlined :class="[disabledAmount && 'disabled']"  :disabled="disabledAmount || originalValue - 5 < 0" @click="newAmount = '5'">- {{$t('common.currency')}} 5</g-btn>
+            <g-btn :uppercase="false" outlined :class="[disabledAmount && 'disabled']"  :disabled="disabledAmount || originalValue - 10 < 0" @click="newAmount = '10'">- {{$t('common.currency')}} 10</g-btn>
+            <g-btn :uppercase="false" outlined :class="[disabledAmount && 'disabled']"  :disabled="disabledAmount || originalValue - 15 < 0" @click="newAmount = '15'">- {{$t('common.currency')}} 15</g-btn>
+            <g-btn :uppercase="false" outlined :class="[disabledAmount && 'disabled']"  :disabled="disabledAmount || originalValue - 20 < 0" @click="newAmount = '20'">- {{$t('common.currency')}} 20</g-btn>
             <g-text-field dense outlined
                           :class="[disabledAmount && 'disabled', 'tf-amount']"
                           :disabled="disabledAmount"
@@ -46,14 +46,14 @@
                           :rules="[rulesAmount]"
                           @click="showKeyboard = true"></g-text-field>
           </div>
-          <g-radio v-show="newValueEditable" color="#1271ff" value="new" label="New Price"></g-radio>
+          <g-radio v-show="newValueEditable" color="#1271ff" value="new" :label="$t('dialogs.newPrice')"></g-radio>
           <div v-show="newValueEditable" class="m-auto col-10">
-            <g-text-field type="number" dense outlined placeholder="New Price" v-model="newValue" @click="showKeyboard = true" :class="[disabledNew && 'disabled']" :disabled="disabledNew"></g-text-field>
+            <g-text-field type="number" dense outlined :placeholder="$t('dialogs.newPrice')" v-model="newValue" @click="showKeyboard = true" :class="[disabledNew && 'disabled']" :disabled="disabledNew"></g-text-field>
           </div>
         </g-radio-group>
         <div class="action">
-          <g-btn :uppercase="false" flat outlined @click="dialog = false">Cancel</g-btn>
-          <g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" @click="submit" :disabled="computedValue < 0">OK</g-btn>
+          <g-btn :uppercase="false" flat outlined @click="dialog = false">{{$t('ui.cancel')}}</g-btn>
+          <g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" @click="submit" :disabled="computedValue < 0">{{$t('ui.ok')}}</g-btn>
         </div>
       </div>
       <div :style="[{visibility: showKeyboard ? 'visible' : 'hidden'}]" class="keyboard-wrapper">

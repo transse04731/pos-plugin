@@ -21,10 +21,10 @@
         <g-simple-table fixed-header :class="tbLookup" ref="table">
           <thead>
           <tr>
-            <th>Name</th>
-            <th>Barcode</th>
-            <th>Unit</th>
-            <th>Attribute</th>
+            <th>{{$t('article.name')}}</th>
+            <th>{{$t('article.barcode')}}</th>
+            <th>{{$t('article.unit')}}</th>
+            <th>{{$t('article.attribute')}}</th>
           </tr>
           </thead>
           <tbody>
@@ -36,7 +36,7 @@
             >
               <td>{{product.name}}</td>
               <td>{{product.barcode ? product.barcode : '-'}}</td>
-              <td style="text-transform: capitalize">{{product.unit ? product.unit : '-s'}}</td>
+              <td style="text-transform: capitalize">{{product.unit ? product.unit : '-'}}</td>
               <td>
                 <div v-if="product.attribute">
                   <span v-for="(val, attr) in product.attribute" :key="`${attr}_${val}`" class="td-attr">
@@ -56,7 +56,7 @@
             >
               <td>{{product.name}}</td>
               <td>{{product.barcode ? product.barcode : '-'}}</td>
-              <td style="text-transform: capitalize">{{product.unit ? product.unit : '-s'}}</td>
+              <td style="text-transform: capitalize">{{product.unit ? product.unit : '-'}}</td>
               <td>
                 <div v-if="product.attribute">
                   <span v-for="(val, attr) in product.attribute" :key="`${attr}_${val}`" class="td-attr">
@@ -81,7 +81,7 @@
   import { getInternalValue, Intersect } from 'pos-vue-framework';
   export default {
     name: 'dialogFnButtonProductLookup',
-    injectService: ['PosStore:(productNameQuery,productNameQueryResults,queryProductsByName)'],
+    injectService: ['OrderStore:(productNameQuery,productNameQueryResults,queryProductsByName)'],
     props: {
       value: Boolean,
     },

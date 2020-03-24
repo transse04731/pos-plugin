@@ -1,8 +1,8 @@
 <template>
   <div class="article-wrapper" style="height: 226px">
-    <p class="category-title" style="">Category</p>
+    <p class="category-title" style="">{{ $t('article.category') }}</p>
     <p class="category-content" v-if="activeCategory && activeCategory.name">{{ activeCategory.name }}</p>
-    <p class="product-title">Product</p>
+    <p class="product-title">{{$t('article.product')}}</p>
 
     <div class="product-content-left" v-if="articleSelectedProductButton">
       <div>
@@ -10,21 +10,21 @@
         <p class="product-info">#{{articleSelectedProductButton.id }}</p>
       </div>
       <div style="display: block; margin-top: 5px;">
-        <p class="sub-title">Unit </p>
+        <p class="sub-title">{{$t('article.unit')}} </p>
         <p class="product-info" v-if="articleSelectedProductButton && articleSelectedProductButton.unit">{{ articleSelectedProductButton.unit }}</p>
       </div>
       <div style="margin-top: 5px;">
-        <p class="sub-title">Price </p>
+        <p class="sub-title">{{$t('article.price')}} </p>
         <p class="product-info" v-if="articleSelectedProductButton && articleSelectedProductButton.price">€ {{ articleSelectedProductButton.price }}</p>
       </div>
     </div>
     <div class="product-content-right">
       <div>
-        <p class="sub-title">Barcode </p>
+        <p class="sub-title">{{$t('article.barcode')}} </p>
         <p class="product-info" v-if="articleSelectedProductButton && articleSelectedProductButton.barcode">{{ articleSelectedProductButton.barcode }}</p>
       </div>
       <div style="margin-top: 5px;">
-        <span class="sub-title">Attributes</span>
+        <span class="sub-title">{{$t('article.attributes')}}</span>
         <div v-if="productAttributes">
           <div class="product-info" v-for="item in productAttributes">
             <span class="product-info">{{item.key}}: </span>
@@ -41,7 +41,7 @@
 
   export default {
     name: 'PosArticleProductInfo',
-    injectService: ['PosStore:(activeCategory, articleSelectedProductButton )'],
+    injectService: ['SettingsStore:(activeCategory, articleSelectedProductButton)'],
     methods: {
       mergeAttributes(attributes) {
         return _.map(_.groupBy(attributes, 'key'),

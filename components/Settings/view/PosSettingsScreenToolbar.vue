@@ -4,7 +4,7 @@
       <g-icon class="mr-2" svg>
         icon-back
       </g-icon>
-      Back
+      {{$t('ui.back')}}
     </g-btn>
     <g-spacer/>
     <slot :name="internalValue"></slot>
@@ -22,7 +22,7 @@
       internalValue() {
         if (!this.value) return 'Articles'
         const activeItemPath = this.value.split('.').slice(1).join('.')
-        const activeItem = _.get(this.$getService('PosStore:sidebarData'), activeItemPath)
+        const activeItem = _.get(this.$getService('SettingsStore:sidebarData'), activeItemPath)
         if (activeItem.isView) return activeItem.title
       }
     },

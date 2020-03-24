@@ -1,9 +1,11 @@
 <template>
   <div area="menu" ref="menu">
-    <g-btn :uppercase="false" v-for="(item, i) in menu" :key="i" elevation="0" background-color="#fff" text-color="#1d1d26" height="100%"
-           @click.native.stop="select(item)" :ref="`button_${item.name}`">
+    <div v-for="(item, i) in menu" :key="i"
+         class="btn"
+         @click.stop="select(item)"
+         :ref="`button_${item.name}`">
       {{item.name}}
-    </g-btn>
+    </div>
   </div>
 </template>
 
@@ -23,38 +25,34 @@
       },
     },
     async created() {
-      this.posStore = this.$getService('PosStore');
+      this.posStore = this.$getService('OrderStore');
 
       this.posStore.changeCategory = (newValue, oldValue) => {
         if (newValue) {
           const newCategory = newValue.name
           const oldCategory = oldValue && oldValue.name
           if (newCategory && this.$refs[`button_${newCategory}`]) {
-            this.$refs[`button_${newCategory}`][0].$el.classList.add('menu__active')
+            this.$refs[`button_${newCategory}`][0].classList.add('menu__active')
           }
 
           if (oldCategory) {
             if (newCategory === oldCategory) return
             const oldRef = this.$refs[`button_${oldCategory}`];
             if (oldRef && oldRef.length > 0) {
-              oldRef[0].$el.classList.remove('menu__active')
+              oldRef[0].classList.remove('menu__active')
             }
           }
         }
       }
     },
     async mounted() {
-      this.menu = await this.posStore.getAllCategories()
+      this.menu = await this.$getService('SettingsStore:getAllCategories')()
       this.$nextTick(() => {
         this.select(this.menu[0])
       })
     },
     async activated() {
-      this.menu = await this.posStore.getAllCategories()
-      if(this.menu.length < 5 && this.$refs) {
-        this.$refs.menu.style['grid-auto-flow'] = 'row'
-        this.$refs.menu.style['grid-template-columns'] = 'repeat(3, 1fr)'
-      }
+      this.menu = await this.$getService('SettingsStore:getAllCategories')()
     }
   }
 </script>
@@ -72,6 +70,17 @@
 
     &::-webkit-scrollbar {
       display: none;
+    }
+
+    .btn {
+      background-color: #fff;
+      color: #1d1d26;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
     }
 
     &__active {

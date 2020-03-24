@@ -67,7 +67,7 @@
     props: {
       value: Boolean,
     },
-    injectService: ['PosStore:(savedOrders,selectSavedOrder,removeSavedOrder)'],
+    injectService: ['OrderStore:(savedOrders,selectSavedOrder,removeSavedOrder)'],
     data() {
       return {
         dialogDeleteSave: false,

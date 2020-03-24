@@ -2,7 +2,7 @@
   <g-toolbar color="#eee" style="z-index: 2">
     <g-btn :uppercase="false" @click="back">
       <g-icon class="mr-2" svg>icon-back</g-icon>
-      Back
+      {{$t('ui.back')}}
     </g-btn>
     <g-spacer/>
 
@@ -10,7 +10,7 @@
       <template v-slot:activator="{open, close}">
         <g-btn :uppercase="false" class="mr-2" v-if="showReprint" @click="open">
           <g-icon class="mr-2" svg>icon-print2</g-icon>
-          Reprint
+          {{$t('ui.reprint')}}
         </g-btn>
       </template>
     </pos-end-of-day-reprint-z-report>
@@ -18,13 +18,13 @@
     <pos-end-of-day-print-dialog>
       <template v-slot:activator="{open, close}">
         <g-btn :uppercase="false" @click="open(selectedReportDate.date)" width="139px" class="mr-2" v-if="showRunEndOfDay">
-          X-Report
+          {{$t('report.xReport')}}
         </g-btn>
       </template>
     </pos-end-of-day-print-dialog>
 
     <g-btn :uppercase="false" @click="runEndOfDay" background-color="#E57373" text-color="#FFFFFF" v-if="showRunEndOfDay">
-      Run End-of-Day
+      {{$t('report.runEndOfDay')}}
     </g-btn>
 
     <pos-end-of-day-print-pending-z-report @confirmed="save" v-model="showPendingEndOfDayConfirmDialog"></pos-end-of-day-print-pending-z-report>
@@ -42,8 +42,8 @@
     name: 'PosEndOfDayToolbar',
     components: { PosEndOfDayReprintZReport, PosEndOfDayPrintPendingZReport, PosEndOfDayPrintDialog, PosEndOfDayPrintZReport },
     injectService: [
-      'PosStore:selectedReportDate',
-      'PosStore:listOfDatesWithReports',
+      'ReportsStore:selectedReportDate',
+      'ReportsStore:listOfDatesWithReports',
     ],
     data() {
       return {
@@ -67,7 +67,7 @@
         this.$router.push({ path: '/view/pos-dashboard' })
       },
       async runEndOfDay() {
-        const oldestPendingReport = await this.$getService('PosStore:getOldestPendingReport')()
+        const oldestPendingReport = await this.$getService('ReportsStore:getOldestPendingReport')()
         if (oldestPendingReport && oldestPendingReport.date < this.selectedReportDate.date) {
           this.showPendingEndOfDayConfirmDialog = true
           return
@@ -75,8 +75,10 @@
         this.showEndOfDayConfirmDialog = true
       },
       async save(reports) {
-        await this.$getService('PosStore:finalizeReport')(reports)
-        await this.$getService('PosStore:getDatesWithReports')(this.selectedReportDate.date || new Date())
+        const date = this.selectedReportDate.date || new Date()
+        await this.$getService('ReportsStore:finalizeReport')(reports)
+        await this.$getService('ReportsStore:getDatesWithReports')(date)
+        this.$getService('ReportsStore:getDailyReports')(date)
       }
     }
   }

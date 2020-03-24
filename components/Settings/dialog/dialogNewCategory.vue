@@ -3,15 +3,16 @@
 		<div class="dialog-payment w-100">
 			<div class="form">
 				<p class="ml-1 mb-3">
-					{{ isEditCategory && selectedCategory ? 'Edit' : 'Create New' }}
-					Category</p>
+					{{ isNewCategory ? 'Create New' : 'Edit' }}
+					{{$t('article.category')}}
+				</p>
 				<pos-text-field style="width: 268px" label="Name" placeholder="Category name" v-model="name"/>
 				<div class="row-flex justify-end py-5">
 					<g-btn :uppercase="false" outlined class="mr-3" width="120" @click="dialogNewCategory = false">
-						Cancel
+						{{$t('ui.cancel')}}
 					</g-btn>
 					<g-btn :uppercase="false" flat background-color="blue accent 3" width="120" text-color="white" :disabled="!name" @click="save">
-						OK
+						{{$t('ui.ok')}}
 					</g-btn>
 				</div>
 			</div>
@@ -23,22 +24,18 @@
 </template>
 
 <script>
-  /*import PosTextField from '../../pos-shared-components/POSInput/PosTextField';
-  import PosFileInput from '../../pos-shared-components/POSInput/PosFileInputImage';
-  import PosKeyboardFull from '../../pos-shared-components/PosKeyboardFull';*/
-
   export default {
     name: 'dialogNewCategory',
     injectService: [
-      'PosStore:selectedCategory',
-      'PosStore:updateCategory',
+      'SettingsStore:selectedCategory',
+      'SettingsStore:updateCategory',
     ],
-    //components: { PosKeyboardFull, PosFileInput, PosTextField },
     data() {
       return {
         name: '',
-				isEditCategory: false,
+				isNewCategory: false,
 				internalValue: false,
+				position: 0,
       }
     },
     props: {
@@ -55,20 +52,22 @@
       },
     },
     methods: {
-    	open(isEdit) {
-    		this.isEditCategory = isEdit;
-				if (this.isEditCategory && this.selectedCategory) {
-					this.name = this.selectedCategory.name;
+    	open(isNew = false, position = 0) {
+    		this.isNewCategory = isNew;
+
+    		if (this.isNewCategory) {
+					this.name = ''
+					this.position = position
 				} else {
-					this.name = '';
+					this.name = this.selectedCategory && this.selectedCategory.name
 				}
     		this.dialogNewCategory = true;
 			},
       async save() {
         if (this.name) {
           let oldID;
-          if (this.isEditCategory) oldID = this.selectedCategory && this.selectedCategory._id;
-          await this.updateCategory(oldID, this.name);
+          if (!this.isNewCategory && this.selectedCategory) oldID = this.selectedCategory._id;
+          await this.updateCategory(oldID, this.name, this.position);
         }
         this.name = '';
         this.selectedCategory = null;

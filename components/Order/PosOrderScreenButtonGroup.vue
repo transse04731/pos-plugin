@@ -1,18 +1,20 @@
 <template>
-  <div area="buttons">
-    <g-btn :uppercase="false" height="100%" elevation="0"
+  <div class="buttons" area="buttons">
+    <div class="btn"
            v-for="(btn, i) in listBtn" :key="i"
            :style="{
               gridRow: btn.rows[0] + '/' + btn.rows[1],
               gridColumn: btn.cols[0] + '/' + btn.cols[1],
               backgroundColor: btn.backgroundColor,
               color: btn.backgroundColor !== '#FFFFFF' ? btn.textColor : '#000d',
-              border: btn.backgroundColor && btn.backgroundColor !== '#FFFFFF' ? null : '1px solid #979797'
+              border: btn.backgroundColor && btn.backgroundColor !== '#FFFFFF' ? null : '1px solid #979797',
+              pointerEvents: !isActiveBtn(btn) ? 'none' : 'auto', //disabled
+              opacity: !isActiveBtn(btn) ? '0.4' : '1', //disabled
+              cursor: !isActiveBtn(btn) ? 'none' : 'pointer'
             }"
-           :disabled="!isActiveBtn(btn)"
            @click="onClick(btn)">
       {{btn.text}}
-    </g-btn>
+    </div>
   </div>
 </template>
 
@@ -20,7 +22,7 @@
   export default {
     name: 'PosOrderScreenButtonGroup',
     injectService: [
-      'PosStore:(chooseFunction,activeTableProduct,getPosSetting,currentOrder)'
+      'OrderStore:(chooseFunction,activeTableProduct,currentOrder)', 'SettingsStore:getPosSetting'
     ],
     data() {
       return {
@@ -45,11 +47,11 @@
         }
       },
       isActiveBtn(btn) {
-        return this.$getService('PosStore:isActiveFnBtn')(btn)
+        return this.$getService('OrderStore:isActiveFnBtn')(btn)
       },
       onClick(btn) {
         if (!btn || !btn.buttonFunction) return
-        this.$getService('PosStore:chooseFunction')(btn.buttonFunction)(btn.buttonFunctionValue)
+        this.$getService('OrderStore:chooseFunction')(btn.buttonFunction)(btn.buttonFunctionValue)
       }
     },
     async activated() {
@@ -62,27 +64,15 @@
 </script>
 
 <style scoped lang="scss">
-  .g-btn {
+  .btn {
     white-space: normal;
     padding: 0 !important;
-
-    ::v-deep .g-btn__content {
-      flex: 0 1 auto;
-      line-height: 0.9;
-    }
-
-    &.g-btn__outlined {
-      border: 1px solid #979797;
-      background-color: #fafafa;
-    }
-
-    &.g-btn__disabled {
-      background-color: #DFDFDF;
-    }
-
-    &.g-btn__text {
-      border: 0;
-    }
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 14px;
   }
 
   .buttons {

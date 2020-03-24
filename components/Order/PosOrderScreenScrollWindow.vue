@@ -101,7 +101,7 @@
     },
     methods: {
       addProduct(item) {
-        this.$getService('PosStore:addProductToOrder')(item)
+        this.$getService('OrderStore:addProductToOrder')(item)
       },
       getItemStyle(item) {
         if (item.layout) return {
@@ -112,9 +112,9 @@
       }
     },
     created() {
-      const posStore = this.$getService('PosStore');
+      const orderStore = this.$getService('OrderStore');
 
-      posStore.changeProductList = (newValue, oldValue) => {
+      orderStore.changeProductList = (newValue, oldValue) => {
         if (newValue) {
           const newCategory = newValue.name;
           const oldCategory = oldValue && oldValue.name;
@@ -134,14 +134,14 @@
         }
       };
 
-      this.unwatch = posStore.$watch('scrollWindowProducts', (newValue, oldValue) => {
+      this.unwatch = orderStore.$watch('scrollWindowProducts', (newValue, oldValue) => {
         if (!_.isEqual(newValue, oldValue)) {
           const tempValue = Object.assign({}, this.productWindows, newValue);
           for (const category in tempValue) {
             if (tempValue.hasOwnProperty(category)) {
               tempValue[category] = tempValue[category].map(window => window.map(product => ({
                 ...product,
-                layout: this.$getService('PosStore:getProductLayout')(product, { name: category })
+                layout: this.$getService('SettingsStore:getProductLayout')(product, { name: category })
               })))
             }
           }
@@ -156,13 +156,13 @@
     },
     async activated() {
       this.shouldForceUpdate = true;
-      await this.$getService('PosStore:getScrollWindowProducts')();
+      await this.$getService('OrderStore:getScrollWindowProducts')();
       this.$nextTick(() => {
         this.shouldForceUpdate = false
       })
     },
     async mounted() {
-      await this.$getService('PosStore:getScrollWindowProducts')();
+      await this.$getService('OrderStore:getScrollWindowProducts')();
       this.$nextTick(() => {
         this.shouldForceUpdate = false
       })

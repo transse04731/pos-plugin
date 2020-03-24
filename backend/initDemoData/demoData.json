@@ -27,23 +27,28 @@
   "Category": [
     {
       "_id": "5df6f31ba037304c8b0df66c",
-      "name": "Drink"
+      "name": "Drink",
+      "position": 1
     },
     {
       "_id": "5df6f5ee7854273fa4fd98a4",
-      "name": "Electronic"
+      "name": "Electronic",
+      "position": 2
     },
     {
       "_id": "5df6f5e27854273fa4fd98a1",
-      "name": "Material"
+      "name": "Material",
+      "position": 3
     },
     {
       "_id": "5df6f5cd7854273fa4fd989b",
-      "name": "Sport"
+      "name": "Sport",
+      "position": 4
     },
     {
       "_id": "5df6f5dd7854273fa4fd989e",
-      "name": "Wine"
+      "name": "Wine",
+      "position": 5
     }
   ],
   "Product": [

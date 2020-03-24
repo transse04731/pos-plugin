@@ -2,7 +2,7 @@
   <g-dialog v-model="dialogSelectAvatar" overlay-color="#6b6f82" overlay-opacity="0.95" width="90%" eager>
     <div class="dialog-select-avatar">
       <div class="header">
-        <span>Select User Avatar</span>
+        <span>{{$t('settings.selectAvatar')}}</span>
         <g-icon svg size="20" @click="dialogSelectAvatar = false">icon-close</g-icon>
       </div>
       <div class="content">
@@ -20,8 +20,8 @@
         </g-item-group>
       </div>
       <div class="action">
-        <g-btn :uppercase="false" outlined class="mr-3" width="120" @click="dialogSelectAvatar = false">Cancel</g-btn>
-        <g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" width="120" @click="submit">OK</g-btn>
+        <g-btn :uppercase="false" outlined class="mr-3" width="120" @click="dialogSelectAvatar = false">{{$t('ui.cancel')}}</g-btn>
+        <g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" width="120" @click="submit">{{$t('ui.ok')}}</g-btn>
       </div>
     </div>
   </g-dialog>
@@ -40,9 +40,9 @@
       }
     },
     injectService: [
-        'PosStore:selectedUser',
-        'PosStore:updateUser',
-        'PosStore:getListAvatar'
+      'SettingsStore:selectedUser',
+      'SettingsStore:updateUser',
+      'SettingsStore:getListAvatar'
     ],
     computed: {
       dialogSelectAvatar: {
@@ -68,13 +68,13 @@
     watch: {
       value: function () {
         let checkEqual = false;
-        for(const avatar of this.listAvatars) {
-          if(avatar.image === this.selectedUser.avatar) {
+        for (const avatar of this.listAvatars) {
+          if (avatar.image === this.selectedUser.avatar) {
             this.selectedAvatar = avatar;
             checkEqual = true;
           }
         }
-        if(!checkEqual) {
+        if (!checkEqual) {
           this.selectedAvatar = null;
         }
       }

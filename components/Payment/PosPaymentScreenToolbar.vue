@@ -2,11 +2,11 @@
   <g-toolbar color="#eee" elevation="0" fill-height>
     <g-btn :uppercase="false" background-color="white" class="mr-3" @click.stop="back">
       <g-icon class="mr-2" svg>icon-back</g-icon>
-      <span style="color: rgba(0, 0, 0, 0.87)">Back</span>
+      <span style="color: rgba(0, 0, 0, 0.87)">{{$t('ui.back')}}</span>
     </g-btn>
     <g-btn :uppercase="false" background-color="white" class="mr-3">
       <g-icon class="mr-2" svg>icon-menu</g-icon>
-      More
+      {{$t('ui.more')}}
     </g-btn>
   </g-toolbar>
 </template>
@@ -17,7 +17,7 @@
   export default {
     name: 'PosPaymentScreenToolbar',
     injectService: [
-      'PosStore:currentOrder'
+      'OrderStore:currentOrder'
     ],
     methods: {
       back() {

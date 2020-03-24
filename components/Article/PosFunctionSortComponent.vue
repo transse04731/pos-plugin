@@ -18,7 +18,7 @@
 <script>
   export default {
     name: 'PosFunctionSortComponent',
-    injectService: ['PosStore:( switchProductOrder,activeCategory )'],
+    injectService: ['SettingsStore:(switchProductOrder, activeCategory)'],
     components: { }
   }
 </script>

@@ -2,9 +2,9 @@
   <g-dialog v-model="dialogLoginSupport" width="100%" eager>
     <g-card width="100%" height="585px">
       <g-grid-layout :layout="layout" style="height: 100%; width: 100%">
-        <p area="version" class="support-item"><b>Version: </b>{{this.version}}</p>
-        <p area="network" class="support-item"><b>Network: </b>{{this.network}}</p>
-        <p area="internet" class="support-item"><b>Internet: </b>{{this.internet}}</p>
+        <p area="version" class="support-item"><b>{{ $t("login.version") }}: </b>{{this.version}}</p>
+        <p area="network" class="support-item"><b>{{ $t("login.network") }}: </b>{{this.network}}</p>
+        <p area="internet" class="support-item"><b>{{ $t("login.internet") }}: </b>{{this.internet}}</p>
         <p area="ssid" class="support-item"><b>SSID: </b>{{this.ssID}}</p>
         <p area="ip" class="support-item"><b>IP: </b>{{this.ip}}</p>
 

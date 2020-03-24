@@ -9,7 +9,7 @@
   "collections": "Order",
   "initProps": {
     "from": "2020-01-01T17:00:00.000Z",
-    "to": "2020-02-01T02:37:49.336Z"
+    "to": "2021-02-01T02:37:49.336Z"
   },
   "inputForm": {
     "_id": "5c69411994b44769f7ad4e63",
@@ -185,9 +185,12 @@
       ],
       "columns": [
         {
-          "choice": "field",
-          "label": "date",
-          "field": "date"
+          "choice": "computedField",
+          "label": "vDate",
+          "fn": {
+            "_code_": "module.exports = function(order) {\n  return dayjs(order.vDate).format('DD-MM-YYYY');\n}",
+            "_code_type_": "commonJs"
+          }
         }
       ],
       "reducers": [
