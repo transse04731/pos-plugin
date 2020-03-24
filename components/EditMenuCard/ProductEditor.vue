@@ -4,7 +4,7 @@
     <div class="product-editor__prop-grid">
       <template v-if="types">
         <div>Type:</div>
-        <g-select v-model="type" :items="types" @input="changeType"/>
+        <g-select v-model="type" :items="types"/>
       </template>
       <template v-if="isProductLayout">
         <div>ID: </div>
@@ -119,6 +119,7 @@
   import ColorSelector from '../common/ColorSelector';
   import GGridItemSelector from '../FnButton/components/GGridItemSelector';
   import TableExpansionRow from '../Order/components/TableExpansionRow';
+  import { createEmptyProductLayout } from '../posOrder/util'
 
   const toGSelectModel = item => ({ text: item, value: item })
 
@@ -134,7 +135,6 @@
       return {
         colors: '#FFFFFF,#CE93D8,#B2EBF2,#C8E6C9,#DCE775,#FFF59D,#FFCC80,#FFAB91'.split(','),
         // Product layout types
-        type: this.selectedProductLayout.type,
         types: _.map([ 'Article', 'Div.Article', 'Text', 'Menu' ], toGSelectModel),
         dineInTaxes: [{ text: '19%', value: 19 }, { text: '7%', value: 7 }],
         takeAwayTaxes: [{ text: '19%', value: 19 }, { text: '7%', value: 7 }],
@@ -162,6 +162,14 @@
             && !this.selectedProduct.isNoPrint
             && !this.isPrinter2Select
         )
+      },
+      type: {
+        get() {
+          return this.selectedProductLayout.type
+        },
+        set(value) {
+          this.changeType(value)
+        }
       },
       isProductLayout() {
         return this.type !== 'Text'
@@ -252,7 +260,7 @@
             // pseudo:
             // 1. remove linked product
             // 2. add text to product layout
-            await this.updateProductLayout({type: type})
+            await this.updateProductLayout({type})
           }
         } else if (['Article', 'Div.Article'].includes(type)) {
           if (this.selectedProductLayout.type === 'Text') {
@@ -260,7 +268,7 @@
             // pseudo:
             // 1. clear product layout text
             // 2. add new product
-            await this.updateProductLayout({type: type})
+            await this.updateProductLayout({type: type, product: createEmptyProductLayout()})
           } else {
             // Art, Div.Art -> Div.Art, Art
             await this.updateProduct({ isDivArticle: type === 'Div.Article' })

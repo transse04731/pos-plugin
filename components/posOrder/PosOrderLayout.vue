@@ -28,6 +28,7 @@
 </template>
 <script>
   import _ from 'lodash'
+  import { createEmptyProductLayout } from './util'
 
   export default {
     name: 'PosOrderLayout',
@@ -106,7 +107,7 @@
               if (this.selectedProductLayout && this.isSameArea(empty, this.selectedProductLayout))
                 empty = this.selectedProductLayout
               else
-                empty = {...empty, ...this.createEmptyProductLayout()}
+                empty = {...empty, ...createEmptyProductLayout()}
             }
             allAreas.push(empty)
           }
@@ -126,26 +127,6 @@
           rows: 10,
           columns: 6,
           color: '#FFF'
-        }
-      },
-      createEmptyProductLayout() {
-        return {
-          type: 'Article',
-          text: '',
-          color: '#EAEAEA',
-          product: {
-            type: null,
-            id: null,
-            name: null,
-            groupPrinter: null,
-            groupPrinter2: null,
-            isNoPrint: null,
-            isItemNote: null,
-            tax: null,
-            tax2: null,
-            category: null,
-            isDivArticle: null
-          }
         }
       },
       isSameArea(area1, area2) {
