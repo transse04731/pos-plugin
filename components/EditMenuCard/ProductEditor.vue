@@ -4,17 +4,17 @@
     <div class="product-editor__prop-grid">
       <template v-if="types">
         <div>Type:</div>
-        <g-select v-model="type" :items="types" @input="changeType"/>
+        <g-select outlined dense v-model="type" :items="types" @input="changeType"/>
       </template>
       <template v-if="isProductLayout">
         <div>ID: </div>
-        <g-text-field :value="selectedProduct.id" @input="updateProduct({id: $event})"/>
+        <g-text-field outlined dense :value="selectedProduct.id" @input="updateProduct({id: $event})"/>
 
         <div>Name *:</div>
-        <g-text-field :value="selectedProduct.name" @click="dialog.showProductNameKbd = true"/>
+        <g-text-field outlined dense :value="selectedProduct.name" @click="dialog.showProductNameKbd = true"/>
 
         <div>Price:</div>
-        <g-text-field :value="selectedProduct.price" @input="updateProduct({ price: $event })" />
+        <g-text-field outlined dense :value="selectedProduct.price" @input="updateProduct({ price: $event })" />
 
         <g-switch :value="selectedProduct.isModifier" @change="updateProduct({ isModifier: $event })" />
         <div>Is Modifier</div>
@@ -24,9 +24,10 @@
         <g-text-field v-model="selectedProductLayout.text" @click="dialog.showTextKbd = true"/>
       </template>
     </div>
+
     <template v-if="isProductLayout">
       <!-- Printer -->
-      <div>
+      <div v-if="!this.selectedProduct.isModifier">
         <div class="product-editor__prop">
           <span class="product-editor__label">Printer</span>
           <span v-if="showAddPrinter2" class="prop-option" @click="isPrinter2Select = true">+2. Printer</span>
@@ -38,7 +39,6 @@
                 @click="selectPrinter(item._id)">
             {{ item.name }}
           </span>
-          <span v-if="!isPrinter2Select" :class="itemNoteClasses" @click="setAsItemNote">Note Item</span>
           <span v-if="!isPrinter2Select" :class="noPrintClasses" @click="setAsNoPrint">No Print</span>
         </div>
       </div>
@@ -164,7 +164,7 @@
       showAddPrinter2() {
         return (this.selectedProduct.groupPrinter
             && !this.selectedProduct.groupPrinter2
-            && !this.selectedProduct.isItemNote
+            && !this.selectedProduct.isModifier
             && !this.selectedProduct.isNoPrint
             && !this.isPrinter2Select
         )
