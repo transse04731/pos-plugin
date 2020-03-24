@@ -73,7 +73,7 @@
       <!-- Color -->
       <div>
         <div>Color</div>
-        <color-selector :value="selectedProduct.color" :colors="colors" :item-size="25" @input="updateProductLayout({ color: $event })"/>
+        <color-selector :value="selectedProductLayout.color" :colors="colors" :item-size="25" @input="updateProductLayout({ color: $event })"/>
       </div>
 
       <!-- Happy hour -->
@@ -89,10 +89,10 @@
         <div>
           <g-grid-select madatory v-model="selectedProduct.category" item-text="name" item-value="value" :items="categories">
             <template #default="{ toggleSelect, item, index }">
-              <g-btn style="margin-right: 4px" @click="toggleSelect(item), changeCategory(item)">{{item.name}}</g-btn>
+              <div class="prop-option" @click="e => { toggleSelect(item); changeCategory(item) }">{{item.name}}</div>
             </template>
             <template #selected="{ toggleSelect, item, index }">
-              <g-btn style="margin-right: 4px"  @click="toggleSelect(item), changeCategory(item)" background-color="blue" text-color="white">{{item.name}}</g-btn>
+              <div class="prop-option prop-option--1" @click="e => { toggleSelect(item); changeCategory(item) } ">{{item.name}}</div>
             </template>
           </g-grid-select>
         </div>
