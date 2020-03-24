@@ -8,13 +8,13 @@
       </template>
       <template v-if="isProductLayout">
         <div>ID: </div>
-        <g-text-field v-model="selectedProduct.id"/>
+        <g-text-field :value="selectedProduct.id" @input="updateProduct({id: $event})"/>
 
         <div>Name *:</div>
-        <g-text-field v-model="selectedProduct.name" @click="dialog.showProductNameKbd = true"/>
+        <g-text-field :value="selectedProduct.name" @click="dialog.showProductNameKbd = true"/>
 
         <div>Price:</div>
-        <g-text-field v-model="selectedProduct.price" @input="updateProduct({ price: $event })" />
+        <g-text-field :value="selectedProduct.price" @input="updateProduct({ price: $event })" />
 
         <g-switch :value="selectedProduct.isModifier" @change="updateProduct({ isModifier: $event })" />
         <div>Is Modifier</div>
@@ -49,10 +49,10 @@
           <div>Dine in Tax</div>
           <g-grid-select mandatory v-model="selectedProduct.tax" :items="dineInTaxes">
             <template #default="{ toggleSelect, item, index }">
-              <div class="prop-option" @click="toggleSelect(item)">{{item.name}}</div>
+              <div class="prop-option" @click="toggleSelect(item)">{{item.text}}</div>
             </template>
             <template #selected="{ toggleSelect, item, index }">
-              <div class="prop-option prop-option--1" @click="toggleSelect(item)">{{item.name}}</div>
+              <div class="prop-option prop-option--1" @click="toggleSelect(item)">{{item.text}}</div>
             </template>
           </g-grid-select>
         </div>
@@ -61,10 +61,10 @@
           <div>Take Away Tax</div>
           <g-grid-select mandatory v-model="selectedProduct.tax2" :items="takeAwayTaxes">
             <template #default="{ toggleSelect, item, index }">
-              <div class="prop-option" @click="toggleSelect(item)">{{item.name}}</div>
+              <div class="prop-option" @click="toggleSelect(item)">{{item.text}}</div>
             </template>
             <template #selected="{ toggleSelect, item, index }">
-              <div class="prop-option prop-option--1" @click="toggleSelect(item)">{{item.name}}</div>
+              <div class="prop-option prop-option--1" @click="toggleSelect(item)">{{item.text}}</div>
             </template>
           </g-grid-select>
         </div>
@@ -291,7 +291,7 @@
               return result
             }, {}) };
           const filter = [{ 'cate._id': this.selectedCategoryLayout._id }, { 'product._id': this.selectedProductLayout._id }]
-          await cms.getModel('OrderLayout').findOneAndUpdate(qry, set, { arrayFilters: filter,  new: true });
+          const result = await cms.getModel('OrderLayout').findOneAndUpdate(qry, set, { arrayFilters: filter,  new: true });
         } else {
           if (forceCreate) {
             await this.createNewProductLayout(null, change)
@@ -327,11 +327,12 @@
           ..._.pick(this.selectedProductLayout, ['top', 'left', 'color', 'type', 'text']),
           ...extraInfo
         }
+
         const result = await cms.getModel('OrderLayout').findOneAndUpdate(
             { 'categories._id' : this.selectedCategoryLayout._id },
             { $push: { 'categories.$.products' : productLayout } },
             { new: true });
-        // TODO: BUG: new orderLayout has been emitted but the result doesn't change in GUI
+
         this.$emit('update:orderLayout', result)
       },
     }
