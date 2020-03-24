@@ -173,6 +173,9 @@
           style.justifyContent = 'flex-start'
           style.fontSize = '12px'
         }
+        if (product.product && product.product.isModifier) {
+          style.fontStyle = 'italic'
+        }
         return style;
       },
       getGridTemplateFromNumber(num) {
@@ -230,11 +233,11 @@
     &__prod {
       display: flex;
       justify-content: center;
-      text-align: center;
       align-items: center;
+      font-size: 14px;
       line-height: 0.9;
       padding: 0 8px;
-      word-break: break-all;
+      word-break: break-word;
     }
   }
 </style>
