@@ -22,13 +22,14 @@
             </p>
           </div>
           <div class="item-action">
-            <g-icon>remove_circle_outline</g-icon>
             <span>{{item.quantity}}</span>
-            <g-icon>add_circle_outline</g-icon>
           </div>
         </div>
-        <div v-if="item.attachments">
-          <g-chip label small text-color="#616161" v-for="attachment in item.attachments">{{attachment.title}} | €{{attachment.value}}</g-chip>
+        <div v-if="item.modifiers">
+          <g-chip v-for="(modifier, index) in item.modifiers" :key="`${item._id}_${index}`"
+                  label small text-color="#616161" close @close="removeModifier(item, index)">
+            {{modifier.name}} | €{{modifier.price}}
+          </g-chip>
         </div>
       </div>
     </div>
@@ -38,52 +39,21 @@
 <script>
   export default {
     name: "PosRestaurantPaymentOrderDetail",
+    props: {
+      compactOrder: Function,
+      total: 0,
+      items: []
+    },
     data() {
       return {
         username: 'Admin',
-        table: 50,
-        total: 256,
-        items: [
-          {
-            name: '31. Homemade Special',
-            price: 10,
-            option: 'Take away',
-            quantity: 10,
-            attachments: [
-              {title: 'Extra cheese', value: 1},
-              {title: 'Thin crust', value: 0},
-              {title: 'No onions', value: 0},
-              {title: 'No pepper', value: 0},
-            ]
-          },
-          {
-            name: '22. Beef Ravioli',
-            price: 12,
-            option: 'Take away',
-            quantity: 4
-          },
-          {
-            name: '31. Calamari',
-            price: 15,
-            newPrice: 12,
-            option: 'Gang: 2',
-            quantity: 2
-          },
-          {
-            name: '41. Classic Lasagna',
-            price: 20,
-            newPrice: 15,
-            option: 'Gang: 3',
-            quantity: 2
-          },
-          {
-            name: '1. Chicken & Sausage',
-            price: 25,
-            newPrice: 22,
-            option: 'Gang: 2',
-            quantity: 3
-          }
-        ]
+        //todo add table binding
+        table: 0,
+      }
+    },
+    computed: {
+      displayItems() {
+        return this.compactOrder(this.items)
       }
     }
   }

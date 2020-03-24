@@ -7,13 +7,27 @@
     <g-btn-bs icon="icon-split_check_2">Split check</g-btn-bs>
     <g-btn-bs icon="icon-red_bill">Red bill</g-btn-bs>
     <g-btn-bs icon="icon-print">Bill</g-btn-bs>
-    <g-btn-bs class="col-3" background-color="#2979FF">Pay</g-btn-bs>
+    <g-btn-bs class="col-3" background-color="#2979FF" :disabled="isPayBtnDisabled" @click.stop="pay">Pay</g-btn-bs>
   </g-toolbar>
 </template>
 
 <script>
   export default {
-    name: "PosRestaurantPaymentToolbar"
+    name: "PosRestaurantPaymentToolbar",
+    props: {
+      paymentAmountTendered: String,
+      paymentTotal: Number
+    },
+    computed: {
+      isPayBtnDisabled() {
+        return +this.paymentAmountTendered < this.paymentTotal
+      }
+    },
+    methods: {
+      pay() {
+        this.$emit('pay')
+      }
+    }
   }
 </script>
 

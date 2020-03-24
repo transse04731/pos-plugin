@@ -48,7 +48,7 @@
       },
       paymentTotal() {
         if (this.currentOrder) {
-          return orderUtil.calOrderTotal(this.currentOrder.items);
+          return orderUtil.calOrderTotal(this.currentOrder.items) + orderUtil.calOrderModifier(this.currentOrder.items)
         }
         return 0
       },
