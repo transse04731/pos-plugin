@@ -135,6 +135,7 @@
         colors: '#FFFFFF,#CE93D8,#B2EBF2,#C8E6C9,#DCE775,#FFF59D,#FFCC80,#FFAB91'.split(','),
         // Product layout types
         type: this.selectedProductLayout.type,
+        types: _.map([ 'Article', 'Div.Article', 'Text', 'Menu' ], toGSelectModel),
         dineInTaxes: [{ text: '19%', value: 19 }, { text: '7%', value: 7 }],
         takeAwayTaxes: [{ text: '19%', value: 19 }, { text: '7%', value: 7 }],
         // indicate whether the +2. Printer button has been clicked or not
@@ -151,21 +152,6 @@
       }
     },
     computed: {
-      types() {
-        let type;
-
-        if (this.selectedProductLayout._id) {
-          if (this.selectedProductLayout.type === 'Text') {
-            return null
-          } else {
-            type = ['Article', 'Div.Article', 'Menu']
-          }
-        } else {
-          type = [ 'Article', 'Div.Article', 'Text', 'Menu' ]
-        }
-
-        return _.map(type, toGSelectModel)
-      },
       selectedProduct() {
         return this.selectedProductLayout.product
       },
