@@ -41,9 +41,6 @@
       selectedCategoryLayout: null,
       selectedProductLayout: null,
     },
-    data: function () {
-      return {}
-    },
     computed: {
       categoryContainerStyle() {
         return {
@@ -85,6 +82,16 @@
     },
     async created() {
       await this.loadOrderLayout();
+    },
+    watch: {
+      orderLayout() {
+        console.log('orderLayout changed')
+        if (this.selectedCategoryLayout) {
+          const selectedCategoryLayout = _.find(this.orderLayout.categories, c => c.top === this.selectedCategoryLayout.top && c.left === this.selectedCategoryLayout.left)
+          console.log('update selected category layout', selectedCategoryLayout)
+          this.$emit('update:selectedCategoryLayout', selectedCategoryLayout)
+        }
+      }
     },
     methods: {
       async loadOrderLayout() {
@@ -173,7 +180,7 @@
           return productLayout.product.name
       },
       async selectCategory(categoryLayout) {
-        if (!this.editable) {
+        if (this.editable) {
           this.$emit('update:selectedCategoryLayout', categoryLayout);
           this.$emit('update:view', { name: 'CategoryEditor' })
         } else {
