@@ -27,8 +27,11 @@
             <g-icon @click.stop="addItem(item)">add_circle_outline</g-icon>
           </div>
         </div>
-        <div v-if="item.attachments">
-          <g-chip label small text-color="#616161" v-for="attachment in item.attachments">{{attachment.title}} | €{{attachment.value}}</g-chip>
+        <div v-if="item.modifiers">
+          <g-chip v-for="(modifier, index) in item.modifiers" :key="`${item._id}_${index}`"
+                  label small text-color="#616161" close @close="removeModifier(item, index)">
+            {{modifier.name}} | €{{modifier.price}}
+          </g-chip>
         </div>
       </div>
     </div>
@@ -54,6 +57,9 @@
       },
       removeItem(item) {
         this.$emit('removeItemQuantity', item)
+      },
+      removeModifier(item, index) {
+        item.modifiers.splice(index, 1)
       }
     }
   }
