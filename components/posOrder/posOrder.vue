@@ -11,7 +11,7 @@
       <span class="order-detail__header-value text-red">€{{total}}</span>
     </div>
     <div class="order-detail__content">
-      <div v-for="(item, i) in items" :key="i" class="item">
+      <div v-for="(item, i) in items" :key="i" class="item" @click.stop.prevent="openConfigDialog(item)">
         <div class="item-detail">
           <div>
             <p class="item-detail__name">{{item.id}}. {{item.name}}</p>
@@ -35,6 +35,8 @@
         </div>
       </div>
     </div>
+    <dialog-config-order-item v-model="dialogConfigOrderItem.value"
+                              @addmodifier="_addModifier"/>
   </div>
 </template>
 
@@ -49,6 +51,10 @@
       return {
         username: 'Admin',
         table: 50,
+        dialogConfigOrderItem: {
+          value: false,
+          productId: ''
+        }
       }
     },
     methods: {
@@ -60,6 +66,13 @@
       },
       removeModifier(item, index) {
         item.modifiers.splice(index, 1)
+      },
+      openConfigDialog(item) {
+        this.dialogConfigOrderItem.productId = item._id
+        this.dialogConfigOrderItem.value = true
+      },
+      _addModifier(modifier) {
+        this.$emit('addModifierToProduct', modifier, this.dialogConfigOrderItem.productId)
       }
     }
   }
