@@ -394,3 +394,10 @@ body::-webkit-scrollbar {
   background-size: contain;
   background-position: center;
 }
+
+.icon-pay {
+  background-image: url("../assets/pay.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
