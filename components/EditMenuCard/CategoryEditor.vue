@@ -9,25 +9,33 @@
         @input="changeOrderLayoutColumn"/>
 
     <div class="category-editor__label">Name</div>
-    <g-text-field :value="selectedCategoryLayout.name" @click="dialog.showCategoryNameKbd = true"/>
+    <g-text-field outlined dense :value="selectedCategoryLayout.name" @click="dialog.showCategoryNameKbd = true"/>
 
     <div class="category-editor__label">Color</div>
-    <color-selector :value="selectedCategoryLayout.color" :colors="colors" :item-size="25" @input="changeColor"/>
+    <color-selector
+        :value="selectedCategoryLayout.color"
+        :colors="colors"
+        :item-size="25"
+        @input="updateCategory({color: $event})"/>
 
     <div class="category-editor__label">Number of Row</div>
     <input-number
         :value="cateRows" :min="6" :max="10"
         width="148"
-        @input="changeRows" />
+        @input="updateCategory({rows: $event})"/>
 
     <div class="category-editor__label">Number of Column</div>
     <input-number
         :value="cateCols" :min="3" :max="6"
         width="148"
-        @input="changeColumns"/>
+        @input="updateCategory({columns:$event})"/>
 
     <template>
-      <dialog-text-filter label="Category name" :default-value="selectedCategoryLayout.name" v-model="dialog.showCategoryNameKbd" @submit="updateCategoryName"/>
+      <dialog-text-filter
+          label="Category name"
+          :default-value="selectedCategoryLayout.name"
+          v-model="dialog.showCategoryNameKbd"
+          @submit="updateCategory({ name: $event}, $event)"/>
     </template>
   </div>
 </template>
@@ -36,9 +44,6 @@
   import ColorSelector from '../common/ColorSelector';
   import InputNumber from './InputNumber';
   import PosKeyboardFull from '../pos-shared-components/PosKeyboardFull';
-
-  const defaultRows = 10
-  const defaultColumns = 6
 
   export default {
     name: 'CategoryEditor',
@@ -50,7 +55,6 @@
     data: function () {
       return {
         colors: ['#FFFFFF', '#CE93D8', '#B2EBF2', '#C8E6C9', '#DCE775', '#FFF59D', '#FFCC80', '#FFAB91'],
-
         dialog: {
           showCategoryNameKbd: false
         }
@@ -69,36 +73,11 @@
         const result = await cms.getModel('OrderLayout').findOneAndUpdate({_id: this.orderLayout._id}, { columns }, { new: true })
         this.$emit('update:orderLayout', result)
       },
-      async changeRows(rows) {
-        await this.updateCategory({ rows })
-      },
-      async changeColumns(columns) {
-        await this.updateCategory({ columns });
-      },
-      async changeColor(color) {
-        await this.updateCategory({color})
-      },
-      async updateCategoryName(name) {
-        // skip if name doesn't change or name of empty category is blank
-        if ((name === '' && this.selectedCategoryLayout.isEmpty) || this.selectedCategoryLayout.name === name)
-          return;
+      async updateCategory(change, forceCreate) {
+        console.log('Store ', change, ' to this.selectedCategoryLayout')
+        _.assign(this.selectedCategoryLayout, change)
 
-        this.selectedCategoryLayout.name = name;
-
-        if (this.selectedCategoryLayout.isEmpty) {
-          console.log('Add new categoryLayout', this.selectedCategoryLayout)
-          delete this.selectedCategoryLayout.isEmpty;
-          const orderLayout = await cms.getModel('OrderLayout').findOneAndUpdate(
-              { _id: this.orderLayout._id },
-              { $push: { categories: this.selectedCategoryLayout } },
-              { new: true });
-          this.$emit('update:orderLayout', orderLayout)
-        } else {
-          await this.updateCategory({ name })
-        }
-      },
-      async updateCategory(change) {
-        if (!this.selectedCategoryLayout.isEmpty) {
+        if (this.selectedCategoryLayout._id) {
           const qry = { 'categories._id': this.selectedCategoryLayout._id }
           const set = _.reduce(change, (result, value, key) => {
             result[`categories.$.${key}`] = value;
@@ -106,8 +85,18 @@
           }, {}) ;
           console.log('update', qry, 'set', set);
           await cms.getModel('OrderLayout').findOneAndUpdate(qry, { $set: set });
+        } else {
+          if (forceCreate) {
+            console.log('Create new categoryLayout', this.selectedCategoryLayout)
+            const orderLayout = await cms.getModel('OrderLayout').findOneAndUpdate(
+                { _id: this.orderLayout._id },
+                { $push: { categories: this.selectedCategoryLayout } },
+                { new: true });
+            this.$emit('update:orderLayout', orderLayout)
+          } else {
+            console.log('CategoryLayout is not existed. Skip.')
+          }
         }
-        _.assign(this.selectedCategoryLayout, change)
       },
     }
   }

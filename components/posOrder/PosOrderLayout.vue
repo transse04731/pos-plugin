@@ -78,7 +78,8 @@
               this.selectedCategoryLayout.columns,
               this.selectedCategoryLayout.rows);
         }
-        return this.selectedCategoryLayout.products
+        // remove product layout which is not text but doesn't link to any product
+        return _.filter(this.selectedCategoryLayout.products, p => p.type === 'Text' || (p.type !== 'Text' && p.product))
       }
     },
     async created() {
@@ -130,8 +131,7 @@
         return {
           top: row,
           left: column,
-          name: '',
-          isEmpty: true,
+          name: ''
         }
       },
       createEmptyCategoryLayout() {
