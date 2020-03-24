@@ -22,9 +22,9 @@
             </p>
           </div>
           <div class="item-action">
-            <g-icon>remove_circle_outline</g-icon>
+            <g-icon @click.stop="removeItem(item)">remove_circle_outline</g-icon>
             <span>{{item.quantity}}</span>
-            <g-icon>add_circle_outline</g-icon>
+            <g-icon @click.stop="addItem(item)">add_circle_outline</g-icon>
           </div>
         </div>
         <div v-if="item.attachments">
@@ -38,12 +38,22 @@
 <script>
   export default {
     name: "posOrder",
+    props: {
+      total: Number,
+      items: Array,
+    },
     data() {
       return {
         username: 'Admin',
         table: 50,
-        total: 256,
-        items: []
+      }
+    },
+    methods: {
+      addItem(item) {
+        this.$emit('addItemQuantity', item)
+      },
+      removeItem(item) {
+        this.$emit('removeItemQuantity', item)
       }
     }
   }
