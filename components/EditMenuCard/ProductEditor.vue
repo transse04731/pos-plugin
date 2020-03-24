@@ -2,8 +2,10 @@
   <div class="product-editor">
     <!-- Product basic info -->
     <div class="product-editor__prop-grid">
-      <div>Type:</div>
-      <g-select :value="selectedProductLayout.type" :items="types" @input="changeType"/>
+      <template v-if="types">
+        <div>Type:</div>
+        <g-select v-model="type" :items="types" @input="changeType"/>
+      </template>
       <template v-if="isProductLayout">
         <div>ID: </div>
         <g-text-field v-model="selectedProduct.id"/>
@@ -57,7 +59,7 @@
 
         <div style="width: 50%">
           <div>Take Away Tax</div>
-          <g-grid-select mandatory multiple v-model="selectedProduct.tax2" :items="takeAwayTaxes">
+          <g-grid-select mandatory v-model="selectedProduct.tax2" :items="takeAwayTaxes">
             <template #default="{ toggleSelect, item, index }">
               <div class="prop-option" @click="toggleSelect(item)">{{item.name}}</div>
             </template>
@@ -132,7 +134,7 @@
       return {
         colors: '#FFFFFF,#CE93D8,#B2EBF2,#C8E6C9,#DCE775,#FFF59D,#FFCC80,#FFAB91'.split(','),
         // Product layout types
-        types: _.map([ 'Article', 'Div.Article', 'Text', 'Menu' ], toGSelectModel),
+        type: this.selectedProductLayout.type,
         dineInTaxes: _.map(['19%', '7%'], toGSelectModel),
         takeAwayTaxes: _.map(['19%', '7%'], toGSelectModel),
         // indicate whether the +2. Printer button has been clicked or not
@@ -149,6 +151,21 @@
       }
     },
     computed: {
+      types() {
+        let type;
+
+        if (this.selectedProductLayout._id) {
+          if (this.selectedProductLayout.type === 'Text') {
+            return null
+          } else {
+            type = ['Article', 'Div.Article', 'Menu']
+          }
+        } else {
+          type = [ 'Article', 'Div.Article', 'Text', 'Menu' ]
+        }
+
+        return _.map(type, toGSelectModel)
+      },
       selectedProduct() {
         return this.selectedProductLayout.product
       },
@@ -161,7 +178,7 @@
         )
       },
       isProductLayout() {
-        return this.selectedProductLayout.type !== 'Text'
+        return this.type !== 'Text'
       },
       noPrintClasses() {
         return {
@@ -287,6 +304,7 @@
       },
 
       async createNewProductLayoutWithProduct() {
+        console.log('createNewProductLayoutWithProduct')
         if (this.selectedProduct.name) {
           const product = await cms.getModel('Product').create({ ...this.selectedProduct });
           await this.createNewProductLayout(product._id)
@@ -321,22 +339,23 @@
         if (this.selectedProductLayout._id) {
           const qry = { 'categories.products._id': this.selectedProductLayout._id }
           const set =  { $set: _.reduce(change, (result, value, key) => {
-              result[`categories.products.$.${key}`] = value
+              result[`categories.$[cate].products.$[product].${key}`] = value
               return result
             }, {}) };
-          await cms.getModel('OrderLayout').findOneAndUpdate(qry, set, { new: true });
+          const filter = [{ 'cate._id': this.selectedCategoryLayout._id }, { 'product._id': this.selectedProductLayout._id }]
+          await cms.getModel('OrderLayout').findOneAndUpdate(qry, set, { arrayFilters: filter,  new: true });
         }
         _.assign(this.selectedProductLayout, change)
       },
 
       // update ...
       async updateProduct(change) {
+        _.assign(this.selectedProduct, change);
         if (!this.selectedProduct._id) {
           if (!this.selectedProduct.name) return;
           await this.createNewProductLayoutWithProduct()
         } else {
           await cms.getModel('Product').findOneAndUpdate({_id: this.selectedProduct._id}, change)
-          _.assign(this.selectedProduct, change)
         }
       },
     }
