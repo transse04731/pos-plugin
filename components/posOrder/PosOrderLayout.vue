@@ -96,44 +96,57 @@
         const allAreas = [];
         for (let row = 0; row < rows; row++) {
           for (let column = 0; column < columns; column++) {
-            let empty = { top: row, left: column, name: '', isEmpty: true };
+            let empty = this.createEmptyLayout(row, column);
             if (isCategory) {
-              // apply changes from selected layout
-              if (this.selectedCategoryLayout && this.isSameArea(empty, this.selectedCategoryLayout)) {
+              if (this.selectedCategoryLayout && this.isSameArea(empty, this.selectedCategoryLayout))
                 empty = this.selectedCategoryLayout;
-              } else { // set default
-                empty.rows = 10;
-                empty.columns = 6;
-                empty.color = '#FFF';
-              }
+              else
+                empty = {...empty, ...this.createEmptyCategoryLayout()}
             } else {
-              // add reference to product object
-              empty = {
-                ...empty,
-                product: {
-                  type: null,
-                  id: null,
-                  name: null,
-                  groupPrinter: null,
-                  groupPrinter2: null,
-                  isNoPrint: null,
-                  isItemNote: null,
-                  tax: null,
-                  tax2: null,
-                  category: null,
-                }
-              };
-              // apply change from selected product
-              if (this.selectedProductLayout && this.isSameArea(empty, this.selectedProductLayout)) {
+              if (this.selectedProductLayout && this.isSameArea(empty, this.selectedProductLayout))
                 empty = this.selectedProductLayout
-              } else {
-                empty.color = '#EAEAEA';
-              }
+              else
+                empty = {...empty, ...this.createEmptyProductLayout()}
             }
             allAreas.push(empty)
           }
         }
         return this.removeOuterAreas(_.unionWith(areas, allAreas, (area1, area2) => this.isSameArea(area1, area2)), columns, rows)
+      },
+      createEmptyLayout(row, column) {
+        return {
+          top: row,
+          left: column,
+          name: '',
+          isEmpty: true,
+        }
+      },
+      createEmptyCategoryLayout() {
+        return {
+          rows: 10,
+          columns: 6,
+          color: '#FFF'
+        }
+      },
+      createEmptyProductLayout() {
+        return {
+          type: 'Article',
+          text: '',
+          color: '#EAEAEA',
+          product: {
+            type: null,
+            id: null,
+            name: null,
+            groupPrinter: null,
+            groupPrinter2: null,
+            isNoPrint: null,
+            isItemNote: null,
+            tax: null,
+            tax2: null,
+            category: null,
+            isDivArticle: null
+          }
+        }
       },
       isSameArea(area1, area2) {
         return area1.top === area2.top && area1.left === area2.left
@@ -175,7 +188,6 @@
       getProductName(productLayout) {
         if (productLayout.type === 'Text')
           return productLayout.text
-
         if (productLayout.product)
           return productLayout.product.name
       },
