@@ -87,7 +87,7 @@
       <div>
         <div>Category</div>
         <div>
-          <g-grid-select madatory multiple v-model="selectedProduct.category" item-text="name" item-value="value" :items="categories">
+          <g-grid-select madatory v-model="selectedProduct.category" item-text="name" item-value="value" :items="categories">
             <template #default="{ toggleSelect, item, index }">
               <g-btn style="margin-right: 4px" @click="toggleSelect(item), changeCategory(item)">{{item.name}}</g-btn>
             </template>
