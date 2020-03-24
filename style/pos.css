@@ -401,3 +401,10 @@ body::-webkit-scrollbar {
   background-size: contain;
   background-position: center;
 }
+
+.icon-red_bill {
+  background-image: url("../assets/red_bill.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
