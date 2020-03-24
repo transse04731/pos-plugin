@@ -1,0 +1,12 @@
+{
+  "dynamicQuery": [],
+  "showFields": [
+    "taxCategory"
+  ],
+  "filterQuery": [],
+  "_id": "5e784ca74d310e08fb8cbd71",
+  "fieldTemplates": [],
+  "limit": 15,
+  "menu": [],
+  "type": "PosSetting"
+}
