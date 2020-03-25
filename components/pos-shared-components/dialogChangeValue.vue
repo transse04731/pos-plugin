@@ -1,13 +1,18 @@
 <template>
   <g-dialog v-model="dialog" overlay-color="#6b6f82" overlay-opacity="0.95" width="65%">
-    <div class="dialog-change w-100" :style="[{background: showKeyboard ? 'white' : 'transparent'}]">
-      <change-value :change-type.sync="changeType" :original-value="originalValue" :new-value-editable="newValueEditable"
-                    :new-value.sync="newValue"/>
-      <div class="action">
-        <g-btn :uppercase="false" flat outlined @click="dialog = false">{{$t('ui.cancel')}}</g-btn>
-        <g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" @click="submit" :disabled="newValue < 0">{{$t('ui.ok')}}</g-btn>
-      </div>
-      <div :style="[{visibility: showKeyboard ? 'visible' : 'hidden'}]" class="keyboard-wrapper">
+    <div class="dialog-change w-100" :style="[{background: 'white'}]">
+      <g-card>
+        <g-card-text><change-value :change-type.sync="changeType" :original-value="originalValue" :new-value-editable="newValueEditable"
+                                   :new-value.sync="newValue"/></g-card-text>
+        <g-card-actions>
+          <g-spacer/>
+          <div class="action">
+          <g-btn :uppercase="false" flat outlined @click="dialog = false">{{$t('ui.cancel')}}</g-btn>
+          <g-btn :uppercase="false" flat background-color="blue accent 3" text-color="white" @click="submit" :disabled="newValue < 0">{{$t('ui.ok')}}</g-btn>
+          </div>
+        </g-card-actions>
+      </g-card>
+      <div :style="[{display: showKeyboard ? 'block' : 'none'}]" class="keyboard-wrapper">
         <pos-numpad/>
       </div>
     </div>
