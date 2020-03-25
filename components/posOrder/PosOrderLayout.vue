@@ -235,7 +235,9 @@
       },
       onProductClicked(productLayout) {
         this.selectProduct(productLayout);
-        this.$emit('update:productDblClicked', false)
+        if (this.editable) {
+          this.$emit('update:productDblClicked', false)
+        }
       },
       onProductDbClicked(productLayout) {
         if (this.editable) {
