@@ -9,8 +9,8 @@
       </slot>
       <slot name="buttons">
         <div class="button" v-if="showButtons">
-          <g-btn-bs width="120" border-color="#979797" @click="internalValue = false">Cancel</g-btn-bs>
-          <g-btn-bs width="120" background-color="#2979FF" @click="$emit('submit')">OK</g-btn-bs>
+          <g-btn-bs width="120" border-color="#979797" text-color="#1d1d26" @click="internalValue = false">Cancel</g-btn-bs>
+          <g-btn-bs width="120" background-color="#2979FF" :disabled="!valid" @click="$emit('submit')">OK</g-btn-bs>
         </div>
       </slot>
       <slot name="keyboard">
@@ -37,6 +37,10 @@
       },
       title: String,
       placeholder: String,
+      valid: {
+        type: Boolean,
+        default: true
+      },
     },
     data() {
       return {

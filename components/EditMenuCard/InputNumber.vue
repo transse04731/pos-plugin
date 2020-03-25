@@ -77,7 +77,6 @@
     line-height: 40px;
 
     &__value {
-      font-family: Muli;
       font-style: normal;
       font-weight: bold;
       font-size: 16px;
@@ -88,6 +87,7 @@
     %btnWidth {
       width: 30px;
       cursor: pointer;
+      font-size: 24px;
 
       &--disabled {
         pointer-events: none;

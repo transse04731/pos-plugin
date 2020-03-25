@@ -1,10 +1,10 @@
 <template>
   <g-toolbar height="100%" elevation="0" color="#eee">
-    <g-btn-bs icon="icon-back" @click="back">Back</g-btn-bs>
-    <g-btn-bs icon="icon-edit-menu-card-switch" @click="switchItem" :disabled="!switchable">Switch</g-btn-bs>
-    <g-btn-bs icon="icon-edit-menu-card-copy" @click="copyItem" :disabled="!copyable">Copy</g-btn-bs>
+    <g-btn-bs elevation="2" icon="icon-back" @click="back">Back</g-btn-bs>
+    <g-btn-bs elevation="2" icon="icon-edit-menu-card-switch" @click="switchItem" :disabled="!switchable">Switch</g-btn-bs>
+    <g-btn-bs elevation="2" icon="icon-edit-menu-card-copy" @click="copyItem" :disabled="!copyable">Copy</g-btn-bs>
     <g-spacer/>
-    <g-btn-bs icon="icon-edit-menu-card-delete" @click="deleteItem" :disabled="!deletable">Delete</g-btn-bs>
+    <g-btn-bs elevation="2" icon="icon-edit-menu-card-delete" @click="deleteItem" :disabled="!deletable">Delete</g-btn-bs>
   </g-toolbar>
 </template>
 <script>
@@ -257,6 +257,10 @@
   }
 </script>
 <style scoped lang="scss">
+  .g-toolbar {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
+  }
+
   .g-btn-bs {
     background-color: white;
     font-size: 14px;
