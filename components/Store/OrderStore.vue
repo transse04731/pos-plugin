@@ -14,7 +14,7 @@
     data() {
       return {
         activeTableProduct: null,
-        currentOrder: { items: [] },
+        currentOrder: { items: [], hasOrderWideDiscount: false },
         savedOrders: [],
         scrollWindowProducts: null,
         productIdQuery: '',
@@ -108,15 +108,18 @@
 
           const latestProduct = _.last(this.currentOrder.items);
 
-          if (_.isEqual(_.omit(latestProduct, 'quantity'), _.omit(product, 'quantity'))) {
+          if (_.isEqual(_.omit(latestProduct, 'quantity', 'originalPrice'), _.omit(product, 'quantity'))) {
             latestProduct.quantity = latestProduct.quantity + (product.quantity || 1);
           } else {
             // this.currentOrder.items.push(Object.assign({}, { quantity: 1 }, product))
             // replace (instead of mutate) to get old value in watcher for scrolling in order table
-            this.currentOrder.items = [...this.currentOrder.items, Object.assign({}, { quantity: 1 }, product)]
+            this.currentOrder.items = [...this.currentOrder.items, Object.assign({}, product, {
+              originalPrice: product.price,
+              quantity: 1
+            })]
           }
         } else {
-          this.currentOrder = { items: [Object.assign({}, { quantity: 1 }, product)] }
+          this.currentOrder = { items: [Object.assign({}, { originalPrice: product.price, quantity: 1 }, product)] }
         }
       },
       addItemQuantity(item) {
@@ -207,7 +210,7 @@
       },
       async resetOrderData() {
         this.activeTableProduct = null
-        this.currentOrder = { items: [] }
+        this.currentOrder = { items: [], hasOrderWideDiscount: false }
         this.paymentAmountTendered = ''
         this.productIdQuery = ''
         await this.getSavedOrders()
@@ -271,7 +274,7 @@
       },
       discountCurrentOrder(change) {
         this.$set(this.currentOrder, 'items', orderUtil.applyDiscountForOrder(this.compactOrder(this.currentOrder.items), change));
-        this.$set(this.currentOrder, 'isDiscountInTotal', true);
+        this.$set(this.currentOrder, 'hasOrderWideDiscount', true);
       },
       getComputedOrderItems(orderItems, date) {
         const compactItems = this.compactOrder(orderItems)
@@ -400,7 +403,8 @@
           await orderModel.create(order)
         }
         this.currentOrder = {
-          items: []
+          items: [],
+          hasOrderWideDiscount: false
         }
         this.resetOrderData()
       },
@@ -415,17 +419,31 @@
       //<!--</editor-fold>-->
 
       //<!--<editor-fold desc="Restaurant functions">-->
-      addModifierToProduct(modifier, productId) {
-        if (!this.currentOrder || !this.currentOrder.items || this.currentOrder.items.length === 0) return
-        let product
-        if(!productId) {
-          product = _.last(this.currentOrder.items)
+      addModifierToProduct(modifier, product) {
+        if (!this.currentOrder || !this.currentOrder.items || !this.currentOrder.items.length) return
+        product = product
+          ? _.find(this.currentOrder.items, item => item === product)
+          : _.last(this.currentOrder.items)
+
+        if (!product) return
+
+        if (product.modifiers) {
+          product.modifiers.push(modifier)
         } else {
-          product = _.find(this.currentOrder.items, item => item._id === productId)
+          this.$set(product, 'modifiers', [modifier])
         }
-        if(product)
-          product.modifiers ? product.modifiers.push(modifier) : this.$set(product, 'modifiers', [modifier])
       },
+      setNewPrice(price, product) {
+        this.$set(product, 'price', price)
+      },
+      setOrderDiscount() {
+        if (this.currentOrder.items.some(i => i.price !== i.originalPrice) && !this.currentOrder.hasOrderWideDiscount) {
+          this.$getService('alertDiscount:setActive')(true);
+        } else {
+          const originalTotal = this.currentOrder.items.reduce((acc, item) => (acc + (item.discountResistance ? 0 : item.quantity * item.originalPrice)), 0);
+          this.$getService('dialogDiscount:open')('percentage', originalTotal);
+        }
+      }
       //<!--</editor-fold>-->
 
     },

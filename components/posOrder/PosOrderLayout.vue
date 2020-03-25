@@ -7,7 +7,7 @@
              class="pol__cate"
              :key="index"
              :style="[getCategoryStyle(category), getAreaStyle(category)]"
-             @click="e => selectCategory(category)">
+             @click="selectCategory(category)">
           {{ getCategoryName(category) }}
         </div>
       </div>
@@ -233,14 +233,8 @@
             this.$emit('update:selectedProductLayout', productLayout);
           }
         } else {
-          //this.$emit('update:selectedProductLayout', productLayout);
-          if(productLayout.product.isModifier) {
-            this.$emit('addModifierToProduct', {
-              name: productLayout.product.name,
-              price: productLayout.product.price
-            })
-          } else
-            this.$emit('addProductToOrder', productLayout.product)
+          this.$emit('update:selectedProductLayout', productLayout);
+          this.$emit('productSelected', productLayout.product)
         }
       },
 
@@ -265,10 +259,22 @@
             if (!this.doubleClicked) {
               console.log('emit click')
               this.selectProduct(productLayout);
+              this.addProductToOrder(productLayout);
               this.editable && this.$emit('update:productDblClicked', false)
             }
           }
         }, 500)
+      },
+
+      addProductToOrder({ product }) {
+        if (product.isModifier) {
+          this.$emit('addModifierToProduct', {
+            name: product.name,
+            price: product.price
+          })
+        } else {
+          this.$emit('addProductToOrder', product)
+        }
       },
 
       onClick(productLayout) {
