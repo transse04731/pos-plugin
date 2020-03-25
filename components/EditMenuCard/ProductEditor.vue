@@ -116,7 +116,7 @@
       <dialog-product-info v-model="dialog.productInfo"
                            :product="selectedProduct"
                            :focus="dialog.focus"
-                           @submit="updateProduct($event)"/>
+                           @submit="updateProduct($event, $event.name)"/>
     </template>
   </div>
 </template>
