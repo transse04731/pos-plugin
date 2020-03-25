@@ -48,7 +48,7 @@
       },
       paymentTotal() {
         if (this.currentOrder) {
-          return orderUtil.calOrderTotal(this.currentOrder.items);
+          return orderUtil.calOrderTotal(this.currentOrder.items) + orderUtil.calOrderModifier(this.currentOrder.items)
         }
         return 0
       },
@@ -228,6 +228,7 @@
           const order = {
             id,
             status: 'paid',
+            takeOut: this.currentOrder.takeOut,
             items: this.getComputedOrderItems(this.currentOrder.items, orderDateTime),
             user: this.currentOrder.user
               ? [...this.currentOrder.user, { name: this.user.name, date: orderDateTime }]

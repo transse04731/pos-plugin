@@ -12,8 +12,8 @@
     </g-menu>
     <g-btn-bs icon="icon-cashier">Cashier drawer</g-btn-bs>
     <g-spacer/>
-    <g-btn-bs background-color="#4CAF50">Cash & Dine In</g-btn-bs>
-    <g-btn-bs background-color="#4CAF50">Cash & Take Away</g-btn-bs>
+    <g-btn-bs background-color="#4CAF50" @click.stop="quickCash">Cash & Dine In</g-btn-bs>
+    <g-btn-bs background-color="#4CAF50" @click.stop="quickCash(true)">Cash & Take Away</g-btn-bs>
     <g-btn-bs icon="icon-pay" @click="pay">Pay</g-btn-bs>
   </g-toolbar>
 </template>
@@ -21,6 +21,9 @@
 <script>
   export default {
     name: "PosQuickOrderToolbar",
+    props: {
+      currentOrder: null
+    },
     data() {
       return {
         showMenu: false
@@ -32,6 +35,10 @@
       },
       pay() {
         this.$router.push({path: '/view/pos-payment'})
+      },
+      quickCash(isTakeout = false) {
+        this.currentOrder.takeOut = isTakeout
+        this.$emit('quickCash')
       }
     }
   }

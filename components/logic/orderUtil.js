@@ -20,6 +20,12 @@ const orderUtil = {
   calOrderDiscount(items) {
     return _.sumBy(items, orderUtil.calItemDiscount)
   },
+  calItemModifier(item) {
+    return item.modifiers ? _.sum(item.modifiers.map(i => i.price)) : 0
+  },
+  calOrderModifier(items) {
+    return _.sumBy(items, orderUtil.calItemModifier)
+  },
   applyDiscountForOrder(items, { difference, value }) {
     const totalWithoutDiscountResist = difference + value;
     const percent =  difference / totalWithoutDiscountResist * 100;
