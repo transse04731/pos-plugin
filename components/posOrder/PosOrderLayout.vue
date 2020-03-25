@@ -91,15 +91,12 @@
     },
     watch: {
       orderLayout() {
-        console.log('orderLayout changed')
         if (this.selectedCategoryLayout) {
           const cateLayout = _.find(this.orderLayout.categories, c => this.isSameArea(this.selectedCategoryLayout, c))
           if (!cateLayout)
             return
           // update category layout
           this.$emit('update:selectedCategoryLayout', cateLayout)
-          console.log('view', this.view)
-          console.log('!this.selectedProductLayout', !this.selectedProductLayout)
           if (!this.view || this.view.name !== 'ProductEditor' || !this.selectedProductLayout)
             return
           // update product layout
