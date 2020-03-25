@@ -220,8 +220,10 @@
       },
       async selectProduct(productLayout) {
         if (this.editable) {
-          this.$emit('update:view', { name: 'ProductEditor' })
-          this.$emit('update:selectedProductLayout', productLayout);
+          if (this.selectedCategoryLayout._id) {
+            this.$emit('update:view', { name: 'ProductEditor' })
+            this.$emit('update:selectedProductLayout', productLayout);
+          }
         } else {
           //this.$emit('update:selectedProductLayout', productLayout);
           if(productLayout.product.isModifier) {
