@@ -19,8 +19,8 @@
              class="pol__prod"
              :key="index"
              :style="[getAreaStyle(productLayout), getProductItemStyle(productLayout)]"
-             @click="onProductClicked(productLayout)"
-             @dblclick="onProductDbClicked(productLayout)">
+             @click="onClick(productLayout)"
+             @touchstart="onTouchStart(productLayout)">
           <g-icon class="mr-1" v-if="productLayout.icon">{{productLayout.icon}}</g-icon>
           <span style="transform: skewX(-15deg)" v-if="productLayout.product && productLayout.product.isModifier">{{ getProductName(productLayout) }}</span>
           <template v-else>{{ getProductName(productLayout) }}</template>
@@ -44,7 +44,15 @@
       orderLayout: null,
       selectedCategoryLayout: null,
       selectedProductLayout: null,
-      productDblClicked: null
+      productDblClicked: null,
+    },
+    data() {
+      return {
+        // touch helper
+        isTouchEventHandled: null,
+        doubleClicked: false,
+        lastSelectMoment: null,
+      }
     },
     computed: {
       categoryContainerStyle() {
@@ -235,17 +243,45 @@
             this.$emit('addProductToOrder', productLayout.product)
         }
       },
-      onProductClicked(productLayout) {
-        this.selectProduct(productLayout);
-        if (this.editable) {
-          this.$emit('update:productDblClicked', false)
+
+      onProductSelect(productLayout) {
+        // Known issues:
+        //    + if user do n click/tab in short time, (n-1) double tab event will be raised
+        //    + if user double click on item x, then click very fast to another item y,
+        //      switch item action will not be executed because of the click event to item y has been omitted.
+        // TODO: Fix known issues
+        this.doubleClicked = false
+        this.lastSelectMoment = new Date().getTime()
+        setTimeout(() => {
+          // double click is ~300->350ms
+          if (new Date().getTime() - this.lastSelectMoment < 500) {
+            console.log('emit double click')
+            this.doubleClicked = true
+            if (this.editable) {
+              this.selectProduct(productLayout);
+              this.$emit('update:productDblClicked', true)
+            }
+          } else {
+            if (!this.doubleClicked) {
+              console.log('emit click')
+              this.selectProduct(productLayout);
+              this.editable && this.$emit('update:productDblClicked', false)
+            }
+          }
+        }, 500)
+      },
+
+      onClick(productLayout) {
+        if (!this.isTouchEventHandled) {
+          console.log('onclick')
+          this.onProductSelect(productLayout)
         }
       },
-      onProductDbClicked(productLayout) {
-        if (this.editable) {
-          this.selectProduct(productLayout);
-          this.$emit('update:productDblClicked', true)
-        }
+
+      onTouchStart(productLayout) {
+        console.log('touch start')
+        this.isTouchEventHandled = true
+        this.onProductSelect(productLayout)
       }
     }
   }
