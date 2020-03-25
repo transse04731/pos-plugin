@@ -212,6 +212,7 @@
         } else {
           this.$emit('update:selectedCategoryLayout', categoryLayout);
         }
+        this.$emit('update:selectedProductLayout', null)
       },
       async selectProduct(productLayout) {
         if (this.editable) {
