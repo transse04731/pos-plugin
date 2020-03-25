@@ -140,17 +140,17 @@
         console.log('switchProduct')
         if (this.prevCategoryLayout._id === this.selectedCategoryLayout._id) {
           console.log('switch product in same category')
+          // TODO: Bulk update
           let result = await this.changeProductLayoutPosInTheSameCate(
               this.prevProductLayout,
               _.pick(this.selectedProductLayout, ['top', 'left']),
               this.prevCategoryLayout)
-          // switch dst -> src
-          if (this.selectedProductLayout._id) {
+
+          if (this.selectedProductLayout._id)
             result = await this.changeProductLayoutPosInTheSameCate(
                 this.selectedProductLayout,
                 _.pick(this.prevProductLayout, ['top', 'left']),
                 this.prevCategoryLayout)
-          }
 
           this.clearProductAction()
           this.$emit('update:orderLayout', result)
