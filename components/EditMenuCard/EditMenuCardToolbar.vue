@@ -231,8 +231,8 @@
               { $pull: { categories: { _id: this.selectedCategoryLayout._id } } },
               { new: true }
           )
-          this.$emit('update:orderLayout', orderLayout)
           this.$emit('update:selectedCategoryLayout', null)
+          this.$emit('update:orderLayout', orderLayout)
         } else if (this.view.name === 'ProductEditor') {
           const orderLayout = await cms.getModel('OrderLayout').findOneAndUpdate(
               { 'categories._id': this.selectedCategoryLayout._id },
