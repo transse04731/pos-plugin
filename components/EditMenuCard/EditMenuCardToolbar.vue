@@ -236,6 +236,7 @@
               { new: true }
           )
           this.$emit('update:orderLayout', orderLayput)
+          this.$emit('update:view', { name: "CategoryEditor" })
           this.$emit('update:selectedProductLayout', null)
         }
       },
