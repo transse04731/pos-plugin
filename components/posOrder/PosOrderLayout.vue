@@ -101,14 +101,18 @@
             return
           // update product layout
           const prodLayout = _.find(cateLayout.products, pl => this.isSameArea(this.selectedProductLayout, pl))
-          if (!prodLayout)
-            return
-          this.$emit('update:selectedProductLayout', prodLayout)
+          if (prodLayout)
+            this.$emit('update:selectedProductLayout', prodLayout)
+          else if (this.editable) {
+            this.$emit('update:view', { name: 'CategoryEditor' })
+            this.$emit('update:selectedProductLayout', null)
+          }
         } else {
           // automatically select first category
           if (this.orderLayout.categories.length > 0) {
             this.$emit('update:selectedCategoryLayout', _.first(this.orderLayout.categories))
-            this.editable && this.$emit('update:view', { name: 'CategoryEditor' })
+            if (this.editable && (!this.view || this.view.name !== 'CategoryEditor'))
+              this.$emit('update:view', { name: 'CategoryEditor' })
           }
         }
       }
