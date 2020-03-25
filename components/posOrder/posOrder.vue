@@ -8,7 +8,7 @@
       <span class="order-detail__header-title">Table</span>
       <span class="order-detail__header-value">{{table}}</span>
       <span class="order-detail__header-title">Total</span>
-      <span class="order-detail__header-value text-red">€{{total}}</span>
+      <span class="order-detail__header-value text-red">€{{total | convertMoney}}</span>
     </div>
     <div class="order-detail__content">
       <div v-for="(item, i) in items" :key="i" class="item" @click.stop.prevent="openConfigDialog(item)">
@@ -16,8 +16,8 @@
           <div>
             <p class="item-detail__name">{{item.id}}. {{item.name}}</p>
             <p>
-              <span :class="['item-detail__price', isItemDiscounted(item) && 'item-detail__discount']">€{{item.originalPrice}}</span>
-              <span class="item-detail__price--new" v-if="isItemDiscounted(item)">€ {{item.price}}</span>
+              <span :class="['item-detail__price', isItemDiscounted(item) && 'item-detail__discount']">€{{item.originalPrice | convertMoney}}</span>
+              <span class="item-detail__price--new" v-if="isItemDiscounted(item)">€ {{item.price | convertMoney }}</span>
               <span :class="['item-detail__option', item.option === 'Take away' ? 'text-green-accent-3' : 'text-red-accent-2']">{{item.option}}</span>
             </p>
           </div>
@@ -30,7 +30,7 @@
         <div v-if="item.modifiers">
           <g-chip v-for="(modifier, index) in item.modifiers" :key="`${item._id}_${index}`"
                   label small text-color="#616161" close @close="removeModifier(item, index)">
-            {{modifier.name}} | €{{modifier.price}}
+            {{modifier.name}} | €{{modifier.price | convertMoney}}
           </g-chip>
         </div>
       </div>
@@ -46,6 +46,11 @@
     props: {
       total: Number,
       items: Array,
+    },
+    filters: {
+      convertMoney(value) {
+        return !isNaN(value) ? value.toFixed(2) : value
+      }
     },
     data() {
       return {
