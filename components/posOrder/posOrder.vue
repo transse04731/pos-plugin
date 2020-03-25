@@ -163,6 +163,7 @@
           .g-icon {
             cursor: pointer;
             color: #1d1d26;
+            -webkit-tap-highlight-color: transparent;
           }
         }
       }

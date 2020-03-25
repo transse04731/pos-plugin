@@ -21,7 +21,8 @@
              :style="[getAreaStyle(productLayout), getProductItemStyle(productLayout)]"
              @click="e => selectProduct(productLayout)">
           <g-icon class="mr-1" v-if="productLayout.icon">{{productLayout.icon}}</g-icon>
-          {{ getProductName(productLayout) }}
+          <span style="transform: skewX(-15deg)" v-if="productLayout.product && productLayout.product.isModifier">{{ getProductName(productLayout) }}</span>
+          <template v-else>{{ getProductName(productLayout) }}</template>
         </div>
       </div>
     </div>
