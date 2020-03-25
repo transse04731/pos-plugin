@@ -16,7 +16,8 @@
       view: null,
       orderLayout: null,
       selectedCategoryLayout: null,
-      selectedProductLayout: null
+      selectedProductLayout: null,
+      productDblClicked: null,
     },
     data: function () {
       return {
@@ -48,12 +49,18 @@
         }
       },
       selectedCategoryLayout() {
-        console.log('selectedCategoryLayout changed')
-        this.doAction()
+        this.action && this.doAction()
       },
       selectedProductLayout() {
-        console.log('selectedProductLayout changed')
-        this.doAction()
+        this.action && this.doAction()
+      },
+      productDblClicked() {
+        console.log('Switch item by dbl clicked')
+        if (this.productDblClicked) {
+          this.switchItem()
+        } else {
+          console.log('abcd')
+        }
       }
     },
     methods: {

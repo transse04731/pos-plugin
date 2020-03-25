@@ -19,7 +19,8 @@
              class="pol__prod"
              :key="index"
              :style="[getAreaStyle(productLayout), getProductItemStyle(productLayout)]"
-             @click="e => selectProduct(productLayout)">
+             @click="onProductClicked(productLayout)"
+             @dblclick="onProductDbClicked(productLayout)">
           <g-icon class="mr-1" v-if="productLayout.icon">{{productLayout.icon}}</g-icon>
           <span style="transform: skewX(-15deg)" v-if="productLayout.product && productLayout.product.isModifier">{{ getProductName(productLayout) }}</span>
           <template v-else>{{ getProductName(productLayout) }}</template>
@@ -43,6 +44,7 @@
       orderLayout: null,
       selectedCategoryLayout: null,
       selectedProductLayout: null,
+      productDblClicked: null
     },
     computed: {
       categoryContainerStyle() {
@@ -228,6 +230,14 @@
           } else
             this.$emit('addProductToOrder', productLayout.product)
         }
+      },
+      onProductClicked(productLayout) {
+        this.selectProduct(productLayout);
+        this.$emit('update:productDblClicked', false)
+      },
+      onProductDbClicked(productLayout) {
+        this.selectProduct(productLayout);
+        this.$emit('update:productDblClicked', true)
       }
     }
   }
