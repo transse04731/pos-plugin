@@ -206,8 +206,8 @@
       getProductName(productLayout) {
         if (productLayout.type === 'Text')
           return productLayout.text
-        if (productLayout.product)
-          return productLayout.product.name
+        if (productLayout.product && productLayout.product._id)
+          return `${productLayout.product.id}. ${productLayout.product.name}`
       },
       async selectCategory(categoryLayout) {
         if (this.editable) {
