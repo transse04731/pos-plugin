@@ -140,32 +140,16 @@
         console.log('switchProduct')
         if (this.prevCategoryLayout._id === this.selectedCategoryLayout._id) {
           console.log('switch product in same category')
-          let result = await cms.getModel('OrderLayout').findOneAndUpdate(
-              { 'categories.products._id': this.prevProductLayout._id },
-              {
-                $set: {
-                  ['categories.$[cate].products.$[product].top']: this.selectedProductLayout.top,
-                  ['categories.$[cate].products.$[product].left']: this.selectedProductLayout.left,
-                }
-              },
-              {
-                arrayFilters: [{ 'cate._id': this.prevCategoryLayout._id }, { 'product._id': this.prevProductLayout._id }],
-                new: true
-              });
-
+          let result = await this.changeProductLayoutPosInTheSameCate(
+              this.prevProductLayout,
+              _.pick(this.selectedProductLayout, ['top', 'left']),
+              this.prevCategoryLayout)
           // switch dst -> src
           if (this.selectedProductLayout._id) {
-            result = await cms.getModel('OrderLayout').findOneAndUpdate(
-                { 'categories.products._id': this.selectedProductLayout._id },
-                {
-                  $set: {
-                    [`categories.$[cate].products.$[product].top`]: this.prevProductLayout.top,
-                    [`categories.$[cate].products.$[product].left`]: this.prevProductLayout.left,
-                  }
-                }, {
-                  arrayFilters: [{ 'cate._id': this.selectedCategoryLayout._id }, { 'product._id': this.selectedProductLayout._id }],
-                  new: true
-                });
+            result = await this.changeProductLayoutPosInTheSameCate(
+                this.selectedProductLayout,
+                _.pick(this.prevProductLayout, ['top', 'left']),
+                this.prevCategoryLayout)
           }
 
           this.clearProductAction()
@@ -175,9 +159,22 @@
           console.log('TODO: switching products between category is not implemented')
         }
       },
+      async changeProductLayoutPosInTheSameCate(productLayout, { top, left }, categoryLayout) {
+        return await cms.getModel('OrderLayout').findOneAndUpdate(
+            { 'categories.products._id': productLayout._id },
+            {
+              $set: {
+                ['categories.$[cate].products.$[product].top']: top,
+                ['categories.$[cate].products.$[product].left']: left,
+              }
+            },
+            {
+              arrayFilters: [{ 'cate._id': categoryLayout._id }, { 'product._id': productLayout._id }],
+              new: true
+            });
+      },
       async copyProduct() {
         console.log('copyProduct')
-        // doesn't allow overwrite existed product
         if (this.selectedProductLayout._id) {
           console.log('Product existed in selected position. Skip copy.')
           return;
