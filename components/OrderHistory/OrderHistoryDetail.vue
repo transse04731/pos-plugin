@@ -8,7 +8,7 @@
       <tr v-for="product in orderHistoryCurrentOrder.items">
         <td>{{product.quantity}}x</td>
         <td>{{product.name}}</td>
-        <td class="ta-right">€ {{product.originalPrice.toFixed(2)}}</td>
+        <td class="ta-right">€ {{product.originalPrice | formatNumber}}</td>
       </tr>
     </g-simple-table>
     <g-divider/>
@@ -42,6 +42,11 @@
     injectService: [
       'OrderStore:orderHistoryCurrentOrder'
     ],
+    filters: {
+      formatNumber: (val) => {
+        return isNaN(val) ? '0.00' : val.toFixed(2)
+      },
+    },
     computed: {
       promotionTotal() {
         return this.orderHistoryCurrentOrder && this.orderHistoryCurrentOrder.vDiscount;

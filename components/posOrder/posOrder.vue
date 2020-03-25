@@ -16,8 +16,8 @@
           <div>
             <p class="item-detail__name">{{item.id}}. {{item.name}}</p>
             <p>
-              <span :class="['item-detail__price', item.newPrice && 'item-detail__discount']">€{{item.price}}</span>
-              <span class="item-detail__price--new" v-if="item.newPrice">€ {{item.newPrice}}</span>
+              <span :class="['item-detail__price', isItemDiscounted(item) && 'item-detail__discount']">€{{item.originalPrice}}</span>
+              <span class="item-detail__price--new" v-if="isItemDiscounted(item)">€ {{item.price}}</span>
               <span :class="['item-detail__option', item.option === 'Take away' ? 'text-green-accent-3' : 'text-red-accent-2']">{{item.option}}</span>
             </p>
           </div>
@@ -35,8 +35,8 @@
         </div>
       </div>
     </div>
-    <dialog-config-order-item v-model="dialogConfigOrderItem.value"
-                              @addmodifier="_addModifier"/>
+    <dialog-config-order-item v-model="dialogConfigOrderItem.value" :original-value="dialogConfigOrderItem.originalPrice"
+                              @addModifier="addModifier" @changePrice="changePrice"/>
   </div>
 </template>
 
@@ -53,11 +53,16 @@
         table: 50,
         dialogConfigOrderItem: {
           value: false,
-          productId: ''
+          product: null,
+          originalPrice: 0,
+          price: 0
         }
       }
     },
     methods: {
+      isItemDiscounted(item) {
+        return item.originalPrice !== item.price
+      },
       addItem(item) {
         this.$emit('addItemQuantity', item)
       },
@@ -68,11 +73,18 @@
         item.modifiers.splice(index, 1)
       },
       openConfigDialog(item) {
-        this.dialogConfigOrderItem.productId = item._id
-        this.dialogConfigOrderItem.value = true
+        this.dialogConfigOrderItem = Object.assign({} , this.dialogConfigOrderItem, {
+          product: item,
+          value: true,
+          originalPrice: item.price,
+          price: 0
+        })
       },
-      _addModifier(modifier) {
-        this.$emit('addModifierToProduct', modifier, this.dialogConfigOrderItem.productId)
+      addModifier(modifier) {
+        this.$emit('addModifierToProduct', modifier, this.dialogConfigOrderItem.product)
+      },
+      changePrice(price) {
+        this.$emit('changePrice', price, this.dialogConfigOrderItem.product)
       }
     }
   }

@@ -16,8 +16,8 @@
           <div>
             <p class="item-detail__name">{{item.name}}</p>
             <p>
-              <span :class="['item-detail__price', item.newPrice && 'item-detail__discount']">€{{item.price}}</span>
-              <span class="item-detail__price--new" v-if="item.newPrice">€ {{item.newPrice}}</span>
+              <span :class="['item-detail__price', isItemDiscounted(item) && 'item-detail__discount']">€{{item.originalPrice}}</span>
+              <span class="item-detail__price--new" v-if="isItemDiscounted(item)">€ {{item.price}}</span>
               <span :class="['item-detail__option', item.option === 'Take away' ? 'text-green-accent-3' : 'text-red-accent-2']">{{item.option}}</span>
             </p>
           </div>
@@ -55,6 +55,11 @@
       displayItems() {
         return this.compactOrder(this.items)
       }
+    },
+    methods: {
+      isItemDiscounted(item) {
+        return item.originalPrice !== item.price
+      },
     }
   }
 </script>

@@ -7,7 +7,7 @@
              class="pol__cate"
              :key="index"
              :style="[getCategoryStyle(category), getAreaStyle(category)]"
-             @click="e => selectCategory(category)">
+             @click="selectCategory(category)">
           {{ getCategoryName(category) }}
         </div>
       </div>
@@ -19,7 +19,7 @@
              class="pol__prod"
              :key="index"
              :style="[getAreaStyle(productLayout), getProductItemStyle(productLayout)]"
-             @click="onProductClicked(productLayout)"
+             @click="onProductClicked(productLayout); addProductToOrder(productLayout)"
              @dblclick="onProductDbClicked(productLayout)">
           <g-icon class="mr-1" v-if="productLayout.icon">{{productLayout.icon}}</g-icon>
           <span style="transform: skewX(-15deg)" v-if="productLayout.product && productLayout.product.isModifier">{{ getProductName(productLayout) }}</span>
@@ -225,14 +225,8 @@
             this.$emit('update:selectedProductLayout', productLayout);
           }
         } else {
-          //this.$emit('update:selectedProductLayout', productLayout);
-          if(productLayout.product.isModifier) {
-            this.$emit('addModifierToProduct', {
-              name: productLayout.product.name,
-              price: productLayout.product.price
-            })
-          } else
-            this.$emit('addProductToOrder', productLayout.product)
+          this.$emit('update:selectedProductLayout', productLayout);
+          this.$emit('productSelected', productLayout.product)
         }
       },
       onProductClicked(productLayout) {
@@ -246,7 +240,17 @@
           this.selectProduct(productLayout);
           this.$emit('update:productDblClicked', true)
         }
-      }
+      },
+      addProductToOrder({ product }) {
+        if (product.isModifier) {
+          this.$emit('addModifierToProduct', {
+            name: product.name,
+            price: product.price
+          })
+        } else {
+          this.$emit('addProductToOrder', product)
+        }
+      },
     }
   }
 </script>

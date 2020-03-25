@@ -2,7 +2,7 @@
   <g-toolbar color="#eee" height="100%" elevation="0">
     <g-btn-bs icon="icon-back" @click.stop="back">Back</g-btn-bs>
     <g-btn-bs icon="icon-menu">More</g-btn-bs>
-    <g-btn-bs icon="icon-promotion">Promotion</g-btn-bs>
+    <g-btn-bs icon="icon-promotion" @click.stop="promotion">Promotion</g-btn-bs>
     <g-btn-bs icon="icon-cashier">Cashier drawer</g-btn-bs>
     <g-btn-bs icon="icon-split_check_2">Split check</g-btn-bs>
     <g-btn-bs icon="icon-red_bill">Red bill</g-btn-bs>
@@ -29,6 +29,9 @@
       },
       pay() {
         this.$emit('pay')
+      },
+      promotion() {
+        this.$emit('promotion')
       }
     }
   }
