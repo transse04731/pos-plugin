@@ -237,12 +237,12 @@
           this.$emit('update:orderLayout', orderLayout)
           this.$emit('update:selectedCategoryLayout', null)
         } else if (this.view.name === 'ProductEditor') {
-          const orderLayput = await cms.getModel('OrderLayout').findOneAndUpdate(
+          const orderLayout = await cms.getModel('OrderLayout').findOneAndUpdate(
               { 'categories._id': this.selectedCategoryLayout._id },
               { $pull: { 'categories.$.products': { _id: this.selectedProductLayout._id } } },
               { new: true }
           )
-          this.$emit('update:orderLayout', orderLayput)
+          this.$emit('update:orderLayout', orderLayout)
           this.$emit('update:view', { name: "CategoryEditor" })
           this.$emit('update:selectedProductLayout', null)
         }
