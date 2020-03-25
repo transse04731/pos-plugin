@@ -103,18 +103,22 @@
         // TODO: Bulk update
         let qry = { 'categories._id': this.prevCategoryLayout._id }
         let set = { $set: { 'categories.$.top' : this.selectedCategoryLayout.top, 'categories.$.left': this.selectedCategoryLayout.left } }
-        let orderLayout = await cms.getModel('OrderLayput').findOneAndUpdate(qry, set, { new: true })
+        console.log('qry', qry, 'set', set)
+        let orderLayout = await cms.getModel('OrderLayout').findOneAndUpdate(qry, set, { new: true })
 
+        //
         if (this.selectedCategoryLayout._id) {
-          orderLayout = await cms.getModel('OrderLayput').findOneAndUpdate(
-              { 'categories._id': this.selectedCategoryLayout._id },
-              { $set: { 'categories.$.top' : this.prevCategoryLayout.top, 'categories.$.left': this.prevCategoryLayout.left } },
-              { new: true })
+          qry = { 'categories._id': this.selectedCategoryLayout._id }
+          set = { $set: { 'categories.$.top' : this.prevCategoryLayout.top, 'categories.$.left': this.prevCategoryLayout.left } }
+          console.log('qry', qry, 'set', set)
+          orderLayout = await cms.getModel('OrderLayout').findOneAndUpdate(qry, set, { new: true })
         }
-        // clear previous
+
+        // clear previous action
         this.prevCategoryLayout = null
         this.prevTargetLayout = null
         this.action = null
+
         this.$emit('update:orderLayout', orderLayout)
       },
       async copyCategory() {
