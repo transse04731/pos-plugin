@@ -24,7 +24,7 @@
         targetLayout: null, // category or product
         prevCategoryLayout: null,
         prevProductLayout: null,
-        prevTargetLayout: null,
+        actionTarget: null,
         action: null
       }
     },
@@ -61,13 +61,12 @@
         }
       },
       selectedCategoryLayout() {
-        this.action && this.doCategoryAction()
+        if (this.actionTarget === 'category' && this.prevCategoryLayout && this.selectedCategoryLayout)
+          this.doCategoryAction()
       },
       selectedProductLayout() {
-        // when the user switch to another category, product will be set to null.
-        if (!this.selectedProductLayout)
-          return;
-        this.action && this.doProductAction()
+        if (this.selectedCategoryLayout._id && this.actionTarget === 'product' && this.prevProductLayout && this.selectedProductLayout)
+          this.doProductAction()
       },
       productDblClicked() {
         if (this.productDblClicked) {
@@ -86,7 +85,7 @@
           this.prevCategoryLayout = this.selectedCategoryLayout
           this.prevProductLayout = this.selectedProductLayout
         }
-        this.prevTargetLayout = this.targetLayout
+        this.actionTarget = this.targetLayout
       },
       switchItem() {
         this.storePreviousInfo()
@@ -97,21 +96,19 @@
         this.action = 'copy'
       },
       async doCategoryAction() {
-        if (this.prevCategoryLayout && this.prevTargetLayout === 'category') {
+        if (this.prevCategoryLayout && this.actionTarget === 'category') {
           if (this.action === 'switch')
             await this.switchCategory()
         }
       },
       async doProductAction() {
-        if (this.selectedCategoryLayout._id && this.prevProductLayout && this.prevTargetLayout === 'product') {
-          switch (this.action) {
-            case 'switch':
-              await this.switchProduct()
-              break;
-            case 'copy':
-              await this.copyProduct()
-              break;
-          }
+        switch (this.action) {
+          case 'switch':
+            await this.switchProduct()
+            break;
+          case 'copy':
+            await this.copyProduct()
+            break;
         }
       },
 
@@ -135,7 +132,7 @@
       clearCategoryAction() {
         console.log('clear category action')
         this.prevCategoryLayout = null
-        this.prevTargetLayout = null
+        this.actionTarget = null
         this.action = null
       },
 
@@ -225,7 +222,7 @@
         console.log('clear product action')
         this.prevCategoryLayout = null
         this.prevProductLayout = null
-        this.prevTargetLayout = null
+        this.actionTarget = null
         this.action = null
       },
 
@@ -239,8 +236,6 @@
           )
           this.$emit('update:orderLayout', orderLayout)
           this.$emit('update:selectedCategoryLayout', null)
-          // delete category layout
-          // update category
         } else if (this.view.name === 'ProductEditor') {
           const orderLayput = await cms.getModel('OrderLayout').findOneAndUpdate(
               { 'categories._id': this.selectedCategoryLayout._id },
