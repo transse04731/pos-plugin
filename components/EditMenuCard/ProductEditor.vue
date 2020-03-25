@@ -49,10 +49,16 @@
           <div>Dine in Tax</div>
           <g-grid-select mandatory v-model="selectedProduct.tax" :items="dineInTaxes">
             <template #default="{ toggleSelect, item, index }">
-              <div class="prop-option" @click="toggleSelect(item)">{{item.text}}</div>
+              <div class="prop-option"
+                   @click="e => {toggleSelect(item); updateProduct({ tax: item.value })}">
+                {{item.text}}
+              </div>
             </template>
             <template #selected="{ toggleSelect, item, index }">
-              <div class="prop-option prop-option--1" @click="toggleSelect(item)">{{item.text}}</div>
+              <div class="prop-option prop-option--1"
+                   @click="e => {toggleSelect(item); updateProduct({ tax: item.value })}">
+                {{item.text}}
+              </div>
             </template>
           </g-grid-select>
         </div>
@@ -61,10 +67,16 @@
           <div>Take Away Tax</div>
           <g-grid-select mandatory v-model="selectedProduct.tax2" :items="takeAwayTaxes">
             <template #default="{ toggleSelect, item, index }">
-              <div class="prop-option" @click="toggleSelect(item)">{{item.text}}</div>
+              <div class="prop-option"
+                   @click="e => {toggleSelect(item); updateProduct({ tax2: item.value })}">
+                {{item.text}}
+              </div>
             </template>
             <template #selected="{ toggleSelect, item, index }">
-              <div class="prop-option prop-option--1" @click="toggleSelect(item)">{{item.text}}</div>
+              <div class="prop-option prop-option--1"
+                   @click="e => {toggleSelect(item); updateProduct({ tax2: item.value })}">
+                {{item.text}}
+              </div>
             </template>
           </g-grid-select>
         </div>
@@ -137,8 +149,8 @@
         // Product layout types
         type: this.selectedProductLayout.type,
         types: _.map([ 'Article', 'Div.Article', 'Text', 'Menu' ], toGSelectModel),
-        dineInTaxes: [{ text: '19%', value: 19 }, { text: '7%', value: 7 }],
-        takeAwayTaxes: [{ text: '19%', value: 19 }, { text: '7%', value: 7 }],
+        dineInTaxes: [],
+        takeAwayTaxes: [],
         // indicate whether the +2. Printer button has been clicked or not
         isPrinter2Select: false,
         // GroupPrinter collection data
@@ -154,9 +166,7 @@
     },
     computed: {
       selectedProduct() {
-        console.log('Get selected product')
         if (!this.selectedProductLayout.product) {
-          console.log('Product is null, create default product')
           this.$set(this.selectedProductLayout, 'product', createEmptyProductLayout())
         }
         return this.selectedProductLayout.product
@@ -193,6 +203,7 @@
     async created() {
       await this.loadPrinters()
       await this.loadCategories()
+      await this.loadTaxes()
     },
     methods: {
       // categories
@@ -201,6 +212,12 @@
       },
       async changeCategory(category) {
         await this.updateProduct({ category: category._id })
+      },
+      async loadTaxes() {
+        const taxes = _.filter(cms.getList('PosSetting')[0].taxCategory, tax => !tax.hideAtEditView)
+        const taxModels = _.map(taxes, tax => ({ text: `${tax.value}%`, value: tax.value }))
+        this.dineInTaxes.splice(0, this.dineInTaxes.length, ...taxModels)
+        this.takeAwayTaxes.splice(0, this.takeAwayTaxes.length, ...taxModels)
       },
 
       // printers

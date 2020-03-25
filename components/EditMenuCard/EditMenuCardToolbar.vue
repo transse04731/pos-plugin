@@ -55,11 +55,8 @@
         this.action && this.doAction()
       },
       productDblClicked() {
-        console.log('Switch item by dbl clicked')
         if (this.productDblClicked) {
           this.switchItem()
-        } else {
-          console.log('abcd')
         }
       }
     },
@@ -168,11 +165,10 @@
           this.$emit('update:orderLayout', result)
         } else {
           // switch in 2 categories
-
+          console.log('TODO: switching products between category is not implemented')
         }
       },
       async copyProduct() {
-        console.log('Copy product')
         // doesn't allow overwrite existed product
         if (this.selectedProductLayout._id) {
           return;
