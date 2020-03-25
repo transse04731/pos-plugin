@@ -46,7 +46,9 @@
           case 'product':
             return (this.selectedProductLayout && this.selectedProductLayout._id)
           case 'category':
-            return (this.selectedCategoryLayout && this.selectedCategoryLayout._id)
+            const cateExist = this.selectedCategoryLayout && this.selectedCategoryLayout._id
+            const cateHasItem = cateExist && _.filter(this.selectedCategoryLayout.products, pLayout => pLayout.product && pLayout.product._id).length > 0
+            return cateExist && !cateHasItem
         }
       }
     },
