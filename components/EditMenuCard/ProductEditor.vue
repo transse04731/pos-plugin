@@ -3,24 +3,24 @@
     <!-- Product basic info -->
     <div class="product-editor__prop-grid">
       <template v-if="types">
-        <div>Type:</div>
-        <g-select outlined dense v-model="type" :items="types" @input="changeType"/>
+        <div>Type</div>
+        <g-select text-field-component="GTextFieldBs" v-model="type" :items="types" @input="changeType"/>
       </template>
       <template v-if="isProductLayout">
-        <div>ID: </div>
-        <g-text-field outlined dense :value="selectedProduct.id" @input="updateProduct({id: $event})"/>
+        <div>ID </div>
+        <g-text-field-bs :value="selectedProduct.id" @click="openDialogInfo('id')"/>
 
-        <div>Name *:</div>
-        <g-text-field outlined dense :value="selectedProduct.name" @click="dialog.showProductNameKbd = true"/>
+        <div>Name <span style="color: #FF4452">*</span></div>
+        <g-text-field-bs :value="selectedProduct.name" @click="openDialogInfo('name')"/>
 
-        <div>Price:</div>
-        <g-text-field outlined dense :value="selectedProduct.price" @input="updateProduct({ price: $event })" />
+        <div>Price</div>
+        <g-text-field-bs :value="selectedProduct.price" @click="openDialogInfo('price')"/>
 
         <g-switch v-model="selectedProduct.isModifier" @change="updateProduct({ isModifier: $event })" />
-        <div>Is Modifier</div>
+        <div style="font-size: 13px">Is Modifier</div>
       </template>
       <template v-else>
-        <div>Name *:</div>
+        <div>Name <span style="color: #ff4552">*</span></div>
         <g-text-field v-model="selectedProductLayout.text" @click="dialog.showTextKbd = true"/>
       </template>
     </div>
@@ -30,7 +30,7 @@
       <div v-if="!this.selectedProduct.isModifier">
         <div class="product-editor__prop">
           <span class="product-editor__label">Printer</span>
-          <span v-if="showAddPrinter2" class="prop-option" @click="isPrinter2Select = true">+2. Printer</span>
+          <span v-if="showAddPrinter2" class="prop-option--printer" @click="isPrinter2Select = true">+2. Printer</span>
         </div>
         <div>
           <span v-for="(item, index) in printers"
@@ -39,15 +39,15 @@
                 @click="selectPrinter(item._id)">
             {{ item.name }}
           </span>
-          <span v-if="!isPrinter2Select" :class="noPrintClasses" @click="setAsNoPrint">No Print</span>
+          <span v-if="!isPrinter2Select" :class="noPrintClasses" @click="setAsNoPrint">No Printer</span>
         </div>
       </div>
 
       <!-- Tax -->
-      <div style="display: flex">
-        <div style="width: 50%">
-          <div>Dine in Tax</div>
-          <g-grid-select mandatory v-model="selectedProduct.tax" :items="dineInTaxes">
+      <div class="row-flex mt-2 product-editor__tax">
+        <div class="col-6">
+          <div class="product-editor__label">Dine in Tax</div>
+          <g-grid-select mandatory v-model="selectedProduct.tax" :items="dineInTaxes" itemCols="auto">
             <template #default="{ toggleSelect, item, index }">
               <div class="prop-option"
                    @click="e => {toggleSelect(item); updateProduct({ tax: item.value })}">
@@ -63,9 +63,9 @@
           </g-grid-select>
         </div>
 
-        <div style="width: 50%">
-          <div>Take Away Tax</div>
-          <g-grid-select mandatory v-model="selectedProduct.tax2" :items="takeAwayTaxes">
+        <div class="col-6">
+          <div class="product-editor__label">Take Away Tax</div>
+          <g-grid-select mandatory v-model="selectedProduct.tax2" :items="takeAwayTaxes" itemCols="auto">
             <template #default="{ toggleSelect, item, index }">
               <div class="prop-option"
                    @click="e => {toggleSelect(item); updateProduct({ tax2: item.value })}">
@@ -83,23 +83,25 @@
       </div>
 
       <!-- Color -->
-      <div>
-        <div>Color</div>
+      <div class="mt-2">
+        <div class="product-editor__label">Color</div>
         <color-selector :value="selectedProductLayout.color" :colors="colors" :item-size="25" @input="updateProductLayout({ color: $event })"/>
       </div>
 
       <!-- Happy hour -->
-      <div v-if="isProductLayout">
-        <div>Happy Hour</div>
-        <div>14:00 - 17:00 : 20%</div>
-        <div>Mo Di Mi Do Fr Sa So</div>
+      <div class="mt-2" v-if="isProductLayout">
+        <div class="product-editor__label">Happy Hour</div>
+        <div class="prop-option i">
+          <p>14:00 - 17:00 : 20%</p>
+          <p>Mo Di Mi Do Fr Sa So</p>
+        </div>
       </div>
 
       <!-- Category -->
-      <div>
-        <div>Category</div>
+      <div class="mt-2">
+        <div class="product-editor__label">Category</div>
         <div>
-          <g-grid-select madatory v-model="selectedProduct.category" item-text="name" item-value="value" :items="categories">
+          <g-grid-select madatory v-model="selectedProduct.category" item-text="name" item-value="value" :items="categories" itemCols="auto">
             <template #default="{ toggleSelect, item, index }">
               <div class="prop-option" @click="e => { toggleSelect(item); changeCategory(item) }">{{item.name}}</div>
             </template>
@@ -111,18 +113,10 @@
       </div>
     </template>
     <template>
-      <dialog-text-filter
-          v-if="isProductLayout"
-          label="Product name"
-          :default-value="selectedProduct.name"
-          v-model="dialog.showProductNameKbd"
-          @submit="updateProduct({ name: $event }, $event)"/>
-      <dialog-text-filter
-          v-else
-          label="Text"
-          :default-value="selectedProductLayout.text"
-          v-model="dialog.showTextKbd"
-          @submit="updateProductLayout({ text: $event, type: 'Text' }, $event)"/>
+      <dialog-product-info v-model="dialog.productInfo"
+                           :product="selectedProduct"
+                           :focus="dialog.focus"
+                           @submit="updateProduct($event)"/>
     </template>
   </div>
 </template>
@@ -130,14 +124,13 @@
   import _ from 'lodash';
   import ColorSelector from '../common/ColorSelector';
   import GGridItemSelector from '../FnButton/components/GGridItemSelector';
-  import TableExpansionRow from '../Order/components/TableExpansionRow';
   import { createEmptyProductLayout } from '../posOrder/util'
 
   const toGSelectModel = item => ({ text: item, value: item })
 
   export default {
     name: 'ProductEditor',
-    components: { TableExpansionRow, GGridItemSelector, ColorSelector },
+    components: {GGridItemSelector, ColorSelector },
     props: {
       orderLayout: Object,
       selectedCategoryLayout: Object,
@@ -159,8 +152,8 @@
         categories: null,
         //
         dialog: {
-          showProductNameKbd: false,
-          showTextKbd: false,
+          productInfo: false,
+          focus: 'id'
         },
       }
     },
@@ -352,6 +345,10 @@
 
         this.$emit('update:orderLayout', result)
       },
+      openDialogInfo(focus) {
+        this.dialog.focus = focus
+        this.dialog.productInfo = true
+      }
     }
   }
 </script>
@@ -368,9 +365,9 @@
     }
 
     &__label {
-      height: 30px;
-      line-height: 30px;
-      margin-bottom: 5px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #1d1d26;
     }
 
     &__printer {
@@ -380,16 +377,27 @@
       border: 1px solid #000;
       cursor: pointer;
     }
+
+    &__prop {
+      display: flex;
+      justify-content: space-between;
+      padding-bottom: 8px;
+    }
+
+    ::v-deep .g-col {
+        padding: 0;
+    }
   }
 
   .prop-option {
     display: inline-block;
-    padding-left: 4px;
-    padding-right: 4px;
+    padding: 0 6px;
+    margin-right: 4px;
     cursor: pointer;
     border: 1px solid #E0E0E0;
     box-sizing: border-box;
     border-radius: 2px;
+    font-size: 13px;
 
     &--1 {
       background: #E3F2FD;
@@ -401,5 +409,12 @@
       border: 1px solid #e6724b;
     }
 
+    &--printer {
+      background: #FFFFFF;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1398);
+      border-radius: 2px;
+      padding: 0 8px;
+      font-size: 13px;
+    }
   }
 </style>

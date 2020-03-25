@@ -9,7 +9,7 @@
         @input="changeOrderLayoutColumn"/>
 
     <div class="category-editor__label">Name</div>
-    <g-text-field outlined dense :value="selectedCategoryLayout.name" @click="dialog.showCategoryNameKbd = true"/>
+    <g-text-field-bs border-color="#979797" :value="selectedCategoryLayout.name" @click="dialog.showCategoryNameKbd = true"/>
 
     <div class="category-editor__label">Color</div>
     <color-selector
@@ -108,13 +108,18 @@
 
     &__label {
       color: #000;
+      margin-top: 16px;
       margin-bottom: 13px;
-      margin-top: 25px;
-      font-family: Muli;
-      font-style: normal;
-      font-weight: bold;
+      font-weight: 700;
       font-size: 15px;
-      line-height: 19px;
+    }
+
+    .bs-tf-wrapper {
+      margin: 0;
+
+      ::v-deep .bs-tf-input {
+        color: #000;
+      }
     }
   }
 </style>
