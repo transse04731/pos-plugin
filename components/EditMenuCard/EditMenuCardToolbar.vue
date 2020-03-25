@@ -61,10 +61,13 @@
         }
       },
       selectedCategoryLayout() {
-        this.action && this.doAction()
+        this.action && this.doCategoryAction()
       },
       selectedProductLayout() {
-        this.action && this.doAction()
+        // when the user switch to another category, product will be set to null.
+        if (!this.selectedProductLayout)
+          return;
+        this.action && this.doProductAction()
       },
       productDblClicked() {
         if (this.productDblClicked) {
@@ -93,16 +96,13 @@
         this.storePreviousInfo()
         this.action = 'copy'
       },
-      async doAction() {
-        console.log('doAction')
+      async doCategoryAction() {
         if (this.prevCategoryLayout && this.prevTargetLayout === 'category') {
-          switch (this.action) {
-            case 'switch':
-              await this.switchCategory()
-              break;
-          }
+          if (this.action === 'switch')
+            await this.switchCategory()
         }
-
+      },
+      async doProductAction() {
         if (this.selectedCategoryLayout._id && this.prevProductLayout && this.prevTargetLayout === 'product') {
           switch (this.action) {
             case 'switch':
@@ -129,13 +129,14 @@
           console.log('qry', qry, 'set', set)
           orderLayout = await cms.getModel('OrderLayout').findOneAndUpdate(qry, set, { new: true })
         }
-
-        // clear previous action
+        this.clearCategoryAction()
+        this.$emit('update:orderLayout', orderLayout)
+      },
+      clearCategoryAction() {
+        console.log('clear category action')
         this.prevCategoryLayout = null
         this.prevTargetLayout = null
         this.action = null
-
-        this.$emit('update:orderLayout', orderLayout)
       },
 
       async switchProduct() {
@@ -170,10 +171,7 @@
                 });
           }
 
-          this.prevCategoryLayout = null
-          this.prevProductLayout = null
-          this.prevTargetLayout = null
-          this.action = null
+          this.clearProductAction()
           this.$emit('update:orderLayout', result)
         } else {
           // switch in 2 categories
@@ -181,13 +179,15 @@
         }
       },
       async copyProduct() {
+        console.log('copyProduct')
         // doesn't allow overwrite existed product
         if (this.selectedProductLayout._id) {
+          console.log('Product existed in selected position. Skip copy.')
           return;
         }
-        const prevProductInfo = this.prevProductLayout.product
-        const productInfo = this.copyProductInfo(prevProductInfo)
-        const product = await cms.getModel('Product').create({ ...productInfo });
+        const product = await cms.getModel('Product').create({
+          ...this.copyProductInfo(this.prevProductLayout.product)
+        });
         const productLayout = {
           product: product._id,
           ..._.pick(this.selectedProductLayout, ['top', 'left']),
@@ -197,11 +197,7 @@
             { 'categories._id' : this.selectedCategoryLayout._id },
             { $push: { 'categories.$.products' : productLayout } },
             { new: true });
-
-        this.prevCategoryLayout = null
-        this.prevProductLayout = null
-        this.prevTargetLayout = null
-        this.action = null
+        this.clearProductAction()
         this.$emit('update:orderLayout', result)
       },
 
@@ -223,6 +219,14 @@
         if (!result.groups.alpha)
           return Number(result.groups.digit) + 1
         return `${result.groups.digit}${String.fromCharCode(result.groups.alpha.charCodeAt(0) + 1) }`
+      },
+
+      clearProductAction() {
+        console.log('clear product action')
+        this.prevCategoryLayout = null
+        this.prevProductLayout = null
+        this.prevTargetLayout = null
+        this.action = null
       },
 
       async deleteItem() {
