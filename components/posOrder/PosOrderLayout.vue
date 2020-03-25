@@ -38,6 +38,7 @@
         type: Boolean,
         default: false,
       },
+      view: null,
       orderLayout: null,
       selectedCategoryLayout: null,
       selectedProductLayout: null,
@@ -89,9 +90,22 @@
       orderLayout() {
         console.log('orderLayout changed')
         if (this.selectedCategoryLayout) {
-          const selectedCategoryLayout = _.find(this.orderLayout.categories, c => c.top === this.selectedCategoryLayout.top && c.left === this.selectedCategoryLayout.left)
-          this.$emit('update:selectedCategoryLayout', selectedCategoryLayout)
+          const cateLayout = _.find(this.orderLayout.categories, c => this.isSameArea(this.selectedCategoryLayout, c))
+          if (!cateLayout)
+            return
+          // update category layout
+          this.$emit('update:selectedCategoryLayout', cateLayout)
+          console.log('view', this.view)
+          console.log('!this.selectedProductLayout', !this.selectedProductLayout)
+          if (!this.view || this.view.name !== 'ProductEditor' || !this.selectedProductLayout)
+            return
+          // update product layout
+          const prodLayout = _.find(cateLayout.products, pl => this.isSameArea(this.selectedProductLayout, pl))
+          if (!prodLayout)
+            return
+          this.$emit('update:selectedProductLayout', prodLayout)
         } else {
+          // automatically select first category
           if (this.orderLayout.categories.length > 0) {
             this.$emit('update:selectedCategoryLayout', _.first(this.orderLayout.categories))
             this.editable && this.$emit('update:view', { name: 'CategoryEditor' })
@@ -153,7 +167,7 @@
         }
       },
       getCategoryStyle(category) {
-        const isCategorySelected = this.selectedCategoryLayout === category;
+        const isCategorySelected = this.selectedCategoryLayout && this.isSameArea(this.selectedCategoryLayout, category);
         return {
           backgroundColor: category.color,
           color: '#000',
@@ -161,7 +175,7 @@
         }
       },
       getProductItemStyle(product) {
-        const isProductSelected = this.selectedProductLayout === product;
+        const isProductSelected = this.selectedProductLayout && this.isSameArea(this.selectedProductLayout, product);
         const style = {
           backgroundColor: product.color,
           color: '#000',
