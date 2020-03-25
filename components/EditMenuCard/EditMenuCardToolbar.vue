@@ -1,11 +1,26 @@
 <template>
-  <g-toolbar height="100%" elevation="0" color="#eee">
-    <g-btn-bs elevation="2" icon="icon-back" @click="back">Back</g-btn-bs>
-    <g-btn-bs elevation="2" icon="icon-edit-menu-card-switch" @click="switchItem" :disabled="!switchable">Switch</g-btn-bs>
-    <g-btn-bs elevation="2" icon="icon-edit-menu-card-copy" @click="copyItem" :disabled="!copyable">Copy</g-btn-bs>
-    <g-spacer/>
-    <g-btn-bs elevation="2" icon="icon-edit-menu-card-delete" @click="deleteItem" :disabled="!deletable">Delete</g-btn-bs>
-  </g-toolbar>
+  <div style="height: 100%; width: 100%">
+    <g-toolbar height="100%" elevation="0" color="#eee">
+      <g-btn-bs elevation="2" icon="icon-back" @click="back">Back</g-btn-bs>
+      <g-btn-bs elevation="2" icon="icon-edit-menu-card-switch" @click="switchItem" :disabled="!switchable">Switch</g-btn-bs>
+      <g-btn-bs elevation="2" icon="icon-edit-menu-card-copy" @click="copyItem" :disabled="!copyable">Copy</g-btn-bs>
+      <g-spacer/>
+      <g-btn-bs elevation="2" icon="icon-edit-menu-card-delete" @click="showDeleteConfirmDialog" :disabled="!deletable">Delete</g-btn-bs>
+    </g-toolbar>
+    <!-- confirm delete -->
+    <g-dialog v-model="dialog.confirmDeleteProductLayout" persistance width="500">
+      <div style="display: flex; flex-direction: column; align-items: center; background-color: #fff; height: 200px; padding: 20px">
+        <div>
+          {{ deleteProductLayoutMessage }}
+        </div>
+        <g-spacer/>
+        <div>
+          <g-btn @click="deleteItem(), hideDeleteConfirmDialog()">OK</g-btn>
+          <g-btn @click="hideDeleteConfirmDialog()">Cancel</g-btn>
+        </div>
+      </div>
+    </g-dialog>
+  </div>
 </template>
 <script>
   import _ from 'lodash'
@@ -25,7 +40,14 @@
         prevCategoryLayout: null,
         prevProductLayout: null,
         actionTarget: null,
-        action: null
+        action: null,
+
+        // confirm delete dialog
+        // TODO: i18n
+        deleteProductLayoutMessage: 'Are you sure you want to delete this item?',
+        dialog: {
+          confirmDeleteProductLayout: false,
+        }
       }
     },
     computed: {
@@ -236,6 +258,8 @@
           this.$emit('update:selectedCategoryLayout', null)
           this.$emit('update:orderLayout', orderLayout)
         } else if (this.view.name === 'ProductEditor') {
+          if (this.selectedProductLayout.product._id)
+            await cms.getModel('Product').remove({_id: this.selectedProductLayout.product._id})
           const orderLayout = await cms.getModel('OrderLayout').findOneAndUpdate(
               { 'categories._id': this.selectedCategoryLayout._id },
               { $pull: { 'categories.$.products': { _id: this.selectedProductLayout._id } } },
@@ -246,7 +270,12 @@
           this.$emit('update:selectedProductLayout', null)
         }
       },
-
+      showDeleteConfirmDialog() {
+        this.dialog.confirmDeleteProductLayout = true
+      },
+      hideDeleteConfirmDialog() {
+        this.dialog.confirmDeleteProductLayout = false
+      }
     }
   }
 </script>
