@@ -60,8 +60,7 @@
       back() {
         this.$router.push({ path: '/view/pos-dashboard' })
       },
-      switchItem() {
-        // store to prev
+      storePreviousInfo(){
         if (this.view.name === 'CategoryEditor') {
           this.prevCategoryLayout = this.selectedCategoryLayout
         } else if (this.view.name === 'ProductEditor') {
@@ -69,11 +68,14 @@
           this.prevProductLayout = this.selectedProductLayout
         }
         this.prevTargetLayout = this.targetLayout
+      },
+      switchItem() {
+        this.storePreviousInfo()
         this.action = 'switch'
       },
       copyItem() {
-        // if id is number -> increase: 11 -> 12
-        // if id is number but end id text -> keep number, increase text: 11a -> 11b
+        this.storePreviousInfo()
+        this.action = 'copy'
       },
       async doAction() {
         console.log('doAction')
@@ -121,31 +123,35 @@
       },
 
       async switchProduct() {
-        console.log('this.selectedProductLayout', this.selectedProductLayout)
         console.log('switchProduct')
         if (this.prevCategoryLayout._id === this.selectedCategoryLayout._id) {
           console.log('switch product in same category')
-          // switch src -> dst
-          let qry = { 'categories.products._id': this.prevProductLayout._id }
-          let set = {
-            ['categories.$[cate].products.$[product].top']: this.selectedProductLayout.top,
-            ['categories.$[cate].products.$[product].left']: this.selectedProductLayout.left,
-          }
-          let filter = [{ 'cate._id': this.prevCategoryLayout._id }, { 'product._id': this.prevProductLayout._id }]
           let result = await cms.getModel('OrderLayout').findOneAndUpdate(
-              qry,
-              { $set : set },
-              { arrayFilters: filter, new: true });
+              { 'categories.products._id': this.prevProductLayout._id },
+              {
+                $set: {
+                  ['categories.$[cate].products.$[product].top']: this.selectedProductLayout.top,
+                  ['categories.$[cate].products.$[product].left']: this.selectedProductLayout.left,
+                }
+              },
+              {
+                arrayFilters: [{ 'cate._id': this.prevCategoryLayout._id }, { 'product._id': this.prevProductLayout._id }],
+                new: true
+              });
 
           // switch dst -> src
           if (this.selectedProductLayout._id) {
-            qry = { 'categories.products._id': this.selectedProductLayout._id }
-            set = {
-              [`categories.$[cate].products.$[product].top`]: this.prevProductLayout.top,
-              [`categories.$[cate].products.$[product].left`]: this.prevProductLayout.left,
-            };
-            filter = [{ 'cate._id': this.selectedCategoryLayout._id }, { 'product._id': this.selectedProductLayout._id }]
-            result = await cms.getModel('OrderLayout').findOneAndUpdate(qry, { $set : set }, { arrayFilters: filter, new: true });
+            result = await cms.getModel('OrderLayout').findOneAndUpdate(
+                { 'categories.products._id': this.selectedProductLayout._id },
+                {
+                  $set: {
+                    [`categories.$[cate].products.$[product].top`]: this.prevProductLayout.top,
+                    [`categories.$[cate].products.$[product].left`]: this.prevProductLayout.left,
+                  }
+                }, {
+                  arrayFilters: [{ 'cate._id': this.selectedCategoryLayout._id }, { 'product._id': this.selectedProductLayout._id }],
+                  new: true
+                });
           }
 
           this.prevCategoryLayout = null
@@ -155,33 +161,53 @@
           this.$emit('update:orderLayout', result)
         } else {
           // switch in 2 categories
+
         }
       },
       async copyProduct() {
+        console.log('Copy product')
         // doesn't allow overwrite existed product
         if (this.selectedProductLayout._id) {
           return;
         }
-
+        const prevProductInfo = this.prevProductLayout.product
+        const productInfo = this.copyProductInfo(prevProductInfo)
+        const product = await cms.getModel('Product').create({ ...productInfo });
         const productLayout = {
-          ...this.prevProductLayout.product,
-          product: this.copyProductInfo(this.prevProductLayout.product),
-          ..._.pick(this.selectedProductLayout, ['top', 'left', 'color', 'type', 'text'])
+          product: product._id,
+          ..._.pick(this.selectedProductLayout, ['top', 'left']),
+          ..._.pick(this.prevProductLayout, ['color', 'type', 'text'])
         }
-        const productLayoutInfo = { ...this.prevProductLayout, }
+        const result = await cms.getModel('OrderLayout').findOneAndUpdate(
+            { 'categories._id' : this.selectedCategoryLayout._id },
+            { $push: { 'categories.$.products' : productLayout } },
+            { new: true });
+
+        this.prevCategoryLayout = null
+        this.prevProductLayout = null
+        this.prevTargetLayout = null
+        this.action = null
+        this.$emit('update:orderLayout', result)
       },
 
-      async copyProductInfo(product) {
+      copyProductInfo(product) {
         if (!product) return
-        return {
+        const clone = {
           ...product,
-          _id: null,
           id: this.createNewProductId(product.id)
         }
+        delete clone._id
+        return clone
       },
 
-      async createNewProductId(id) {
-
+      createNewProductId(id) {
+        const idRegex = /^(?<digit>\d+)(?<alpha>\w)?$/g
+        const result = idRegex.exec(id)
+        if (!result)
+          return id
+        if (!result.groups.alpha)
+          return Number(result.groups.digit) + 1
+        return `${result.groups.digit}${String.fromCharCode(result.groups.alpha.charCodeAt(0) + 1) }`
       },
 
       async deleteItem() {
