@@ -1,10 +1,10 @@
 <template>
   <g-toolbar height="100%" elevation="0" color="#eee">
     <g-btn-bs icon="icon-back" @click="back">Back</g-btn-bs>
-    <g-btn-bs icon="icon-edit-menu-card-switch" @click="switchItem" :disabled="!doAble">Switch</g-btn-bs>
-    <g-btn-bs icon="icon-edit-menu-card-copy" @click="copyItem" :disabled="!doAble">Copy</g-btn-bs>
+    <g-btn-bs icon="icon-edit-menu-card-switch" @click="switchItem" :disabled="!switchable">Switch</g-btn-bs>
+    <g-btn-bs icon="icon-edit-menu-card-copy" @click="copyItem" :disabled="!copyable">Copy</g-btn-bs>
     <g-spacer/>
-    <g-btn-bs icon="icon-edit-menu-card-delete" @click="deleteItem" :disabled="!doAble">Delete</g-btn-bs>
+    <g-btn-bs icon="icon-edit-menu-card-delete" @click="deleteItem" :disabled="!deletable">Delete</g-btn-bs>
   </g-toolbar>
 </template>
 <script>
@@ -29,7 +29,19 @@
       }
     },
     computed: {
-      doAble() {
+      switchable() {
+        switch (this.targetLayout) {
+          case 'product':
+            return (this.selectedProductLayout && this.selectedProductLayout._id)
+          case 'category':
+            return (this.selectedCategoryLayout && this.selectedCategoryLayout._id)
+        }
+      },
+      copyable() {
+        if (this.targetLayout)
+            return (this.selectedProductLayout && this.selectedProductLayout._id)
+      },
+      deletable() {
         switch (this.targetLayout) {
           case 'product':
             return (this.selectedProductLayout && this.selectedProductLayout._id)
