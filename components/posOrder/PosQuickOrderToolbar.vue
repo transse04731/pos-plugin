@@ -12,9 +12,9 @@
     </g-menu>
     <g-btn-bs icon="icon-cashier">Cashier drawer</g-btn-bs>
     <g-spacer/>
-    <g-btn-bs background-color="#4CAF50" @click.stop="quickCash">Cash & Dine In</g-btn-bs>
-    <g-btn-bs background-color="#4CAF50" @click.stop="quickCash(true)">Cash & Take Away</g-btn-bs>
-    <g-btn-bs icon="icon-pay" @click="pay">Pay</g-btn-bs>
+    <g-btn-bs class="col-2" background-color="#4CAF50" @click.stop="quickCash">Cash & Dine In</g-btn-bs>
+    <g-btn-bs class="col-2" background-color="#4CAF50" @click.stop="quickCash(true)">Cash & Take Away</g-btn-bs>
+    <g-btn-bs class="col-2" icon="icon-pay" @click="pay">Pay</g-btn-bs>
   </g-toolbar>
 </template>
 
