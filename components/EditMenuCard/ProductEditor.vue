@@ -101,7 +101,7 @@
       <div class="mt-2">
         <div class="product-editor__label">Category</div>
         <div>
-          <g-grid-select madatory v-model="selectedProduct.category" item-text="name" item-value="value" :items="categories" itemCols="auto">
+          <g-grid-select madatory v-model="selectedProduct.category" item-text="name" item-value="_id" :items="categories" itemCols="auto">
             <template #default="{ toggleSelect, item, index }">
               <div class="prop-option" @click="e => { toggleSelect(item); changeCategory(item) }">{{item.name}}</div>
             </template>
