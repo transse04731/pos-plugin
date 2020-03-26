@@ -429,3 +429,24 @@ body::-webkit-scrollbar {
   background-size: contain;
   background-position: center;
 }
+
+.icon-receipt {
+  background-image: url("../assets/receipt.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-invoice_report {
+  background-image: url("../assets/invoice_report.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-general_setting {
+  background-image: url("../assets/general_setting.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
