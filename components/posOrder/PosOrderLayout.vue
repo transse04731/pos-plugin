@@ -235,8 +235,10 @@
         if (isProductSelected)
           style.boxShadow = '0px 0px 3px #0091FF';
         if (product.type === 'Text') {
-          style.justifyContent = 'flex-start'
           style.fontSize = '12px'
+          style.backgroundColor = 'transparent'
+          style.fontWeight = '400'
+          style.color = '#212121'
         }
         if (product.product && product.product.isModifier) {
           style.fontStyle = 'italic'
@@ -339,21 +341,28 @@
   .pol {
     display: flex;
     flex-direction: column;
-    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.252295);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
 
     &__cate {
       border-radius: 4px;
+      display: flex;
+      justify-content: center;
       text-align: center;
       align-items: center;
       padding: 8px;
+      font-size: 13px;
+      font-weight: 700;
     }
 
     &__prod {
       display: flex;
       justify-content: center;
+      text-align: center;
       align-items: center;
       font-size: 14px;
       line-height: 0.9;
+      font-weight: 700;
+      color: #1d1d26;
       padding: 0 8px;
       word-break: break-word;
     }
