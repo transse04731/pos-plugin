@@ -24,9 +24,7 @@
           <span style="transform: skewX(-15deg)" v-if="productLayout.product && productLayout.product.isModifier">{{ getProductName(productLayout) }}</span>
           <template v-else>{{ getProductName(productLayout) }}</template>
         </div>
-        <div v-if="showCalculator" :style="calculatorStyle">
-          <!-- TODO: Put calculator in here -->
-        </div>
+        <pos-order-keyboard v-if="showCalculator" :keyboard-config="keyboardConfig"/>
       </div>
     </div>
   </div>
