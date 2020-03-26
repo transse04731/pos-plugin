@@ -273,7 +273,8 @@
           }
         } else {
           this.$emit('update:selectedProductLayout', productLayout);
-          this.$emit('productSelected', productLayout.product)
+          if (productLayout.type !== 'Text' && productLayout.product && productLayout.product._id)
+            this.$emit('productSelected', productLayout.product)
         }
       },
 
