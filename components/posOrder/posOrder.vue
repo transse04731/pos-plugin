@@ -91,6 +91,18 @@
       changePrice(price) {
         this.$emit('changePrice', price, this.dialogConfigOrderItem.product)
       }
+    },
+    mounted() {
+      const orderStore = this.$getService('OrderStore')
+
+      orderStore.$watch('currentOrder.items', (items, oldItems) => {
+        if (this.$el) {
+          const tableEl = this.$el.querySelector('.order-detail__content')
+          if (items && items.length > oldItems.length) {
+            tableEl.scrollTop = tableEl.scrollHeight
+          }
+        }
+      }, { deep: true })
     }
   }
 </script>
@@ -101,6 +113,9 @@
     background: white;
     color: #1d1d26;
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.25);
+    height: calc(100vh - 64px);
+    display: flex;
+    flex-direction: column;
 
     &__header {
       display: flex;
@@ -131,6 +146,8 @@
     &__content {
       border-radius: 8px;
       border: 1px solid #e8e8e8;
+      overflow: scroll;
+      margin-bottom: 3px;
 
       .item {
         padding: 8px;

@@ -19,8 +19,7 @@
              class="pol__prod"
              :key="index"
              :style="[getAreaStyle(productLayout), getProductItemStyle(productLayout)]"
-             @click="onClick(productLayout)"
-             @touchstart="onTouchStart(productLayout)">
+             v-on="getProductListeners(productLayout)">
           <g-icon class="mr-1" v-if="productLayout.icon">{{productLayout.icon}}</g-icon>
           <span style="transform: skewX(-15deg)" v-if="productLayout.product && productLayout.product.isModifier">{{ getProductName(productLayout) }}</span>
           <template v-else>{{ getProductName(productLayout) }}</template>
@@ -321,14 +320,13 @@
           }, timeout)
         } else {
           this.selectProduct(productLayout);
-          this.addProductToOrder(productLayout);
         }
       },
 
       addProductToOrder({ product }) {
         // Handle these stuff in productSelected event.
         // work-around
-        if (!product || product._id)
+        if (!product || !product._id)
           return
         if (product.isModifier) {
           this.$emit('addModifierToProduct', {
@@ -351,6 +349,12 @@
         console.log('touch start')
         this.isTouchEventHandled = true
         this.onProductSelect(productLayout)
+      },
+
+      getProductListeners(productLayout) {
+        return this.editable
+          ? { click: () => this.onClick(productLayout), touchstart: () => this.onTouchStart(productLayout)}
+          : { click: () => this.addProductToOrder(productLayout) }
       }
     }
   }
