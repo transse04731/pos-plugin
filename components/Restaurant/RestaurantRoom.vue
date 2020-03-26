@@ -47,7 +47,7 @@
       },
       selectRoomObj(roomObj) {
         this.roomObj = roomObj;
-        this.$router.push(`/view/pos-order-2/${roomObj._id}`)
+        this.$router.push(`/view/pos-order-2/${roomObj.name}`)
       },
     }
   }
