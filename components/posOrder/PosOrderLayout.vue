@@ -85,9 +85,8 @@
         }
       },
       calculatorStyle() {
-        const { width, height } = this.keyboardConfig
-        const { rows, columns } = this.selectedCategoryLayout
-        const gridArea = `${Math.max(rows - height, 0) + 1} / ${Math.max(columns - width, 0) + 1} / ${rows + 1} / ${columns + 1}`
+        const { top, left, width, height } = this.keyboardConfig
+        const gridArea = `${top} / ${left} / ${top + height + 1} / ${left + width + 1}`
         console.log(gridArea)
         return {
           gridArea,
