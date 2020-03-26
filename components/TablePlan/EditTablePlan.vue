@@ -1,7 +1,12 @@
 <template>
   <div style="display: flex; height: 100vh; width: 100vw">
     <!-- side bar -->
-    <pos-dashboard-sidebar :items="sidebarData" :title="user.username" @toggle="onSidebarToggle">
+    <pos-dashboard-sidebar
+        :items="sidebarData"
+        :title="user.username"
+        @toggle="onSidebarToggle"
+        :default-path="defaultPath"
+        :after-mount-fn="selectFirstRoom">
       <template v-slot:above-spacer>
         <!-- Add more room -->
         <div v-if="showAddNewRoomBtn"
@@ -134,7 +139,8 @@
         dialog: {
           showRoomNameKbd: false,
           showTableNameKbd: false,
-        }
+        },
+        defaultPath: 'items.0.items.0'
       }
     },
     computed: {
@@ -153,6 +159,9 @@
         // in this window, only Restaurant item is collapsible so we don't need to care about path
         // just update the visibility of Add new button depend on toggled state
         this.showAddNewRoomBtn = toggled
+      },
+      selectFirstRoom() {
+        this.room = cms.getList('Room')[0]
       },
       convertRoomToSideBarItem(room) {
         return {

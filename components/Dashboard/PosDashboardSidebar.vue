@@ -42,12 +42,15 @@
         default: 'Admin'
       },
       items: Array,
-      view: null
+      view: null,
+      defaultPath: null,
+      afterMountFn: null
     },
     data() {
       return {
         now: '',
-        sidebar: ''
+        sidebar: '',
+        selectedNode: null,
       }
     },
     computed: {
@@ -58,6 +61,19 @@
         return this.user ? this.user.avatar : ''
       }
     },
+    created() {
+      this.timerId = setInterval(() => this.now = dayjs().format('HH:mm'), 1000)
+      console.log('side bar', this.sidebar)
+    },
+    beforeDestroy() {
+      clearInterval(this.timerId)
+    },
+    mounted() {
+      if (this.defaultPath)
+        this.sidebar = this.defaultPath // 'item.0.item.0'
+      if (typeof(this.afterMountFn) === 'function')
+        this.afterMountFn()
+    },
     methods: {
       itemChildren(node) {
         if (node.children) {
@@ -66,6 +82,7 @@
         return node.items;
       },
       onNodeSelected(node) {
+        this.selectedNode = node;
         node.onClick && node.onClick.bind(this)();
       },
       logout() {
