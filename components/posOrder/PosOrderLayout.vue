@@ -25,6 +25,9 @@
           <span style="transform: skewX(-15deg)" v-if="productLayout.product && productLayout.product.isModifier">{{ getProductName(productLayout) }}</span>
           <template v-else>{{ getProductName(productLayout) }}</template>
         </div>
+        <div v-if="showCalculator" :style="calculatorStyle">
+          <!-- TODO: Put calculator in here -->
+        </div>
       </div>
     </div>
   </div>
@@ -52,6 +55,14 @@
         isTouchEventHandled: null,
         doubleClicked: false,
         lastSelectMoment: null,
+        keyboardConfig: {
+          active: false,
+          top: 0,
+          left: 0,
+          width: 0,
+          height: 0,
+          onlyShowInFirstPage: false
+        }
       }
     },
     computed: {
@@ -73,6 +84,29 @@
           height: '100%'
         }
       },
+      calculatorStyle() {
+        const { width, height } = this.keyboardConfig
+        const { rows, columns } = this.selectedCategoryLayout
+        const gridArea = `${Math.max(rows - height, 0) + 1} / ${Math.max(columns - width, 0) + 1} / ${rows + 1} / ${columns + 1}`
+        console.log(gridArea)
+        return {
+          gridArea,
+          backgroundColor: 'red'
+        }
+      },
+      showCalculator() {
+        if (!this.selectedCategoryLayout)
+          return false
+
+        let show = this.keyboardConfig.active
+        if (this.keyboardConfig.onlyShowInFirstPage) {
+          const {top, left} = this.selectedCategoryLayout
+          if (top !== 0 || left !== 0)
+            show = false
+        }
+
+        return show
+      },
       categories() {
         if (this.editable) {
           return this.fillMissingAreas(
@@ -92,9 +126,10 @@
         }
         // remove product layout which is not text but doesn't link to any product
         return _.filter(this.selectedCategoryLayout.products, p => p.type === 'Text' || (p.type !== 'Text' && p.product))
-      }
+      },
     },
     async created() {
+      this.loadKeyboardConfig();
       await this.loadOrderLayout();
     },
     watch: {
@@ -129,6 +164,10 @@
       async loadOrderLayout() {
         this.$emit('update:orderLayout', await cms.getModel('OrderLayout').findOne({}))
       },
+      loadKeyboardConfig() {
+        this.$set(this, 'keyboardConfig', cms.getList('PosSetting')[0].keyboardConfig)
+      },
+      //
       fillMissingAreas(areas, columns, rows, isCategory) {
         // add extra info
         // areas: [ { top, left }, {...} ]
