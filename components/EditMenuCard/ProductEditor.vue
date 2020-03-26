@@ -206,7 +206,7 @@
     methods: {
       // categories
       async loadCategories() {
-        this.categories = await cms.getModel('Category').find({})
+        this.categories = await cms.getModel('Category').find()
       },
       async changeCategory(category) {
         await this.updateProduct({ category: category._id })
@@ -226,7 +226,7 @@
 
       // printers
       async loadPrinters() {
-        this.printers = await cms.getModel('GroupPrinter').find({})
+        this.printers = await cms.getModel('GroupPrinter').find({ type: 'kitchen' })
       },
       getPrinterClass(printer) {
         return {
