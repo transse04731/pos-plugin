@@ -77,8 +77,10 @@
           transform: `rotate(${roomObj.rotate}deg)`,
           transformOrigin: '50% 50%',
           border: '1px solid transparent',
-          cursor: 'pointer'
         };
+
+        if (this.editable || (!this.editable && roomObj.type !== 'wall'))
+          style.cursor = 'pointer'
 
         if (this.editable && (this.selectingObj === roomObj)) {
           style.border = '1px solid #1271FF'
@@ -124,7 +126,8 @@
           this.lastPos = { x: e.clientX, y: e.clientY };
         }
 
-        this.$emit('selectRoomObject', roomObject)
+        if (this.editable || (!this.editable && roomObject.type !== 'wall'))
+          this.$emit('selectRoomObject', roomObject)
       },
       onMouseMove(e) {
         if (this.action) {
