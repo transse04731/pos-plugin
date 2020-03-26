@@ -178,7 +178,7 @@
           const filter = {
             title: 'Barcode',
             text: this.barcode,
-            condition: {barcode: {"$regex": this.barcode}}
+            condition: {bookingNumber: {"$regex": this.barcode}}
           }
           this.$emit('submit', filter)
         }

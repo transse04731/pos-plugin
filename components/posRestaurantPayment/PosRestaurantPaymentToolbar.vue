@@ -7,6 +7,7 @@
     <g-btn-bs icon="icon-split_check_2">Split check</g-btn-bs>
     <g-btn-bs icon="icon-red_bill">Red bill</g-btn-bs>
     <g-btn-bs icon="icon-print2">Bill</g-btn-bs>
+    <g-spacer/>
     <g-btn-bs class="col-2" background-color="#2979FF" :disabled="isPayBtnDisabled" @click.stop="pay">Pay</g-btn-bs>
   </g-toolbar>
 </template>

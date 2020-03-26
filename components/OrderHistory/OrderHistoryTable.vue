@@ -43,7 +43,7 @@
       <tr v-for="(order, i) in orderHistoryOrders" :key="i" :class="[order._id === orderHistoryCurrentOrder._id && 'tr__active']" @click="chooseOrder(order)">
         <td class="ta-center" style="white-space: nowrap">{{order.id}}</td>
         <td class="ta-center">{{order.dateTime}}</td>
-        <td class="ta-center" style="white-space: nowrap">{{order.barcode}}</td>
+        <td class="ta-center" style="white-space: nowrap">{{order.bookingNumber}}</td>
         <td class="ta-right" style="white-space: nowrap">€ {{order.amount.toFixed(2)}}</td>
         <td>
           <p class="staff-name">{{getStaffName(order.staff)}}</p>
