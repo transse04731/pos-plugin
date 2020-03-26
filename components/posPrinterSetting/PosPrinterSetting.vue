@@ -2,7 +2,7 @@
   <div class="h-100 r">
     <div class="configuration">
       <div class="config">
-        <g-text-field-bs label="Name" v-model="name" append-inner-icon="icon-keyboard-red"/>
+        <g-text-field-bs label="Name" v-model="editableName" append-inner-icon="icon-keyboard-red"/>
         <div class="switch-group">
           <g-switch label="1 Receipt for 1 Article"/>
           <g-switch label="Group Articles"/>
@@ -41,6 +41,11 @@
 <script>
   export default {
     name: "PosPrinterSetting",
+    props: {
+      id: null,
+      name: String,
+      active: Boolean,
+    },
     injectService: [
       'SettingsStore:(thermalPrinter, getThermalPrinter, updateThermalPrinter)',
     ],
@@ -53,7 +58,7 @@
           {name: 'USB', value: 'usb'}
         ],
         selectedPrinterType: null,
-        name: ''
+        editableName: ''
       }
     },
     computed: {
@@ -65,6 +70,7 @@
           return ''
         },
         set(val) {
+          if(!this.active) return
           if (this.thermalPrinter) {
             this.$set(this.thermalPrinter, 'ip', val)
           } else {
@@ -79,6 +85,7 @@
     methods: {
       select(type) {
         this.selectedPrinterType = type;
+        if (!this.active) return
         if (this.thermalPrinter) {
           this.thermalPrinter.printerType = type.value;
         } else {
@@ -89,6 +96,7 @@
       },
       resetPrinter() {
         this.selectedPrinterType = null;
+        if (!this.active) return
         if (this.thermalPrinter) {
           this.thermalPrinter.printerType = null;
         } else {
@@ -98,19 +106,33 @@
         }
       }
     },
-    async created() {
-      await this.getThermalPrinter();
-      if (this.thermalPrinter) {
-        this.selectedPrinterType = this.printerTypes.find(t => t.value === this.thermalPrinter.printerType)
-      }
+    watch: {
+      async active(val) {
+        if (!val) {
+          if (this.thermalPrinter) {
+            this.thermalPrinter = {}
+          }
+          this.selectedPrinterType = null
+          if (this.unwatch) this.unwatch()
+          return
+        }
+        await this.getThermalPrinter();
+        if (this.thermalPrinter) {
+          this.selectedPrinterType = this.printerTypes.find(t => t.value === this.thermalPrinter.printerType)
+        }
 
-      const settingsStore = this.$getService('SettingsStore')
-      this.unwatch = settingsStore.$watch('thermalPrinter', async newVal => {
-        await this.updateThermalPrinter(newVal._id, newVal)
-      }, {deep: true})
+        const settingsStore = this.$getService('SettingsStore')
+        this.unwatch = settingsStore.$watch('thermalPrinter', async newVal => {
+          await this.updateThermalPrinter(newVal._id, newVal)
+        }, {deep: true})
+      },
+      name(val) {
+        this.editableName = val
+      }
     },
     beforeDestroy() {
-      this.unwatch()
+      if (this.active)
+        this.unwatch()
     }
   }
 </script>

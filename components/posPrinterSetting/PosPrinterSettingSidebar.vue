@@ -38,7 +38,7 @@
   export default {
     name: "PosPrinterSettingSidebar",
     props: {
-
+      view: null
     },
     injectService: ['PosStore:(systemDate, timeFormat)'],
     data() {
@@ -55,7 +55,7 @@
           {
             title: 'Invoice, Report', icon: 'icon-invoice_report', displayChild: true,
             items: [
-              {title: 'POS', icon: 'radio_button_unchecked', slot: 'printer'},
+              {title: 'POS', icon: 'radio_button_unchecked', slot: 'printer', active: true},
               {title: 'Table', icon: 'radio_button_unchecked', slot: 'printer'},
             ]
           },
@@ -83,7 +83,13 @@
           menu.displayChild = !menu.displayChild;
         } else {
           this.selectedMenu = menu;
-          this.$emit('itemselected', menu)
+          this.$emit('update:view', {
+            name: menu.slot,
+            params: {
+              name: menu.title,
+              active: !!menu.active
+            }
+          })
         }
       },
       back() {
