@@ -91,7 +91,7 @@
       </div>
 
       <g-row>
-        <g-btn v-for="item in listPayments" :uppercase="false" x-large outlined text-color="#1271ff" disabled
+        <g-btn v-for="item in listPayments" :uppercase="false" x-large outlined text-color="#1271ff" disabled :key="item._id"
                style="flex-basis: 30%; margin: 0 0.8em 0.8em 0">
           <img :src="item.icon" style="width: 20px; height: 20px"/>
           <span class="ml-2 text-black" style="text-transform: capitalize">{{item.name}}</span>
