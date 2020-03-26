@@ -1,7 +1,5 @@
 <template>
   <div v-if="selectedCategoryLayout" class="category-editor">
-    <!-- TODO: Passing layout columns -->
-
     <div class="category-editor__label">Number of Category</div>
     <input-number
         :value="orderLayout.columns" :min="1" :max="8"
@@ -36,6 +34,9 @@
           :default-value="selectedCategoryLayout.name"
           v-model="dialog.showCategoryNameKbd"
           @submit="updateCategory({ name: $event}, $event)"/>
+      <g-snackbar v-model="showSnackbar" top right color="#1976d2" time-out="2000">
+        {{notifyContent}}
+      </g-snackbar>
     </template>
   </div>
 </template>
@@ -57,7 +58,9 @@
         colors: ['#FFFFFF', '#CE93D8', '#B2EBF2', '#C8E6C9', '#DCE775', '#FFF59D', '#FFCC80', '#FFAB91'],
         dialog: {
           showCategoryNameKbd: false
-        }
+        },
+        showSnackbar: false,
+        notifyContent: null
       }
     },
     computed: {
@@ -71,6 +74,7 @@
     methods: {
       async changeOrderLayoutColumn(columns) {
         const result = await cms.getModel('OrderLayout').findOneAndUpdate({_id: this.orderLayout._id}, { columns }, { new: true })
+        this.showNotify()
         this.$emit('update:orderLayout', result)
       },
       async updateCategory(change, forceCreate) {
@@ -85,6 +89,7 @@
           }, {}) ;
           console.log('update', qry, 'set', set);
           await cms.getModel('OrderLayout').findOneAndUpdate(qry, { $set: set });
+          this.showNotify()
         } else {
           if (forceCreate) {
             console.log('Create new categoryLayout', this.selectedCategoryLayout)
@@ -92,12 +97,17 @@
                 { _id: this.orderLayout._id },
                 { $push: { categories: this.selectedCategoryLayout } },
                 { new: true });
+            this.showNotify()
             this.$emit('update:orderLayout', orderLayout)
           } else {
             console.log('CategoryLayout is not existed. Skip.')
           }
         }
       },
+      showNotify(content) {
+        this.notifyContent = content || 'Saved'
+        this.showSnackbar = true
+      }
     }
   }
 </script>

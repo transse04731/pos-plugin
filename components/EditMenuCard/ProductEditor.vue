@@ -117,6 +117,9 @@
                            :product="selectedProduct"
                            :focus="dialog.focus"
                            @submit="updateProduct($event, $event.name)"/>
+      <g-snackbar v-model="showSnackbar" top right color="#1976d2" time-out="2000">
+        {{notifyContent}}
+      </g-snackbar>
     </template>
   </div>
 </template>
@@ -155,6 +158,8 @@
           productInfo: false,
           focus: 'id'
         },
+        showSnackbar: false,
+        notifyContent: null
       }
     },
     computed: {
@@ -213,6 +218,12 @@
         this.takeAwayTaxes.splice(0, this.takeAwayTaxes.length, ...taxModels)
       },
 
+      //
+      showNotify(content) {
+        this.notifyContent = content || 'Saved'
+        this.showSnackbar = true
+      },
+
       // printers
       async loadPrinters() {
         this.printers = await cms.getModel('GroupPrinter').find({})
@@ -241,14 +252,6 @@
         }
         await this.updateProduct(change)
       },
-      async setAsItemNote() {
-        await this.updateProduct({
-          groupPrinter: null,
-          groupPrinter2: null,
-          isItemNote: true,
-          isNoPrint: false,
-        })
-      },
       async setAsNoPrint() {
         await this.updateProduct({
           groupPrinter: null,
@@ -264,24 +267,11 @@
         if (this.selectedProductLayout.type === type)
           return
 
-        if (type === 'Text') {
-          if (_.includes(['Article', 'Div.Article'], this.selectedProductLayout.type)) {
-            // TODO: Article -> Text
-            // pseudo:
-            // 1. remove linked product
-            // 2. add text to product layout
+        const articleTypes = ['Article', 'Div.Article']
 
-          }
-        } else if (_.includes(['Article', 'Div.Article'], type)) {
-          if (this.selectedProductLayout.type === 'Text') {
-            // TODO: Text -> Article, Div.Article
-            // pseudo:
-            // 1. clear product layout text
-            // 2. add new product
-          } else {
-            // Art, Div.Art -> Div.Art, Art
-            await this.updateProduct({ isDivArticle: type === 'Div.Article' })
-          }
+        // Art, Div.Art -> Div.Art, Art
+        if (_.includes(articleTypes, this.selectedProductLayout.type) && _.includes(articleTypes, type)) {
+          await this.updateProduct({ isDivArticle: type === 'Div.Article' })
         }
 
         await this.updateProductLayout({type})
@@ -302,9 +292,11 @@
             }, {}) };
           const filter = [{ 'cate._id': this.selectedCategoryLayout._id }, { 'product._id': this.selectedProductLayout._id }]
           const result = await cms.getModel('OrderLayout').findOneAndUpdate(qry, set, { arrayFilters: filter,  new: true });
+          this.showNotify()
         } else {
           if (forceCreate) {
             await this.createNewProductLayout(null, change)
+            this.showNotify()
           } else {
             console.log('ProductLayout is not existed yet. skipped')
           }
@@ -319,12 +311,14 @@
         if (this.selectedProduct._id) {
           console.log('updateProduct', change)
           await cms.getModel('Product').findOneAndUpdate({_id: this.selectedProduct._id}, change)
+          this.showNotify()
         } else {
           if (forceCreate) {
             console.log('Create new Product')
             const product = await cms.getModel('Product').create({ ...this.selectedProduct });
             console.log('Create new ProductLayout linked to Product with id: ', product._id)
             await this.createNewProductLayout(product._id)
+            this.showNotify()
           } else {
             console.log('Product is not existed yet. skipped')
           }
