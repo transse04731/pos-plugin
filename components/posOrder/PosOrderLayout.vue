@@ -292,16 +292,14 @@
             if (new Date().getTime() - this.lastSelectMoment < timeout) {
               console.log('emit double click')
               this.doubleClicked = true
-              if (this.editable) {
-                this.selectProduct(productLayout);
-                this.$emit('update:productDblClicked', true)
-              }
+              this.selectProduct(productLayout);
+              this.$emit('update:productDblClicked', true)
             } else {
               if (!this.doubleClicked) {
                 console.log('emit click')
                 this.selectProduct(productLayout);
                 this.addProductToOrder(productLayout);
-                this.editable && this.$emit('update:productDblClicked', false)
+                this.$emit('update:productDblClicked', false)
               }
             }
           }, timeout)
