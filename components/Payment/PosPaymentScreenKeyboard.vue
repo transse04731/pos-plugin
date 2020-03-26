@@ -71,7 +71,7 @@
         if (btn.buttonFunction === 'pay') {
           return this.paymentAmountTendered >= this.paymentTotal
         }
-        return true;
+        return !!btn.text;
       },
       onClickBtn(btn) {
         if(btn.buttonFunction)
