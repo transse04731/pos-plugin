@@ -30,6 +30,8 @@
             </template>
           </pos-text-field>
           <div style="display: flex; justify-content: flex-end; margin-right: 5px">
+            <g-btn @click="moveRoomUp">^</g-btn>
+            <g-btn @click="moveRoomDown">v</g-btn>
             <g-btn @click="removeRoom" background-color="#FF4452" text-color="#FFF"><g-icon>delete</g-icon>Delete</g-btn>
           </div>
         </div>
@@ -153,6 +155,11 @@
           items: _.map(this.rooms, this.convertRoomToSideBarItem)
         }]
       },
+      roomNames() {
+        const roomNames = {}
+        _.each(this.rooms, room => roomNames[room.name] = room._id)
+        return roomNames
+      },
       tableNames() {
         const tableNames = {}
         _.each(this.rooms, room => {
@@ -166,7 +173,7 @@
     },
     methods: {
       async loadRooms() {
-        this.rooms.splice(0, this.rooms.length, ...await cms.getModel('Room').find({}))
+        this.rooms.splice(0, this.rooms.length, ..._.orderBy(await cms.getModel('Room').find({}), ['order'], ['asc']))
       },
       onSidebarToggle(path, toggled) {
         this.showAddNewRoomBtn = toggled
@@ -187,6 +194,16 @@
           }
         }
       },
+      getUniqueRoomName(baseName) {
+        const init = baseName || 1
+        let name = init
+        let ctr = 1
+        while(_.has(this.roomNames, `${name}`)) {
+          name = init + ctr
+          ctr++
+        }
+        return name
+      },
       getUniqueTableName(baseName) {
         const init = baseName || 1
         let name = init
@@ -198,8 +215,9 @@
         return name
       },
       async addNewRoom() {
-        const newName = this.getUniqueTableName()
-        const created = await cms.getModel('Room').create({ name: newName });
+        const largestOrder = _.maxBy(this.rooms, r => r.order).order;
+        const newName = this.getUniqueRoomName('Room ')
+        const created = await cms.getModel('Room').create({ name: newName, order: largestOrder + 1 });
         this.rooms.push(created)
       },
       async removeRoom() {
@@ -210,6 +228,28 @@
       async changeRoomName(name) {
         await cms.getModel('Room').findOneAndUpdate({ _id: this.room._id }, { name });
         this.room.name = name
+      },
+      async moveRoomUp() {
+        const i = _.findIndex(this.rooms, r => r._id === this.room._id)
+        await this._moveRoomUp(i)
+      },
+      async moveRoomDown() {
+        const i = _.findIndex(this.rooms, r => r._id = this.room._id)
+        if (i < this.rooms.length - 1)
+          await this._moveRoomUp(i + 1)
+      },
+      async _moveRoomUp(i) {
+        if (i > 0) {
+          const curRoom = this.rooms[i]
+          const preRoom = this.rooms[i - 1]
+          console.log(`Move room ${curRoom.name} from order ${curRoom.order} to order ${preRoom.order}`)
+          console.log(`Move room ${preRoom.name} from order ${preRoom.order} to order ${curRoom.order}`)
+          await cms.getModel('Room').bulkWrite([
+            { updateOne: { filter: { _id: curRoom._id }, update: { order: preRoom.order } } },
+            { updateOne: { filter: { _id: preRoom._id }, update: { order: curRoom.order } } },
+          ])
+          await this.loadRooms()
+        }
       },
 
       // room object helper methods
