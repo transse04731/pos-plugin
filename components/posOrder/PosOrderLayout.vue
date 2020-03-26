@@ -276,11 +276,15 @@
         } else {
           this.$emit('update:selectedProductLayout', productLayout);
         }
-        this.highlightProduct()
+        this.highlightProduct(productLayout)
       },
 
-      highlightProduct() {
+      highlightProduct(productLayout) {
+        if (!this.editable && productLayout.type === 'Text')
+          return
+
         this.highlightSelectedProduct = true
+
         if (!this.editable) {
           // flash in view mode
           setTimeout(() => {
