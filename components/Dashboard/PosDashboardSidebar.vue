@@ -63,7 +63,6 @@
     },
     created() {
       this.timerId = setInterval(() => this.now = dayjs().format('HH:mm'), 1000)
-      console.log('side bar', this.sidebar)
     },
     beforeDestroy() {
       clearInterval(this.timerId)

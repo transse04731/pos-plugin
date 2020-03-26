@@ -105,6 +105,23 @@
         "_code_type_": "commonJs"
       },
       "children": "items"
+    },
+    {
+      "_id": "5e7c799e5eb24b13bf72ec68",
+      "schemaType": "mixed",
+      "key": "afterMountFn",
+      "mixed": true,
+      "type": "editor",
+      "label": "afterMountFn",
+      "addable": true
+    },
+    {
+      "_id": "5e7c799e5eb24b13bf72ec69",
+      "schemaType": "string",
+      "key": "defaultPath",
+      "type": "input",
+      "label": "defaultPath",
+      "addable": true
     }
   ],
   "name": "PosDashboardSidebar",

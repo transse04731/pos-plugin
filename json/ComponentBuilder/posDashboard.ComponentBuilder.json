@@ -138,7 +138,7 @@
                   "title": "Manual Table",
                   "icon": "icon-manual-table",
                   "onClick": {
-                    "_code_": "module.exports = function() {\n  this.$emit('update:view', {\n    name: 'ManualTable',\n    params: ''\n  })\n}",
+                    "_code_": "module.exports = function() {\n  // this.$emit('update:view', {\n  //   name: 'ManualTable',\n  //   params: ''\n  // })\n}",
                     "_code_type_": "commonJs"
                   }
                 },
@@ -151,7 +151,12 @@
                     "_code_type_": "commonJs"
                   }
                 }
-              ]
+              ],
+              "afterMountFn": {
+                "_code_": "module.exports = function () {\n  if (cms.getList('Room').length > 0) {\n    this.$emit('update:view', {\n      name: 'Restaurant',\n      params: {\n        id: cms.getList('Room')[0]._id\n      }\n    })\n  }\n}",
+                "_code_type_": "commonJs"
+              },
+              "defaultPath": "item.0.item.0"
             }
           }
         },

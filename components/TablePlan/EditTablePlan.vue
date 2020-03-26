@@ -140,7 +140,7 @@
           showRoomNameKbd: false,
           showTableNameKbd: false,
         },
-        defaultPath: 'items.0.items.0'
+        defaultPath: 'item.0.item.0'
       }
     },
     computed: {
@@ -154,6 +154,7 @@
     methods: {
       async loadRooms() {
         this.rooms = await cms.getModel('Room').find({})
+        this.showAddNewRoomBtn = true
       },
       onSidebarToggle(path, toggled) {
         // in this window, only Restaurant item is collapsible so we don't need to care about path
@@ -161,7 +162,9 @@
         this.showAddNewRoomBtn = toggled
       },
       selectFirstRoom() {
-        this.room = cms.getList('Room')[0]
+        const firstRoom = cms.getList('Room')[0]
+        if (firstRoom)
+          this.$set(this, 'room', firstRoom)
       },
       convertRoomToSideBarItem(room) {
         return {
