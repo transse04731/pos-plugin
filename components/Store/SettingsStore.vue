@@ -16,44 +16,44 @@
 
       return {
         sidebarData: [
-          {
-            title: sidebar.product, icon: 'icon-liefer_packet', svgIcon: true, /*badge: '3', badgeColor: '#FF9529',*/
+          /*{
+            title: sidebar.product, icon: 'icon-liefer_packet', svgIcon: true, /!*badge: '3', badgeColor: '#FF9529',*!/
             items: [
               { title: sidebar.articles, icon: 'radio_button_unchecked', iconType: 'small', isView: true },
-              { title: sidebar.category, icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/category' */ },
+              { title: sidebar.category, icon: 'radio_button_unchecked', iconType: 'small', isView: true /!*href: '/settings/category' *!/ },
               { title: sidebar.productLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-article', appendIcon: 'open_in_new' },
             ]
-          },
+          },*/
           /*{ title: 'Reporting', icon: 'icon-bar_chart', svgIcon: true },*/
           { title: sidebar.user, icon: 'person', isView: true /*href: '/setting/user'*/ },
-          {
-            title: sidebar.settings, icon: 'icon-cog', svgIcon: true, /*badge: '3', badgeColor: '#9C24AC',*/
+          /*{
+            title: sidebar.settings, icon: 'icon-cog', svgIcon: true, /!*badge: '3', badgeColor: '#9C24AC',*!/
             items: [
-              { title: sidebar.general, icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/general'*/ },
-              /*{ title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small' },
-              { title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small' },*/
+              { title: sidebar.general, icon: 'radio_button_unchecked', iconType: 'small', isView: true /!*href: '/settings/general'*!/ },
+              /!*{ title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small' },
+              { title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small' },*!/
               { title: sidebar.paymentLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-payment-config', appendIcon: 'open_in_new' },
               { title: sidebar.functionLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-fn-button', appendIcon: 'open_in_new' },
             ]
-          },
-          {
+          },*/
+          /*{
             title: sidebar.hardware, icon: 'icon-hardware', svgIcon: true,
             items: [
               { title: sidebar.thermalPrinter, isView: true, icon: 'radio_button_unchecked', iconType: 'small' },
-              /*{ title: 'POS', icon: ' ' },
+              /!*{ title: 'POS', icon: ' ' },
               { title: 'Customer Display', icon: ' ' },
-              { title: 'A4 Printer', icon: ' ' },*/
+              { title: 'A4 Printer', icon: ' ' },*!/
             ]
-          },
-          {
-            title: sidebar.advancedSettings, icon: 'icon-switch', svgIcon: true,/* badge: '3', badgeColor: '#FF4081',*/
+          },*/
+          /*{
+            title: sidebar.advancedSettings, icon: 'icon-switch', svgIcon: true,/!* badge: '3', badgeColor: '#FF4081',*!/
             items: [
-              { title: sidebar.companyInfo, icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/company'*/ },
-              { title: sidebar.payment, icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/payment'*/ },
+              { title: sidebar.companyInfo, icon: 'radio_button_unchecked', iconType: 'small', isView: true /!*href: '/settings/company'*!/ },
+              { title: sidebar.payment, icon: 'radio_button_unchecked', iconType: 'small', isView: true /!*href: '/settings/payment'*!/ },
               { title: sidebar.tax, icon: 'radio_button_unchecked', iconType: 'small', isView: true },
-              /*{ title: 'License', icon: 'radio_button_unchecked', iconType: 'small' },*/
+              /!*{ title: 'License', icon: 'radio_button_unchecked', iconType: 'small' },*!/
             ]
-          },
+          },*/
         ],
         //category view
         listCategories: [],

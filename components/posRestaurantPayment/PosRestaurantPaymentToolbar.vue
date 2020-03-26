@@ -26,7 +26,7 @@
     },
     methods: {
       back() {
-        this.$router.push({path: '/view/pos-order-2'})
+        this.$router.go(-1)
       },
       pay() {
         this.$emit('pay')

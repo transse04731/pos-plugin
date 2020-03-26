@@ -1,9 +1,15 @@
 <template>
   <div v-if="orderHistoryCurrentOrder" class="wrapper">
-    <div>
-      <span class="order-title">{{$t('orderHistory.orderNo')}}</span>
-      <span class="order-id">{{orderHistoryCurrentOrder.id}}</span>
-    </div>
+    <g-row>
+      <div style="width: 50%;">
+        <div class="order-title">{{$t('orderHistory.orderNo')}}</div>
+        <div class="order-id">{{orderHistoryCurrentOrder.id}}</div>
+      </div>
+      <div style="width: 50%;" v-if="orderHistoryCurrentOrder.table">
+        <div class="order-title">Table No</div>
+        <div class="order-id">{{orderHistoryCurrentOrder.table}}</div>
+      </div>
+    </g-row>
     <g-simple-table striped>
       <tr v-for="product in orderHistoryCurrentOrder.items">
         <td>{{product.quantity}}x</td>
