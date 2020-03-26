@@ -82,15 +82,6 @@
           height: '100%'
         }
       },
-      calculatorStyle() {
-        const { top, left, width, height } = this.keyboardConfig
-        const gridArea = `${top} / ${left} / ${top + height + 1} / ${left + width + 1}`
-        console.log(gridArea)
-        return {
-          gridArea,
-          backgroundColor: 'red'
-        }
-      },
       showCalculator() {
         if (!this.selectedCategoryLayout)
           return false
@@ -300,7 +291,7 @@
           this.doubleClicked = false
           this.lastSelectMoment = new Date().getTime()
           // double click is ~300->350ms
-          const timeout = 400
+          const timeout = 200
           setTimeout(() => {
             if (new Date().getTime() - this.lastSelectMoment < timeout) {
               console.log('emit double click')
