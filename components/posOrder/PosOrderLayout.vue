@@ -278,32 +278,37 @@
       },
 
       onProductSelect(productLayout) {
-        // Known issues:
-        //    + if user do n click/tab in short time, (n-1) double tab event will be raised
-        //    + if user double click on item x, then click very fast to another item y,
-        //      switch item action will not be executed because of the click event to item y has been omitted.
-        // TODO: Fix known issues
-        this.doubleClicked = false
-        this.lastSelectMoment = new Date().getTime()
-        // double click is ~300->350ms
-        const timeout = 400
-        setTimeout(() => {
-          if (new Date().getTime() - this.lastSelectMoment < timeout) {
-            console.log('emit double click')
-            this.doubleClicked = true
-            if (this.editable) {
-              this.selectProduct(productLayout);
-              this.$emit('update:productDblClicked', true)
+        if (this.editable) {
+          // Known issues:
+          //    + if user do n click/tab in short time, (n-1) double tab event will be raised
+          //    + if user double click on item x, then click very fast to another item y,
+          //      switch item action will not be executed because of the click event to item y has been omitted.
+          // TODO: Fix known issues
+          this.doubleClicked = false
+          this.lastSelectMoment = new Date().getTime()
+          // double click is ~300->350ms
+          const timeout = 400
+          setTimeout(() => {
+            if (new Date().getTime() - this.lastSelectMoment < timeout) {
+              console.log('emit double click')
+              this.doubleClicked = true
+              if (this.editable) {
+                this.selectProduct(productLayout);
+                this.$emit('update:productDblClicked', true)
+              }
+            } else {
+              if (!this.doubleClicked) {
+                console.log('emit click')
+                this.selectProduct(productLayout);
+                this.addProductToOrder(productLayout);
+                this.editable && this.$emit('update:productDblClicked', false)
+              }
             }
-          } else {
-            if (!this.doubleClicked) {
-              console.log('emit click')
-              this.selectProduct(productLayout);
-              this.addProductToOrder(productLayout);
-              this.editable && this.$emit('update:productDblClicked', false)
-            }
-          }
-        }, timeout)
+          }, timeout)
+        } else {
+          this.selectProduct(productLayout);
+          this.addProductToOrder(productLayout);
+        }
       },
 
       addProductToOrder({ product }) {
