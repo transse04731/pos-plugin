@@ -246,9 +246,10 @@
         // TODO: Fix known issues
         this.doubleClicked = false
         this.lastSelectMoment = new Date().getTime()
+        // double click is ~300->350ms
+        const timeout = 400
         setTimeout(() => {
-          // double click is ~300->350ms
-          if (new Date().getTime() - this.lastSelectMoment < 500) {
+          if (new Date().getTime() - this.lastSelectMoment < timeout) {
             console.log('emit double click')
             this.doubleClicked = true
             if (this.editable) {
@@ -263,7 +264,7 @@
               this.editable && this.$emit('update:productDblClicked', false)
             }
           }
-        }, 500)
+        }, timeout)
       },
 
       addProductToOrder({ product }) {
