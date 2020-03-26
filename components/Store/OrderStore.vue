@@ -228,7 +228,7 @@
             sum: orderUtil.calOrderTotal(val)
           }))
 
-          const order = {
+          const order = Object.assign({}, this.currentOrder, {
             id,
             status: 'paid',
             takeOut: this.currentOrder.takeOut,
@@ -246,7 +246,7 @@
             vDiscount: this.paymentDiscount.toFixed(2),
             receive: parseFloat(this.paymentAmountTendered),
             cashback: this.paymentChange.toFixed(2)
-          }
+          })
 
           const newOrder = this.currentOrder.status === 'inProgress'
             ? await orderModel.findOneAndUpdate({ _id: this.currentOrder._id }, order)
@@ -385,13 +385,14 @@
         const orderModel = cms.getModel('Order')
         const date = new Date();
 
-        const order = {
+        const order = Object.assign({}, this.currentOrder, {
           status: 'inProgress',
           items: this.getComputedOrderItems(this.currentOrder.items, date),
           date,
           vDate: getVDate(date),
-          user: [{ name: this.user.name || '', date }]
-        }
+          user: [{ name: this.user.name || '', date }],
+        })
+
         if (this.currentOrder._id) {
           const existingOrder = await orderModel.findOne({ _id: this.currentOrder._id })
           if (existingOrder) {
@@ -443,6 +444,9 @@
           const originalTotal = this.currentOrder.items.reduce((acc, item) => (acc + (item.discountResistance ? 0 : item.quantity * item.originalPrice)), 0);
           this.$getService('dialogDiscount:open')('percentage', originalTotal);
         }
+      },
+      updateOrderTable(table) {
+        this.$set(this.currentOrder, 'table', table)
       }
       //<!--</editor-fold>-->
 

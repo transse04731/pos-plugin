@@ -5,8 +5,8 @@
         <img src="../../assets/customer_ava.svg">
       </g-avatar>
       <span class="order-detail__header-username">{{username}}</span>
-      <span class="order-detail__header-title">Table</span>
-      <span class="order-detail__header-value">{{table}}</span>
+      <span class="order-detail__header-title" v-if="table">Table</span>
+      <span class="order-detail__header-value" v-if="table">{{table}}</span>
       <span class="order-detail__header-title">Total</span>
       <span class="order-detail__header-value text-red">€{{total | convertMoney}}</span>
     </div>
@@ -55,7 +55,7 @@
     data() {
       return {
         username: 'Admin',
-        table: 50,
+        table: '',
         dialogConfigOrderItem: {
           value: false,
           product: null,
@@ -103,6 +103,12 @@
           }
         }
       }, { deep: true })
+    },
+    activated() {
+      if (this.$router.currentRoute.params && this.$router.currentRoute.params.name) {
+        this.table = this.$router.currentRoute.params.name
+        this.$emit('updateOrderTable', this.table)
+      }
     }
   }
 </script>
