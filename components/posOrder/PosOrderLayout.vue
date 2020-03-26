@@ -62,7 +62,8 @@
           width: 0,
           height: 0,
           onlyShowInFirstPage: false
-        }
+        },
+        highlightSelectedProduct: false
       }
     },
     computed: {
@@ -231,7 +232,7 @@
           color: '#000',
           borderRadius: '2px',
         };
-        if (isProductSelected)
+        if (isProductSelected && this.highlightSelectedProduct)
           style.boxShadow = '0px 0px 3px #0091FF';
         if (product.type === 'Text') {
           style.fontSize = '12px'
@@ -277,6 +278,17 @@
           if (productLayout.type !== 'Text' && productLayout.product && productLayout.product._id)
             this.$emit('productSelected', productLayout.product)
         }
+        this.highlightProduct()
+      },
+
+      highlightProduct() {
+        this.highlightSelectedProduct = true
+        if (!this.editable) {
+          // flash in view mode
+          setTimeout(() => {
+            this.highlightSelectedProduct = false
+          }, 200)
+        }
       },
 
       onProductSelect(productLayout) {
@@ -312,6 +324,10 @@
       },
 
       addProductToOrder({ product }) {
+        // Handle these stuff in productSelected event.
+        // work-around
+        if (!product || product._id)
+          return
         if (product.isModifier) {
           this.$emit('addModifierToProduct', {
             name: product.name,
