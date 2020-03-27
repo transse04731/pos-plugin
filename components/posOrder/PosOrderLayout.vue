@@ -207,10 +207,12 @@
       },
       getCategoryStyle(category) {
         const isCategorySelected = this.selectedCategoryLayout && this.isSameArea(this.selectedCategoryLayout, category);
+        const boxShadow = isCategorySelected ? { boxShadow: '2px 0px 5px rgba(0, 0, 0, 0.1398)' } : null
         return {
           backgroundColor: category.color,
           color: '#000',
-          border: `1px solid ${isCategorySelected ? 'black' : 'transparent'}`
+          border: `1px solid ${isCategorySelected ? '#2979FF' : 'transparent'}`,
+          boxShadow
         }
       },
       getProductItemStyle(product) {
