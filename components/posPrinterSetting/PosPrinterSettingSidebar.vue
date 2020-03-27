@@ -3,9 +3,9 @@
     <template v-slot:header="">
       <div class="row-flex align-items-center py-2 px-3">
         <g-avatar size="40">
-          <img alt src="https://loremflickr.com/320/240"/>
+          <img alt :src="avatar"/>
         </g-avatar>
-        <p class="username">Admin</p>
+        <p class="username">{{userName}}</p>
         <p class="time">{{time}}</p>
       </div>
     </template>
@@ -40,7 +40,7 @@
     props: {
       view: null
     },
-    injectService: ['PosStore:(systemDate, timeFormat)'],
+    injectService: ['PosStore:(systemDate, user)'],
     data() {
       return {
         sidebar: [
@@ -53,11 +53,7 @@
             ]
           },
           {
-            title: 'Invoice, Report', icon: 'icon-invoice_report', displayChild: true,
-            items: [
-              {title: 'POS', icon: 'radio_button_unchecked', slot: 'printer', active: true},
-              {title: 'Table', icon: 'radio_button_unchecked', slot: 'printer'},
-            ]
+            title: 'Invoice, Report', icon: 'icon-invoice_report', slot: 'printer', active: true
           },
           {
             title: 'Entire Receipt', icon: 'icon-receipt', slot: 'receipt'
@@ -70,8 +66,14 @@
       }
     },
     computed: {
+      userName() {
+        return this.user ? this.user.name : ''
+      },
+      avatar() {
+        return this.user ? this.user.avatar : ''
+      },
       time() {
-        return dayjs(this.systemDate).format(this.timeFormat)
+        return dayjs(this.systemDate).format('HH:mm')
       }
     },
     methods: {
@@ -193,6 +195,7 @@
               &.sidebar-row--selected {
                 background: transparent !important;
                 box-shadow: none;
+                margin-right: 0;
               }
             }
           }
