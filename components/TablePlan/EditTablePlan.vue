@@ -344,7 +344,8 @@
         _.assign(this.roomObj, change)
       },
 
-      back() {
+      async back() {
+        await this.$getService('RoomStore').reloadRooms()
         this.$router.push('/view/pos-dashboard')
       }
     },

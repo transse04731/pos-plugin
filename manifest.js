@@ -26,6 +26,12 @@ module.exports = {
     },
     {
       loader: {
+        type: 'vue-singleton'
+      },
+      path: 'components/Store/RoomStore.vue',
+    },
+    {
+      loader: {
         type: 'backend-api'
       },
       path: 'backend/print-report/report-printer.js',
