@@ -48,13 +48,13 @@
             <pos-text-field v-model="roomObj.name" label="Table name: "
                             @input="changeTableName"
                             @click="dialog.showTableNameKbd = true">
-              <template v-slot:append>
+              <template v-slot:append-inner>
                 <g-icon svg color="#F00">icon-keyboard-red</g-icon>
               </template>
             </pos-text-field>
             <div style="margin: 5px">
               <div> Color:</div>
-              <color-selector :value="roomObj.bgColor" :colors="tableColors" @input="_updateRoomObject({ bgColor: $event || 'black' })" :item-size="18" :badge-size="12"/>
+              <color-selector key="table" :value="roomObj.bgColor" :colors="tableColors" @input="_updateRoomObject({ bgColor: $event || 'black' })" :item-size="18" :badge-size="12"/>
               <div style="display: flex; align-items: center">
                 <span style="margin-right: 10px">Take away:</span>
                 <g-switch v-model="roomObj.takeAway" @change="_updateRoomObject({ takeAway: $event })"/>
@@ -66,7 +66,7 @@
           <template v-else-if="isWall(roomObj)">
             <div style="margin: 5px">
               <div> Color:</div>
-              <color-selector :value="roomObj.bgColor" :colors="wallColors" @input="_updateRoomObject({ bgColor: $event || 'black' })" :item-size="18" :badge-size="12"/>
+              <color-selector key="wall" :value="roomObj.bgColor" :colors="wallColors" @input="_updateRoomObject({ bgColor: $event || 'black' })" :item-size="18" :badge-size="12"/>
             </div>
           </template>
           <div style="display: flex; margin: 5px; justify-content: space-between">
@@ -141,7 +141,7 @@
         rooms: [],     // entire rooms
         room: null,    // selected room
         roomObj: null, // selected roomObject (table, wall)
-        tableColors: ['#FFFFFF', '#FBE4EC', '#EDE7F6', '#E1F5FE', '#FFFDE7', '#E8F5E9', '#EFEBE9', '#F5F5F5'],
+        tableColors: ['#FFFFFF', '#F8BBD0', '#D1C4E9', '#B3E5FC', '#FFF9C4', '#C8E6C9', '#D7CCC8', '#EEEEEE'],
         wallColors: ['#FFFFFF', '#CCCCCC', '#4D0019', '#404040', '#86592D', '#A6A6A6', '#FFD480', '#E4E4E4'],
         showAddNewRoomBtn: false,
         dialog: {
