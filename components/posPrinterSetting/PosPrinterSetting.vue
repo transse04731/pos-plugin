@@ -1,39 +1,37 @@
 <template>
-  <div class="h-100 r">
-    <div class="configuration">
-      <div class="config">
-        <g-text-field-bs label="Name" v-model="editableName" append-inner-icon="icon-keyboard-red"/>
-        <div class="switch-group">
-          <g-switch label="1 Receipt for 1 Article"/>
-          <g-switch label="Group Articles"/>
-          <g-switch label="Sound"/>
-          <g-switch label="ESC POS"/>
+  <div class="configuration">
+    <div class="config">
+      <g-text-field-bs label="Name" v-model="editableName" append-inner-icon="icon-keyboard-red"/>
+      <div class="switch-group">
+        <g-switch label="1 Receipt for 1 Article"/>
+        <g-switch label="Group Articles"/>
+        <g-switch label="Sound"/>
+        <g-switch label="ESC POS"/>
+      </div>
+    </div>
+    <div class="config">
+      <p class="title mb-3">{{$t('settings.thermalPrinter')}}</p>
+      <div class="row-flex flex-wrap">
+        <div v-for="(type, i) in printerTypes" :key="i"
+             :class="['printer', selectedPrinterType === type && 'printer__active']" @click="select(type)">
+          {{type.name}}
+        </div>
+        <div class="printer" @click="resetPrinter">
+          {{$t('settings.reset')}}
         </div>
       </div>
-      <div class="config">
-        <p class="title mb-3">{{$t('settings.thermalPrinter')}}</p>
-        <div class="row-flex flex-wrap">
-          <div v-for="(type, i) in printerTypes" :key="i"
-               :class="['printer', selectedPrinterType === type && 'printer__active']" @click="select(type)">
-            {{type.name}}
-          </div>
-          <div class="printer" @click="resetPrinter">
-            {{$t('settings.reset')}}
-          </div>
-        </div>
-      </div>
-      <g-divider inset/>
-      <div v-if="selectedPrinterType && selectedPrinterType.value === 'ip'" class="config">
-        <div class="row-flex mx-2 align-items-end">
-          <g-text-field-bs label="IP Address" v-model="ipAddress" append-inner-icon="icon-keyboard"/>
-          <g-btn-bs border-color="#979797" class="w-33">
-            {{$t('settings.setupPrinter')}}
-          </g-btn-bs>
-        </div>
-        <g-btn-bs background-color="blue accent 3" style="margin: 16px 0 0 12px; padding: 8px 16px">
-          {{$t('settings.testPrinter')}}
+    </div>
+    <g-divider inset/>
+    <div v-if="selectedPrinterType && selectedPrinterType.value === 'ip'" class="config">
+      <div class="row-flex mx-2 align-items-end">
+        <g-text-field-bs label="IP Address" v-model="ipAddress" append-inner-icon="icon-keyboard"/>
+        <g-btn-bs border-color="#979797" class="w-33">
+          {{$t('settings.setupPrinter')}}
         </g-btn-bs>
       </div>
+      <g-btn-bs background-color="blue accent 3" style="margin: 16px 0 0 12px; padding: 8px 16px">
+        {{$t('settings.testPrinter')}}
+      </g-btn-bs>
     </div>
   </div>
 </template>
@@ -70,7 +68,7 @@
           return ''
         },
         set(val) {
-          if(!this.active) return
+          if (!this.active) return
           if (this.thermalPrinter) {
             this.$set(this.thermalPrinter, 'ip', val)
           } else {
@@ -104,6 +102,17 @@
             printerType: null
           }
         }
+      },
+      async setupPrinter() {
+        await this.getThermalPrinter();
+        if (this.thermalPrinter) {
+          this.selectedPrinterType = this.printerTypes.find(t => t.value === this.thermalPrinter.printerType)
+        }
+
+        const settingsStore = this.$getService('SettingsStore')
+        this.unwatch = settingsStore.$watch('thermalPrinter', async newVal => {
+          await this.updateThermalPrinter(newVal._id, newVal)
+        }, {deep: true})
       }
     },
     watch: {
@@ -116,22 +125,17 @@
           if (this.unwatch) this.unwatch()
           return
         }
-        await this.getThermalPrinter();
-        if (this.thermalPrinter) {
-          this.selectedPrinterType = this.printerTypes.find(t => t.value === this.thermalPrinter.printerType)
-        }
-
-        const settingsStore = this.$getService('SettingsStore')
-        this.unwatch = settingsStore.$watch('thermalPrinter', async newVal => {
-          await this.updateThermalPrinter(newVal._id, newVal)
-        }, {deep: true})
+        await this.setupPrinter()
       },
       name(val) {
         this.editableName = val
       }
     },
+    async created() {
+      await this.setupPrinter()
+    },
     beforeDestroy() {
-      if (this.active)
+      if (this.active && this.unwatch)
         this.unwatch()
     }
   }

@@ -221,8 +221,13 @@
           color: '#000',
           borderRadius: '2px',
         };
-        if (isProductSelected && this.highlightSelectedProduct)
+        if (!product.name && !product.text && !product.product.id) {
+          style.border = '1px dashed #bdbdbd'
+        }
+        if (isProductSelected && this.highlightSelectedProduct) {
           style.boxShadow = '0px 0px 3px #0091FF';
+          style.border = '1px solid #2972FF'
+        }
         if (product.type === 'Text') {
           style.backgroundColor = 'transparent'
           style.fontWeight = '400'

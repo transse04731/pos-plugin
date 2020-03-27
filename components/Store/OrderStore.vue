@@ -282,7 +282,7 @@
         return compactItems.map(item => ({
           ..._.omit(item, 'category'),
           product: item._id,
-          category: item.category.name ? item.category.name : item.category, // saved order then pay have a string category
+          category: item.category && item.category.name ? item.category.name : '', // saved order then pay have a string category
           date
         }))
       },

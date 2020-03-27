@@ -86,6 +86,8 @@
         activeCategoryProducts: [],
         articleSelectedColor: null,
         articleSelectedProductButton: null,
+        //printer setting
+        printerGeneralSetting: null,
       }
     },
     created() {
@@ -587,6 +589,23 @@
         } catch (e) {
           console.log('Error updating updatePosSettings', e);
         }
+      },
+      //printer setting
+      getListHardware() {
+        const setting = cms.getList('PosSetting')[0]
+        return setting['hardwares'].map(h => h.name)
+      },
+      getPrinterGeneralSetting() {
+        const setting = cms.getList('PosSetting')[0]
+        this.printerGeneralSetting = setting.printerGeneralSetting || {}
+      },
+      async updatePrinterGeneralSetting() {
+        await cms.getModel('PosSetting').findOneAndUpdate(
+            {},
+            {
+              printerGeneralSetting: this.printerGeneralSetting
+            }
+        );
       },
     },
     provide() {
