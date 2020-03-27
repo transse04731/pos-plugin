@@ -5,7 +5,7 @@
           :room-objects="room.roomObjects"
           @selectRoomObject="selectRoomObj">
       <template #room-object="{roomObject}">
-        <div v-if="isTable(roomObject) || !isWall(roomObject)">
+        <div v-if="isTable(roomObject) || !isWall(roomObject)" :style="getTableStyle(roomObject)">
           <div>{{ roomObject.name }}</div>
         </div>
       </template>
@@ -13,8 +13,8 @@
   </div>
 </template>
 <script>
-
-
+  import _ from 'lodash'
+  
   export default {
     name: 'RestaurantRoom',
     components: { },
@@ -25,19 +25,41 @@
       return {
         room: null,
         roomObj: null,
+        //
+        inProgressTable: {}
       }
     },
     async created() {
       await this.loadRoom()
+      await this.loadTableStatus()
+      cms.socket.emit('join-room')
+      cms.socket.on('update-table-status', ({table, status}) => {
+        if (_.includes(this.tableNames, table)) {
+          if (status === 'inProgress') {
+            this.$set(this.inProgressTable, table, true)
+          } else {
+            this.$set(this.inProgressTable, table, false)
+          }
+        }
+      })
     },
     watch: {
       id() {
         this.loadRoom();
       }
     },
+    computed: {
+      tableNames() {
+        _.map(_.filter(this.room.roomObjects, rObj => rObj.type === 'table'), rO => rO.name)
+      }
+    },
     methods: {
       async loadRoom() {
-        this.room = await cms.getModel('Room').findOne({_id: this.id})
+        this.$set(this, 'room', await cms.getModel('Room').findOne({_id: this.id}))
+      },
+      async loadTableStatus() {
+        const inProgressOrders = await cms.getModel('Order').find({ table: { $in: this.tableNames }, status: 'inProgress' })
+        _.each(inProgressOrders, order => this.$set(this.inProgressTable, order.table, true))
       },
       isTable(roomObj) {
         return roomObj.type === 'table'
@@ -45,9 +67,19 @@
       isWall(roomObj) {
         return roomObj.type === 'wall'
       },
+      isTableBusy(roomObj) {
+        return _.has(this.inProgressTable, roomObj.name)
+      },
+      getTableStyle(roomObj) {
+        if (this.isTableBusy(roomObj)) {
+          return { color: '#FF8A80' }
+        }
+      },
       selectRoomObj(roomObj) {
-        this.roomObj = roomObj;
-        this.$router.push(`/view/pos-order-2/${roomObj.name}`)
+        if (!this.isTable(roomObj)) {
+          this.roomObj = roomObj;
+          this.$router.push(`/view/pos-order-2/${roomObj.name}`)
+        }
       },
     }
   }
