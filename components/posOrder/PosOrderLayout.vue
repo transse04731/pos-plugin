@@ -225,7 +225,6 @@
         if (isProductSelected && this.highlightSelectedProduct)
           style.boxShadow = '0px 0px 3px #0091FF';
         if (product.type === 'Text') {
-          style.fontSize = '12px'
           style.backgroundColor = 'transparent'
           style.fontWeight = '400'
           style.color = '#212121'
