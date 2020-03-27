@@ -16,6 +16,7 @@
   export default {
     name: "PosRestaurantPaymentToolbar",
     props: {
+      currentOrder: null,
       paymentAmountTendered: String,
       paymentTotal: Number
     },
@@ -29,7 +30,10 @@
         this.$router.go(-1)
       },
       pay() {
+        const backToDashboard = !!this.currentOrder.table
         this.$emit('pay')
+        if (backToDashboard) this.$router.push({path: '/view/pos-dashboard'})
+        else this.$router.go(-1)
       },
       promotion() {
         this.$emit('promotion')

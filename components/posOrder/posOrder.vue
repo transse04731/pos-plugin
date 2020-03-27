@@ -108,7 +108,7 @@
       if (this.$router.currentRoute.params && this.$router.currentRoute.params.name) {
         this.table = this.$router.currentRoute.params.name
         this.$emit('updateOrderTable', this.table)
-      }
+      } else this.table = ''
     }
   }
 </script>

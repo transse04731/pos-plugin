@@ -5,8 +5,8 @@
         <img src="../../assets/customer_ava.svg">
       </g-avatar>
       <span class="order-detail__header-username">{{username}}</span>
-      <span class="order-detail__header-title">Table</span>
-      <span class="order-detail__header-value">{{table}}</span>
+      <span class="order-detail__header-title" v-if="table">Table</span>
+      <span class="order-detail__header-value" v-if="table">{{table}}</span>
       <span class="order-detail__header-title">Total</span>
       <span class="order-detail__header-value text-red">€{{total | convertMoney}}</span>
     </div>
@@ -42,7 +42,7 @@
     props: {
       compactOrder: Function,
       total: 0,
-      items: []
+      currentOrder: null
     },
     filters: {
       convertMoney(value) {
@@ -53,10 +53,15 @@
       return {
         username: 'Admin',
         //todo add table binding
-        table: 0,
       }
     },
     computed: {
+      items() {
+        return this.currentOrder.items
+      },
+      table() {
+        return this.currentOrder.table
+      },
       displayItems() {
         return this.compactOrder(this.items)
       }

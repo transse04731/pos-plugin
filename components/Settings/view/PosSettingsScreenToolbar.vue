@@ -20,7 +20,8 @@
     },
     computed: {
       internalValue() {
-        if (!this.value) return 'Articles'
+        const sidebarData = this.$getService('SettingsStore:sidebarData');
+        if (!this.value) return sidebarData[0].title
         const activeItemPath = this.value.split('.').slice(1).join('.')
         const activeItem = _.get(this.$getService('SettingsStore:sidebarData'), activeItemPath)
         if (activeItem.isView) return activeItem.title

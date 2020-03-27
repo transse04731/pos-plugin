@@ -5,10 +5,9 @@
         {{$t('ui.confirmation')}}
       </g-card-title>
       <g-card-text>
-        <i18n path="settings.deletePrompt">
-          <span v-if="computedType">{{computedType}}</span>
-          <b v-if="computedLabel">"{{computedLabel}}"</b>
-        </i18n>?
+        <span>{{$t("settings.deletePrompt")}}</span>
+        <span v-if="computedType">{{computedType}}</span>
+        <b v-if="computedLabel">"{{computedLabel}}"</b>?
       </g-card-text>
       <g-card-actions>
         <g-btn :uppercase="false" outlined @click="dialog = false">{{$t('ui.cancel')}}</g-btn>
