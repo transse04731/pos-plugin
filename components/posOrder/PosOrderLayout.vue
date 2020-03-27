@@ -207,12 +207,11 @@
       },
       getCategoryStyle(category) {
         const isCategorySelected = this.selectedCategoryLayout && this.isSameArea(this.selectedCategoryLayout, category);
-        const boxShadow = isCategorySelected ? { boxShadow: '2px 0px 5px rgba(0, 0, 0, 0.1398)' } : null
         return {
           backgroundColor: category.color,
           color: '#000',
-          border: `1px solid ${isCategorySelected ? '#2979FF' : 'transparent'}`,
-          boxShadow
+          border: `1px solid ${isCategorySelected ? '#757575' : 'transparent'}`,
+          boxShadow: isCategorySelected ? '1px 0px 3px rgba(0, 0, 0, 0.36)' : 'none'
         }
       },
       getProductItemStyle(product) {
