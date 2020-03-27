@@ -29,9 +29,14 @@
               <g-icon svg color="#F00">icon-keyboard-red</g-icon>
             </template>
           </pos-text-field>
-          <div style="display: flex; justify-content: flex-end; margin-right: 5px">
-            <g-btn @click="moveRoomUp">^</g-btn>
-            <g-btn @click="moveRoomDown">v</g-btn>
+          <div style="display: flex; margin-left: 5px; margin-right: 5px">
+            <g-btn @click="moveRoomUp" style="width: 20px; min-width: 20px !important">
+              <g-icon small>icon-arrow-up</g-icon>
+            </g-btn>
+            <g-btn @click="moveRoomDown" style="width: 20px; min-width: 20px !important">
+              <g-icon small>icon-arrow-down</g-icon>
+            </g-btn>
+            <g-spacer/>
             <g-btn @click="removeRoom" background-color="#FF4452" text-color="#FFF"><g-icon>delete</g-icon>Delete</g-btn>
           </div>
         </div>
@@ -171,6 +176,12 @@
         return tableNames
       }
     },
+    watch: {
+      rooms(val) {
+        if (this.room)
+          this.$set(this, 'room', _.find(val, room => room._id === this.room._id))
+      }
+    },
     methods: {
       async loadRooms() {
         this.rooms.splice(0, this.rooms.length, ..._.orderBy(await cms.getModel('Room').find({}), ['order'], ['asc']))
@@ -234,11 +245,11 @@
         await this._moveRoomUp(i)
       },
       async moveRoomDown() {
-        const i = _.findIndex(this.rooms, r => r._id = this.room._id)
+        const i = _.findIndex(this.rooms, r => r._id === this.room._id)
         if (i < this.rooms.length - 1)
-          await this._moveRoomUp(i + 1)
+          await this._moveRoomUp(i + 1, 1)
       },
-      async _moveRoomUp(i) {
+      async _moveRoomUp(i, down = 0) {
         if (i > 0) {
           const curRoom = this.rooms[i]
           const preRoom = this.rooms[i - 1]
@@ -250,6 +261,7 @@
           ])
           await this.loadRooms()
         }
+        this.defaultPath = `item.0.item.${i - 1 + down}`
       },
 
       // room object helper methods
@@ -303,7 +315,7 @@
             { _id: this.room._id },
             { $push: { roomObjects: ro } },
             { new : true });
-        this.room.roomObjects.push(_.last(result.roomObjects))
+        await this.loadRooms()
       },
       async changeRoomObjUI(roomObj) {
         await this._updateRoomObject(_.pick(roomObj, ['location', 'size', 'bgColor']));

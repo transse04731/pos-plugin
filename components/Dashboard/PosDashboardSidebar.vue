@@ -73,6 +73,11 @@
       if (typeof(this.afterMountFn) === 'function')
         this.afterMountFn()
     },
+    watch: {
+      defaultPath(val) {
+        this.sidebar = val
+      }
+    },
     methods: {
       itemChildren(node) {
         if (node.children) {
