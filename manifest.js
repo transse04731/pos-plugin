@@ -45,6 +45,12 @@ module.exports = {
     },
     {
       loader: {
+        type: 'backend-api'
+      },
+      path: 'backend/order/index.js'
+    },
+    {
+      loader: {
         type: 'ssr'
       },
       path: 'components/Report/MonthReport.vue'
