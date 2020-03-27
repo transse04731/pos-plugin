@@ -36,6 +36,7 @@
     },
     methods: {
       back() {
+        this.$emit('resetOrderData')
         this.$router.push({path: '/view/pos-dashboard'})
       },
       pay() {
