@@ -1,7 +1,7 @@
 <template>
   <div class="pol" v-if="orderLayout">
     <!-- Categories -->
-    <div style="padding: 4px; background-color: #90CAF9">
+    <div style="padding: 4px; background-color: #E0E0E0">
       <div :style="categoryContainerStyle">
         <div v-for="(category, index) in categories"
              class="pol__cate"
