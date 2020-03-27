@@ -4,7 +4,7 @@
       <p>{{$t('payment.balanceDue')}}</p>
       <p>{{$t('payment.amountTendered')}}</p>
     </div>
-    <div>{{$t('payment.change')}}</div>
+    <div class="two-head">{{$t('payment.change')}}</div>
     <div class="input two-head">
       <p class="balance">€ {{paymentTotal | convertMoney}}</p>
       <p class="amount">€ {{paymentAmountTendered || 0 | convertMoney}}</p>
