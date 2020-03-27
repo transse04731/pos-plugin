@@ -1,6 +1,14 @@
 {
   "events": [],
-  "_id": "5dd7b8219418e40d10e12857",
+  "_id": "5e7983deefd5f205955ba034",
+  "data": {
+    "data": {
+      "orderLayout": null,
+      "selectedCategoryLayout": null,
+      "selectedProductLayout": null
+    }
+  },
+  "isProduction": true,
   "items": [
     {
       "choice": "view",
@@ -8,14 +16,14 @@
       "content": {
         "props": {
           "layout": {
-            "name": "order",
+            "name": "app",
             "top": -1,
             "left": -1,
             "width": 0,
             "height": 0,
             "margin": "",
             "padding": "",
-            "bgColor": "hsl(136, 100%, 50%, 50%)",
+            "bgColor": "hsl(145, 100%, 50%, 50%)",
             "alignSelf": "",
             "justifySelf": "",
             "wrapInDiv": false,
@@ -35,24 +43,25 @@
             "justifyItems": "",
             "justifyContent": "",
             "columns": [
-              "calc(100% - 300px)",
-              "300px"
+              "75%",
+              "25%"
             ],
             "rows": [
-              "100%"
+              "1fr",
+              "64px"
             ],
             "columnGap": 0,
             "rowGap": 0,
             "subAreas": [
               {
-                "name": "layout__right",
+                "name": "order",
                 "top": 1,
                 "left": 2,
                 "width": 1,
                 "height": 1,
                 "margin": "",
                 "padding": "",
-                "bgColor": "hsl(298, 100%, 50%, 50%)",
+                "bgColor": "hsl(255, 100%, 50%, 50%)",
                 "alignSelf": "",
                 "justifySelf": "",
                 "wrapInDiv": false,
@@ -66,235 +75,17 @@
                 "flexGrow": "",
                 "flexShrink": "",
                 "flexBasis": "",
-                "flexAlignSelf": "",
-                "alignItems": "",
-                "alignContent": "",
-                "justifyItems": "",
-                "justifyContent": "",
-                "columns": [
-                  "1fr"
-                ],
-                "rows": [
-                  "8%",
-                  "55%",
-                  "11%",
-                  "18%",
-                  "8%"
-                ],
-                "columnGap": 0,
-                "rowGap": 0,
-                "subAreas": [
-                  {
-                    "name": "user_info",
-                    "top": 1,
-                    "left": 1,
-                    "width": 1,
-                    "height": 1,
-                    "margin": "",
-                    "padding": "",
-                    "bgColor": "hsl(149, 100%, 50%, 50%)",
-                    "alignSelf": "",
-                    "justifySelf": "",
-                    "wrapInDiv": false,
-                    "displayFlex": false,
-                    "flexDirection": "row",
-                    "flexWrap": false,
-                    "flexJustifyContent": "",
-                    "flexAlignItems": "",
-                    "flexAlignContent": "",
-                    "flexOrder": "",
-                    "flexGrow": "",
-                    "flexShrink": "",
-                    "flexBasis": "",
-                    "flexAlignSelf": "",
-                    "alignItems": "",
-                    "alignContent": "",
-                    "justifyItems": "",
-                    "justifyContent": "",
-                    "columns": [
-                      "50%",
-                      "1fr"
-                    ],
-                    "rows": [
-                      "1fr"
-                    ],
-                    "columnGap": 0,
-                    "rowGap": 0,
-                    "subAreas": [
-                      {
-                        "name": "info__left",
-                        "top": 1,
-                        "left": 1,
-                        "width": 1,
-                        "height": 1,
-                        "margin": "",
-                        "padding": "",
-                        "bgColor": "hsl(136, 100%, 50%, 50%)",
-                        "alignSelf": "",
-                        "justifySelf": "",
-                        "wrapInDiv": false,
-                        "displayFlex": false,
-                        "flexDirection": "row",
-                        "flexWrap": false,
-                        "flexJustifyContent": "",
-                        "flexAlignItems": "",
-                        "flexAlignContent": "",
-                        "flexOrder": "",
-                        "flexGrow": "",
-                        "flexShrink": "",
-                        "flexBasis": "",
-                        "flexAlignSelf": ""
-                      },
-                      {
-                        "name": "info__right",
-                        "top": 1,
-                        "left": 2,
-                        "width": 1,
-                        "height": 1,
-                        "margin": "",
-                        "padding": "",
-                        "bgColor": "hsl(196, 100%, 50%, 50%)",
-                        "alignSelf": "",
-                        "justifySelf": "",
-                        "wrapInDiv": false,
-                        "displayFlex": false,
-                        "flexDirection": "row",
-                        "flexWrap": false,
-                        "flexJustifyContent": "",
-                        "flexAlignItems": "",
-                        "flexAlignContent": "",
-                        "flexOrder": "",
-                        "flexGrow": "",
-                        "flexShrink": "",
-                        "flexBasis": "",
-                        "flexAlignSelf": ""
-                      }
-                    ]
-                  },
-                  {
-                    "name": "table",
-                    "top": 2,
-                    "left": 1,
-                    "width": 1,
-                    "height": 1,
-                    "margin": "",
-                    "padding": "",
-                    "bgColor": "hsl(342, 100%, 50%, 50%)",
-                    "alignSelf": "",
-                    "justifySelf": "",
-                    "wrapInDiv": false,
-                    "displayFlex": false,
-                    "flexDirection": "row",
-                    "flexWrap": false,
-                    "flexJustifyContent": "",
-                    "flexAlignItems": "",
-                    "flexAlignContent": "",
-                    "flexOrder": "",
-                    "flexGrow": "",
-                    "flexShrink": "",
-                    "flexBasis": "",
-                    "flexAlignSelf": ""
-                  },
-                  {
-                    "name": "action",
-                    "top": 4,
-                    "left": 1,
-                    "width": 1,
-                    "height": 1,
-                    "margin": "",
-                    "padding": "",
-                    "bgColor": "hsl(235, 100%, 50%, 50%)",
-                    "alignSelf": "",
-                    "justifySelf": "",
-                    "wrapInDiv": false,
-                    "displayFlex": false,
-                    "flexDirection": "row",
-                    "flexWrap": false,
-                    "flexJustifyContent": "",
-                    "flexAlignItems": "",
-                    "flexAlignContent": "",
-                    "flexOrder": "",
-                    "flexGrow": "",
-                    "flexShrink": "",
-                    "flexBasis": "",
-                    "flexAlignSelf": "",
-                    "alignItems": "",
-                    "alignContent": "",
-                    "justifyItems": "",
-                    "justifyContent": "",
-                    "columns": [
-                      "1fr",
-                      "1fr",
-                      "1fr",
-                      "1fr"
-                    ],
-                    "rows": [
-                      "1fr",
-                      "1fr"
-                    ],
-                    "columnGap": 6,
-                    "rowGap": 6,
-                    "subAreas": []
-                  },
-                  {
-                    "name": "toolbar",
-                    "top": 5,
-                    "left": 1,
-                    "width": 1,
-                    "height": 1,
-                    "margin": "",
-                    "padding": "",
-                    "bgColor": "hsl(190, 100%, 50%, 50%)",
-                    "alignSelf": "",
-                    "justifySelf": "",
-                    "wrapInDiv": false,
-                    "displayFlex": false,
-                    "flexDirection": "row",
-                    "flexWrap": false,
-                    "flexJustifyContent": "",
-                    "flexAlignItems": "",
-                    "flexAlignContent": "",
-                    "flexOrder": "",
-                    "flexGrow": "",
-                    "flexShrink": "",
-                    "flexBasis": "",
-                    "flexAlignSelf": ""
-                  },
-                  {
-                    "name": "report",
-                    "top": 3,
-                    "left": 1,
-                    "width": 1,
-                    "height": 1,
-                    "margin": "",
-                    "padding": "",
-                    "bgColor": "hsl(350, 100%, 50%, 50%)",
-                    "alignSelf": "",
-                    "justifySelf": "",
-                    "wrapInDiv": false,
-                    "displayFlex": false,
-                    "flexDirection": "row",
-                    "flexWrap": false,
-                    "flexJustifyContent": "",
-                    "flexAlignItems": "",
-                    "flexAlignContent": "",
-                    "flexOrder": "",
-                    "flexGrow": "",
-                    "flexShrink": "",
-                    "flexBasis": "",
-                    "flexAlignSelf": ""
-                  }
-                ]
+                "flexAlignSelf": ""
               },
               {
-                "name": "layout__left",
+                "name": "productLayout",
                 "top": 1,
                 "left": 1,
                 "width": 1,
                 "height": 1,
                 "margin": "",
                 "padding": "",
-                "bgColor": "hsl(239, 100%, 50%, 50%)",
+                "bgColor": "hsl(139, 100%, 50%, 50%)",
                 "alignSelf": "",
                 "justifySelf": "",
                 "wrapInDiv": false,
@@ -308,269 +99,34 @@
                 "flexGrow": "",
                 "flexShrink": "",
                 "flexBasis": "",
-                "flexAlignSelf": "",
-                "alignItems": "",
-                "alignContent": "",
-                "justifyItems": "",
-                "justifyContent": "",
-                "columns": [
-                  "1fr"
-                ],
-                "rows": [
-                  "12%",
-                  "1fr",
-                  "1fr"
-                ],
-                "columnGap": 0,
-                "rowGap": 0,
-                "subAreas": [
-                  {
-                    "name": "menu",
-                    "top": 1,
-                    "left": 1,
-                    "width": 1,
-                    "height": 1,
-                    "margin": "",
-                    "padding": "",
-                    "bgColor": "hsl(21, 100%, 50%, 50%)",
-                    "alignSelf": "",
-                    "justifySelf": "",
-                    "wrapInDiv": false,
-                    "displayFlex": false,
-                    "flexDirection": "row",
-                    "flexWrap": false,
-                    "flexJustifyContent": "",
-                    "flexAlignItems": "",
-                    "flexAlignContent": "",
-                    "flexOrder": "",
-                    "flexGrow": "",
-                    "flexShrink": "",
-                    "flexBasis": "",
-                    "flexAlignSelf": ""
-                  },
-                  {
-                    "name": "controller",
-                    "top": 3,
-                    "left": 1,
-                    "width": 1,
-                    "height": 1,
-                    "margin": "",
-                    "padding": "",
-                    "bgColor": "hsl(94, 100%, 50%, 50%)",
-                    "alignSelf": "",
-                    "justifySelf": "",
-                    "wrapInDiv": false,
-                    "displayFlex": false,
-                    "flexDirection": "row",
-                    "flexWrap": false,
-                    "flexJustifyContent": "",
-                    "flexAlignItems": "",
-                    "flexAlignContent": "",
-                    "flexOrder": "",
-                    "flexGrow": "",
-                    "flexShrink": "",
-                    "flexBasis": "",
-                    "flexAlignSelf": "",
-                    "alignItems": "",
-                    "alignContent": "",
-                    "justifyItems": "",
-                    "justifyContent": "",
-                    "columns": [
-                      "1fr",
-                      "1fr"
-                    ],
-                    "rows": [
-                      "1fr"
-                    ],
-                    "columnGap": 6,
-                    "rowGap": 0,
-                    "subAreas": [
-                      {
-                        "name": "keyboard",
-                        "top": 1,
-                        "left": 1,
-                        "width": 1,
-                        "height": 1,
-                        "margin": "",
-                        "padding": "",
-                        "bgColor": "hsl(243, 100%, 50%, 50%)",
-                        "alignSelf": "",
-                        "justifySelf": "",
-                        "wrapInDiv": false,
-                        "displayFlex": false,
-                        "flexDirection": "row",
-                        "flexWrap": false,
-                        "flexJustifyContent": "",
-                        "flexAlignItems": "",
-                        "flexAlignContent": "",
-                        "flexOrder": "",
-                        "flexGrow": "",
-                        "flexShrink": "",
-                        "flexBasis": "",
-                        "flexAlignSelf": ""
-                      },
-                      {
-                        "name": "buttons",
-                        "top": 1,
-                        "left": 2,
-                        "width": 1,
-                        "height": 1,
-                        "margin": "",
-                        "padding": "",
-                        "bgColor": "hsl(253, 100%, 50%, 50%)",
-                        "alignSelf": "",
-                        "justifySelf": "",
-                        "wrapInDiv": false,
-                        "displayFlex": false,
-                        "flexDirection": "row",
-                        "flexWrap": false,
-                        "flexJustifyContent": "",
-                        "flexAlignItems": "",
-                        "flexAlignContent": "",
-                        "flexOrder": "",
-                        "flexGrow": "",
-                        "flexShrink": "",
-                        "flexBasis": "",
-                        "flexAlignSelf": "",
-                        "alignItems": "",
-                        "alignContent": "",
-                        "justifyItems": "",
-                        "justifyContent": "",
-                        "columns": [
-                          "1fr",
-                          "1fr"
-                        ],
-                        "rows": [
-                          "1fr",
-                          "1fr",
-                          "1fr",
-                          "1fr",
-                          "1fr",
-                          "1fr"
-                        ],
-                        "columnGap": 6,
-                        "rowGap": 4,
-                        "subAreas": [
-                          {
-                            "name": "btn__big",
-                            "top": 5,
-                            "left": 1,
-                            "width": 1,
-                            "height": 2,
-                            "margin": "",
-                            "padding": "",
-                            "bgColor": "hsl(50, 100%, 50%, 50%)",
-                            "alignSelf": "",
-                            "justifySelf": "",
-                            "wrapInDiv": false,
-                            "displayFlex": false,
-                            "flexDirection": "row",
-                            "flexWrap": false,
-                            "flexJustifyContent": "",
-                            "flexAlignItems": "",
-                            "flexAlignContent": "",
-                            "flexOrder": "",
-                            "flexGrow": "",
-                            "flexShrink": "",
-                            "flexBasis": "",
-                            "flexAlignSelf": ""
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "name": "main",
-                    "top": 2,
-                    "left": 1,
-                    "width": 1,
-                    "height": 1,
-                    "margin": "",
-                    "padding": "",
-                    "bgColor": "hsl(243, 100%, 50%, 50%)",
-                    "alignSelf": "",
-                    "justifySelf": "",
-                    "wrapInDiv": false,
-                    "displayFlex": false,
-                    "flexDirection": "row",
-                    "flexWrap": false,
-                    "flexJustifyContent": "",
-                    "flexAlignItems": "",
-                    "flexAlignContent": "",
-                    "flexOrder": "",
-                    "flexGrow": "",
-                    "flexShrink": "",
-                    "flexBasis": "",
-                    "flexAlignSelf": "",
-                    "alignItems": "",
-                    "alignContent": "",
-                    "justifyItems": "",
-                    "justifyContent": "",
-                    "columns": [
-                      "100%"
-                    ],
-                    "rows": [
-                      "1fr",
-                      "12px"
-                    ],
-                    "columnGap": 0,
-                    "rowGap": 0,
-                    "subAreas": [
-                      {
-                        "name": "window",
-                        "top": 1,
-                        "left": 1,
-                        "width": 1,
-                        "height": 1,
-                        "margin": "",
-                        "padding": "",
-                        "bgColor": "hsl(126, 100%, 50%, 50%)",
-                        "alignSelf": "",
-                        "justifySelf": "",
-                        "wrapInDiv": false,
-                        "displayFlex": false,
-                        "flexDirection": "row",
-                        "flexWrap": false,
-                        "flexJustifyContent": "",
-                        "flexAlignItems": "",
-                        "flexAlignContent": "",
-                        "flexOrder": "",
-                        "flexGrow": "",
-                        "flexShrink": "",
-                        "flexBasis": "",
-                        "flexAlignSelf": ""
-                      },
-                      {
-                        "name": "delimeter",
-                        "top": 2,
-                        "left": 1,
-                        "width": 1,
-                        "height": 1,
-                        "margin": "",
-                        "padding": "",
-                        "bgColor": "hsl(247, 100%, 50%, 50%)",
-                        "alignSelf": "",
-                        "justifySelf": "",
-                        "wrapInDiv": false,
-                        "displayFlex": false,
-                        "flexDirection": "row",
-                        "flexWrap": false,
-                        "flexJustifyContent": "",
-                        "flexAlignItems": "",
-                        "flexAlignContent": "",
-                        "flexOrder": "",
-                        "flexGrow": "",
-                        "flexShrink": "",
-                        "flexBasis": "",
-                        "flexAlignSelf": ""
-                      }
-                    ]
-                  }
-                ]
+                "flexAlignSelf": ""
+              },
+              {
+                "name": "toolbar",
+                "top": 2,
+                "left": 1,
+                "width": 2,
+                "height": 1,
+                "margin": "",
+                "padding": "",
+                "bgColor": "hsl(271, 100%, 50%, 50%)",
+                "alignSelf": "",
+                "justifySelf": "",
+                "wrapInDiv": false,
+                "displayFlex": false,
+                "flexDirection": "row",
+                "flexWrap": false,
+                "flexJustifyContent": "",
+                "flexAlignItems": "",
+                "flexAlignContent": "",
+                "flexOrder": "",
+                "flexGrow": "",
+                "flexShrink": "",
+                "flexBasis": "",
+                "flexAlignSelf": ""
               }
             ]
           },
-          "displayPreviewColor": false,
           "style": {
             "height": "100%"
           }
@@ -578,132 +134,122 @@
       },
       "binding": [],
       "slotScopeBinding": [],
-      "slot": null,
       "items": [
         {
           "choice": "view",
-          "component": "PosOrderScreenScrollWindow",
-          "content": {
-            "props": {
-              "html": "text"
+          "component": "PosOrderLayout",
+          "binding": [
+            {
+              "type": ".sync",
+              "root": "data.selectedCategoryLayout",
+              "local": "selectedCategoryLayout"
+            },
+            {
+              "type": ".sync",
+              "root": "data.selectedProductLayout",
+              "local": "selectedProductLayout"
+            },
+            {
+              "type": ".sync",
+              "root": "data.orderLayout",
+              "local": "orderLayout"
             }
-          },
-          "binding": [],
+          ],
           "slotScopeBinding": [],
-          "slot": "main",
-          "url": "plugins/pos-plugin/components/Order/PosOrderScreenScrollWindow.vue",
-          "path": "components/Order/PosOrderScreenScrollWindow.vue",
-          "pluginName": "pos-plugin"
-        },
-        {
-          "choice": "view",
-          "component": "PosOrderScreenNumberKeyboard",
-          "binding": [],
-          "slotScopeBinding": [],
-          "slot": "keyboard",
-          "url": "plugins/pos-plugin/components/Order/PosOrderScreenNumberKeyboard.vue",
-          "path": "components/Order/PosOrderScreenNumberKeyboard.vue",
-          "pluginName": "pos-plugin"
-        },
-        {
-          "choice": "view",
-          "component": "PosOrderScreenProductCategoryMenu",
-          "binding": [],
-          "slotScopeBinding": [],
-          "slot": "menu",
-          "url": "plugins/pos-plugin/components/Order/PosOrderScreenProductCategoryMenu.vue",
-          "path": "components/Order/PosOrderScreenProductCategoryMenu.vue",
-          "pluginName": "pos-plugin"
-        },
-        {
-          "choice": "view",
-          "component": "PosOrderScreenButtonGroup",
-          "binding": [],
-          "slotScopeBinding": [],
-          "slot": "buttons",
-          "url": "plugins/pos-plugin/components/Order/PosOrderScreenActionButtonGroup.vue",
-          "path": "components/Order/PosOrderScreenActionButtonGroup.vue",
-          "pluginName": "pos-plugin"
-        },
-        {
-          "choice": "view",
-          "component": "PosOrderScreenTable",
-          "binding": [],
-          "slotScopeBinding": [],
-          "slot": "table"
-        },
-        {
-          "choice": "view",
-          "component": "PosOrderScreenInfoLeft",
-          "content": {
-            "props": {
-              "tag": "div"
+          "slot": "productLayout",
+          "isScopedSlot": true,
+          "url": "plugins/pos-plugin/components/posOrder/PosOrderLayout.vue",
+          "path": "components/posOrder/PosOrderLayout.vue",
+          "pluginName": "pos-plugin",
+          "inject": [
+            {
+              "service": "OrderStore:addProductToOrder",
+              "local": "addProductToOrder",
+              "type": "event"
+            },
+            {
+              "service": "OrderStore:addModifierToProduct",
+              "local": "addModifierToProduct",
+              "type": "event"
+            },
+            {
+              "service": "SettingsStore:getKeyboardSetting",
+              "local": "getKeyboardSetting",
+              "type": "event"
             }
-          },
-          "binding": [],
-          "slotScopeBinding": [],
-          "slot": "info__left"
+          ]
         },
         {
           "choice": "view",
-          "component": "PosOrderScreenInfoRight",
           "binding": [],
           "slotScopeBinding": [],
-          "slot": "info__right",
-          "url": "plugins/pos-plugin/components/Order/PosOrderScreenInfoRight.vue",
-          "path": "components/Order/PosOrderScreenInfoRight.vue",
-          "pluginName": "pos-plugin"
+          "slot": "order",
+          "isScopedSlot": true,
+          "component": "posOrder",
+          "url": "plugins/pos-plugin/components/posOrder/posOrder.vue",
+          "path": "components/posOrder/posOrder.vue",
+          "pluginName": "pos-plugin",
+          "inject": [
+            {
+              "service": "OrderStore:currentOrder.items",
+              "local": "items",
+              "type": "prop"
+            },
+            {
+              "service": "OrderStore:paymentTotal",
+              "local": "total",
+              "type": "prop"
+            },
+            {
+              "service": "OrderStore:addItemQuantity",
+              "local": "addItemQuantity",
+              "type": "event"
+            },
+            {
+              "service": "OrderStore:removeItemQuantity",
+              "local": "removeItemQuantity",
+              "type": "event"
+            },
+            {
+              "service": "OrderStore:addModifierToProduct",
+              "local": "addModifierToProduct",
+              "type": "event"
+            },
+            {
+              "service": "OrderStore:setNewPrice",
+              "local": "changePrice",
+              "type": "event"
+            },
+            {
+              "service": "OrderStore:updateOrderTable",
+              "local": "updateOrderTable",
+              "type": "event"
+            }
+          ]
         },
         {
           "choice": "view",
-          "component": "PosOrderScreenToolbar",
+          "component": "PosQuickOrderToolbar",
           "binding": [],
           "slotScopeBinding": [],
           "slot": "toolbar",
-          "url": "plugins/pos-plugin/components/Order/PosOrderScreenToolbar.vue",
-          "path": "components/Order/PosOrderScreenToolbar.vue",
-          "pluginName": "pos-plugin"
-        },
-        {
-          "choice": "view",
-          "component": "PosOrderScreenReport",
-          "binding": [],
-          "slotScopeBinding": [],
-          "slot": "report",
-          "url": "plugins/pos-plugin/components/Order/PosOrderScreenReport.vue",
-          "path": "components/Order/PosOrderScreenReport.vue",
-          "pluginName": "pos-plugin"
-        },
-        {
-          "choice": "view",
-          "component": "PosOrderScreenAction",
-          "binding": [],
-          "slotScopeBinding": [],
-          "slot": "action",
-          "clipboardType": "cut",
-          "url": "plugins/pos-plugin/components/Order/PosOrderScreenAction.vue",
-          "path": "components/Order/PosOrderScreenAction.vue",
-          "pluginName": "pos-plugin"
+          "url": "plugins/pos-plugin/components/posOrder/PosQuickOrderToolbar.vue",
+          "path": "components/posOrder/PosQuickOrderToolbar.vue",
+          "pluginName": "pos-plugin",
+          "inject": [
+            {
+              "service": "OrderStore:quickCash",
+              "local": "quickCash",
+              "type": "event"
+            },
+            {
+              "service": "OrderStore:currentOrder",
+              "local": "currentOrder",
+              "type": "prop"
+            }
+          ]
         }
       ]
-    },
-    {
-      "choice": "view",
-      "component": "dialogSavedList",
-      "binding": [],
-      "slotScopeBinding": [],
-      "provide": {
-        "domain": "dialogSavedList",
-        "binding": [
-          {
-            "type": "v-model",
-            "serviceName": "active"
-          }
-        ]
-      },
-      "url": "plugins/pos-plugin/components/Order/components/dialogSavedList.vue",
-      "path": "components/Order/components/dialogSavedList.vue",
-      "pluginName": "pos-plugin"
     },
     {
       "choice": "view",
@@ -718,64 +264,12 @@
             "serviceName": "active"
           }
         ]
-      },
-      "url": "plugins/pos-plugin/components/Order/components/dialogProductSearchResult.vue",
-      "path": "components/Order/components/dialogProductSearchResult.vue",
-      "pluginName": "pos-plugin"
-    },
-    {
-      "choice": "view",
-      "component": "dialogChangeValue",
-      "binding": [],
-      "slotScopeBinding": [],
-      "provide": {
-        "domain": "dialogChangePrice",
-        "binding": [
-          {
-            "type": "method",
-            "serviceName": "open"
-          }
-        ]
-      },
-      "url": "plugins/pos-plugin/components/pos-shared-components/dialogChangeValue.vue",
-      "path": "components/pos-shared-components/dialogChangeValue.vue",
-      "pluginName": "pos-plugin",
-      "content": {
-        "props": {
-          "newValueEditable": true
-        },
-        "events": {
-          "submit": {
-            "_code_": "module.exports = function(val) {\n  this.$getService('OrderStore:updateNewPrice')(val);\n}",
-            "_code_type_": "commonJs"
-          }
-        }
       }
-    },
-    {
-      "choice": "view",
-      "component": "dialogProductLookup",
-      "binding": [],
-      "slotScopeBinding": [],
-      "provide": {
-        "domain": "dialogProductLookup",
-        "binding": [
-          {
-            "type": "v-model",
-            "serviceName": "active"
-          }
-        ]
-      },
-      "url": "plugins/pos-plugin/components/Order/components/dialogProductLookup.vue",
-      "path": "components/Order/components/dialogProductLookup.vue",
-      "pluginName": "pos-plugin"
     }
   ],
+  "name": "posOrder",
   "props": {
     "fields": []
   },
-  "isProduction": true,
-  "name": "posOrder",
-  "renderInAdminPage": true,
-  "renderToRoute": "pos-order/:id"
+  "renderToRoute": "pos-order-2/:name?"
 }
