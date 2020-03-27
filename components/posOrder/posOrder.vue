@@ -2,7 +2,7 @@
   <div class="order-detail">
     <div class="order-detail__header">
       <g-avatar size="36">
-        <img src="../../assets/customer_ava.svg">
+        <img alt :src="avatar">
       </g-avatar>
       <span class="order-detail__header-username">{{username}}</span>
       <span class="order-detail__header-title" v-if="table">Table</span>
@@ -46,6 +46,7 @@
     props: {
       total: Number,
       items: Array,
+      user: Object,
     },
     filters: {
       convertMoney(value) {
@@ -54,7 +55,6 @@
     },
     data() {
       return {
-        username: 'Admin',
         table: '',
         dialogConfigOrderItem: {
           value: false,
@@ -63,6 +63,14 @@
           price: 0
         }
       }
+    },
+    computed: {
+      username() {
+        return this.user ? this.user.name : ''
+      },
+      avatar() {
+        return this.user ? this.user.avatar : ''
+      },
     },
     methods: {
       isItemDiscounted(item) {
