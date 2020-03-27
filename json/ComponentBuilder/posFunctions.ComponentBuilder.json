@@ -487,7 +487,7 @@
             },
             "events": {
               "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: `/view/pos-fast-checkout`})\n}",
+                "_code_": "module.exports = function () {\n  this.$router.push({path: `/view/pos-order-2`})\n}",
                 "_code_type_": "commonJs"
               }
             }
@@ -558,7 +558,7 @@
             },
             "events": {
               "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: `/view/pos-delivery`})\n}",
+                "_code_": "module.exports = function () {\n  // this.$router.push({path: `/view/pos-delivery`})\n}",
                 "_code_type_": "commonJs"
               }
             }
@@ -702,7 +702,7 @@
             },
             "events": {
               "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: '/view/pos-admin-dashboard'})\n}",
+                "_code_": "module.exports = function () {\n  this.$router.push({path: '/view/pos-settings'})\n}",
                 "_code_type_": "commonJs"
               }
             }
@@ -1045,7 +1045,7 @@
             },
             "events": {
               "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: `/view/pos-support`})\n}",
+                "_code_": "module.exports = function () {\n  //this.$router.push({path: `/view/pos-support`})\n}",
                 "_code_type_": "commonJs"
               }
             }
@@ -1249,7 +1249,7 @@
             },
             "events": {
               "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: `/view/pos-edit-menu-card`})\n}",
+                "_code_": "module.exports = function () {\n  this.$router.push({path: `/view/pos-printer-setting`})\n}",
                 "_code_type_": "commonJs"
               }
             }
