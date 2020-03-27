@@ -130,7 +130,8 @@
           "component": "PosOrderLayout",
           "content": {
             "props": {
-              "tag": "div"
+              "tag": "div",
+              "editable": true
             }
           },
           "binding": [
@@ -138,11 +139,6 @@
               "type": ".sync",
               "root": "data.view",
               "local": "view"
-            },
-            {
-              "type": "prop",
-              "root": "data.posOrderLayoutEditable",
-              "local": "editable"
             },
             {
               "type": ".sync",
@@ -158,6 +154,11 @@
               "type": ".sync",
               "root": "data.selectedProductLayout",
               "local": "selectedProductLayout"
+            },
+            {
+              "type": ".sync",
+              "root": "data.productDblClicked",
+              "local": "productDblClicked"
             }
           ],
           "slotScopeBinding": [],
@@ -169,15 +170,40 @@
         },
         {
           "choice": "view",
-          "component": "VTag",
-          "content": {
-            "props": {
-              "tag": "div"
+          "component": "EditMenuCardToolbar",
+          "binding": [
+            {
+              "type": ".sync",
+              "root": "data.view",
+              "local": "view"
+            },
+            {
+              "type": ".sync",
+              "root": "data.selectedCategoryLayout",
+              "local": "selectedCategoryLayout"
+            },
+            {
+              "type": ".sync",
+              "root": "data.selectedProductLayout",
+              "local": "selectedProductLayout"
+            },
+            {
+              "type": ".sync",
+              "root": "data.orderLayout",
+              "local": "orderLayout"
+            },
+            {
+              "type": ".sync",
+              "root": "data.productDblClicked",
+              "local": "productDblClicked"
             }
-          },
-          "binding": [],
+          ],
           "slotScopeBinding": [],
-          "slot": "toolbar"
+          "slot": "toolbar",
+          "isScopedSlot": true,
+          "url": "plugins/pos-plugin/components/EditMenuCard/EditMenuCardToolbar.vue",
+          "path": "components/EditMenuCard/EditMenuCardToolbar.vue",
+          "pluginName": "pos-plugin"
         },
         {
           "choice": "view",
@@ -256,7 +282,7 @@
   "renderToRoute": "pos-edit-menu-card",
   "renderInAdminPage": true,
   "data": {
-    "_code_": "module.exports = {\n  data: {\n    view: null,\n    posOrderLayoutEditable: true,\n    orderLayout: null,\n    selectedCategoryLayout: null,\n    selectedProductLayout: null,\n  }\n}",
+    "_code_": "module.exports = {\n  data: {\n    productDblClicked: null,\n    view: null,\n    orderLayout: null,\n    selectedCategoryLayout: null,\n    selectedProductLayout: null,\n  }\n}",
     "_code_type_": "commonJs"
   }
 }
