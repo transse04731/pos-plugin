@@ -43,6 +43,9 @@
         }
       })
     },
+    destroyed() {
+      cms.socket.off('update-table-status')
+    },
     watch: {
       id() {
         this.loadRoom();
