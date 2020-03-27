@@ -26,7 +26,7 @@
         room: null,
         roomObj: null,
         //
-        inProgressTable: {}
+        inProgressTable: []
       }
     },
     async created() {
@@ -36,9 +36,12 @@
       cms.socket.on('update-table-status', ({table, status}) => {
         if (_.includes(this.tableNames, table)) {
           if (status === 'inProgress') {
-            this.$set(this.inProgressTable, table, true)
+            if (!_.includes(this.inProgressTable, table))
+              this.inProgressTable.push(table)
           } else {
-            this.$set(this.inProgressTable, table, false)
+            let indexOfTable = _.findIndex(this.inProgressTable, table)
+            if (indexOfTable >= 0)
+              this.inProgressTable.splice(indexOfTable, 1)
           }
         }
       })
@@ -53,7 +56,7 @@
     },
     computed: {
       tableNames() {
-        _.map(_.filter(this.room.roomObjects, rObj => rObj.type === 'table'), rO => rO.name)
+        return _.map(_.filter(this.room.roomObjects, rObj => rObj.type === 'table'), rO => rO.name)
       }
     },
     methods: {
@@ -62,7 +65,9 @@
       },
       async loadTableStatus() {
         const inProgressOrders = await cms.getModel('Order').find({ table: { $in: this.tableNames }, status: 'inProgress' })
-        _.each(inProgressOrders, order => this.$set(this.inProgressTable, order.table, true))
+        _.each(inProgressOrders, order => {
+          this.inProgressTable.push(order.table)
+        })
       },
       isTable(roomObj) {
         return roomObj.type === 'table'
@@ -71,7 +76,7 @@
         return roomObj.type === 'wall'
       },
       isTableBusy(roomObj) {
-        return _.has(this.inProgressTable, roomObj.name)
+        return _.includes(this.inProgressTable, roomObj.name)
       },
       getTableStyle(roomObj) {
         if (this.isTableBusy(roomObj)) {
@@ -79,7 +84,7 @@
         }
       },
       selectRoomObj(roomObj) {
-        if (!this.isTable(roomObj)) {
+        if (!this.isTableBusy(roomObj)) {
           this.roomObj = roomObj;
           this.$router.push(`/view/pos-order-2/${roomObj.name}`)
         }
