@@ -7,26 +7,20 @@
       <g-spacer/>
       <g-btn-bs elevation="2" icon="icon-edit-menu-card-delete" @click="showDeleteConfirmDialog" :disabled="!deletable">Delete</g-btn-bs>
     </g-toolbar>
-    <!-- confirm delete -->
-    <g-dialog v-model="dialog.confirmDeleteProductLayout" persistance width="500">
-      <div style="display: flex; flex-direction: column; align-items: center; background-color: #fff; height: 200px; padding: 20px">
-        <div>
-          {{ deleteProductLayoutMessage }}
-        </div>
-        <g-spacer/>
-        <div>
-          <g-btn @click="deleteItem(), hideDeleteConfirmDialog()">OK</g-btn>
-          <g-btn @click="hideDeleteConfirmDialog()">Cancel</g-btn>
-        </div>
-      </div>
-    </g-dialog>
+    
+    <dialog-confirm-delete
+        v-model="dialog.confirmDeleteProductLayout"
+        :label="deleteProductLayoutMessage"
+        @submit="deleteItem(), hideDeleteConfirmDialog()"/>
   </div>
 </template>
 <script>
   import _ from 'lodash'
+  import dialogConfirmDelete from '../Settings/dialog/dialogConfirmDelete';
 
   export default {
     name: 'EditMenuCardToolbar',
+    components: { dialogConfirmDelete },
     props: {
       view: null,
       orderLayout: null,
@@ -44,7 +38,7 @@
 
         // confirm delete dialog
         // TODO: i18n
-        deleteProductLayoutMessage: 'Are you sure you want to delete this item?',
+        deleteProductLayoutMessage: 'Are you sure you want to delete this product?',
         dialog: {
           confirmDeleteProductLayout: false,
         }
@@ -288,4 +282,22 @@
     background-color: white;
     font-size: 14px;
   }
+  
+  .delete_product_title {
+    height: 25px;
+  
+    font-family: Muli;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 25px;
+    /* identical to box height */
+  
+    display: flex;
+    align-items: center;
+    text-align: center;
+  
+    color: #1D1D26;
+  }
+  
 </style>
