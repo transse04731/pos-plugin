@@ -2,7 +2,7 @@ export function createEmptyProductLayout() {
   return {
     type: 'Article',
     text: '',
-    color: '#EAEAEA',
+    color: '#F5F5F5',
     product: {
       type: null,
       id: null,
