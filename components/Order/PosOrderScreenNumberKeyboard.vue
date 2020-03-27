@@ -5,7 +5,6 @@
         <input id="number_key_output"
                class="number-key-text col-12 self-center bg-transparent fs-large-2 fw-700 pl-2"
                style="border: none; outline: none"
-               v-model="productIdQuery"
         />
       </div>
     </template>
@@ -112,6 +111,21 @@
           }
         }
       }
+    },
+    mounted() {
+      this.$nextTick(() => {
+        if (this.$el) {
+          const orderStore = this.$getService('OrderStore')
+
+          this.unwatch = orderStore.$watch('productIdQuery', newVal => {
+            const input = this.$el.querySelector('#number_key_output')
+            input.value = newVal
+          })
+        }
+      })
+    },
+    beforeDestroy() {
+      this.unwatch()
     }
   }
 </script>
