@@ -115,7 +115,7 @@
             // replace (instead of mutate) to get old value in watcher for scrolling in order table
             this.currentOrder.items = [...this.currentOrder.items, Object.assign({}, product, {
               originalPrice: product.price,
-              quantity: 1
+              quantity: product.quantity || 1
             })]
           }
         } else {
