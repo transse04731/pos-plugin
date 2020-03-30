@@ -3,6 +3,7 @@
     <div class="checkbox-group">
       <g-checkbox color="#1271FF" label="Use Multiple Printer For Kitchen Printer" v-model="useMultiPrinterForKitchenPrinter" @change="changeSetting"/>
       <g-checkbox color="#1271FF" label="Use Multiple Printer For Invoice Printer" v-model="useMultiPrinterForInvoicePrinter" @change="changeSetting"/>
+      <g-checkbox color="#1271FF" label="Use Multiple Printer For Receipt Printer" v-model="useMultiPrinterForReceiptPrinter" @change="changeSetting"/>
     </div>
     <div class="switch-group">
       <g-switch label="1 Receipt for 1 Article" v-model="oneReceiptForOneArticle" @change="changeSetting"/>
@@ -71,6 +72,16 @@
         },
         set(val) {
           this.$set(this.printerGeneralSetting, 'useMultiPrinterForInvoicePrinter', val)
+        }
+      },
+      useMultiPrinterForReceiptPrinter: {
+        get() {
+          if(this.printerGeneralSetting) {
+            return this.printerGeneralSetting.useMultiPrinterForReceiptPrinter
+          }
+        },
+        set(val) {
+          this.$set(this.printerGeneralSetting, 'useMultiPrinterForReceiptPrinter', val)
         }
       },
       oneReceiptForOneArticle: {

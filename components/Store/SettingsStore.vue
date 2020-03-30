@@ -6,6 +6,24 @@
   import { getHighestFavouriteProductOrder, getHighestProductOrder, getProductGridOrder } from '../logic/productUtils';
   import { getProvided } from '../logic/commonUtils';
 
+  const printerSidebarDefault = [
+    {
+      title: 'Receipt Category', icon: 'icon-restaurant', displayChild: true,
+      items: [
+        {type: 'edit'}
+      ]
+    },
+    {
+      title: 'Invoice, Report', icon: 'icon-invoice_report', type: 'invoice'
+    },
+    {
+      title: 'Entire Receipt', icon: 'icon-receipt', type: 'receipt'
+    },
+    {
+      title: 'General Setting', icon: 'icon-general_setting', slot: 'general'
+    }
+  ]
+
   export default {
     name: 'SettingsStore',
     domain: 'SettingsStore',
@@ -88,6 +106,9 @@
         articleSelectedProductButton: null,
         //printer setting
         printerGeneralSetting: null,
+        kitchenPrinter: null,
+        printerSidebar: [],
+        selectedPrinterMenu: null
       }
     },
     created() {
@@ -591,6 +612,27 @@
         }
       },
       //printer setting
+      async genPrinterSidebar() {
+        this.printerSidebar = _.cloneDeep(printerSidebarDefault)
+        const groupPrinters = await cms.getModel('GroupPrinter').find()
+        const kitchenPrinters = groupPrinters.filter(p => p.type === 'kitchen')
+        const category = this.printerSidebar[0]
+        for(const printer of kitchenPrinters) {
+          category.items.unshift({
+            title: printer.name,
+            id: printer._id,
+            icon: 'radio_button_unchecked',
+            type: 'kitchen'
+          })
+        }
+        const invoicePrinter = groupPrinters.find(p => p.type === 'invoice')
+        const invoice = this.printerSidebar[1]
+        invoice.id = invoicePrinter._id
+
+        const receiptPrinter = groupPrinters.find(p => p.type === 'receipt')
+        const receipt = this.printerSidebar[2]
+        receipt.id = receiptPrinter._id
+      },
       getListHardware() {
         const setting = cms.getList('PosSetting')[0]
         return setting['hardwares'].map(h => h.name)
@@ -606,6 +648,88 @@
               printerGeneralSetting: this.printerGeneralSetting
             }
         );
+      },
+      async getGroupPrintersByType(type) {
+        return await cms.getModel('GroupPrinter').find({type})
+      },
+      async getGroupPrinterById(_id) {
+        return await cms.getModel('GroupPrinter').findOne({_id})
+      },
+      async getPrinterById(_id, index) {
+        const groupPrinter = await cms.getModel('GroupPrinter').findOne({_id})
+        this.kitchenPrinter = groupPrinter && groupPrinter.printers && groupPrinter.printers[index || 0] || {}
+      },
+      async createGroupPrinter() {
+        const groupPrinters = await this.getGroupPrintersByType('kitchen')
+        const names = groupPrinters.map(p => p.name)
+        let name = 'New Printer', i = 1
+        while (_.includes(names, name)) {
+          name = `New Printer (${i})`
+          i++
+        }
+        const printer = await cms.getModel('GroupPrinter').create({name, type: 'kitchen' })
+        await this.genPrinterSidebar()
+        return printer
+      },
+      async deleteGroupPrinter(_id) {
+        await cms.getModel('GroupPrinter').deleteOne({_id})
+        await this.genPrinterSidebar()
+      },
+      async updateGroupPrinterName(_id, name) {
+        await cms.getModel('GroupPrinter').findOneAndUpdate({_id}, {name})
+        await this.genPrinterSidebar()
+        this.selectedPrinterMenu = this.printerSidebar[0].items.find(item => item.id === _id)
+      },
+      async updateKitchenPrinter(printerId, printer, groupId, index) {
+        if (printerId) {
+          await cms.getModel('GroupPrinter').findOneAndUpdate(
+              {
+                'printers._id': printerId
+              },
+              {
+                $set: {
+                  'printers.$': printer
+                }
+              }
+          )
+        } else {
+          await cms.getModel('GroupPrinter').findOneAndUpdate(
+              {
+                _id: groupId
+              },
+              {
+                $push: {
+                  printers: printer
+                }
+              }
+          )
+          await this.getPrinterById(groupId, index)
+        }
+      },
+      async updatePrinterHardwares(printerId, hardwares, groupdId) {
+        if(printerId) {
+          await cms.getModel('GroupPrinter').findOneAndUpdate(
+              {
+                'printers._id': printerId
+              },
+              {
+                $set: {
+                  'printers.$.hardwares': hardwares
+                }
+              }
+          )
+        } else {
+          await cms.getModel('GroupPrinter').findOneAndUpdate(
+              {
+                _id: groupdId
+              },
+              {
+                $push: {
+                  printers: {hardwares}
+                }
+              }
+          )
+        }
       },
     },
     provide() {

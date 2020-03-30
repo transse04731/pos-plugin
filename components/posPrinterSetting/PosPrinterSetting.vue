@@ -1,16 +1,11 @@
 <template>
   <div class="configuration">
-    <div class="config">
-      <g-text-field-bs label="Name" v-model="editableName" append-inner-icon="icon-keyboard-red"/>
-      <div class="switch-group">
-        <g-switch label="1 Receipt for 1 Article"/>
-        <g-switch label="Group Articles"/>
-        <g-switch label="Sound"/>
-        <g-switch label="ESC POS"/>
-      </div>
+    <div v-if="type === 'kitchen'" class="config">
+      <g-text-field-bs label="Name" v-model="editableName" append-inner-icon="icon-keyboard-red"
+                       @input="changePrinterName"/>
     </div>
     <div class="config">
-      <p class="title mb-3">{{$t('settings.thermalPrinter')}}</p>
+      <p class="title">{{$t('settings.thermalPrinter')}}</p>
       <div class="row-flex flex-wrap">
         <div v-for="(type, i) in printerTypes" :key="i"
              :class="['printer', selectedPrinterType === type && 'printer__active']" @click="select(type)">
@@ -25,13 +20,26 @@
     <div v-if="selectedPrinterType && selectedPrinterType.value === 'ip'" class="config">
       <div class="row-flex mx-2 align-items-end">
         <g-text-field-bs label="IP Address" v-model="ipAddress" append-inner-icon="icon-keyboard"/>
-        <g-btn-bs border-color="#979797" class="w-33">
-          {{$t('settings.setupPrinter')}}
-        </g-btn-bs>
       </div>
-      <g-btn-bs background-color="blue accent 3" style="margin: 16px 0 0 12px; padding: 8px 16px">
+      <g-btn-bs background-color="blue accent 3" style="margin: 16px 0 0 8px; padding: 8px 16px">
         {{$t('settings.testPrinter')}}
       </g-btn-bs>
+    </div>
+    <div v-if="type === 'receipt'" class="receipt-config">
+      <g-switch label="Only Take Away" v-model="onlyTakeAway"/>
+      <div class="title">Include:</div>
+      <g-grid-select multiple item-cols="auto" :items="listReceipt" v-model="includes">
+        <template v-slot:default="{toggleSelect, item}">
+          <div class="option" @click="e => {toggleSelect(item);}">
+            {{item}}
+          </div>
+        </template>
+        <template v-slot:selected="{toggleSelect, item}">
+          <div class="option option--selected" @click="e => {toggleSelect(item);}">
+            {{item}}
+          </div>
+        </template>
+      </g-grid-select>
     </div>
   </div>
 </template>
@@ -42,102 +50,143 @@
     props: {
       id: null,
       name: String,
-      active: Boolean,
+      type: String,
+      index: Number
     },
     injectService: [
-      'SettingsStore:(thermalPrinter, getThermalPrinter, updateThermalPrinter)',
+      'SettingsStore:(kitchenPrinter, getPrinterById, updateGroupPrinterName, updateKitchenPrinter, getGroupPrintersByType)',
     ],
     data() {
       return {
-        hardware: null,
         printerTypes: [
           {name: 'Network Printer', value: 'ip'},
           {name: 'Serial Port', value: 'com'},
           {name: 'USB', value: 'usb'}
         ],
         selectedPrinterType: null,
-        editableName: ''
+        editableName: this.name,
+        listReceipt: []
       }
     },
     computed: {
       ipAddress: {
         get() {
-          if (this.thermalPrinter) {
-            return this.thermalPrinter.ip
+          if (this.kitchenPrinter) {
+            return this.kitchenPrinter.ip
           }
           return ''
         },
-        set(val) {
-          if (!this.active) return
-          if (this.thermalPrinter) {
-            this.$set(this.thermalPrinter, 'ip', val)
+        async set(val) {
+          if (this.kitchenPrinter) {
+            this.$set(this.kitchenPrinter, 'ip', val)
           } else {
-            this.thermalPrinter = {
+            this.kitchenPrinter = {
               printerType: 'ip',
               ip: val
             }
           }
+          await this.updateKitchenPrinter(this.kitchenPrinter._id, this.kitchenPrinter, this.id, this.index)
+        }
+      },
+      onlyTakeAway: {
+        get() {
+          if (this.kitchenPrinter) {
+            return this.kitchenPrinter.onlyTakeAway
+          }
+          return false
+        },
+        async set(val) {
+          if (this.kitchenPrinter) {
+            this.$set(this.kitchenPrinter, 'onlyTakeAway', val)
+          } else {
+            this.kitchenPrinter = {
+              onlyTakeAway: val
+            }
+          }
+          await this.updateKitchenPrinter(this.kitchenPrinter._id, this.kitchenPrinter, this.id, this.index)
+        }
+      },
+      includes: {
+        get() {
+          if (this.kitchenPrinter) {
+            return this.kitchenPrinter.includes
+          }
+          return false
+        },
+        async set(val) {
+          if (this.kitchenPrinter) {
+            this.$set(this.kitchenPrinter, 'includes', val)
+          } else {
+            this.kitchenPrinter = {
+              includes: val
+            }
+          }
+          await this.updateKitchenPrinter(this.kitchenPrinter._id, this.kitchenPrinter, this.id, this.index)
         }
       }
     },
     methods: {
-      select(type) {
+      async select(type) {
         this.selectedPrinterType = type;
-        if (!this.active) return
-        if (this.thermalPrinter) {
-          this.thermalPrinter.printerType = type.value;
+        if (this.kitchenPrinter) {
+          this.kitchenPrinter.printerType = type.value;
         } else {
-          this.thermalPrinter = {
+          this.kitchenPrinter = {
             printerType: type.value
           }
         }
+        await this.updateKitchenPrinter(this.kitchenPrinter._id, this.kitchenPrinter, this.id, this.index)
       },
-      resetPrinter() {
+      async resetPrinter() {
         this.selectedPrinterType = null;
-        if (!this.active) return
-        if (this.thermalPrinter) {
-          this.thermalPrinter.printerType = null;
+        if (this.kitchenPrinter) {
+          this.kitchenPrinter.printerType = null;
         } else {
-          this.thermalPrinter = {
+          this.kitchenPrinter = {
             printerType: null
           }
         }
+        await this.updateKitchenPrinter(this.kitchenPrinter._id, this.kitchenPrinter, this.id, this.index)
       },
       async setupPrinter() {
-        await this.getThermalPrinter();
-        if (this.thermalPrinter) {
-          this.selectedPrinterType = this.printerTypes.find(t => t.value === this.thermalPrinter.printerType)
+        await this.getPrinterById(this.id, this.index)
+        if (this.kitchenPrinter) {
+          this.selectedPrinterType = this.printerTypes.find(t => t.value === this.kitchenPrinter.printerType)
         }
-
-        const settingsStore = this.$getService('SettingsStore')
-        this.unwatch = settingsStore.$watch('thermalPrinter', async newVal => {
-          await this.updateThermalPrinter(newVal._id, newVal)
-        }, {deep: true})
+      },
+      async changePrinterName() {
+        await this.updateGroupPrinterName(this.id, this.editableName)
       }
     },
     watch: {
-      async active(val) {
+      name(val) {
+        this.editableName = val
+      },
+      async id(val) {
         if (!val) {
-          if (this.thermalPrinter) {
-            this.thermalPrinter = {}
+          if (this.kitchenPrinter) {
+            this.kitchenPrinter = {}
           }
           this.selectedPrinterType = null
-          if (this.unwatch) this.unwatch()
           return
         }
         await this.setupPrinter()
       },
-      name(val) {
-        this.editableName = val
+      async index() {
+        await this.setupPrinter()
+      },
+      async type(val) {
+        if(val && val === 'receipt') {
+          const receipts = await this.getGroupPrintersByType('kitchen')
+          this.listReceipt = receipts.map(r => r.name)
+        }
       }
     },
     async created() {
       await this.setupPrinter()
+      const receipts = await this.getGroupPrintersByType('kitchen')
+      this.listReceipt = receipts.map(r => r.name)
     },
-    beforeDestroy() {
-      if (this.active && this.unwatch)
-        this.unwatch()
-    }
   }
 </script>
 
@@ -145,60 +194,76 @@
   .configuration {
     width: 75%;
 
+    .title {
+      color: #1D1D26;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 20px;
+      margin-left: 4px;
+      margin-bottom: 4px;
+    }
+
     .config {
       padding: 16px 8px 12px;
-
-      .title {
-        color: #1D1D26;
-        font-weight: 700;
-        font-size: 16px;
-        line-height: 20px;
-        margin-left: 8px;
-      }
 
       .printer {
         width: calc(33% - 16px);
         flex: 0 0 calc(33% - 16px);
-        margin: 8px;
+        margin: 4px;
         display: flex;
         align-items: center;
         justify-content: center;
         background: #F0F0F0;
         border: 1px solid #979797;
         border-radius: 2px;
-        padding: 20px;
+        padding: 16px;
         color: #4D4D4E;
         font-size: 13px;
         line-height: 16px;
+        cursor: pointer;
 
         &__active {
           border-color: #1271ff;
-        }
-      }
-
-      .switch-group {
-        width: 65%;
-        display: grid;
-        grid-template-columns: auto 1fr;
-        grid-template-rows: 1fr 1fr;
-        grid-column-gap: 36px;
-        margin-left: 4px;
-
-        .g-switch-wrapper {
-          ::v-deep .g-switch-label {
-            font-size: 13px;
-          }
+          background: #E3F2FD;
         }
       }
     }
 
     .bs-tf-wrapper {
       width: 65%;
-      margin: 0 0 0 4px;
+      margin: 0;
 
       ::v-deep .bs-tf-label {
         font-weight: 700;
-        margin-bottom: 16px;
+        margin-bottom: 8px;
+      }
+    }
+
+    .receipt-config {
+      padding: 0 12px;
+
+      ::v-deep .g-col {
+        padding: 0;
+      }
+
+      ::v-deep .g-switch-label {
+        font-size: 13px;
+      }
+
+      .option {
+        padding: 2px 8px;
+        text-align: center;
+        font-size: 13px;
+        font-style: italic;
+        border-radius: 2px;
+        border: 1px solid #E0E0E0;
+        min-width: 50px;
+        margin-right: 4px;
+
+        &--selected {
+          border-color: #90CAF9;
+          background-color: #E3F2FD;
+        }
       }
     }
   }

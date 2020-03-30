@@ -1,0 +1,120 @@
+<template>
+  <div class="setting">
+    <g-tabs :items="tabs" v-model="tab" addable @add="addNewSetting">
+      <g-tab-item v-for="tabItem in tabs" :item="tabItem">
+        <div style="margin-top: 16px; margin-left: 12px; font-weight: 700">Use for</div>
+        <g-grid-select multiple :items="hardwares" v-model="tabItem.hardwares" item-cols="2">
+          <template v-slot:default="{toggleSelect, item}">
+            <div class="hardware" @click="e => {toggleSelect(item); updateTitle(tabItem)}">
+              {{item}}
+            </div>
+          </template>
+          <template v-slot:selected="{toggleSelect, item}">
+            <div class="hardware hardware--selected" @click="e => {toggleSelect(item); updateTitle(tabItem)}">
+              {{item}}
+            </div>
+          </template>
+        </g-grid-select>
+        <pos-printer-setting :id="id" :name="name" :type="type" :index="index"/>
+      </g-tab-item>
+    </g-tabs>
+  </div>
+</template>
+
+<script>
+  export default {
+    name: "PosPrinterSettingForMultiple",
+    props: {
+      id: null,
+      name: String,
+      type: String
+    },
+    injectService: ['SettingsStore:(getListHardware, getGroupPrinterById, updatePrinterHardwares, kitchenPrinter)'],
+    data() {
+      return {
+        tabs: [{ title: 'New Setting', id: 1, hardwares: [] }],
+        tab: null,
+        hardwares: [],
+        index: 0,
+      }
+    },
+    watch: {
+      tab(val) {
+        if(val) {
+          this.index = this.tabs.findIndex(t => t.id === val.id)
+        }
+      },
+      async id(val) {
+        if(val) {
+          this.index = 0
+          await this.genTabs()
+        }
+      }
+    },
+    methods: {
+      async addNewSetting() {
+        await this.updatePrinterHardwares(null, [], this.id)
+        await this.genTabs()
+      },
+      async updateTitle(tab) {
+        let title = tab.hardwares.join('-')
+        if(!title) title = 'New Setting'
+        tab.title = title
+        await this.updatePrinterHardwares(tab.id, tab.hardwares, this.id)
+        this.kitchenPrinter.hardwares = tab.hardwares
+        //trigger slider calculation
+        const index = this.tabs.findIndex(t => t.id === tab.id)
+        this.tabs.splice(index, 1, tab)
+      },
+      async genTabs() {
+        const groupPrinter = await this.getGroupPrinterById(this.id)
+        if(groupPrinter && groupPrinter.printers.length === 0) {
+          this.tabs = [{ title: 'New Setting', id: 1, hardwares: [] }]
+        } else {
+          this.tabs = groupPrinter.printers.map(p => ({
+            title: p.hardwares.length === 0 ? 'New Setting' : p.hardwares.join('-'),
+            id: p._id,
+            hardwares: p.hardwares
+          }))
+        }
+        this.tab = this.tabs[this.index]
+      }
+    },
+    async created() {
+      this.hardwares = this.getListHardware()
+      await this.genTabs()
+    }
+  }
+</script>
+
+<style scoped lang="scss">
+  .setting {
+    padding: 8px 32px;
+  }
+
+  .hardware {
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F0F0F0;
+    border: 1px solid #979797;
+    border-radius: 2px;
+    color: #4D4D4E;
+    font-size: 13px;
+    line-height: 16px;
+    cursor: pointer;
+
+    &--selected {
+      border-color: #1271ff;
+      background: #E3F2FD;
+    }
+  }
+
+  .configuration ::v-deep {
+    .config {
+      padding-top: 8px;
+      padding-bottom: 4px;
+    }
+  }
+</style>

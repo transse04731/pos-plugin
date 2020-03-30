@@ -1,6 +1,6 @@
 <template>
   <g-sidebar>
-    <template v-slot:header="">
+    <template v-slot:header>
       <div class="row-flex align-items-center py-2 px-3">
         <g-avatar size="40">
           <img alt :src="avatar"/>
@@ -11,24 +11,39 @@
     </template>
     <div class="sidebar-content-wrapper">
       <div class="sidebar-content">
-        <div :class="['sidebar-row', item.displayChild && 'sidebar-row--open']" v-for="(item, i) in sidebar" :key="i">
-          <div :class="['sidebar-row__content', isSelectedItem(item) && 'sidebar-row--selected', item.displayChild && 'sidebar-row--open']"
-               @click="selectMenu(item)">
+        <div :class="['sidebar-row', item.displayChild && 'sidebar-row--open']" v-for="(item, i) in computedSidebar"
+             :key="i">
+          <div
+              :class="['sidebar-row__content', isSelectedItem(item) && 'sidebar-row--selected', item.displayChild && 'sidebar-row--open']"
+              @click="selectMenu(item)">
             <g-icon size="20" class="sidebar-row__icon">{{item.icon}}</g-icon>
             <p class="sidebar-row__title">{{ item.title }}</p>
-            <g-icon v-if="item.items" :class="['sidebar-row__arrow', item.displayChild && 'sidebar-row__arrow--open']">expand_less</g-icon>
+            <g-icon v-if="item.items" :class="['sidebar-row__arrow', item.displayChild && 'sidebar-row__arrow--open']">
+              expand_less
+            </g-icon>
           </div>
           <div v-show="item.items && item.displayChild" class="sidebar-row__children">
-            <div :class="['sidebar-row__children--content', isSelectedItem(child) && 'sidebar-row--selected', child.type && child.type === 'add' && 'sidebar-row__children--add']"
-                 v-for="(child, i) in item.items" :key="i" @click.stop="selectMenu(child)">
-              <g-icon v-if="child.icon" class="sidebar-row__icon sidebar-row__icon--small">{{child.icon}}</g-icon>
-              <p class="sidebar-row__title">{{ child.title }}</p>
-            </div>
+            <template v-for="(child, i) in item.items">
+              <div v-if="child.type && child.type === 'edit'" class="row-flex">
+                <div class="sidebar-row__children--edit add" @click="addMenu">
+                  + Add
+                </div>
+                <div :class="['sidebar-row__children--edit','delete', !selectedPrinterMenu && 'disabled']" @click="deleteMenu">
+                  Delete
+                </div>
+              </div>
+              <div v-else :class="['sidebar-row__children--content', isSelectedItem(child) && 'sidebar-row--selected']"
+                   :key="i" @click.stop="selectMenu(child)">
+                <g-icon v-if="child.icon" class="sidebar-row__icon sidebar-row__icon--small">{{child.icon}}</g-icon>
+                <p class="sidebar-row__title">{{ child.title }}</p>
+              </div>
+            </template>
           </div>
         </div>
       </div>
       <div class="sidebar-footer">
-        <g-btn-bs elevation="2" icon="icon-back" background-color="white" style="display: block" @click="back">Back</g-btn-bs>
+        <g-btn-bs elevation="2" icon="icon-back" background-color="white" style="display: block" @click="back">Back
+        </g-btn-bs>
       </div>
     </div>
   </g-sidebar>
@@ -40,30 +55,12 @@
     props: {
       view: null
     },
-    injectService: ['PosStore:(systemDate, user)'],
+    injectService: [
+      'PosStore:(systemDate, user)',
+      'SettingsStore:(getPrinterGeneralSetting, printerGeneralSetting, createGroupPrinter, deleteGroupPrinter, genPrinterSidebar, printerSidebar, selectedPrinterMenu)'
+    ],
     data() {
-      return {
-        sidebar: [
-          {
-            title: 'Receipt Category', icon: 'icon-restaurant', displayChild: true,
-            items: [
-              {title: 'Drink', icon: 'radio_button_unchecked', slot: 'printer'},
-              {title: 'Food', icon: 'radio_button_unchecked', slot: 'printer'},
-              {title: '+ Add Category', type: 'add'}
-            ]
-          },
-          {
-            title: 'Invoice, Report', icon: 'icon-invoice_report', slot: 'printer', active: true
-          },
-          {
-            title: 'Entire Receipt', icon: 'icon-receipt', slot: 'receipt'
-          },
-          {
-            title: 'General Setting', icon: 'icon-general_setting', slot: 'general'
-          },
-        ],
-        selectedMenu: null
-      }
+      return {}
     },
     computed: {
       userName() {
@@ -74,29 +71,74 @@
       },
       time() {
         return dayjs(this.systemDate).format('HH:mm')
+      },
+      computedSidebar() {
+        const sidebar = this.printerSidebar
+        const kitchens = sidebar[0].items
+        for (const kitchen of kitchens) {
+          if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForKitchenPrinter) {
+            kitchen.slot = 'multiple'
+          } else {
+            kitchen.slot = 'printer'
+          }
+        }
+        const invoice = sidebar[1]
+        if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForInvoicePrinter) {
+          invoice.slot = 'multiple'
+        } else {
+          invoice.slot = 'printer'
+        }
+        const receipt = sidebar[2]
+        if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForReceiptPrinter) {
+          receipt.slot = 'multiple'
+        } else {
+          receipt.slot = 'printer'
+        }
+        return sidebar
       }
     },
     methods: {
       isSelectedItem(item) {
-        return item === this.selectedMenu;
+        return item === this.selectedPrinterMenu;
       },
-      selectMenu(menu) {
+      async selectMenu(menu) {
         if (menu.items) {
           menu.displayChild = !menu.displayChild;
         } else {
-          this.selectedMenu = menu;
+          this.selectedPrinterMenu = menu;
           this.$emit('update:view', {
             name: menu.slot,
             params: {
+              id: menu.id,
               name: menu.title,
-              active: !!menu.active
+              type: menu.type
             }
           })
         }
       },
+      async addMenu() {
+        const printer = await this.createGroupPrinter()
+        this.$emit('update:view', {
+          name: this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForKitchenPrinter ? 'multiple' : 'printer',
+          params: {
+            id: printer._id,
+            name: printer.name,
+            type: 'kitchen'
+          }
+        })
+        this.selectedPrinterMenu = this.printerSidebar[0].items[0]
+      },
+      async deleteMenu() {
+        await this.deleteGroupPrinter(this.selectedPrinterMenu.id)
+        this.selectedPrinterMenu = this.printerSidebar[0].items[0]
+      },
       back() {
         this.$router.push({path: '/view/pos-dashboard'});
-      }
+      },
+    },
+    async created() {
+      this.getPrinterGeneralSetting()
+      await this.genPrinterSidebar()
     }
   }
 </script>
@@ -177,25 +219,33 @@
               }
             }
 
-            &--add {
-              padding: 16px;
+            &--edit {
+              padding: 8px 16px;
+              margin: 8px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border-radius: 4px;
+              font-size: 14px;
+              flex: 1;
 
-              .sidebar-row__title {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background: #E3F2FD;
-                border: 1px dashed #2196F3;
-                border-radius: 4px;
-                font-size: 14px;
+              &.add {
                 color: #2979FF;
-                padding: 8px 0;
+                border: 1px dashed #2196F3;
+                background: #E3F2FD;
               }
 
-              &.sidebar-row--selected {
-                background: transparent !important;
-                box-shadow: none;
-                margin-right: 0;
+              &.delete {
+                color: #ff4552;
+                border: 1px dashed #f32040;
+                background: #fcd4dd;
+
+                &.disabled {
+                  color: #616161;
+                  border-color: #bdbdbd;
+                  background: #f0f0f0;
+                  pointer-events: none;
+                }
               }
             }
           }
