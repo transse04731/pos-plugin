@@ -180,7 +180,7 @@
           return _.find(this.rooms, r => r._id === this.selectedRoomId)
       },
       roomObj() {
-        if (this.selectedRoomObjectId)
+        if (this.selectedRoomId && this.selectedRoomObjectId)
           return _.find(this.room.roomObjects, ro => ro._id === this.selectedRoomObjectId)
       }
     },
@@ -275,7 +275,6 @@
       },
 
       selectRoomObj(roomObj) {
-        console.log('select room obj', roomObj)
         this.selectedRoomObjectId = roomObj._id
       },
 
@@ -311,7 +310,6 @@
       async removeRoomObj() {
         const idOfRoomObj = _.findIndex(this.room.roomObjects, ro => ro === this.roomObj);
         this.room.roomObjects.splice(idOfRoomObj, 1)
-        this.roomObj = null;
         await cms.getModel('Room').findOneAndUpdate({ _id: this.room._id }, { roomObjects: this.room.roomObjects })
         await this.loadRooms()
       },
