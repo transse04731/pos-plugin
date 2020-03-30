@@ -82,6 +82,8 @@
           transform: `rotate(${roomObj.rotate}deg)`,
           transformOrigin: '50% 50%',
           border: '1px solid transparent',
+          fontSize: '20px',
+          fontWeight: '700'
         };
 
         if (this.editable || (!this.editable && roomObj.type !== 'wall'))
