@@ -163,13 +163,25 @@
       }
     },
     computed: {
-      selectedProduct() {
-        if (!this.selectedProductLayout.product) {
-          this.$set(this.selectedProductLayout, 'product', createEmptyProductLayout())
+      selectedProduct: {
+        get(){
+          if (!this.selectedProductLayout.product) {
+            this.$set(this.selectedProductLayout, 'product', createEmptyProductLayout())
+          }
+          return this.selectedProductLayout.product
+        },
+        set(value) {
+          this.$set(this.selectedProductLayout, 'product', value)
         }
-        return this.selectedProductLayout.product
       },
       showAddPrinter2() {
+        // console.log('showAddPrinter2')
+        // console.log('this.selectedProduct.groupPrinter', this.selectedProduct.groupPrinter)
+        // console.log('!this.selectedProduct.groupPrinter2', !this.selectedProduct.groupPrinter2)
+        // console.log('!this.selectedProduct.isModifier', !this.selectedProduct.isModifier)
+        // console.log('!this.selectedProduct.isNoPrint', !this.selectedProduct.isNoPrint)
+        // console.log('!this.isPrinter2Select', !this.isPrinter2Select)
+
         return (this.selectedProduct.groupPrinter
             && !this.selectedProduct.groupPrinter2
             && !this.selectedProduct.isModifier
@@ -306,7 +318,7 @@
       // update ...
       async updateProduct(change, forceCreate) {
         console.log('storing', change ,'to internal variable this.selectedProduct')
-        _.assign(this.selectedProduct, change)
+        this.selectedProduct = { ...this.selectedProduct, ...change }
 
         if (this.selectedProduct._id) {
           console.log('updateProduct', change)
