@@ -29,7 +29,7 @@
       name: String,
       type: String
     },
-    injectService: ['SettingsStore:(getListHardware, getGroupPrinterById, updatePrinter, printer, deletePrinter)'],
+    injectService: ['SettingsStore:(getListHardware, getGroupPrinterById, getPrinterById, updatePrinter, printer, deletePrinter)'],
     data() {
       return {
         tabs: [{ title: 'New Setting', id: 1, hardwares: [] }],
