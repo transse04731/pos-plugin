@@ -1,6 +1,6 @@
 <template>
   <div class="setting">
-    <g-tabs :items="tabs" v-model="tab" addable @add="addNewSetting" deletable @delete="deletePrinterSetting">
+    <g-tabs :items="tabs" v-model="tab" addable @add="addNewSetting" deletable @delete="dialog.value = true">
       <g-tab-item v-for="tabItem in tabs" :item="tabItem">
         <div style="margin-top: 16px; margin-left: 12px; font-weight: 700">Use for</div>
         <g-grid-select multiple :items="hardwares" v-model="tabItem.hardwares" item-cols="2">
@@ -18,6 +18,7 @@
         <pos-printer-setting :id="id" :name="name" :type="type" :index="index"/>
       </g-tab-item>
     </g-tabs>
+    <dialog-confirm-delete v-model="dialog.value" type=" printer setting " @submit="deletePrinterSetting"/>
   </div>
 </template>
 
@@ -36,6 +37,9 @@
         tab: null,
         hardwares: [],
         index: 0,
+        dialog: {
+          value: false
+        }
       }
     },
     watch: {
