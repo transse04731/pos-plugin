@@ -37,6 +37,20 @@
         </div>
       </template>
     </g-grid-select>
+    <div class="setting-title">Number of Entire Receipt</div>
+    <g-grid-select mandatory item-cols="auto" :items="listNoEntireReceipt" v-model="entireReceipt" @input="_updateNoEntireReceipt">
+      <template v-slot:default="{ toggleSelect, item }">
+        <div class="setting-option" @click="toggleSelect(item)">
+          {{item}}
+        </div>
+      </template>
+      <template v-slot:selected="{ toggleSelect, item }">
+        <div class="setting-option setting-option--selected">
+          {{item}}
+        </div>
+      </template>
+    </g-grid-select>
+    <dialog-confirm-delete v-model="dialog.value" :type="dialog.label" @submit="_removeEntireReceipt"/>
   </div>
 </template>
 
@@ -46,11 +60,19 @@
     props: {
 
     },
-    injectService: ['SettingsStore:(getPrinterGeneralSetting, printerGeneralSetting, updatePrinterGeneralSetting)'],
+    injectService: ['SettingsStore:(getPrinterGeneralSetting, printerGeneralSetting, updatePrinterGeneralSetting, addEntirePrinter, removeEntirePrinter)'],
     data() {
       return {
         listFontSize: ['Mini', '1', '2', '3', 4],
-        listMarginSize: ['+ 0 Cm', '+ 1 Cm', '+ 2 Cm', '+ 3 Cm', '+ 4 Cm']
+        listMarginSize: ['+ 0 Cm', '+ 1 Cm', '+ 2 Cm', '+ 3 Cm', '+ 4 Cm'],
+        listNoEntireReceipt: [0, 1, 2, 3, 4],
+        dialog: {
+          value: false,
+          label: '',
+          upper: 0,
+          lower: 0,
+        },
+        entireReceipt: null
       }
     },
     computed: {
@@ -148,17 +170,43 @@
     methods: {
       async changeSetting() {
         await this.updatePrinterGeneralSetting()
+      },
+      async _updateNoEntireReceipt() {
+        if(!this.printerGeneralSetting.entireReceipt) {
+          await this.addEntirePrinter(0, this.entireReceipt)
+          this.$set(this.printerGeneralSetting, 'entireReceipt', this.entireReceipt)
+          await this.updatePrinterGeneralSetting()
+        }
+        if(this.entireReceipt > this.printerGeneralSetting.entireReceipt) {
+          await this.addEntirePrinter(this.printerGeneralSetting.entireReceipt, this.entireReceipt)
+          this.$set(this.printerGeneralSetting, 'entireReceipt', this.entireReceipt)
+          await this.updatePrinterGeneralSetting()
+        }
+        if(this.entireReceipt < this.printerGeneralSetting.entireReceipt) {
+          this.dialog.upper = this.printerGeneralSetting.entireReceipt
+          this.dialog.lower = this.entireReceipt
+          this.dialog.label = ' number of entire receipt from ' + this.dialog.upper + ' to ' + this.dialog.lower
+          this.dialog.value = true
+          this.entireReceipt = this.printerGeneralSetting.entireReceipt
+        }
+      },
+      async _removeEntireReceipt() {
+        this.entireReceipt = this.dialog.lower
+        await this.removeEntirePrinter(this.dialog.lower, this.dialog.upper)
+        this.$set(this.printerGeneralSetting, 'entireReceipt', this.entireReceipt)
+        await this.updatePrinterGeneralSetting()
       }
     },
     created() {
       this.getPrinterGeneralSetting()
+      this.entireReceipt = this.printerGeneralSetting.entireReceipt
     }
   }
 </script>
 
 <style scoped lang="scss">
   .setting {
-    padding: 24px 36px;
+    padding: 24px 32px;
 
     .switch-group {
       display: grid;

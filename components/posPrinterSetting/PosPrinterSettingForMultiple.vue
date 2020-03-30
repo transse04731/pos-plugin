@@ -1,6 +1,6 @@
 <template>
   <div class="setting">
-    <g-tabs :items="tabs" v-model="tab" addable @add="addNewSetting">
+    <g-tabs :items="tabs" v-model="tab" addable @add="addNewSetting" deletable @delete="deletePrinterSetting">
       <g-tab-item v-for="tabItem in tabs" :item="tabItem">
         <div style="margin-top: 16px; margin-left: 12px; font-weight: 700">Use for</div>
         <g-grid-select multiple :items="hardwares" v-model="tabItem.hardwares" item-cols="2">
@@ -29,7 +29,7 @@
       name: String,
       type: String
     },
-    injectService: ['SettingsStore:(getListHardware, getGroupPrinterById, updatePrinterHardwares, kitchenPrinter)'],
+    injectService: ['SettingsStore:(getListHardware, getGroupPrinterById, updatePrinter, printer, deletePrinter)'],
     data() {
       return {
         tabs: [{ title: 'New Setting', id: 1, hardwares: [] }],
@@ -56,12 +56,20 @@
         await this.updatePrinterHardwares(null, [], this.id)
         await this.genTabs()
       },
+      async deletePrinterSetting() {
+        await this.deletePrinter(this.id)
+        if(this.index > 0 && this.index + 1 === this.tabs.length) {
+          this.index--
+        }
+        await this.genTabs()
+      },
       async updateTitle(tab) {
-        let title = tab.hardwares.join('-')
+        let title = tab.hardwares.sort().join('-')
         if(!title) title = 'New Setting'
         tab.title = title
-        await this.updatePrinterHardwares(tab.id, tab.hardwares, this.id)
-        this.kitchenPrinter.hardwares = tab.hardwares
+        if(!this.printer._id) await this.getPrinterById(this.id, this.index)
+        this.printer.hardwares = tab.hardwares
+        await this.updatePrinter(this.printer._id, this.printer, this.id, this.index)
         //trigger slider calculation
         const index = this.tabs.findIndex(t => t.id === tab.id)
         this.tabs.splice(index, 1, tab)
@@ -90,6 +98,10 @@
 <style scoped lang="scss">
   .setting {
     padding: 8px 32px;
+
+    ::v-deep .g-tab:before {
+      display: none;
+    }
   }
 
   .hardware {
@@ -112,6 +124,8 @@
   }
 
   .configuration ::v-deep {
+    padding-left: 0;
+
     .config {
       padding-top: 8px;
       padding-bottom: 4px;

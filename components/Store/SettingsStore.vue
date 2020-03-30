@@ -17,7 +17,7 @@
       title: 'Invoice, Report', icon: 'icon-invoice_report', type: 'invoice'
     },
     {
-      title: 'Entire Receipt', icon: 'icon-receipt', type: 'receipt'
+      title: 'Entire Receipt', icon: 'icon-receipt', displayChild: false, type: 'entire'
     },
     {
       title: 'General Setting', icon: 'icon-general_setting', slot: 'general'
@@ -106,7 +106,7 @@
         articleSelectedProductButton: null,
         //printer setting
         printerGeneralSetting: null,
-        kitchenPrinter: null,
+        printer: null,
         printerSidebar: [],
         selectedPrinterMenu: null
       }
@@ -629,9 +629,24 @@
         const invoice = this.printerSidebar[1]
         invoice.id = invoicePrinter._id
 
-        const receiptPrinter = groupPrinters.find(p => p.type === 'receipt')
+        const receiptPrinter = groupPrinters.filter(p => p.type === 'entire')
         const receipt = this.printerSidebar[2]
-        receipt.id = receiptPrinter._id
+        if(receiptPrinter.length === 0) {
+          this.printerSidebar.splice(2, 1)
+        } else if (receiptPrinter.length === 1) {
+          receipt.id = receiptPrinter[0]._id
+        } else {
+          receipt.displayChild = true
+          receipt.items = []
+          for (const printer of receiptPrinter) {
+            receipt.items.push({
+              title: printer.name,
+              id: printer._id,
+              icon: 'radio_button_unchecked',
+              type: 'entire'
+            })
+          }
+        }
       },
       getListHardware() {
         const setting = cms.getList('PosSetting')[0]
@@ -657,7 +672,7 @@
       },
       async getPrinterById(_id, index) {
         const groupPrinter = await cms.getModel('GroupPrinter').findOne({_id})
-        this.kitchenPrinter = groupPrinter && groupPrinter.printers && groupPrinter.printers[index || 0] || {}
+        this.printer = groupPrinter && groupPrinter.printers && groupPrinter.printers[index || 0] || {}
       },
       async createGroupPrinter() {
         const groupPrinters = await this.getGroupPrintersByType('kitchen')
@@ -680,7 +695,7 @@
         await this.genPrinterSidebar()
         this.selectedPrinterMenu = this.printerSidebar[0].items.find(item => item.id === _id)
       },
-      async updateKitchenPrinter(printerId, printer, groupId, index) {
+      async updatePrinter(printerId, printer, groupId, index) {
         if (printerId) {
           await cms.getModel('GroupPrinter').findOneAndUpdate(
               {
@@ -706,31 +721,34 @@
           await this.getPrinterById(groupId, index)
         }
       },
-      async updatePrinterHardwares(printerId, hardwares, groupdId) {
-        if(printerId) {
-          await cms.getModel('GroupPrinter').findOneAndUpdate(
-              {
-                'printers._id': printerId
-              },
-              {
-                $set: {
-                  'printers.$.hardwares': hardwares
-                }
+      async deletePrinter(_id) {
+        await cms.getModel('GroupPrinter').findOneAndUpdate(
+            {
+              _id
+            },
+            {
+              $pull: {
+                printers: {_id: this.printer._id}
               }
-          )
-        } else {
-          await cms.getModel('GroupPrinter').findOneAndUpdate(
-              {
-                _id: groupdId
-              },
-              {
-                $push: {
-                  printers: {hardwares}
-                }
-              }
-          )
-        }
+            }
+        )
       },
+      async addEntirePrinter(lower, upper) {
+        let i = lower, printers = []
+        while(i < upper) {
+          i++
+          printers.push({name: 'EntireReceipt'+i, type: 'entire'})
+        }
+        await cms.getModel('GroupPrinter').create(printers)
+        await this.genPrinterSidebar()
+        this.selectedPrinterMenu = this.printerSidebar.find(s => s.title === 'General Setting')
+      },
+      async removeEntirePrinter(lower, upper) {
+        const regex = `EntireReceipt[${lower+1}-${upper}]`
+        await cms.getModel('GroupPrinter').deleteMany({name: {$regex: regex}, type: 'entire'})
+        await this.genPrinterSidebar()
+        this.selectedPrinterMenu = this.printerSidebar.find(s => s.title === 'General Setting')
+      }
     },
     provide() {
       return {

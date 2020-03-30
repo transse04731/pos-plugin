@@ -74,25 +74,40 @@
       },
       computedSidebar() {
         const sidebar = this.printerSidebar
-        const kitchens = sidebar[0].items
-        for (const kitchen of kitchens) {
-          if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForKitchenPrinter) {
-            kitchen.slot = 'multiple'
-          } else {
-            kitchen.slot = 'printer'
+        if(sidebar) {
+          const category = sidebar.find(s => s.title === 'Receipt Category')
+          const kitchens = category ? category.items : []
+          for (const kitchen of kitchens) {
+            if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForKitchenPrinter) {
+              kitchen.slot = 'multiple'
+            } else {
+              kitchen.slot = 'printer'
+            }
           }
-        }
-        const invoice = sidebar[1]
-        if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForInvoicePrinter) {
-          invoice.slot = 'multiple'
-        } else {
-          invoice.slot = 'printer'
-        }
-        const receipt = sidebar[2]
-        if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForReceiptPrinter) {
-          receipt.slot = 'multiple'
-        } else {
-          receipt.slot = 'printer'
+          const invoice = sidebar.find(s => s.title === 'Invoice, Report')
+          if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForInvoicePrinter) {
+            invoice.slot = 'multiple'
+          } else {
+            invoice.slot = 'printer'
+          }
+          const receipt = sidebar.find(s => s.title === 'Entire Receipt')
+          if(receipt) {
+            if(receipt.items) {
+              for(const item of receipt.items) {
+                if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForReceiptPrinter) {
+                  item.slot = 'multiple'
+                } else {
+                  item.slot = 'printer'
+                }
+              }
+            } else {
+              if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForReceiptPrinter) {
+                receipt.slot = 'multiple'
+              } else {
+                receipt.slot = 'printer'
+              }
+            }
+          }
         }
         return sidebar
       }
@@ -212,6 +227,8 @@
 
               .g-icon.sidebar-row__icon--small {
                 font-size: 12px !important;
+                margin-right: 20px;
+                margin-left: 20px;
               }
 
               .sidebar-row__title {

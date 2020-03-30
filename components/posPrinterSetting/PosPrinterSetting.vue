@@ -25,7 +25,7 @@
         {{$t('settings.testPrinter')}}
       </g-btn-bs>
     </div>
-    <div v-if="type === 'receipt'" class="receipt-config">
+    <div v-if="type === 'entire'" class="receipt-config">
       <g-switch label="Only Take Away" v-model="onlyTakeAway"/>
       <div class="title">Include:</div>
       <g-grid-select multiple item-cols="auto" :items="listReceipt" v-model="includes">
@@ -54,7 +54,7 @@
       index: Number
     },
     injectService: [
-      'SettingsStore:(kitchenPrinter, getPrinterById, updateGroupPrinterName, updateKitchenPrinter, getGroupPrintersByType)',
+      'SettingsStore:(printer, getPrinterById, updateGroupPrinterName, updatePrinter, getGroupPrintersByType)',
     ],
     data() {
       return {
@@ -71,87 +71,87 @@
     computed: {
       ipAddress: {
         get() {
-          if (this.kitchenPrinter) {
-            return this.kitchenPrinter.ip
+          if (this.printer) {
+            return this.printer.ip
           }
           return ''
         },
         async set(val) {
-          if (this.kitchenPrinter) {
-            this.$set(this.kitchenPrinter, 'ip', val)
+          if (this.printer) {
+            this.$set(this.printer, 'ip', val)
           } else {
-            this.kitchenPrinter = {
+            this.printer = {
               printerType: 'ip',
               ip: val
             }
           }
-          await this.updateKitchenPrinter(this.kitchenPrinter._id, this.kitchenPrinter, this.id, this.index)
+          await this.updatePrinter(this.printer._id, this.printer, this.id, this.index)
         }
       },
       onlyTakeAway: {
         get() {
-          if (this.kitchenPrinter) {
-            return this.kitchenPrinter.onlyTakeAway
+          if (this.printer) {
+            return this.printer.onlyTakeAway
           }
           return false
         },
         async set(val) {
-          if (this.kitchenPrinter) {
-            this.$set(this.kitchenPrinter, 'onlyTakeAway', val)
+          if (this.printer) {
+            this.$set(this.printer, 'onlyTakeAway', val)
           } else {
-            this.kitchenPrinter = {
+            this.printer = {
               onlyTakeAway: val
             }
           }
-          await this.updateKitchenPrinter(this.kitchenPrinter._id, this.kitchenPrinter, this.id, this.index)
+          await this.updatePrinter(this.printer._id, this.printer, this.id, this.index)
         }
       },
       includes: {
         get() {
-          if (this.kitchenPrinter) {
-            return this.kitchenPrinter.includes
+          if (this.printer) {
+            return this.printer.includes
           }
-          return false
+          return []
         },
         async set(val) {
-          if (this.kitchenPrinter) {
-            this.$set(this.kitchenPrinter, 'includes', val)
+          if (this.printer) {
+            this.$set(this.printer, 'includes', val)
           } else {
-            this.kitchenPrinter = {
+            this.printer = {
               includes: val
             }
           }
-          await this.updateKitchenPrinter(this.kitchenPrinter._id, this.kitchenPrinter, this.id, this.index)
+          await this.updatePrinter(this.printer._id, this.printer, this.id, this.index)
         }
       }
     },
     methods: {
       async select(type) {
         this.selectedPrinterType = type;
-        if (this.kitchenPrinter) {
-          this.kitchenPrinter.printerType = type.value;
+        if (this.printer) {
+          this.printer.printerType = type.value;
         } else {
-          this.kitchenPrinter = {
+          this.printer = {
             printerType: type.value
           }
         }
-        await this.updateKitchenPrinter(this.kitchenPrinter._id, this.kitchenPrinter, this.id, this.index)
+        await this.updatePrinter(this.printer._id, this.printer, this.id, this.index)
       },
       async resetPrinter() {
         this.selectedPrinterType = null;
-        if (this.kitchenPrinter) {
-          this.kitchenPrinter.printerType = null;
+        if (this.printer) {
+          this.printer.printerType = null;
         } else {
-          this.kitchenPrinter = {
+          this.printer = {
             printerType: null
           }
         }
-        await this.updateKitchenPrinter(this.kitchenPrinter._id, this.kitchenPrinter, this.id, this.index)
+        await this.updatePrinter(this.printer._id, this.printer, this.id, this.index)
       },
       async setupPrinter() {
         await this.getPrinterById(this.id, this.index)
-        if (this.kitchenPrinter) {
-          this.selectedPrinterType = this.printerTypes.find(t => t.value === this.kitchenPrinter.printerType)
+        if (this.printer) {
+          this.selectedPrinterType = this.printerTypes.find(t => t.value === this.printer.printerType)
         }
       },
       async changePrinterName() {
@@ -164,8 +164,8 @@
       },
       async id(val) {
         if (!val) {
-          if (this.kitchenPrinter) {
-            this.kitchenPrinter = {}
+          if (this.printer) {
+            this.printer = {}
           }
           this.selectedPrinterType = null
           return
@@ -193,6 +193,7 @@
 <style scoped lang="scss">
   .configuration {
     width: 75%;
+    padding-left: 32px;
 
     .title {
       color: #1D1D26;
