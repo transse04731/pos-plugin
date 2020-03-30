@@ -136,8 +136,7 @@
             if (!item.course) this.$set(item, 'course', 1)
 
             if (item.separate) {
-              this.$set(item, 'separate', false)
-              return this.$set(item, 'takeout', true)
+              return this.$set(item, 'separate', false)
             }
 
             if (item.takeout) this.$set(item, 'takeout', false)
