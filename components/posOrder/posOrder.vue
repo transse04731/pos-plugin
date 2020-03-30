@@ -11,14 +11,15 @@
       <span class="order-detail__header-value text-red">€{{total | convertMoney}}</span>
     </div>
     <div class="order-detail__content">
-      <div v-for="(item, i) in items" :key="i" class="item" @click.stop.prevent="openConfigDialog(item)">
+      <div v-for="(item, i) in items" :key="i" class="item" :style="[item.separate && {borderBottom: '2px solid red'}]"
+           @click.stop="openConfigDialog(item)" v-touch="getTouchHandlers(item)">
         <div class="item-detail">
           <div>
             <p class="item-detail__name">{{item.id}}. {{item.name}}</p>
             <p>
               <span :class="['item-detail__price', isItemDiscounted(item) && 'item-detail__discount']">€{{item.originalPrice | convertMoney}}</span>
               <span class="item-detail__price--new" v-if="isItemDiscounted(item)">€ {{item.price | convertMoney }}</span>
-              <span :class="['item-detail__option', item.option === 'Take away' ? 'text-green-accent-3' : 'text-red-accent-2']">{{item.option}}</span>
+              <span :class="['item-detail__option', item.takeout ? 'text-green-accent-3' : 'text-red-accent-2']">{{getItemSubtext(item)}}</span>
             </p>
           </div>
           <div class="item-action">
@@ -41,8 +42,13 @@
 </template>
 
 <script>
+  import {Touch} from 'pos-vue-framework';
+
   export default {
     name: "posOrder",
+    directives: {
+      Touch
+    },
     props: {
       total: Number,
       items: Array,
@@ -71,6 +77,14 @@
       avatar() {
         return this.user ? this.user.avatar : ''
       },
+      computedItems: {
+        get() {
+          return this.items
+        },
+        set(value) {
+          this.$emit('updateOrderItems', value)
+        }
+      }
     },
     methods: {
       isItemDiscounted(item) {
@@ -98,6 +112,43 @@
       },
       changePrice(price) {
         this.$emit('changePrice', price, this.dialogConfigOrderItem.product)
+      },
+      getTouchHandlers(item) {
+        return {
+          left: () => {
+            // console.log(`RTL ${item.name}`)
+
+            if (!item.course) this.$set(item, 'course', 1)
+
+            if (item.course === 1) {
+              if (item.takeout) {
+                this.$set(item, 'takeout', false)
+                this.$set(item, 'separate', true)
+              }
+              else this.$set(item, 'takeout', true)
+            } else {
+              this.$set(item, 'course', item.course - 1)
+            }
+          },
+          right: () => {
+            // console.log(`LTR ${item.name}`)
+
+            if (!item.course) this.$set(item, 'course', 1)
+
+            if (item.separate) {
+              this.$set(item, 'separate', false)
+              return this.$set(item, 'takeout', true)
+            }
+
+            if (item.takeout) this.$set(item, 'takeout', false)
+            else this.$set(item, 'course', item.course + 1)
+          }
+        }
+      },
+      getItemSubtext({ course, takeout, separate }) {
+        if (separate) return
+        if (takeout) return 'Take-away'
+        if (course && course > 1) return `Course: ${course}`
       }
     },
     mounted() {

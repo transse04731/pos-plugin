@@ -279,12 +279,19 @@
       getComputedOrderItems(orderItems, date) {
         const compactItems = this.compactOrder(orderItems)
 
-        return compactItems.map(item => ({
-          ..._.omit(item, 'category'),
-          product: item._id,
-          category: item.category && item.category.name ? item.category.name : '', // saved order then pay have a string category
-          date
-        }))
+        return compactItems.map(item => {
+          const groupPrinter = []
+          if (item.groupPrinter) groupPrinter.push(item.groupPrinter.name)
+          if (item.groupPrinter2) groupPrinter.push(item.groupPrinter2.name)
+
+          return {
+            ..._.omit(item, 'category'),
+            product: item._id,
+            category: item.category && item.category.name ? item.category.name : '', // saved order then pay have a string category
+            date,
+            groupPrinter
+          };
+        })
       },
       //<!--</editor-fold>-->
 
@@ -447,6 +454,9 @@
       },
       updateOrderTable(table) {
         this.$set(this.currentOrder, 'table', table)
+      },
+      updateOrderItems(items) {
+        this.$set(this.currentOrder, 'items', items)
       }
       //<!--</editor-fold>-->
 
