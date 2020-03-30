@@ -292,7 +292,7 @@
       // update color, update text
       async updateProductLayout(change, forceCreate) {
         console.log('Store change into this.selectedProductLayout')
-        _.assign(this.selectedProductLayout, change)
+        _.each(_.keys(change), k => this.$set(this.selectedProductLayout, k, change[k]))
 
         if (this.selectedProductLayout._id) {
           console.log('UpdateProductLayout', change)
