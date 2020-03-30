@@ -85,11 +85,12 @@
             }
           }
           const invoice = sidebar.find(s => s.title === 'Invoice, Report')
-          if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForInvoicePrinter) {
-            invoice.slot = 'multiple'
-          } else {
-            invoice.slot = 'printer'
-          }
+          if(invoice)
+            if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForInvoicePrinter) {
+              invoice.slot = 'multiple'
+            } else {
+              invoice.slot = 'printer'
+            }
           const receipt = sidebar.find(s => s.title === 'Entire Receipt')
           if(receipt) {
             if(receipt.items) {
@@ -152,7 +153,7 @@
       },
     },
     async created() {
-      this.getPrinterGeneralSetting()
+      await this.getPrinterGeneralSetting()
       await this.genPrinterSidebar()
     }
   }

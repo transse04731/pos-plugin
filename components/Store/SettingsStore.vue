@@ -652,9 +652,9 @@
         const setting = cms.getList('PosSetting')[0]
         return setting['hardwares'].map(h => h.name)
       },
-      getPrinterGeneralSetting() {
-        const setting = cms.getList('PosSetting')[0]
-        this.printerGeneralSetting = setting.printerGeneralSetting || {}
+      async getPrinterGeneralSetting() {
+        const setting = await cms.getModel('PosSetting').find()
+        this.printerGeneralSetting = setting[0].printerGeneralSetting || {}
       },
       async updatePrinterGeneralSetting() {
         await cms.getModel('PosSetting').findOneAndUpdate(

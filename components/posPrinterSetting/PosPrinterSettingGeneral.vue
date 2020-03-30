@@ -38,18 +38,12 @@
       </template>
     </g-grid-select>
     <div class="setting-title">Number of Entire Receipt</div>
-    <g-grid-select mandatory item-cols="auto" :items="listNoEntireReceipt" v-model="entireReceipt" @input="_updateNoEntireReceipt">
-      <template v-slot:default="{ toggleSelect, item }">
-        <div class="setting-option" @click="toggleSelect(item)">
-          {{item}}
-        </div>
-      </template>
-      <template v-slot:selected="{ toggleSelect, item }">
-        <div class="setting-option setting-option--selected">
-          {{item}}
-        </div>
-      </template>
-    </g-grid-select>
+    <div class="row-flex flex-wrap">
+      <div v-for="(number, i) in listNoEntireReceipt" :key="i"
+           :class="['setting-option', number === entireReceipt && 'setting-option--selected']" @click="_updateNoEntireReceipt(number)">
+        {{number}}
+      </div>
+    </div>
     <dialog-confirm-delete v-model="dialog.value" :type="dialog.label" @submit="_removeEntireReceipt"/>
   </div>
 </template>
@@ -171,7 +165,8 @@
       async changeSetting() {
         await this.updatePrinterGeneralSetting()
       },
-      async _updateNoEntireReceipt() {
+      async _updateNoEntireReceipt(number) {
+        this.entireReceipt = number
         if(!this.printerGeneralSetting.entireReceipt) {
           await this.addEntirePrinter(0, this.entireReceipt)
           this.$set(this.printerGeneralSetting, 'entireReceipt', this.entireReceipt)
@@ -197,8 +192,8 @@
         await this.updatePrinterGeneralSetting()
       }
     },
-    created() {
-      this.getPrinterGeneralSetting()
+    async created() {
+      await this.getPrinterGeneralSetting()
       this.entireReceipt = this.printerGeneralSetting.entireReceipt
     }
   }
