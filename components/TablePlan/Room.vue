@@ -13,7 +13,7 @@
       <div :style="getRoomObjectStyle(roomObject)">
         <slot name="room-object" v-bind:roomObject="roomObject"/>
       </div>
-      <div v-if="editable && (selectingObj === roomObject)"
+      <div v-if="editable && isSelected(roomObject)"
            @mousedown.prevent.stop="e => onMouseDown(e, roomObject, actions.resize)"
            @touchstart.prevent.stop="e => onMouseDown(e, roomObject, actions.resize)"
            class="room__object__resizer" >
@@ -39,8 +39,7 @@
     },
     data: function () {
       return {
-        // selecting room object -- only use in edit mode
-        selectingObj: null,
+        selectedObjectId: null,
         // define a list of action available
         actions: {
           move: this.moveAction,
@@ -48,6 +47,12 @@
         },
         action: null, // current action -- see list of available action above
         lastPos: null, // store last mouse clientX, Y position which already handled by "applyChange throttle"
+      }
+    },
+    computed: {
+      selectingObj() {
+        if (this.selectedObjectId)
+          return _.find(this.roomObjects, ro => ro._id === this.selectedObjectId)
       }
     },
     created() {
@@ -82,7 +87,7 @@
         if (this.editable || (!this.editable && roomObj.type !== 'wall'))
           style.cursor = 'pointer'
 
-        if (this.editable && (this.selectingObj === roomObj)) {
+        if (this.editable && this.isSelected(roomObj)) {
           style.border = '1px solid #1271FF'
         }
 
@@ -116,11 +121,14 @@
       isTable(roomObj) {
         return roomObj.type === 'table'
       },
+      isSelected(roomObj) {
+        return this.selectingObj && this.selectingObj._id === roomObj._id
+      },
 
       // action trigger
       onMouseDown(e, roomObject, action) {
         if (this.editable) {
-          this.selectingObj = roomObject;
+          this.selectedObjectId = roomObject._id
           mouseEventUtil.normalizeEvent(e);
           this.action = action;
           this.lastPos = { x: e.clientX, y: e.clientY };

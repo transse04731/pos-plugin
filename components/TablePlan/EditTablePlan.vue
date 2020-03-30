@@ -139,8 +139,8 @@
     data: function () {
       return {
         rooms: [],     // entire rooms
-        room: null,    // selected room
-        roomObj: null, // selected roomObject (table, wall)
+        selectedRoomId: null,
+        selectedRoomObjectId: null,
         tableColors: ['#FFFFFF', '#F8BBD0', '#D1C4E9', '#B3E5FC', '#FFF9C4', '#C8E6C9', '#D7CCC8', '#EEEEEE'],
         wallColors: ['#FFFFFF', '#CCCCCC', '#4D0019', '#404040', '#86592D', '#A6A6A6', '#FFD480', '#E4E4E4'],
         showAddNewRoomBtn: false,
@@ -174,12 +174,14 @@
           })
         })
         return tableNames
-      }
-    },
-    watch: {
-      rooms(val) {
-        if (this.room)
-          this.$set(this, 'room', _.find(val, room => room._id === this.room._id))
+      },
+      room() {
+        if (this.selectedRoomId)
+          return _.find(this.rooms, r => r._id === this.selectedRoomId)
+      },
+      roomObj() {
+        if (this.selectedRoomObjectId)
+          return _.find(this.room.roomObjects, ro => ro._id === this.selectedRoomObjectId)
       }
     },
     methods: {
@@ -192,7 +194,7 @@
       selectFirstRoom() {
         const firstRoom = cms.getList('Room')[0]
         if (firstRoom)
-          this.$set(this, 'room', firstRoom)
+          this.selectedRoomId = firstRoom._id
       },
       convertRoomToSideBarItem(room) {
         return {
@@ -200,8 +202,8 @@
           icon: 'radio_button_unchecked',
           iconType: 'small',
           onClick: () => {
-            this.$set(this, 'room', room)
-            this.roomObj = null
+            this.selectedRoomId = room._id
+            this.selectedRoomObjectId = null
           }
         }
       },
@@ -229,12 +231,12 @@
         const largestOrder = _.maxBy(this.rooms, r => r.order).order;
         const newName = this.getUniqueRoomName('Room ')
         const created = await cms.getModel('Room').create({ name: newName, order: largestOrder + 1 });
-        this.rooms.push(created)
+        await this.loadRooms()
       },
       async removeRoom() {
         await cms.getModel('Room').remove({ _id: this.room._id })
         const roomIndex = _.findIndex(this.rooms, r => r === this.room)
-        this.rooms.splice(roomIndex, 1)
+        await this.loadRooms()
       },
       async changeRoomName(name) {
         await cms.getModel('Room').findOneAndUpdate({ _id: this.room._id }, { name });
@@ -273,7 +275,8 @@
       },
 
       selectRoomObj(roomObj) {
-        this.$set(this, 'roomObj', roomObj);
+        console.log('select room obj', roomObj)
+        this.selectedRoomObjectId = roomObj._id
       },
 
       // add room object
@@ -296,12 +299,14 @@
         })
       },
       async duplicateRoomObj() {
-        await this._addRoomObj({
+        const newRoomObj = {
           ..._.cloneDeep(this.roomObj),
           name: this.getUniqueTableName(),
           _id: null,
           location: { x:0, y: 0 }
-        })
+        }
+        delete newRoomObj._id
+        await this._addRoomObj(newRoomObj)
       },
       async removeRoomObj() {
         const idOfRoomObj = _.findIndex(this.room.roomObjects, ro => ro === this.roomObj);
@@ -341,7 +346,7 @@
         // console.log('update', qry, 'set', set)
         await cms.getModel('Room').findOneAndUpdate(qry, set)
 
-        _.assign(this.roomObj, change)
+        await this.loadRooms()
       },
 
       async back() {
