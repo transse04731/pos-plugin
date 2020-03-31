@@ -17,11 +17,9 @@
       </div>
     </div>
     <g-divider inset/>
-    <div v-if="selectedPrinterType && selectedPrinterType.value === 'ip'" class="config">
-      <div class="row-flex mx-2 align-items-end">
-        <g-text-field-bs label="IP Address" v-model="ipAddress" append-inner-icon="icon-keyboard"/>
-      </div>
-      <g-btn-bs background-color="blue accent 3" style="margin: 16px 0 0 8px; padding: 8px 16px">
+    <div v-if="selectedPrinterType && selectedPrinterType.value === 'ip'" class="config row-flex align-items-end">
+      <g-text-field-bs label="IP Address" v-model="ipAddress" append-inner-icon="icon-keyboard"/>
+      <g-btn-bs background-color="blue accent 3" style="padding: 6px; flex: 1">
         {{$t('settings.testPrinter')}}
       </g-btn-bs>
     </div>
@@ -41,6 +39,38 @@
         </template>
       </g-grid-select>
     </div>
+    <div class="switch-group">
+      <g-switch label="1 Receipt for 1 Article" v-model="oneReceiptForOneArticle" v-if="type === 'kitchen'"/>
+      <g-switch label="Group Articles" v-model="groupArticles" v-if="type === 'kitchen'"/>
+      <g-switch label="Sound" v-model="sound"/>
+      <g-switch label="ESC POS" v-model="escPOS"/>
+    </div>
+    <div class="title" style="margin-left: 12px">Receipt Font Size</div>
+    <g-grid-select mandatory item-cols="auto" :items="listFontSize" v-model="fontSize" style="margin-left: 12px; padding-top: 4px">
+      <template v-slot:default="{ toggleSelect, item }">
+        <div class="option" @click="toggleSelect(item)">
+          {{item}}
+        </div>
+      </template>
+      <template v-slot:selected="{ toggleSelect, item }">
+        <div class="option option--selected">
+          {{item}}
+        </div>
+      </template>
+    </g-grid-select>
+    <div class="title" style="margin-left: 12px">Receipt Top Margin</div>
+    <g-grid-select mandatory item-cols="auto" :items="listMarginSize" v-model="marginTop" style="margin-left: 12px; padding-top: 4px">
+      <template v-slot:default="{ toggleSelect, item }">
+        <div class="option" @click="toggleSelect(item)">
+          {{item}}
+        </div>
+      </template>
+      <template v-slot:selected="{ toggleSelect, item }">
+        <div class="option option--selected">
+          {{item}}
+        </div>
+      </template>
+    </g-grid-select>
   </div>
 </template>
 
@@ -65,7 +95,9 @@
         ],
         selectedPrinterType: null,
         editableName: this.name,
-        listReceipt: []
+        listReceipt: [],
+        listFontSize: ['Mini', '1', '2', '3', 4],
+        listMarginSize: ['+ 0 Cm', '+ 1 Cm', '+ 2 Cm', '+ 3 Cm', '+ 4 Cm'],
       }
     },
     computed: {
@@ -123,7 +155,108 @@
           }
           await this.updatePrinter(this.printer._id, this.printer, this.id, this.index)
         }
-      }
+      },
+      oneReceiptForOneArticle: {
+        get() {
+          if(this.printer) {
+            return this.printer.oneReceiptForOneArticle
+          }
+          return false
+        },
+        async set(val) {
+          if(this.printer)
+            this.$set(this.printer, 'oneReceiptForOneArticle', val)
+          else {
+            this.printer = {
+              oneReceiptForOneArticle: val
+            }
+          }
+          await this.updatePrinter(this.printer._id, this.printer, this.id, this.index)
+        }
+      },
+      groupArticles: {
+        get() {
+          if(this.printer) {
+            return this.printer.groupArticles
+          }
+          return false
+        },
+        async set(val) {
+          if(this.printer)
+            this.$set(this.printer, 'groupArticles', val)
+          else
+            this.printer = {
+              groupArticles: val
+            }
+          await this.updatePrinter(this.printer._id, this.printer, this.id, this.index)
+        }
+      },
+      sound: {
+        get() {
+          if(this.printer) {
+            return this.printer.sound
+          }
+          return false
+        },
+        async set(val) {
+          if(this.printer)
+            this.$set(this.printer, 'sound', val)
+          else
+            this.printer = {
+              sound: val
+            }
+          await this.updatePrinter(this.printer._id, this.printer, this.id, this.index)
+        }
+      },
+      escPOS: {
+        get() {
+          if(this.printer) {
+            return this.printer.escPOS
+          }
+          return false
+        },
+        async set(val) {
+          if(this.printer)
+            this.$set(this.printer, 'escPOS', val)
+          else
+            this.printer = {
+              escPOS: val
+            }
+          await this.updatePrinter(this.printer._id, this.printer, this.id, this.index)
+        }
+      },
+      fontSize: {
+        get() {
+          if(this.printer) {
+            return this.printer.fontSize
+          }
+        },
+        async set(val) {
+          if(this.printer)
+            this.$set(this.printer, 'fontSize', val)
+          else
+            this.printer = {
+              fontSize: val
+            }
+          await this.updatePrinter(this.printer._id, this.printer, this.id, this.index)
+        }
+      },
+      marginTop: {
+        get() {
+          if(this.printer) {
+            return this.printer.marginTop
+          }
+        },
+        async set(val) {
+          if(this.printer)
+            this.$set(this.printer, 'marginTop', val)
+          else
+            this.printer = {
+              marginTop: val
+            }
+          await this.updatePrinter(this.printer._id, this.printer, this.id, this.index)
+        }
+      },
     },
     methods: {
       async select(type) {
@@ -192,7 +325,6 @@
 
 <style scoped lang="scss">
   .configuration {
-    width: 75%;
     padding-left: 32px;
 
     .title {
@@ -208,8 +340,8 @@
       padding: 16px 8px 12px;
 
       .printer {
-        width: calc(33% - 16px);
-        flex: 0 0 calc(33% - 16px);
+        width: calc(25% - 16px);
+        flex: 0 0 calc(25% - 16px);
         margin: 4px;
         display: flex;
         align-items: center;
@@ -217,7 +349,7 @@
         background: #F0F0F0;
         border: 1px solid #979797;
         border-radius: 2px;
-        padding: 16px;
+        padding: 8px 16px;
         color: #4D4D4E;
         font-size: 13px;
         line-height: 16px;
@@ -232,7 +364,7 @@
 
     .bs-tf-wrapper {
       width: 65%;
-      margin: 0;
+      margin: 0 0 0 4px;
 
       ::v-deep .bs-tf-label {
         font-weight: 700;
@@ -243,29 +375,46 @@
     .receipt-config {
       padding: 0 12px;
 
-      ::v-deep .g-col {
-        padding: 0;
-      }
-
       ::v-deep .g-switch-label {
         font-size: 13px;
       }
+    }
 
-      .option {
-        padding: 2px 8px;
-        text-align: center;
-        font-size: 13px;
-        font-style: italic;
-        border-radius: 2px;
-        border: 1px solid #E0E0E0;
-        min-width: 50px;
-        margin-right: 4px;
+    ::v-deep .g-col {
+      padding: 0;
+    }
 
-        &--selected {
-          border-color: #90CAF9;
-          background-color: #E3F2FD;
+    .switch-group {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      grid-auto-rows: 1fr;
+      grid-column-gap: 36px;
+      margin-left: 8px;
+
+      .g-switch-wrapper {
+        margin: 8px 4px;
+
+        ::v-deep .g-switch-label {
+          font-size: 13px;
         }
       }
     }
+
+    .option {
+      padding: 2px 8px;
+      text-align: center;
+      font-size: 13px;
+      font-style: italic;
+      border-radius: 2px;
+      border: 1px solid #E0E0E0;
+      min-width: 50px;
+      margin-right: 4px;
+
+      &--selected {
+        border-color: #90CAF9;
+        background-color: #E3F2FD;
+      }
+    }
+
   }
 </style>

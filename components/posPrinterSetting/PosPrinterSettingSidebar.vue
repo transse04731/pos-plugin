@@ -144,9 +144,8 @@
         })
         this.selectedPrinterMenu = this.printerSidebar[0].items[0]
       },
-      async deleteMenu() {
-        await this.deleteGroupPrinter(this.selectedPrinterMenu.id)
-        this.selectedPrinterMenu = this.printerSidebar[0].items[0]
+      deleteMenu() {
+        this.$getService('dialogConfirmDeletePrinterCategory:setActive')(true)
       },
       back() {
         this.$router.push({path: '/view/pos-dashboard'});

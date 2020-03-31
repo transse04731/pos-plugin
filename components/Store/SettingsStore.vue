@@ -689,6 +689,7 @@
       async deleteGroupPrinter(_id) {
         await cms.getModel('GroupPrinter').deleteOne({_id})
         await this.genPrinterSidebar()
+        this.selectedPrinterMenu = this.printerSidebar[0].items[0]
       },
       async updateGroupPrinterName(_id, name) {
         await cms.getModel('GroupPrinter').findOneAndUpdate({_id}, {name})
