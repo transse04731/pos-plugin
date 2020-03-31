@@ -141,7 +141,13 @@
         } else {
           // automatically select first category
           if (this.orderLayout.categories.length > 0) {
-            this.$emit('update:selectedCategoryLayout', _.first(this.orderLayout.categories))
+            // find tab-product at 0-0
+            const topLeftCategory = _.find(this.orderLayout.categories, c => c.top === 0 && c.left === 0)
+            if (topLeftCategory)
+              this.$emit('update:selectedCategoryLayout', topLeftCategory)
+            else
+              this.$emit('update:selectedCategoryLayout', _.first(this.orderLayout.categories))
+            
             if (this.editable && (!this.view || this.view.name !== 'CategoryEditor'))
               this.$emit('update:view', { name: 'CategoryEditor' })
           }
