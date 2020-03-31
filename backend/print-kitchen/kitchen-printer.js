@@ -17,7 +17,7 @@ module.exports = async function (cms) {
           if (!groupPrinter) return;
 
           const receiptKey = JSON.stringify({
-            groupPrinter: groupPrinter.name,
+            groupPrinter: groupPrinter,
             course: item.course,
             takeAway: item.takeAway
           })
@@ -83,7 +83,7 @@ module.exports = async function (cms) {
           items: value,
           table: order.table,
           printer: printer.name,
-          user: order.user.name,
+          user: _.last(order.user).name,
           course,
           time: dayjs(order.date).format('HH:mm')
         }

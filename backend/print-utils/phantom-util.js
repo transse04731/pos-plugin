@@ -36,7 +36,9 @@ module.exports = class PhantomUtil {
           //yield * injectPage();
           let pngBase64 = await page.invokeMethod('renderBase64', 'PNG');
           const png = PNG.sync.read(Buffer.from(pngBase64, 'base64'));
-          fs.writeFile(`${__dirname}/test.png`, pngBase64, 'base64', console.log);
+
+          // write png for debugging/previewing
+          // fs.writeFile(`${__dirname}/test.png`, pngBase64, 'base64', console.log);
           resolve(png);
         } catch (e) {
           reject(e);

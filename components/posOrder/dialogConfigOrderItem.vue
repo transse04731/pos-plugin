@@ -5,8 +5,8 @@
               slider-color="#1471ff" slider-size="3">
         <g-tab-item :item="tabItems[0]">
           <div class="modifier-content">
-            <g-text-field-bs required large v-model="modifier" label="Modifier" placeholder="Name"/>
-            <g-text-field-bs required :rules="rules" large v-model="price" label="Price" placeholder="Price"/>
+            <g-text-field-bs large v-model="modifier" label="Modifier" placeholder="Name"/>
+            <g-text-field-bs :rules="rules" large v-model="price" label="Price" placeholder="Price"/>
           </div>
         </g-tab-item>
         <g-tab-item :item="tabItems[1]">
@@ -62,7 +62,8 @@
     },
     methods: {
       addModifier() {
-        if (this.modifier && this.price && !isNaN(this.price))
+        if (!this.price) this.price = 0
+        if (this.modifier && !isNaN(this.price) && this.price >=0)
           this.$emit('addModifier', {name: this.modifier, price: +this.price})
         this.dialogConfigOrderItem = false
       },

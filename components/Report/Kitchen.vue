@@ -13,7 +13,7 @@
             <span>* {{mod.name}}</span> <span v-if="mod.price">${{mod.price | convertMoney}}</span>
           </div>
         </div>
-        <div v-show="item.separate">************************</div>
+        <div v-show="item.separate" style="font-size: 40px;">************************</div>
       </div>
     </div>
     <div class="divider-dashed"/>
@@ -78,6 +78,7 @@
     }
 
     .header {
+      margin-bottom: 20px;
 
       &-table {
         font-size: 35px;
@@ -92,15 +93,21 @@
       padding-left: 80px;
     }
 
-    .kitchen-item {
-      font-size: 40px;
+    .kitchen-items {
+      margin-top: 20px;
+      margin-bottom: 20px;
 
-      &-modifiers {
-        font-size: 30px;
+      .kitchen-item {
+        font-size: 40px;
+
+        &-modifiers {
+          font-size: 30px;
+        }
       }
     }
 
     .footer {
+      margin-top: 20px;
       font-size: 30px;
     }
   }
