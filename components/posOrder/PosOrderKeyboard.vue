@@ -183,7 +183,7 @@
           await this.queryProductsById()
           if (this.productIdQueryResults.length === 1) {
             const onlyResult = this.productIdQueryResults[0];
-            if (onlyResult.attributes.keys().length === onlyResult.attributes.length) {
+            if (onlyResult.attributes.length === 0 || onlyResult.attributes.keys().length === onlyResult.attributes.length) {
               this.addProductToOrder(onlyResult)
               return
             }
