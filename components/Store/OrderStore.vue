@@ -10,7 +10,7 @@
   export default {
     name: 'OrderStore',
     domain: 'OrderStore',
-    injectService: ['PosStore:(user, timeFormat, dateFormat)'],
+    injectService: ['PosStore:(user, timeFormat, dateFormat, device)'],
     data() {
       return {
         activeTableProduct: null,
@@ -108,18 +108,19 @@
 
           const latestProduct = _.last(this.currentOrder.items);
 
-          if (_.isEqual(_.omit(latestProduct, 'quantity', 'originalPrice'), _.omit(product, 'quantity'))) {
-            latestProduct.quantity = latestProduct.quantity + (product.quantity || 1);
+          if (_.isEqual(_.omit(latestProduct, 'quantity', 'originalPrice', 'course'), _.omit(product, 'quantity'))) {
+            if (latestProduct.course === 1) latestProduct.quantity = latestProduct.quantity + (product.quantity || 1);
           } else {
             // this.currentOrder.items.push(Object.assign({}, { quantity: 1 }, product))
             // replace (instead of mutate) to get old value in watcher for scrolling in order table
             this.currentOrder.items = [...this.currentOrder.items, Object.assign({}, product, {
               originalPrice: product.price,
-              quantity: product.quantity || 1
+              quantity: product.quantity || 1,
+              course: 1
             })]
           }
         } else {
-          this.currentOrder = { items: [Object.assign({}, { originalPrice: product.price, quantity: 1 }, product)] }
+          this.currentOrder = { items: [Object.assign({}, { originalPrice: product.price, quantity: 1, course: 1 }, product)] }
         }
       },
       addItemQuantity(item) {
@@ -457,6 +458,24 @@
       },
       updateOrderItems(items) {
         this.$set(this.currentOrder, 'items', items)
+      },
+      printKitchen() {
+        return new Promise((resolve, reject) => {
+          const order = Object.assign(this.currentOrder, {
+            user: this.user,
+            ...!this.currentOrder.date && { date: new Date() }
+          })
+          cms.socket.emit('printKitchen', {
+            order,
+            device: this.device
+          }, ({success, message, results}) => {
+            if (success) {
+              console.log(results)
+              resolve(results)
+            }
+            reject(message)
+          })
+        })
       }
       //<!--</editor-fold>-->
 

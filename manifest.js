@@ -39,6 +39,13 @@ module.exports = {
     },
     {
       loader: {
+        type: 'backend-api'
+      },
+      path: 'backend/print-kitchen/kitchen-printer.js',
+      type: 'backend'
+    },
+    {
+      loader: {
         type: 'css-loader'
       },
       path: 'style/pos.css'
@@ -84,6 +91,12 @@ module.exports = {
         type: 'ssr'
       },
       path: 'components/Report/ZReport.vue'
+    },
+    {
+      loader: {
+        type: 'ssr'
+      },
+      path: 'components/Report/Kitchen.vue'
     },
     {
       loader: {
