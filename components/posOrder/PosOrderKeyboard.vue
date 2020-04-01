@@ -4,7 +4,7 @@
       <input class="pos-keyboard-screen__input" v-model="productIdQuery"/>
       <g-icon v-if="productIdQuery" @click="clearScreen">icon-cancel</g-icon>
     </div>
-    <g-keyboard :template="keyboardTemplate" :items="keyboardItems" v-model="productIdQuery" @submit="openDialogProductSearchResults"/>
+    <g-keyboard :template="keyboardTemplate" :items="keyboardItems" v-model="productIdQuery" @submit="openDialogProductSearchResults" @edit="edit($event)"/>
   </div>
 </template>
 
@@ -41,39 +41,82 @@
     name: "PosOrderKeyboard",
     props: {
       keyboardConfig: Object,
-      x: {
-        type: Boolean,
-        default: true
+      mode: {
+        type: String,
+        default: 'active'
       }
     },
     injectService: ['OrderStore:(productIdQuery,queryProductsById,productIdQueryResults,addProductToOrder)'],
-    data() {
-      return {
-        leftsideItems: {
-          columns: 0,
-          rows: 0,
-          items: []
-        }
-      }
-    },
-    created() {
-      this.getLeftKeyboard()
-    },
     computed: {
       mainKeyboard() {
-        const keyboard = defaultKeyboard
-        if (!this.x) {
+        const keyboard = _.cloneDeep(defaultKeyboard)
+        if (!this.keyboardConfig.x) {
           const index = keyboard.items.findIndex(k => k.type === 'x')
-          keyboard.items.splice(index, 1)
-          keyboard.items.map(key => {
-            if (!key.type !== 'enter') return key
-            return {
-              ...key,
-              left: key.left - 1
-            }
-          })
+          if(index > 0) {
+            keyboard.items.splice(index, 1)
+            const enter = keyboard.items.find(k => k.type === 'enter')
+            enter.left--
+          }
         }
         return keyboard
+      },
+      leftsideItems() {
+        let keys = [], maxColumns = 0
+
+        for (let i = 0; i < this.keyboardConfig.layout.length; i++ ) {
+          const rows = this.keyboardConfig.layout[i].rows
+          if (maxColumns < rows.length) maxColumns = rows.length
+          for (let j = 0; j < rows.length; j++) {
+            if(rows[j] === ' ') {
+              if(this.mode === 'edit') {
+                keys.push({top: i+1, left: j+1, bottom: i+2, right: j+2, type: 'edit'})
+              }
+              continue
+            }
+            const existKey = keys.find(key => key.value === rows[j])
+            if(existKey && j+1 < existKey.right && j+1 >= existKey.left && i+1 < existKey.bottom && i+1 >= existKey.top) continue
+            const key = { top: i + 1, left: j + 1, bottom: i + 2, right: j + 2, value: rows[j]}
+            let k = j+1
+            //check duplicate in horizontal
+            while(k < rows.length) {
+              if(rows[k] === rows[j]) {
+                key.right++
+                k++;
+              } else {
+                break
+              }
+            }
+            k = i+1
+            //check duplicate in vertical
+            while(k < this.keyboardConfig.layout.length) {
+              const nextRows = this.keyboardConfig.layout[k].rows
+              if(nextRows[j] === rows[j]) {
+                let flag = false
+                if(key.right > key.left + 1) {
+                  for (let t = key.left; t < key.right; t++) {
+                    if(nextRows[t-1] !== rows[j]) {
+                      flag = true
+                      break
+                    }
+                  }
+                }
+                if(!flag) {
+                  key.bottom++
+                  k++
+                } else {
+                  break
+                }
+              } else {
+                break
+              }
+            }
+            if(this.mode === 'edit') {
+              key.type = 'edit'
+            }
+            keys.push(key)
+          }
+        }
+        return { items: keys, rows: this.keyboardConfig.layout.length, columns: maxColumns}
       },
       keyboardStyles() {
         let styles = {}
@@ -115,70 +158,26 @@
           return key
         })
         const extraItems = this.leftsideItems.items.map(item => ({
-          content: [item.value],
-          action: actionMap.insert,
-          style: `grid-area: ${item.top}/${item.left}/${item.bottom}/${item.right}`
+          content: item.value && [item.value],
+          action: item.type !== 'edit' && actionMap.insert,
+          style: `grid-area: ${item.top}/${item.left}/${item.bottom}/${item.right}`,
+          ... item.type === 'edit' && {
+            type: 'edit',
+            position: {top: item.top, left: item.left},
+            img: !item.value && 'order/add'
+          },
         }))
         return [...mainItems, ...extraItems]
       }
     },
     methods: {
-      getLeftKeyboard() {
-        let keys = [], maxColumns = 0
-
-        for (let i = 0; i < this.keyboardConfig.layout.length; i++ ) {
-          const rows = this.keyboardConfig.layout[i].rows
-          if (maxColumns < rows.length) maxColumns = rows.length
-          for (let j = 0; j < rows.length; j++) {
-            if(rows[j] === ' ') continue
-            const existKey = keys.find(key => key.value === rows[j])
-            if(existKey && j+1 < existKey.right && j+1 >= existKey.left && i+1 < existKey.bottom && i+1 >= existKey.top) continue
-            const key = { top: i + 1, left: j + 1, bottom: i + 2, right: j + 2, value: rows[j]}
-            let k = j+1
-            //check duplicate in horizontal
-            while(k < rows.length) {
-              if(rows[k] === rows[j]) {
-                key.right++
-                k++;
-              } else {
-                break
-              }
-            }
-            k = i+1
-            //check duplicate in vertical
-            while(k < this.keyboardConfig.layout.length) {
-              const nextRows = this.keyboardConfig.layout[k].rows
-              if(nextRows[j] === rows[j]) {
-                let flag = false
-                if(key.right > key.left + 1) {
-                  for (let t = key.left; t < key.right; t++) {
-                    if(nextRows[t-1] !== rows[j]) {
-                      flag = true
-                      break
-                    }
-                  }
-                }
-                if(!flag) {
-                  key.bottom++
-                  k++
-                } else {
-                  break
-                }
-              } else {
-                break
-              }
-            }
-            keys.push(key)
-          }
-        }
-        this.leftsideItems.items = keys
-        this.leftsideItems.rows = this.keyboardConfig.layout.length
-        this.leftsideItems.columns = maxColumns
-      },
       clearScreen() {
         this.productIdQuery = ''
       },
       async openDialogProductSearchResults() {
+        if(this.mode !== 'active') {
+          return
+        }
         if (this.productIdQuery.trim()) {
           await this.queryProductsById()
           if (this.productIdQueryResults.length === 1) {
@@ -193,6 +192,9 @@
           })
         }
       },
+      edit(position) {
+        this.$emit('edit:keyboard', position)
+      }
     }
   }
 </script>
@@ -201,6 +203,7 @@
   .pos-keyboard {
     display: grid;
     background-color: white;
+    z-index: 2;
 
     &-screen {
       background: #EEEEEE;

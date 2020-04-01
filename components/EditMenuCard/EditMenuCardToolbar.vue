@@ -5,6 +5,8 @@
       <g-btn-bs elevation="2" icon="icon-edit-menu-card-switch" @click="switchItem" :disabled="!switchable">Switch</g-btn-bs>
       <g-btn-bs elevation="2" icon="icon-edit-menu-card-copy" @click="copyItem" :disabled="!copyable">Copy</g-btn-bs>
       <g-btn-bs elevation="2" icon="icon-edit-menu-card-delete" @click="showDeleteConfirmDialog" :disabled="!deletable">Delete</g-btn-bs>
+      <g-spacer/>
+      <g-btn-bs elevation="2" icon="fas fa-calculator" @click="showKeyboardEditor">Edit Keyboard</g-btn-bs>
     </g-toolbar>
     
     <dialog-confirm-delete
@@ -268,6 +270,9 @@
       },
       hideDeleteConfirmDialog() {
         this.dialog.confirmDeleteProductLayout = false
+      },
+      showKeyboardEditor() {
+        this.$emit('update:view', { name: 'KeyboardEditor'})
       }
     }
   }

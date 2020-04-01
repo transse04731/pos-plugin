@@ -749,7 +749,11 @@
         await cms.getModel('GroupPrinter').deleteMany({name: {$regex: regex}, type: 'entire'})
         await this.genPrinterSidebar()
         this.selectedPrinterMenu = this.printerSidebar.find(s => s.title === 'General Setting')
-      }
+      },
+      //keyboard Config
+      async updateKeyboardConfig(keyboardConfig) {
+        await cms.getModel('PosSetting').findOneAndUpdate({}, { keyboardConfig })
+      },
     },
     provide() {
       return {

@@ -24,9 +24,10 @@
           <span style="transform: skewX(-15deg)" v-if="productLayout.product && productLayout.product.isModifier">{{ getProductName(productLayout) }}</span>
           <template v-else>{{ getProductName(productLayout) }}</template>
         </div>
-        <pos-order-keyboard v-if="showCalculator" :keyboard-config="keyboardConfig"/>
+        <pos-order-keyboard v-if="showCalculator" :keyboard-config="keyboardConfig" :mode="editable ? 'edit' : 'active'" @edit:keyboard="opendDialogEdit($event)"/>
       </div>
     </div>
+    <dialog-text-filter v-model="dialog.value" @submit="changeKeyboardExtension($event)"/>
   </div>
 </template>
 <script>
@@ -45,6 +46,7 @@
       selectedCategoryLayout: null,
       selectedProductLayout: null,
       productDblClicked: null,
+      keyboardConfig: null,
     },
     data() {
       return {
@@ -52,15 +54,11 @@
         isTouchEventHandled: null,
         doubleClicked: false,
         lastSelectMoment: null,
-        keyboardConfig: {
-          active: false,
-          top: 0,
-          left: 0,
-          width: 0,
-          height: 0,
-          onlyShowInFirstPage: false
-        },
-        highlightSelectedProduct: false
+        highlightSelectedProduct: false,
+        dialog: {
+          value: false,
+          position: {}
+        }
       }
     },
     computed: {
@@ -83,7 +81,11 @@
         }
       },
       showCalculator() {
-        if (!this.selectedCategoryLayout)
+        if (!this.selectedCategoryLayout || !this.keyboardConfig)
+          return false
+        //out of boundary
+        if(this.selectedCategoryLayout.rows <= this.keyboardConfig.top
+            || this.selectedCategoryLayout.columns <= this.keyboardConfig.left)
           return false
 
         let show = this.keyboardConfig.active
@@ -117,7 +119,11 @@
       },
     },
     async created() {
-      this.loadKeyboardConfig();
+      await this.loadKeyboardConfig();
+      await this.loadOrderLayout();
+    },
+    async activated() {
+      await this.loadKeyboardConfig();
       await this.loadOrderLayout();
     },
     watch: {
@@ -158,8 +164,9 @@
       async loadOrderLayout() {
         this.$emit('update:orderLayout', await cms.getModel('OrderLayout').findOne({}))
       },
-      loadKeyboardConfig() {
-        this.$set(this, 'keyboardConfig', cms.getList('PosSetting')[0].keyboardConfig)
+      async loadKeyboardConfig() {
+        const setting = await cms.getModel('PosSetting').findOne()
+        this.$emit('update:keyboardConfig', setting.keyboardConfig)
       },
       //
       fillMissingAreas(areas, columns, rows, isCategory) {
@@ -355,6 +362,17 @@
         return this.editable
           ? { click: () => this.onClick(productLayout), touchstart: () => this.onTouchStart(productLayout)}
           : { click: () => this.addProductToOrder(productLayout) }
+      },
+
+      opendDialogEdit(position) {
+        this.dialog.position = position
+        this.dialog.value = true
+      },
+      async changeKeyboardExtension(val) {
+        const config = Object.assign({}, this.keyboardConfig)
+        _.set(config, ['layout', this.dialog.position.top-1, 'rows', this.dialog.position.left-1], val)
+        await this.$getService('SettingsStore:updateKeyboardConfig')(config)
+        this.$emit('update:keyboardConfig', config)
       }
     }
   }
