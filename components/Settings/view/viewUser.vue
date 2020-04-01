@@ -167,7 +167,9 @@
       await this.getListUsers();
       this.selectedUser = this.listOfUsers[0]
     },
-    activated() {
+    async activated() {
+      if(this.listOfUsers.length === 0)
+        await this.getListUsers()
       this.selectedUser = this.listOfUsers[0]
     }
   }
