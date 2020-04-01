@@ -95,14 +95,14 @@
           if(receipt) {
             if(receipt.items) {
               for(const item of receipt.items) {
-                if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForReceiptPrinter) {
+                if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForEntirePrinter) {
                   item.slot = 'multiple'
                 } else {
                   item.slot = 'printer'
                 }
               }
             } else {
-              if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForReceiptPrinter) {
+              if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForEntirePrinter) {
                 receipt.slot = 'multiple'
               } else {
                 receipt.slot = 'printer'

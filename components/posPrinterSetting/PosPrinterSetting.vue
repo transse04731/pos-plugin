@@ -39,6 +39,7 @@
         </template>
       </g-grid-select>
     </div>
+    <g-divider class="mt-2" inset/>
     <div class="switch-group">
       <g-switch label="1 Receipt for 1 Article" v-model="oneReceiptForOneArticle" v-if="type === 'kitchen'"/>
       <g-switch label="Group Articles" v-model="groupArticles" v-if="type === 'kitchen'"/>
@@ -62,12 +63,12 @@
     <g-grid-select mandatory item-cols="auto" :items="listMarginSize" v-model="marginTop" style="margin-left: 12px; padding-top: 4px">
       <template v-slot:default="{ toggleSelect, item }">
         <div class="option" @click="toggleSelect(item)">
-          {{item}}
+          + {{item}} Cm
         </div>
       </template>
       <template v-slot:selected="{ toggleSelect, item }">
         <div class="option option--selected">
-          {{item}}
+          + {{item}} Cm
         </div>
       </template>
     </g-grid-select>
@@ -96,8 +97,8 @@
         selectedPrinterType: null,
         editableName: this.name,
         listReceipt: [],
-        listFontSize: ['Mini', '1', '2', '3', 4],
-        listMarginSize: ['+ 0 Cm', '+ 1 Cm', '+ 2 Cm', '+ 3 Cm', '+ 4 Cm'],
+        listFontSize: ['1', '2', '3'],
+        listMarginSize: [0, 1, 2, 3, 4],
       }
     },
     computed: {
