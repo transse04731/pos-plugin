@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="font-style: normal; font-weight: bold; font-size: 18px;" class="mb-2">Service & Open hours</div>
-    <div style="background-color: #FFF; border-radius: 5px; padding: 25px 25px 50px 25px;">
+    <div style="background-color: #FFF; border-radius: 5px; padding: 25px 25px 50px 25px;" class="mb-2">
       <div style="display: flex">
         <div style="font-style: normal; font-weight: bold; font-size: 15px;" class="mb-3">Open hours</div>
         <g-spacer/>
@@ -34,7 +34,7 @@
           </g-radio-group>
         </div>
         <div>
-          <div>Pick up</div>
+          <div>Allow pick-up</div>
           <g-radio-group v-model="pickup" row>
             <g-radio label="Yes" :value="true"/>
             <g-radio label="No" :value="false"/>

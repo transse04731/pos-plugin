@@ -1,12 +1,10 @@
 <template>
   <div style="height: 100vh; width: 100vw; display: flex;">
     <!-- sidebar -->
-    <div style="width: 300px">
-      <g-side-bar-tree-view
-          v-model="sidebar"
-          :data="sidebarItems"
-          @node-selected="onNodeSelected"/>
-    </div>
+    <pos-dashboard-sidebar
+        default-path="items.0"
+        :items="sidebarItems"
+        @node-selected="onNodeSelected"/>
     
     <!-- content -->
     <div style="background-color: #F4F7FB; flex: 1;">
