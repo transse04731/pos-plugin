@@ -1,48 +1,56 @@
 <template>
-  <g-sidebar medium>
+  <g-sidebar>
     <template v-slot:header>
       <div class="sidebar-header">
         <g-avatar size="40">
-          <g-img :src="srcImg"></g-img>
+          <g-img :src="srcImg"/>
         </g-avatar>
         <span class="username">{{userName}}</span>
+        <g-spacer/>
+        <span>{{ now }}</span>
       </div>
     </template>
-    <g-side-bar-tree-view :data="sideBarData" v-model="sidebar"></g-side-bar-tree-view>
-    <g-spacer></g-spacer>
-    <g-btn :uppercase="false" large text background-color="white" text-color="#424242" width="100%"
-           @click.stop="logout"
-    >
-      <g-icon svg>icon-logout</g-icon>
-      <span class="ml-2">{{ $t("dashboard.logOut") }}</span>
-    </g-btn>
+    <slot name="above-tree-view"/>
+    <g-side-bar-tree-view
+        ref="tree"
+        :item-children="itemChildren"
+        :data="items"
+        v-model="sidebar"
+        @node-selected="onNodeSelected"
+        @node-expansion-toggled="(path, toggled) => $emit('toggle', path, toggled)"/>
+    <slot name="above-spacer"/>
+    <g-spacer/>
+    <slot name="below-spacer"/>
+    <slot name="footer">
+      <g-btn :uppercase="false" large text background-color="white" text-color="#424242" width="100%" @click.stop="logout">
+        <g-icon svg>icon-logout</g-icon>
+        <span class="ml-2">Log Out</span>
+      </g-btn>
+    </slot>
   </g-sidebar>
 </template>
 
 <script>
+  import _ from 'lodash'
+
   export default {
     name: 'PosDashboardSidebar',
-    injectService: ['PosStore:user'],
+    injectService: [ 'PosStore:user' ],
     props: {
       title: {
         type: String,
         default: 'Admin'
       },
+      items: Array,
+      view: null,
+      defaultPath: null,
+      afterMountFn: null
     },
     data() {
-      const i18n = this.$i18n;
-      const {dashboard} = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
-
       return {
-        sideBarData: [
-          {
-            title: dashboard.dashboard, icon: 'mdi-cart-outline',
-            items: [
-              { title: dashboard.retail, icon: 'radio_button_unchecked', iconType: 'small' },
-            ]
-          }
-        ],
-        sidebar: ''
+        now: '',
+        sidebar: '',
+        selectedNode: null,
       }
     },
     computed: {
@@ -53,14 +61,38 @@
         return this.user ? this.user.avatar : ''
       }
     },
+    created() {
+      this.timerId = setInterval(() => this.now = dayjs().format('HH:mm'), 1000)
+    },
+    beforeDestroy() {
+      clearInterval(this.timerId)
+    },
+    mounted() {
+      if (this.defaultPath)
+        this.sidebar = this.defaultPath // 'item.0.item.0'
+      if (typeof(this.afterMountFn) === 'function')
+        this.afterMountFn()
+    },
+    watch: {
+      defaultPath(val) {
+        this.sidebar = val
+      }
+    },
     methods: {
+      itemChildren(node) {
+        if (node.children) {
+          return node.children.bind(this)();
+        }
+        return node.items;
+      },
+      onNodeSelected(node) {
+        this.selectedNode = node;
+        node.onClick && node.onClick.bind(this)();
+      },
       logout() {
         this.$router.push('/view/pos-login')
         this.user = null
       }
-    },
-    mounted() {
-      this.sidebar = "items.0.items.0";
     }
   }
 </script>
@@ -75,7 +107,7 @@
       line-height: 18px;
       font-weight: 600;
       color: #1d1d26;
-
+      
       .username {
         word-break: break-all;
         -webkit-line-clamp: 2;
@@ -88,7 +120,7 @@
       }
     }
   }
-
+  
   .g-treeview-wrapper ::v-deep .g-treeview-item.g-treeview__active {
     background: linear-gradient(9.78deg, #3949AB 0%, #4FC3F7 100%) !important;
     box-shadow: 0 1px 8px 1px rgba(28, 144, 196, 0.5);
@@ -96,7 +128,7 @@
     border-bottom-right-radius: 4px;
     margin-right: 8px;
   }
-
+  
   .g-btn ::v-deep .g-btn__content {
     justify-content: flex-start;
     color: #424242;
