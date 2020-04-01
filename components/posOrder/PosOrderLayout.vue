@@ -340,7 +340,8 @@
         if (product.isModifier) {
           this.$emit('addModifierToProduct', {
             name: product.name,
-            price: product.price
+            price: product.price,
+            quantity: 1
           })
         } else {
           this.$emit('addProductToOrder', product)

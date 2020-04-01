@@ -4,7 +4,7 @@
 
 <script>
   import orderUtil from '../logic/orderUtil';
-  import { getProductGridOrder, getLatestOrderId, getBookingNumber, getVDate } from '../logic/productUtils';
+  import { getBookingNumber, getLatestOrderId, getProductGridOrder, getVDate } from '../logic/productUtils';
   import { getProvided } from '../logic/commonUtils';
 
   export default {
@@ -230,7 +230,7 @@
           ? this.compactOrder(this.currentOrder.items)
           : _.cloneDeep(this.currentOrder.items)
 
-        const order = Object.assign({}, this.currentOrder, {
+        return Object.assign({}, this.currentOrder, {
           id,
           status: 'paid',
           takeOut: this.currentOrder.takeOut,
@@ -248,8 +248,7 @@
           vDiscount: this.paymentDiscount.toFixed(2),
           receive: parseFloat(this.paymentAmountTendered),
           cashback: this.paymentChange.toFixed(2)
-        })
-        return order;
+        });
       },
       async savePaidOrder(paymentMethod) {
         try {

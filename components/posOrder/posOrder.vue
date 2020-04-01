@@ -108,7 +108,7 @@
         })
       },
       addModifier(modifier) {
-        this.$emit('addModifierToProduct', modifier, this.dialogConfigOrderItem.product)
+        this.$emit('addModifierToProduct', {...modifier, quantity: 1}, this.dialogConfigOrderItem.product)
       },
       changePrice(price) {
         this.$emit('changePrice', price, this.dialogConfigOrderItem.product)
