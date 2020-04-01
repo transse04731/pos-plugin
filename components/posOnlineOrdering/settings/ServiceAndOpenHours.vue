@@ -9,13 +9,13 @@
       </div>
       <div v-for="(openHour, index) in openHours" :key="index"
            style="display: flex; align-items: center; background: #FAFAFA; border: 1px solid #EFEFEF; box-sizing: border-box; border-radius: 4px; height: 43px; margin-top: 6px; margin-bottom: 6px;">
-        <g-checkbox label="Monday" v-model="openHour.dayInWeeks[0]"/>
-        <g-checkbox label="Tuesday" v-model="openHour.dayInWeeks[1]"/>
-        <g-checkbox label="Wednesday" v-model="openHour.dayInWeeks[2]"/>
-        <g-checkbox label="Thursday" v-model="openHour.dayInWeeks[3]"/>
-        <g-checkbox label="Friday" v-model="openHour.dayInWeeks[4]"/>
-        <g-checkbox label="Saturday" v-model="openHour.dayInWeeks[5]"/>
-        <g-checkbox label="Sunday" v-model="openHour.dayInWeeks[6]"/>
+        <g-checkbox v-model="openHour.dayInWeeks[0]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[0] && !availableDays[0]" label="Monday"/>
+        <g-checkbox v-model="openHour.dayInWeeks[1]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[1] && !availableDays[1]" label="Tuesday"/>
+        <g-checkbox v-model="openHour.dayInWeeks[2]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[2] && !availableDays[2]" label="Wednesday"/>
+        <g-checkbox v-model="openHour.dayInWeeks[3]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[3] && !availableDays[3]" label="Thursday"/>
+        <g-checkbox v-model="openHour.dayInWeeks[4]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[4] && !availableDays[4]" label="Friday"/>
+        <g-checkbox v-model="openHour.dayInWeeks[5]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[5] && !availableDays[5]" label="Saturday"/>
+        <g-checkbox v-model="openHour.dayInWeeks[6]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[6] && !availableDays[6]" label="Sunday"/>
         <g-spacer/>
         <div style="background: #E0E0E0; border-radius: 37px 0 0 37px; padding: 0 10px; margin-right: 1px">{{openHour.openTime}}</div>
         <div style="background: #E0E0E0; border-radius: 0 37px 37px 0; padding: 0 10px">{{openHour.closeTime}}</div>
@@ -45,6 +45,8 @@
   </div>
 </template>
 <script>
+  import _ from 'lodash'
+  
   export default {
     name: 'ServiceAndOpenHours',
     props: {},
@@ -52,7 +54,8 @@
       return {
         delivery: true,
         pickup: false,
-        openHours: []
+        openHours: [],
+        availableDays: [true, true, true, true, true, true, true]
       }
     },
     computed: {},
@@ -65,7 +68,17 @@
         })
       },
       removeOpenHour(openHour) {
-      
+
+      },
+      updateAvailableDay() {
+        const availableDays = [true, true, true, true, true, true, true]
+        _.each(this.openHours, openHour => {
+          _.each(openHour.dayInWeeks, (checked, index) => {
+            if (checked)
+              availableDays[index] = false
+          })
+        })
+        this.availableDays.splice(0, this.availableDays.length, ...availableDays)
       }
     }
   }
