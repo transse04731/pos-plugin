@@ -11,6 +11,7 @@
       <div style="width: 80%; margin-left: 10%; margin-top: 55px;">
         <restaurant-information v-if="view === 'restaurant-info'"/>
         <service-and-open-hours v-if="view === 'service-and-open-hours'"/>
+        <setting-menu v-if="view === 'settings-menu'"/>
       </div>
     </div>
   </div>
@@ -18,9 +19,10 @@
 <script>
   import RestaurantInformation from './settings/RestaurantInformation';
   import ServiceAndOpenHours from './settings/ServiceAndOpenHours';
+  import SettingMenu from './settings/SettingMenu';
   export default {
     name: 'PosODSettings',
-    components: { ServiceAndOpenHours, RestaurantInformation },
+    components: { SettingMenu, ServiceAndOpenHours, RestaurantInformation },
     props: {},
     data: function () {
       return {
@@ -28,7 +30,6 @@
           { title: 'Basics', icon: '', onClick: () => this.view = 'restaurant-info' },
           { title: 'Service & Open hours', icon: '', onClick: () => this.view = 'service-and-open-hours' },
           { title: 'Menu', icon: '', onClick: () => this.view = 'menu' },
-          { title: 'Account', icon: '', onClick: () => this.view = 'account' },
         ],
         view: 'restaurant-info',
         sidebar: 'items.0',

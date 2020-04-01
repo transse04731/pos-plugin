@@ -6,28 +6,28 @@
         <div style="font-style: normal; font-weight: bold; font-size: 15px;" class="mb-3">Basic info</div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 2fr 1fr 1fr 1fr 1fr; grid-gap: 5px">
           <div style="grid-area: 1/1/2/2">
-            <cs-text label="Restaurant Name"/>
+            <g-text-field-bs label="Restaurant Name"/>
           </div>
           <div style="grid-area: 1/2/2/3">
-            <cs-text label="Restaurant Phone"/>
+            <g-text-field-bs label="Restaurant Phone"/>
           </div>
           <div style="grid-area: 2/1/3/3">
-            <cs-text label="Restaurant Address"/>
+            <g-text-field-bs label="Restaurant Address"/>
           </div>
           <div style="grid-area: 3/1/4/3">
-            <cs-text label="Zip code"/>
+            <g-text-field-bs label="Zip code"/>
           </div>
           <div style="grid-area: 4/1/5/3">
-            <cs-text label="Town/City"/>
+            <g-text-field-bs label="Town/City"/>
           </div>
           <div style="grid-area: 5/1/6/3">
-            <cs-text label="Country"/>
+            <g-text-field-bs label="Country"/>
           </div>
           <div style="grid-area: 6/1/7/3">
-            <cs-text label="Currency"/>
+            <g-text-field-bs label="Currency"/>
           </div>
           <div style="grid-area: 7/1/8/3">
-            <cs-text label="Time zone"/>
+            <g-text-field-bs label="Time zone"/>
           </div>
         </div>
       </div>
@@ -46,12 +46,10 @@
   </div>
 </template>
 <script>
-  import CsInput from '../common/CsInput/CsInput';
-  import CsText from '../common/CsInput/CsText';
   import UploadZone from '../common/UploadZone';
   export default {
     name: 'RestaurantInformation',
-    components: { UploadZone, CsText, CsInput },
+    components: { UploadZone },
     props: {},
     data: function () {
       return {}
