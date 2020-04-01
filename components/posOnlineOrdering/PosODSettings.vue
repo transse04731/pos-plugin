@@ -29,7 +29,7 @@
         sidebarItems: [
           { title: 'Basics', icon: '', onClick: () => this.view = 'restaurant-info' },
           { title: 'Service & Open hours', icon: '', onClick: () => this.view = 'service-and-open-hours' },
-          { title: 'Menu', icon: '', onClick: () => this.view = 'menu' },
+          { title: 'Menu', icon: '', onClick: () => this.view = 'settings-menu' },
         ],
         view: 'restaurant-info',
         sidebar: 'items.0',
