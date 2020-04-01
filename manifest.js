@@ -46,6 +46,13 @@ module.exports = {
     },
     {
       loader: {
+        type: 'backend-api'
+      },
+      path: 'backend/print-entire-receipt/entire-receipt-printer.js',
+      type: 'backend'
+    },
+    {
+      loader: {
         type: 'css-loader'
       },
       path: 'style/pos.css'

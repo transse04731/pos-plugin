@@ -1,13 +1,15 @@
 <template>
   <div class="kitchen-report-main-container">
-    <div class="header">
+    <div class="header" :style="wrapperStyle">
       <div class="header-table" v-if="table">Table: {{table}}</div>
       <div class="header-time text-end">{{time}}</div>
     </div>
     <div class="divider-dashed"/>
     <div class="kitchen-items">
       <div v-for="item in items">
-        <div class="kitchen-item">{{`${item.quantity} x   ${item.id}. ${item.name}`}}</div>
+        <div class="kitchen-item" :style="{fontSize: computedFontSize}">
+          {{`${item.quantity} x ${item.id}. ${item.name}`}}
+        </div>
         <div class="kitchen-item-modifiers" v-if="item.modifiers">
           <div v-for="mod in item.modifiers" class="inset">
             <span>* {{mod.name}}</span> <span v-if="mod.price">${{mod.price | convertMoney}}</span>
@@ -17,7 +19,8 @@
       </div>
     </div>
     <div class="divider-dashed"/>
-    <div class="footer text-center">{{`${printer} Printer - ${user}`}}</div>
+    <div class="footer text-center" v-if="isKitchenReceipt">{{`${printer} Printer - ${user}`}}</div>
+    <div class="footer text-center" v-else>Entire Receipt</div>
   </div>
 </template>
 
@@ -27,16 +30,35 @@
     props: {
       items: Array,
       table: String,
-      size: Number,
       printer: String,
       user: String,
-      time: String
+      time: String,
+      isKitchenReceipt: Boolean,
+      fontSize: Number,
+      marginTop: Number
     },
     filters: {
       convertMoney(value) {
         return !isNaN(value) ? value.toFixed(2) : value
       }
     },
+    computed: {
+      wrapperStyle() {
+        return { marginTop: `${Math.floor((this.marginTop || 0) * 71)}px` }
+      },
+      computedFontSize() {
+        if (this.fontSize === 1) {
+          return `${(this.fontSize - 1) * 5 + 40}px`
+        }
+        if (this.fontSize === 2) {
+          return `${(this.fontSize - 1) * 5 + 50}px`
+        }
+        if (this.fontSize === 3) {
+          return `${(this.fontSize - 1) * 5 + 60}px`;
+        }
+        return '40px'
+      }
+    }
   }
 </script>
 

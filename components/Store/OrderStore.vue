@@ -216,45 +216,52 @@
         this.productIdQuery = ''
         await this.getSavedOrders()
       },
+      async getMappedOrder(paymentMethod, useCompactOrder = true) {
+        const orderDateTime = new Date()
+        const id = await getLatestOrderId()
+        const taxGroups = _.groupBy(this.currentOrder.items, 'tax')
+        const vTaxGroups = _.map(taxGroups, (val, key) => ({
+          taxType: key,
+          tax: orderUtil.calOrderTax(val),
+          sum: orderUtil.calOrderTotal(val)
+        }))
+
+        const items = useCompactOrder
+          ? this.compactOrder(this.currentOrder.items)
+          : _.cloneDeep(this.currentOrder.items)
+
+        const order = Object.assign({}, this.currentOrder, {
+          id,
+          status: 'paid',
+          takeOut: this.currentOrder.takeOut,
+          items: this.getComputedOrderItems(items, orderDateTime),
+          user: this.currentOrder.user
+            ? [...this.currentOrder.user, { name: this.user.name, date: orderDateTime }]
+            : [{ name: this.user.name, date: orderDateTime }],
+          date: orderDateTime,
+          vDate: getVDate(orderDateTime),
+          bookingNumber: getBookingNumber(orderDateTime),
+          payment: [paymentMethod || { ...this.currentOrder.payment, value: this.paymentTotal }],
+          vSum: this.paymentTotal.toFixed(2),
+          vTax: this.paymentTax.toFixed(2),
+          vTaxGroups,
+          vDiscount: this.paymentDiscount.toFixed(2),
+          receive: parseFloat(this.paymentAmountTendered),
+          cashback: this.paymentChange.toFixed(2)
+        })
+        return order;
+      },
       async savePaidOrder(paymentMethod) {
         try {
           if (!this.currentOrder || !this.currentOrder.items.length) return
           const orderModel = cms.getModel('Order')
-          const orderDateTime = new Date()
-          const id = await getLatestOrderId()
-          const taxGroups = _.groupBy(this.currentOrder.items, 'tax')
-          const vTaxGroups = _.map(taxGroups, (val, key) => ({
-            taxType: key,
-            tax: orderUtil.calOrderTax(val),
-            sum: orderUtil.calOrderTotal(val)
-          }))
-
-          const order = Object.assign({}, this.currentOrder, {
-            id,
-            status: 'paid',
-            takeOut: this.currentOrder.takeOut,
-            items: this.getComputedOrderItems(this.currentOrder.items, orderDateTime),
-            user: this.currentOrder.user
-              ? [...this.currentOrder.user, { name: this.user.name, date: orderDateTime }]
-              : [{ name: this.user.name, date: orderDateTime }],
-            date: orderDateTime,
-            vDate: getVDate(orderDateTime),
-            bookingNumber: getBookingNumber(orderDateTime),
-            payment: [paymentMethod || { ...this.currentOrder.payment, value: this.paymentTotal }],
-            vSum: this.paymentTotal.toFixed(2),
-            vTax: this.paymentTax.toFixed(2),
-            vTaxGroups,
-            vDiscount: this.paymentDiscount.toFixed(2),
-            receive: parseFloat(this.paymentAmountTendered),
-            cashback: this.paymentChange.toFixed(2)
-          })
+          const order = await this.getMappedOrder(paymentMethod);
 
           const newOrder = this.currentOrder.status === 'inProgress'
             ? await orderModel.findOneAndUpdate({ _id: this.currentOrder._id }, order)
             : await orderModel.create(order);
           newOrder && this.printOrderReport(newOrder._id)
 
-          await this.printKitchen(order)
           await this.resetOrderData();
         } catch (e) {
           console.error(e)
@@ -279,9 +286,7 @@
         this.$set(this.currentOrder, 'hasOrderWideDiscount', true);
       },
       getComputedOrderItems(orderItems, date) {
-        const compactItems = this.compactOrder(orderItems)
-
-        return compactItems.map(item => {
+        return orderItems.map(item => {
           return {
             ..._.omit(item, 'category'),
             product: item._id,
@@ -393,7 +398,7 @@
 
         const order = Object.assign({}, this.currentOrder, {
           status: 'inProgress',
-          items: this.getComputedOrderItems(this.currentOrder.items, date),
+          items: this.getComputedOrderItems(this.compactOrder(this.currentOrder.items), date),
           date,
           vDate: getVDate(date),
           user: [{ name: this.user.name || '', date }],
@@ -418,7 +423,7 @@
       async quickCash() {
         this.lastPayment = +this.paymentTotal
         this.paymentAmountTendered = this.paymentTotal.toString()
-        await this.savePaidOrder({ type: 'cash', value: this.lastPayment });
+        await this.savePaidOrder({ type: 'cash', value: this.paymentTotal });
       },
       pay() {
         this.$router.push({ path: `/view/pos-payment` })
@@ -470,9 +475,44 @@
             reject(message)
           })
         })
+      },
+      printEntireReceipt(order) {
+        return new Promise((resolve, reject) => {
+          cms.socket.emit('printEntireReceipt',
+            { order, device: this.device },
+            ({ success, message, results }) => {
+              if (success) {
+                console.log(results)
+                resolve(results)
+              }
+              reject(message)
+            })
+        })
+      },
+      async saveRestaurantOrder(paymentMethod) {
+        try {
+          if (!this.currentOrder || !this.currentOrder.items.length) return
+          const orderModel = cms.getModel('Order')
+          const order = await this.getMappedOrder(paymentMethod, false)
+          const newOrder =  await orderModel.create(order);
+
+          if (newOrder) {
+            this.printKitchen(order)
+            this.printEntireReceipt(order)
+            this.printOrderReport(newOrder._id)
+          }
+
+          await this.resetOrderData();
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      async quickCashRestaurant() {
+        this.lastPayment = +this.paymentTotal
+        this.paymentAmountTendered = this.paymentTotal.toString()
+        await this.saveRestaurantOrder({ type: 'cash', value: this.paymentTotal });
       }
       //<!--</editor-fold>-->
-
     },
     async created() {
       await this.getScrollWindowProducts()
