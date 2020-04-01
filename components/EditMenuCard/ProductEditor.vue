@@ -365,9 +365,17 @@
 
     &__prop-grid {
       display: grid;
-      grid-template-columns: 60px 1fr;
+      grid-template-columns: 60px calc(100% - 60px);
       grid-auto-rows: 50px;
       align-items: center;
+
+      ::v-deep .bs-tf-input {
+        width: 100%;
+      }
+
+      .g-select ::v-deep .bs-tf-input {
+        width: 0;
+      }
     }
 
     &__label {

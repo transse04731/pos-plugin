@@ -11,7 +11,7 @@
     
     <dialog-confirm-delete
         v-model="dialog.confirmDeleteProductLayout"
-        :label="deleteProductLayoutMessage"
+        :type="deleteProductLayoutMessage"
         @submit="deleteItem(), hideDeleteConfirmDialog()"/>
   </div>
 </template>
@@ -39,7 +39,7 @@
 
         // confirm delete dialog
         // TODO: i18n
-        deleteProductLayoutMessage: 'Are you sure you want to delete this product?',
+        deleteProductLayoutMessage: ' this product',
         dialog: {
           confirmDeleteProductLayout: false,
         }
