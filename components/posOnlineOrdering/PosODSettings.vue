@@ -11,33 +11,34 @@
     <!-- content -->
     <div style="background-color: #F4F7FB; flex: 1;">
       <div style="width: 80%; margin-left: 10%; margin-top: 55px;">
-        <restaurant-information/>
+        <restaurant-information v-if="view === 'restaurant-info'"/>
+        <service-and-open-hours v-if="view === 'service-and-open-hours'"/>
       </div>
     </div>
   </div>
 </template>
 <script>
   import RestaurantInformation from './settings/RestaurantInformation';
+  import ServiceAndOpenHours from './settings/ServiceAndOpenHours';
   export default {
     name: 'PosODSettings',
-    components: { RestaurantInformation },
+    components: { ServiceAndOpenHours, RestaurantInformation },
     props: {},
     data: function () {
       return {
         sidebarItems: [
-          { title: 'Basics', icon: '', onClick: () => {} },
-          { title: 'Service & Open hours', icon: '', onClick: () => {} },
-          { title: 'Menu', icon: '', onClick: () => {} },
-          { title: 'Account', icon: '', onClick: () => {} },
+          { title: 'Basics', icon: '', onClick: () => this.view = 'restaurant-info' },
+          { title: 'Service & Open hours', icon: '', onClick: () => this.view = 'service-and-open-hours' },
+          { title: 'Menu', icon: '', onClick: () => this.view = 'menu' },
+          { title: 'Account', icon: '', onClick: () => this.view = 'account' },
         ],
-        sidebar: '',
-        selectedNode: null,
+        view: 'restaurant-info',
+        sidebar: 'items.0',
       }
     },
     computed: {},
     methods: {
       onNodeSelected(node) {
-        this.selectedNode = node;
         node.onClick && node.onClick.bind(this)();
       }
     }
