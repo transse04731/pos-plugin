@@ -97,7 +97,7 @@
         selectedPrinterType: null,
         editableName: this.name,
         listReceipt: [],
-        listFontSize: ['1', '2', '3'],
+        listFontSize: [1, 3, 3],
         listMarginSize: [0, 1, 2, 3, 4],
       }
     },
