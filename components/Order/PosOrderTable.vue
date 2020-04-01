@@ -42,7 +42,7 @@
   
           <div class="item-action">
             <g-icon @click.stop="removeItem(item)" style="margin-right: 3px;">remove_circle_outline</g-icon>
-            <span style="margin-right: 3px;">{{item.quantity || 1}}</span>
+            <span style="margin-right: 3px;">{{item.quantity}}</span>
             <g-icon @click.stop="addItem(item)">add_circle_outline</g-icon>
           </div>
         </div>
@@ -84,7 +84,7 @@
           <div class="order-item-summary order-item-summary--end" >
             <span>Shipping fee:</span>
             <g-spacer/>
-            <span>$1</span>
+            <span>{{ shippingFee | currency }}</span>
           </div>
         </div>
       </div>
@@ -92,7 +92,7 @@
     
     <!-- footer -->
     <div class="po-order-table__footer">
-      <div>Total: <span>{{ totalPrice | currency }}</span></div>
+      <div>Total: <span>{{ (totalPrice + shippingFee) | currency }}</span></div>
       <g-spacer/>
       <g-btn v-if="orderView" rounded background-color="#2979FF" text-color="#FFF" @click="view = 'confirm'">Payment</g-btn>
       <g-btn v-if="confirmView" rounded background-color="#2979FF" text-color="#FFF" @click="confirmPayment" :elevation="5">Confirm</g-btn>
@@ -104,14 +104,12 @@
   
   export default {
     name: 'PosOrderTable',
-    props: {
-      orderItems: Array,
-    },
     data: function () {
       return {
         view: 'order',
         orderType: 'delivery', // delivery || pick-up
         paymentType: 'cash', // cash || credit
+        shippingFee: 1,
         customer: {
           name: '',
           phone: '',
@@ -122,6 +120,7 @@
         }
       }
     },
+    injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems)'],
     filters: {
       currency(value) {
         return '$' + value
@@ -134,16 +133,15 @@
       hasMenuItem() { return this.orderItems.length > 0 },
       totalItems() { return this.orderItems.length },
       totalPrice() {
-        // TODO
-        return _.sumBy(this.orderItems, item => item.price * (item.quantity || 1))
+        return _.sumBy(this.orderItems, item => item.price * item.quantity)
       },
     },
     methods: {
       removeItem(item) {
-      
+        this.decreaseOrRemoveItems(item)
       },
       addItem(item) {
-      
+        this.increaseOrAddNewItems(item)
       },
       confirmPayment() {
       

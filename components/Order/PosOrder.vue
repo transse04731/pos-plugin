@@ -43,7 +43,7 @@
     </div>
     
     <!-- -->
-    <pos-order-table :order-items="orderItems"/>
+    <pos-order-table/>
   </div>
 </template>
 <script>
@@ -59,7 +59,6 @@
         categories: [],
         selectedCategoryId: null,
         selectedMenuItemId: null,
-        orderItems: []
       }
     },
     computed: {
@@ -96,7 +95,7 @@
         return cate._id === this.selectedCategoryId ? { fontWeight: 'bold', borderBottom: '2px solid #000', ...common } : { borderBottom: '2px solid transparent', ...common }
       },
       addItemToOrder(item) {
-        this.orderItems.push(item)
+        this.$getService('PosOnlineOrderStore').increaseOrAddNewItems(item)
       }
     }
   }
