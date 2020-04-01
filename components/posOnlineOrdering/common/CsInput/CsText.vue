@@ -1,6 +1,6 @@
 <template>
   <div class="cs-text">
-    <div class="mb-2">{{ label }}</div>
+    <div class="mb-2" style="font-size: 15px;">{{ label }}</div>
     <div class="cs-text__input row-flex align-items-center br-2">
       <cs-input ref="input" :type="internalType" :value="value" @input="oninput" @inputdebounce="onInputDebounce" :placeholder="internalPlaceHolder" @enterpressed="onenter"/>
       <span v-if="password" class="cs-text__toggle">
