@@ -84,8 +84,10 @@ module.exports = async function (cms) {
           table: order.table,
           printer: printer.name,
           user: _.last(order.user).name,
-          course,
-          time: dayjs(order.date).format('HH:mm')
+          time: dayjs(order.date).format('HH:mm'),
+          fontSize: printer.printers.fontSize,
+          marginTop: printer.printers.marginTop,
+          isKitchenReceipt: true
         }
 
         const component = new Vue({

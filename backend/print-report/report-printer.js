@@ -1,14 +1,7 @@
-const fs = require('fs');
 const Vue = require('vue');
-const PhantomUtil = require('./phantom-util');
-const phantomUtil = new PhantomUtil();
-const EscPrinter = require("./node-thermal-printer");
 const dayjs = require('dayjs')
 const _ = require('lodash')
-
-const renderer = require('vue-server-renderer').createRenderer({
-  template: fs.readFileSync(`${__dirname}/print-template.html`, 'utf-8')
-});
+const { renderer, print } = require('../print-utils/print-utils')
 
 module.exports = async function (cms) {
   cms.socket.on('connect', socket => {
@@ -249,26 +242,17 @@ module.exports = async function (cms) {
           callbackWithError(callback, err)
           return
         }
-        await print(html)
+        // get ip
+        const terminalSettings = await cms.getModel('Terminal').findOne({})
+        if (!terminalSettings) return
+        const printerIp = terminalSettings.thermalPrinters[0].ip
+        await print(html, printerIp)
+
         callback({success: true})
       })
     } catch (e) {
       callbackWithError(callback, e)
     }
-  }
-
-  async function print(html) {
-    const png = await phantomUtil.render(html); //TODO: remove fs.writeFile in render when testing is done
-    const terminalSettings = await cms.getModel('Terminal').findOne({})
-    if (!terminalSettings) return
-    const printerIp = terminalSettings.thermalPrinters[0].ip
-
-    const printer = new EscPrinter({
-      printerType: 'ip',
-      ip: printerIp,
-    });
-    printer.printPng(png);
-    await printer.print();
   }
 
   function callbackWithError(callback, error) {
