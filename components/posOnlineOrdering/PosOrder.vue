@@ -3,7 +3,7 @@
     <!-- -->
     <div class="pos-order__left">
       <div class="pos-order__left__header">
-        <img src="/plugins/pos-plugin/assets/logo.png"/>
+        <img src="/plugins/pos-plugin/assets/images/logo.png"/>
         <g-spacer/>
         <div>
           <div>

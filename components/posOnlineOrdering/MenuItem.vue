@@ -45,7 +45,7 @@
     },
     data() {
       return {
-        sampleImg: '/plugins/pos-plugin/assets/samples/sample.png',
+        sampleImg: '/plugins/pos-plugin/assets/images/product.png',
         dummyText: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been...',
         currencyUnit: '$',
         originalPriceStyle: {

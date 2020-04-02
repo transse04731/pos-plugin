@@ -2,7 +2,7 @@
   <div class="po-order-table">
     <div class="po-order-table__header">
       <!-- header image -->
-      <img src="/plugins/pos-plugin/assets/samples/image%205.png" class="po-order-table__header__image"/>
+      <img src="/plugins/pos-plugin/assets/images/header.png" class="po-order-table__header__image"/>
     </div>
   
     <div style="margin-left: 20px; margin-right: 20px">
