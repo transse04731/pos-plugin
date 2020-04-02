@@ -102,6 +102,22 @@
         await cms.getModel('Product').remove({_id})
         await this.loadProducts()
       }
+    },
+    provide() {
+      return {
+        createSetting: this.createSetting,
+        loadSetting: this.loadSetting,
+        changeRestaurantInfo: this.changeRestaurantInfo,
+        addNewOpenHours: this.addNewOpenHours,
+        updateOpenHours: this.updateOpenHours,
+        deleteOpenHour: this.deleteOpenHour,
+        changeDeliveryServiceStatus: this.changeDeliveryServiceStatus,
+        changePickUpServiceStatus: this.changePickUpServiceStatus,
+        addNewCategory: this.addNewCategory,
+        addNewProduct: this.addNewProduct,
+        updateProduct: this.updateProduct,
+        removeProduct: this.removeProduct,
+      }
     }
   }
 </script>
