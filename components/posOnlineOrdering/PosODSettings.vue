@@ -12,6 +12,7 @@
         <restaurant-information v-if="view === 'restaurant-info'"/>
         <service-and-open-hours v-if="view === 'service-and-open-hours'"/>
         <setting-menu v-if="view === 'settings-menu'"/>
+        <setting-tax v-if="view === 'settings-tax'"/>
       </div>
     </div>
   </div>
@@ -30,6 +31,7 @@
           { title: 'Basics', icon: '', onClick: () => this.view = 'restaurant-info' },
           { title: 'Service & Open hours', icon: '', onClick: () => this.view = 'service-and-open-hours' },
           { title: 'Menu', icon: '', onClick: () => this.view = 'settings-menu' },
+          { title: 'Tax', icon: '', onClick: () => this.view = 'settings-tax'}
         ],
         view: 'restaurant-info',
         sidebar: 'items.0',

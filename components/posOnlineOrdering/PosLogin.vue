@@ -6,16 +6,16 @@
         <a class="ref" @click="showSignUpView">Sign Up</a>
       </div>
       <div class="pos-login__input">
-        <cs-text label="Email" style="margin-bottom: 23px"
+        <g-text-field-bs label="Email" style="margin-bottom: 23px"
                  v-model="email" ref="email"/>
-        <cs-text password label="Password" style="margin-bottom: 14px"
+        <g-text-field-bs password label="Password" style="margin-bottom: 14px"
                  v-model="password"
                  @enterpressed="signIn"/>
         <div v-if="signInMessage" class="message message-sign-in">{{signInMessage}}</div>
         <div class="remember-forgot" style="margin-bottom: 36px">
           <g-checkbox label="Remember me" v-model="rememberSignIn"/>
         </div>
-        <cs-btn primary class="login-btn" @click="signIn">Log In</cs-btn>
+        <g-btn class="login-btn" @click="signIn">Log In</g-btn>
       </div>
     </template>
     <template v-else-if="signUpView">
@@ -23,23 +23,20 @@
       <div class="sub-title" style="margin-bottom: 41px">Already have Online Ordering account?
         <a class="ref" @click="showSignInView">Sign In</a></div>
       <div class="pos-login__input">
-        <cs-text label="Email" style="margin-bottom: 23px" v-model="email"/>
-        <cs-text password label="Password" style="margin-bottom: 24px" v-model="password"/>
-        <cs-text password label="Type your password again" style="margin-bottom: 29px" v-model="retypePassword"/>
+        <g-text-field-bs label="Email" style="margin-bottom: 23px" v-model="email"/>
+        <g-text-field-bs password label="Password" style="margin-bottom: 24px" v-model="password"/>
+        <g-text-field-bs password label="Type your password again" style="margin-bottom: 29px" v-model="retypePassword"/>
         <div v-if="signUpMessage" class="message message-sign-up">{{signUpMessage}}</div>
-        <cs-btn primary class="login-btn" @click="signUp">Sign Up</cs-btn>
+        <g-btn primary class="login-btn" @click="signUp">Sign Up</g-btn>
       </div>
     </template>
   </div>
 </template>
 <script>
-  import CsBtn from '../common/CsBtn';
-  import CsText from '../common/CsInput/CsText';
   import _ from 'lodash'
 
   export default {
     name: 'PosLogin',
-    components: { CsText, CsBtn },
     injectService: ['PosStore:(login,createUser)'],
     props: {},
     data: function () {
