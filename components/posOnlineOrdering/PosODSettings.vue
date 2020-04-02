@@ -1,10 +1,7 @@
 <template>
   <div style="height: 100vh; width: 100vw; display: flex;">
     <!-- sidebar -->
-    <pos-dashboard-sidebar
-        default-path="items.0"
-        :items="sidebarItems"
-        @node-selected="onNodeSelected"/>
+    <pos-dashboard-sidebar default-path="items.0" :items="sidebarItems" @node-selected="onNodeSelected"/>
     
     <!-- content -->
     <div style="background-color: #F4F7FB; flex: 1;">
@@ -31,10 +28,9 @@
           { title: 'Basics', icon: '', onClick: () => this.view = 'restaurant-info' },
           { title: 'Service & Open hours', icon: '', onClick: () => this.view = 'service-and-open-hours' },
           { title: 'Menu', icon: '', onClick: () => this.view = 'settings-menu' },
-          { title: 'Tax', icon: '', onClick: () => this.view = 'settings-tax'}
         ],
         view: 'restaurant-info',
-        sidebar: 'items.0',
+        sidebar: '',
       }
     },
     computed: {},
