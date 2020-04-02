@@ -6,13 +6,13 @@
   
   export default {
     name: 'PosOnlineOrderStore',
+    domain: 'PosOnlineOrderStore',
     props: {},
     data: function () {
       return {
         orderItems: []
       }
     },
-    domain: 'PosOnlineOrderStore',
     computed: {},
     methods: {
       increaseOrAddNewItems(item) {
@@ -43,5 +43,3 @@
     }
   }
 </script>
-<style scoped>
-</style>
