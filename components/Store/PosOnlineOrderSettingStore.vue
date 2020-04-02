@@ -19,6 +19,7 @@
       menuModel() {
         const categories = _.cloneDeep(this.categories)
         const products = _.cloneDeep(this.products)
+        // TODO: Collapse, expand state
         _.each(categories, cate => {
           cate.products = _.filter(products, p => p.category._id === cate._id)
         })
@@ -80,22 +81,26 @@
         await this.loadSetting()
       },
       async loadCategories() {
-        return await cms.getModel('Category').find({})
+        this.$set(this, 'categories', await cms.getModel('Category').find({}))
       },
       async loadProducts() {
-        return await cms.getModel('Product').find({})
+        this.$set(this, 'products', await cms.getModel('Product').find({}))
       },
       async addNewCategory(name) {
         await cms.getModel('Category').create({name})
+        await this.loadCategories()
       },
       async addNewProduct(product) {
         await cms.getModel('Product').create(product)
+        await this.loadProducts()
       },
       async updateProduct(_id, change) {
         await cms.getModel('Product').findOneAndUpdate({_id}, change)
+        await this.loadProducts()
       },
       async removeProduct(_id) {
         await cms.getModel('Product').remove({_id})
+        await this.loadProducts()
       }
     }
   }
