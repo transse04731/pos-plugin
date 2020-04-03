@@ -1,22 +1,35 @@
 <template>
   <div class="po-menu-item">
     <img draggable="false" :src="img || sampleImg" class="po-menu-item__thumbnail"/>
-    <div>
+    <div class="po-menu-item__content">
       <div class="po-menu-item__name">{{ name }}</div>
       <div class="po-menu-item__desc">{{ desc || dummyText }}</div>
+      <div class="po-menu-item__prices--under">
+        <div :class="price2 && 'po-menu-item__prices--discount'"> {{ price | currency }}</div>
+        <div v-if="price2"> {{ price2 | currency }}</div>
+      </div>
     </div>
     <g-spacer/>
     <div class="po-menu-item__prices">
-      <div :style="priceStyle"> {{ price | currency }}</div>
-      <div v-if="price2" :style="price2Style"> {{ price2 | currency }}</div>
+      <div :class="price2 && 'po-menu-item__prices--discount'"> {{ price | currency }}</div>
+      <div v-if="price2"> {{ price2 | currency }}</div>
     </div>
-    <g-btn rounded icon
-           max-height="25"
-           max-width="25"
-           @click="$emit('menu-item-selected', _id)"
+    <g-icon @click="addToOrder"
+            size="28" color="#424242"
            class="po-menu-item__add">
-      <g-icon>add</g-icon>
-    </g-btn>
+      add_circle
+    </g-icon>
+    <div class="po-menu-item__action">
+      <g-icon @click="addToOrder" v-if="quantity === 0"
+              size="28" color="#424242">
+        add_circle
+      </g-icon>
+      <template v-else>
+        <g-icon @click.stop="decreaseQuantity" color="#424242" size="28">remove_circle_outline</g-icon>
+        <span>{{quantity}}</span>
+        <g-icon @click.stop="increaseQuantity" color="#424242" size="28">add_circle</g-icon>
+      </template>
+    </div>
   </div>
 </template>
 <script>
@@ -28,7 +41,8 @@
       name: String,
       desc: String,
       price: [Number, String],
-      price2: [Number, String]
+      price2: [Number, String],
+      quantity: Number,
     },
     filters: {
       currency: function(value) {
@@ -36,34 +50,23 @@
       }
     },
     computed: {
-      priceStyle() {
-        return this.price2 ? this.originalPriceStyle : this.discountedPriceStyle
-      },
-      price2Style() {
-        if (this.price2) return this.discountedPriceStyle
-      }
     },
     data() {
       return {
         sampleImg: '/plugins/pos-plugin/assets/images/product.png',
         dummyText: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been...',
         currencyUnit: '$',
-        originalPriceStyle: {
-          'font-family': 'Muli',
-          'font-style': 'italic',
-          'font-weight': 'normal',
-          'font-size': '14px',
-          'line-height': '18px',
-          'text-decoration-line': 'line-through',
-          'color': '#757575'
-        },
-        discountedPriceStyle: {
-          'font-family': 'Muli',
-          'font-style': 'italic',
-          'font-weight': 'bold',
-          'font-size': '18px',
-          'color': '#2979FF'
-        }
+      }
+    },
+    methods: {
+      addToOrder() {
+        this.$emit('menu-item-selected', this._id)
+      },
+      decreaseQuantity() {
+        this.$emit('decrease', this._id)
+      },
+      increaseQuantity() {
+        this.$emit('increase', this._id)
       }
     }
   }
@@ -73,7 +76,7 @@
     display: flex;
     align-items: center;
     height: 95px;
-    border-bottom: 1px solid #424242;
+    border-bottom: 1px solid rgba(204, 204, 204, 0.4);
     
     &__thumbnail {
       border-radius: 15px;
@@ -83,21 +86,24 @@
     }
     
     &__name {
-      font-family: Muli;
-      color: #000000;
-      font-style: normal;
       font-weight: bold;
       font-size: 18px;
       line-height: 23px;
     }
+
+    &__content {
+      margin-right: 16px;
+    }
     
     &__desc {
-      font-family: Muli;
-      font-style: normal;
-      font-weight: normal;
       font-size: 14px;
       color: #757575;
       max-width: 350px;
+      word-break: break-all;
+      -webkit-line-clamp: 2;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
     
     &__prices {
@@ -105,12 +111,74 @@
       flex-direction: column;
       align-items: flex-start;
       justify-content: center;
+      font-size: 18px;
+      color: #2979ff;
+      font-weight: 700;
+
+      &--discount {
+        font-size: 14px;
+        font-weight: 400;
+        color: #757575;
+        text-decoration: line-through;
+      }
+
+      &--under {
+        display: none;
+        font-size: 14px;
+        color: #2979ff;
+        font-weight: 700;
+        margin-top: 4px;
+      }
     }
     
     &__add {
       margin-left: 10px;
       margin-right: 30px;
-      box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1398);
+    }
+
+    &__action {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 600px) {
+    .po-menu-item {
+      &__content {
+        line-height: 1;
+      }
+
+      &__thumbnail {
+        width: 60px;
+        height: 60px;
+      }
+
+      &__name {
+        font-size: 14px;
+      }
+
+      &__desc {
+        font-size: 13px;
+      }
+
+      &__prices {
+        display: none;
+
+        &--under {
+          display: flex;
+        }
+      }
+
+      &__add {
+        display: none;
+      }
+
+      &__action {
+        flex: 0 0 20%;
+        display: flex;
+        align-self: flex-end;
+        margin-bottom: 8px;
+        justify-content: flex-end;
+      }
     }
   }
 </style>
