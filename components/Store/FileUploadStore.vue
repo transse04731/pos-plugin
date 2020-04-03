@@ -34,8 +34,7 @@
             openUploadFileDialog({ multiple: false, mimeType: 'image/*' }, files => {
               this.showFileUploadProgressDialog = true
               this.uploadingItems.push(this.gridFsHandler.uploadFile(files[0], '/', fileMetaData => {
-                console.log('file metadata', fileMetaData)
-                resolve(fileMetaData)
+                resolve(`http://localhost:8888/cms-files/file/${fileMetaData.fileSource}`)
               }))
             })
           } catch(e) {
