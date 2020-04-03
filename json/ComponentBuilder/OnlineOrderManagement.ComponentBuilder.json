@@ -1,0 +1,21 @@
+{
+  "events": [],
+  "_id": "5e872202b7d55416eae08171",
+  "isProduction": true,
+  "items": [
+    {
+      "choice": "view",
+      "component": "PosManagement",
+      "binding": [],
+      "slotScopeBinding": [],
+      "url": "plugins/pos-plugin/components/posOnlineOrdering/posManagement/PosManagement.vue",
+      "path": "components/posOnlineOrdering/posManagement/PosManagement.vue",
+      "pluginName": "pos-plugin"
+    }
+  ],
+  "name": "OnlineOrderManagement",
+  "props": {
+    "fields": []
+  },
+  "renderToRoute": "od-management"
+}
