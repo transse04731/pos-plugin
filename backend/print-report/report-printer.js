@@ -76,14 +76,7 @@ module.exports = async function (cms) {
       }
     })
 
-    renderer.renderToString(component, {}, async (err, html) => {
-      if (err) {
-        callbackWithError(callback, err)
-        return
-      }
-      await print(html)
-      callback({success: true})
-    })
+    printReport(component, callback)
   }
 
   async function zReportHandler({z}, callback) {
@@ -158,14 +151,7 @@ module.exports = async function (cms) {
       }
     })
 
-    renderer.renderToString(component, {}, async (err, html) => {
-      if (err) {
-        callbackWithError(callback, err)
-        return
-      }
-      await print(html)
-      callback({success: true})
-    })
+    printReport(component, callback)
   }
 
   async function monthlyReportHandler(report, callback) {
@@ -178,14 +164,7 @@ module.exports = async function (cms) {
       }
     })
 
-    renderer.renderToString(component, {}, async (err, html) => {
-      if (err) {
-        callbackWithError(callback, err)
-        return
-      }
-      await print(html)
-      callback({success: true})
-    })
+    printReport(component, callback)
   }
 
   async function staffReportHandler(report, callback) {
@@ -197,14 +176,7 @@ module.exports = async function (cms) {
       }
     })
 
-    renderer.renderToString(component, {}, async (err, html) => {
-      if (err) {
-        callbackWithError(callback, err)
-        return
-      }
-      await print(html)
-      callback({ success: true })
-    })
+    printReport(component, callback)
   }
 
   async function xReportHandler({from, to}, callback) {
@@ -237,22 +209,29 @@ module.exports = async function (cms) {
         }
       })
 
-      renderer.renderToString(component, {}, async (err, html) => {
-        if (err) {
-          callbackWithError(callback, err)
-          return
-        }
-        // get ip
-        const terminalSettings = await cms.getModel('Terminal').findOne({})
-        if (!terminalSettings) return
-        const printerIp = terminalSettings.thermalPrinters[0].ip
-        await print(html, printerIp)
-
-        callback({success: true})
-      })
+      printReport(component, callback)
     } catch (e) {
       callbackWithError(callback, e)
     }
+  }
+
+  function printReport(component, callback) {
+    renderer.renderToString(component, {}, async (err, html) => {
+      if (err) {
+        callbackWithError(callback, err)
+        return
+      }
+      // get ip
+      const groupPrinters = await cms.getModel('GroupPrinter').aggregate([
+        { $unwind: { path: '$printers' } },
+        { $match: { 'printers.hardwares': device, 'type': 'kitchen' } },
+      ])
+      if (!groupPrinters) return
+      const printerIp = printer.printers.ip
+      await print(html, printerIp)
+
+      callback({success: true})
+    })
   }
 
   function callbackWithError(callback, error) {
