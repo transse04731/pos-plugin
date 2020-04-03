@@ -35,11 +35,11 @@
         <div style="font-style: normal; font-weight: bold; font-size: 15px;" class="mb-3">Upload photo</div>
         <div class="mb-5">
           <div class="mb-2" style="font-size: 15px">Image</div>
-          <upload-zone/>
+          <upload-zone @url="saveImage"/>
         </div>
         <div>
           <div class="mb-2" style="font-size: 15px">Logo</div>
-          <upload-zone/>
+          <upload-zone @url="saveLogo"/>
         </div>
       </div>
     </div>
@@ -55,7 +55,15 @@
       return {}
     },
     computed: {},
-    methods: {}
+    methods: {
+      async saveImage(url) {
+        debugger
+        await this.$getService('PosOnlineOrderSettingStore').changeRestaurantInfo({ orderHeaderImageSrc: url })
+      },
+      async saveLogo(url) {
+        await this.$getService('PosOnlineOrderSettingStore').changeRestaurantInfo({ logoImageSrc: url })
+      }
+    }
   }
 </script>
 <style scoped>
