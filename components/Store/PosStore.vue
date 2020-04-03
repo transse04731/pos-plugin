@@ -28,7 +28,6 @@
     },
     domain: 'PosStore',
     methods: {
-      //<!--<editor-fold desc="Login screen">-->
       async login(username, password, errCb) {
         cms.login(username, password, '/view/pos-od-management').then(() => {
           console.log('Login success.')
@@ -37,13 +36,6 @@
         })
         this.incorrectPasscode = true
       },
-      resetIncorrectPasscodeFlag() {
-        if (this.incorrectPasscode) {
-          this.incorrectPasscode = false
-        }
-      },
-      //<!--</editor-fold>-->
-      //Layout config views
       logout(cb) {
         cms.logout()
         document.cookie = ''
@@ -51,9 +43,7 @@
       }
     },
     async created() {
-      this.user = cms.getList('PosSetting')[0].user[0]
       this.setDateInterval = setInterval(() => this.systemDate = new Date(), 10000)
-
       const i18nConfig = cms.getList('SystemConfig').find(i => i.type === 'I18n')
       if (i18nConfig) {
         this.locale = i18nConfig.content.locale
