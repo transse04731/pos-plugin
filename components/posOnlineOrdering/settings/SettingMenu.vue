@@ -33,30 +33,9 @@
           <template v-if="cate.showProducts">
             <div style="border-bottom: 1px solid #E0E0E0">
               <!-- product panels -->
-              <template v-if="cate.products && cate.products.length">
-                <div v-for="(product, index) in cate.products" :key="index"
-                     style="display: grid; grid-template-columns: 40px 106px 1fr 50px; grid-gap: 15px; height: 160px; background-color: #fff; align-items: center; border-bottom: 1px solid #E0E0E0">
-                  <div style="text-align: center">{{ index + 1 }}</div>
-                  <img :src="product.image" style="width: 106px; height: 106px;"/>
-                  <div style="height: 106px">
-                    <div style="display: flex; font-weight: bold; font-size: 15px;" class="mb-3">
-                      <span>{{product.name}}</span>
-                      <g-spacer/>
-                      <span>{{product.price | currency}}</span>
-                    </div>
-                    <div style="font-size: 14px; font-style: italic; color: #757575; max-width: 400px;">
-                      {{product.desc}}
-                    </div>
-                  </div>
-                  <div style="display: flex; flex-direction: column; justify-content: flex-end; height: 106px">
-                    <div style="background: #616161; border-radius: 2px; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center" class="mb-1">
-                      <g-icon color="#FFF" small>edit</g-icon>
-                    </div>
-                    <div style="background: #616161; border-radius: 2px; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center">
-                      <g-icon color="#FFF" small>delete</g-icon>
-                    </div>
-                  </div>
-                </div>
+              <template v-if="cate.products && cate.products.length"
+                        v-for="(product, index) in cate.products">
+                <setting-menu-item v-bind="product" :index="index"/>
               </template>
               <!-- empty product -->
               <div v-else style="height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #fff;">
@@ -65,23 +44,19 @@
               </div>
               <!-- add new panel -->
               <div v-if="addNewProductPanel">
-                <div>{{ cate.products.length }}</div>
-                <img :src="product.image"/>
-                <div>
-                  <div>
-                    <span>{{product.name}}</span>
-                    <span>{{product.price | currency}}</span>
-                  </div>
-                  <div>
-                    {{product.desc}}
-                  </div>
-                </div>
+                <setting-new-menu-item
+                    :index="cate.products.length"
+                    @cancel="addNewProductPanel = false"
+                    @save="addNewProduct($event)"/>
               </div>
             </div>
             
             <!-- Add New Product activator -->
             <div style="height: 40px; background-color: #fff; display: flex; align-items: center; justify-content: center;">
-              <div @click="addNewProductPanel = true" style="color: #2979FF; font-weight: bold; font-size: 15px; cursor: pointer;">+ Add New Item</div>
+              <g-btn text
+                     @click="addNewProductPanel = true"
+                     :disabled="addNewProductPanel"
+                     style="color: #2979FF; font-weight: bold; font-size: 15px;">+ Add New Item</g-btn>
             </div>
           </template>
         </div>
@@ -91,9 +66,11 @@
 </template>
 <script>
   import TableExpansionRow from '../../Order/components/TableExpansionRow';
+  import SettingNewMenuItem from './SettingNewMenuItem';
+  import SettingMenuItem from './SettingMenuItem';
   export default {
     name: 'SettingMenu',
-    components: { TableExpansionRow },
+    components: { SettingMenuItem, SettingNewMenuItem, TableExpansionRow },
     props: {},
     data: function () {
       return {
@@ -107,20 +84,23 @@
             products: [
               {
                 name: 'Prime Beef',
-                image: '/plugins/pos-plugin/assets/samples/sample.png',
+                image: '/plugins/pos-plugin/assets/images/product.png',
                 desc: 'Mozzarella cheese, Pizza Sauce, Onion, Tomato, Cheese Sauce, Meat ball, Mexico Beef',
+                tax: 7,
                 price: 7.99,
               },
               {
                 name: 'Prime Beef',
-                image: '/plugins/pos-plugin/assets/samples/sample.png',
+                image: '/plugins/pos-plugin/assets/images/product.png',
                 desc: 'Mozzarella cheese, Pizza Sauce, Onion, Tomato, Cheese Sauce, Meat ball, Mexico Beef',
+                tax: 7,
                 price: 7.99,
               },
               {
                 name: 'Prime Beef',
-                image: '/plugins/pos-plugin/assets/samples/sample.png',
+                image: '/plugins/pos-plugin/assets/images/product.png',
                 desc: 'Mozzarella cheese, Pizza Sauce, Onion, Tomato, Cheese Sauce, Meat ball, Mexico Beef',
+                tax: 7,
                 price: 7.99,
               }
             ]
@@ -141,18 +121,18 @@
         }
       }
     },
-    filters: {
-      currency(value) {
-        return '$' + value
-      }
-    },
+
     computed: {},
     methods: {
       addNewCategory() {
       
       },
+      addNewProduct({ name, desc, price, tax }) {
+        // TODO: Add new product
+        // extra info: restaurent id
+      },
       deleteProduct() {
-      
+        //
       }
     }
   }
