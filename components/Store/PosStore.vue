@@ -29,15 +29,12 @@
     domain: 'PosStore',
     methods: {
       //<!--<editor-fold desc="Login screen">-->
-      async login(username, password) {
-        try {
-          this.user = await cms.getModel('User').findOne({ username, password })
-          if (this.user) {
-            return this.$router.push({ path: `/view/pos-dashboard` })
-          }
-        } catch (e) {
-          console.error(e)
-        }
+      async login(username, password, errCb) {
+        cms.login(username, password, '/view/pos-od-management').then(() => {
+          console.log('Login success.')
+        }).catch(err => {
+          errCb && errCb(err.response.data.message)
+        })
         this.incorrectPasscode = true
       },
       resetIncorrectPasscodeFlag() {
