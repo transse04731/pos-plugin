@@ -1,33 +1,33 @@
 <template>
   <div class="pos-login">
     <template v-if="signInView">
-      <div class="title" style="margin-bottom: 41px">Welcome Back</div>
+      <div class="title">Welcome Back</div>
       <div class="sub-title">New to Online Ordering?
         <a class="ref" @click="showSignUpView">Sign Up</a>
       </div>
       <div class="pos-login__input">
-        <g-text-field-bs label="Email" style="margin-bottom: 23px"
+        <g-text-field-bs label="Email" rounded border-color="white" large class="mb-4" placeholder="Your email"
                  v-model="email" ref="email"/>
-        <g-text-field-bs password label="Password" style="margin-bottom: 14px"
-                 v-model="password"
-                 @enterpressed="signIn"/>
+        <g-text-field-bs type="password" label="Password" rounded border-color="white" large placeholder="Your password"
+                 v-model="password" @enterpressed="signIn"/>
         <div v-if="signInMessage" class="message message-sign-in">{{signInMessage}}</div>
-        <div class="remember-forgot" style="margin-bottom: 36px">
-          <g-checkbox label="Remember me" v-model="rememberSignIn"/>
+        <div class="remember-forgot">
+          <g-checkbox label="Remember me" v-model="rememberSignIn" color="white"/>
+          <a>Forgot Password?</a>
         </div>
-        <g-btn class="login-btn" @click="signIn">Log In</g-btn>
+        <g-btn-bs class="login-btn" rounded large background-color="#1271ff" @click="signIn">Log In</g-btn-bs>
       </div>
     </template>
     <template v-else-if="signUpView">
-      <div class="title" style="margin-bottom: 25px">Create Your Account</div>
+      <div class="title">Create Your Account</div>
       <div class="sub-title" style="margin-bottom: 41px">Already have Online Ordering account?
         <a class="ref" @click="showSignInView">Sign In</a></div>
       <div class="pos-login__input">
-        <g-text-field-bs label="Email" style="margin-bottom: 23px" v-model="email"/>
-        <g-text-field-bs password label="Password" style="margin-bottom: 24px" v-model="password"/>
-        <g-text-field-bs password label="Type your password again" style="margin-bottom: 29px" v-model="retypePassword"/>
+        <g-text-field-bs label="Email" large rounded border-color="white" class="mb-4" v-model="email"/>
+        <g-text-field-bs type="password" label="Password" large rounded border-color="white" class="mb-4" v-model="password"/>
+        <g-text-field-bs type="password" label="Type your password again" large rounded border-color="white" v-model="retypePassword"/>
         <div v-if="signUpMessage" class="message message-sign-up">{{signUpMessage}}</div>
-        <g-btn primary class="login-btn" @click="signUp">Sign Up</g-btn>
+        <g-btn-bs large rounded background-color="#1271ff" class="login-btn" @click="signUp">Sign Up</g-btn-bs>
       </div>
     </template>
   </div>
@@ -100,27 +100,41 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     width: 100vw;
     height: 100vh;
-    background: url('/plugins/pos-plugin/assets/samples/login-bg.png');
+    background: url('/plugins/pos-plugin/assets/images/login-bg.png');
     background-size: cover;
+    color: white;
 
     &__input {
       width: 409px;
       margin-bottom: 14px;
     }
+
+    ::v-deep .g-checkbox-label,
+    ::v-deep .g-checkbox-checkmark:before {
+      color: white;
+    }
+
+    ::v-deep .bs-tf-inner-input-group {
+      .bs-tf-input {
+        background: transparent;
+        color: white;
+      }
+
+      .g-icon {
+        color: white
+      }
+    }
   }
 
   .title {
-    font-family: Muli, sans-serif;
-    font-style: normal;
     font-weight: 300;
     font-size: 56px;
   }
 
   .sub-title {
-    font-family: Muli, sans-serif;
-    font-style: normal;
     font-weight: 300;
     font-size: 18px;
     margin-bottom: 65px;
@@ -129,6 +143,8 @@
   .ref {
     color: #536DFE;
     cursor: pointer;
+    text-decoration: underline;
+    font-weight: 700;
   }
 
   .remember-forgot {
@@ -138,7 +154,8 @@
   }
 
   .login-btn {
-    width: 100%;
+    width: calc(100% - 10px);
+    margin: 36px 5px;
   }
 
   .message {
