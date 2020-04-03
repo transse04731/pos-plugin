@@ -27,6 +27,8 @@
     },
     async created() {
       await this.loadSetting()
+      await this.loadCategories()
+      await this.loadProducts()
     },
     methods: {
       async createSetting() {
@@ -49,7 +51,8 @@
         })
       },
       async loadSetting() {
-        this.$set(this, 'setting', ...await cms.getModel('PosOnlineOrderSetting').findOne({}))
+        const setting = await cms.getModel('PosOnlineOrderSetting').findOne({})
+        this.$set(this, 'setting', setting)
       },
       async changeRestaurantInfo(change) {
         await cms.getModel('PosOnlineOrderSetting').findOneAndUpdate({_id: this.setting._id}, change)
