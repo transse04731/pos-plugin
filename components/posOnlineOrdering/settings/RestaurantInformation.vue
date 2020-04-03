@@ -46,7 +46,7 @@
   </div>
 </template>
 <script>
-  import UploadZone from '../common/UploadZone';
+  import UploadZone from './UploadZone';
   export default {
     name: 'RestaurantInformation',
     components: { UploadZone },

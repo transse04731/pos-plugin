@@ -1,5 +1,5 @@
 <template>
-  <div style="padding: 20px; border: 1px dashed #9E9E9E; border-radius: 2px; height: 244px;">
+  <div style="padding: 20px; border: 1px dashed #9E9E9E; border-radius: 2px; height: 244px;" @click="uploadImage">
     <div style="display: flex; align-items: center">
       <img src="/plugins/pos-plugin/assets/img.svg" style="margin-right: 8px">
       <div>
@@ -16,6 +16,7 @@
   </div>
 </template>
 <script>
+  
   export default {
     name: 'UploadZone',
     props: {},
@@ -23,7 +24,11 @@
       return {}
     },
     computed: {},
-    methods: {}
+    methods: {
+      uploadImage() {
+      
+      }
+    }
   }
 </script>
 <style scoped>
