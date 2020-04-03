@@ -44,6 +44,11 @@
       },
       //<!--</editor-fold>-->
       //Layout config views
+      logout(cb) {
+        cms.logout()
+        document.cookie = ''
+        cb && cb()
+      }
     },
     async created() {
       this.user = cms.getList('PosSetting')[0].user[0]
