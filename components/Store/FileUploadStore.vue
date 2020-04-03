@@ -3,6 +3,7 @@
 </template>
 <script>
   import createGridFsHandlers from 'vue-file-explorer/api-handlers/grid-fs'
+  import openUploadFileDialog from 'vue-file-explorer/api-handlers/openUploadFileDialog'
   
   export default {
     name: 'FileUploadStore',
@@ -15,10 +16,12 @@
     },
     computed: {},
     methods: {
-      uploadFile(file) {
+      uploadFile() {
         return new Promise((resolve, reject) => {
           try {
-            this.gridFsHandler.uploadFile(file, '/', fileMetaData => resolve(fileMetaData))
+            openUploadFileDialog({ multiple: false, mimeType: 'image/*' }, files => {
+              this.gridFsHandler.uploadFile(files[0], '/', fileMetaData => resolve(fileMetaData))
+            })
           } catch(e) {
             reject(e)
           }

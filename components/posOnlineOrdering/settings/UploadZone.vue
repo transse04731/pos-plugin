@@ -16,7 +16,6 @@
   </div>
 </template>
 <script>
-  
   export default {
     name: 'UploadZone',
     props: {},
@@ -25,8 +24,11 @@
     },
     computed: {},
     methods: {
-      uploadImage() {
-      
+      async uploadImage() {
+        const fileMetaData = await this.$getService('FileUploadStore').uploadFile()
+        console.log(fileMetaData)
+        //
+        debugger
       }
     }
   }
