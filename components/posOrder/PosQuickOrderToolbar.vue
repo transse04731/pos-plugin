@@ -12,7 +12,7 @@
         </g-btn-bs>
       </div>
     </g-menu>
-    <g-btn-bs icon="icon-cashier">{{$t('paymentFunctions.cashDrawer')}}</g-btn-bs>
+    <g-btn-bs icon="icon-cashier">{{$t('fnBtn.paymentFunctions.cashDrawer')}}</g-btn-bs>
     <g-spacer/>
     <g-btn-bs class="col-2" background-color="#4CAF50" :disabled="!enablePayBtn"
               @click.stop="quickCash(false)">

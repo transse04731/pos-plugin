@@ -1,7 +1,7 @@
 <template>
   <div class="setting">
     <g-tabs :items="tabs" v-model="tab" addable @add="addNewSetting" deletable @delete="dialog.value = true">
-      <g-tab-item v-for="tabItem in tabs" :item="tabItem">
+      <g-tab-item v-for="tabItem in tabs" :key="tabItem._id" :item="tabItem">
         <div style="margin-top: 16px; margin-left: 12px; font-weight: 700">{{$t('settings.useFor')}}</div>
         <g-grid-select multiple :items="hardwares" v-model="tabItem.hardwares" item-cols="2">
           <template v-slot:default="{toggleSelect, item}">

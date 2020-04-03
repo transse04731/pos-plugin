@@ -259,9 +259,9 @@ module.exports = {
       newSetting: 'New Setting',
       useFor: 'Use For',
       entireReceiptNo: 'Number of Entire Receipt',
-      multipleKitchenPrinter: '',
-      multipleInvoicePrinter: '',
-      multipleEntirePrinter: '',
+      multipleKitchenPrinter: 'Use Multiple Printer For Kitchen Printer',
+      multipleInvoicePrinter: 'Use Multiple Printer For Invoice Printer',
+      multipleEntirePrinter: 'Use Multiple Printer For Entire Printer',
       //payment
       paymentName: 'Name',
       paymentIcon: 'Icon',
