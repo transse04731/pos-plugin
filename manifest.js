@@ -34,6 +34,12 @@ module.exports = {
       loader: {
         type: 'vue-singleton'
       },
+      path: 'components/Store/PosOnlineOrderSettingStore.vue',
+    },
+    {
+      loader: {
+        type: 'vue-singleton'
+      },
       path: 'components/Store/FileUploadStore.vue',
     },
     {
@@ -41,6 +47,13 @@ module.exports = {
         type: 'backend-api'
       },
       path: 'backend/print-report/report-printer.js',
+      type: 'backend'
+    },
+    {
+      loader: {
+        type: 'backend-api'
+      },
+      path: 'backend/rest-handle.js',
       type: 'backend'
     },
     {
