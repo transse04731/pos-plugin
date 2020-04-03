@@ -44,10 +44,10 @@
     },
     async created() {
       this.setDateInterval = setInterval(() => this.systemDate = new Date(), 10000)
-      const i18nConfig = cms.getList('SystemConfig').find(i => i.type === 'I18n')
-      if (i18nConfig) {
-        this.locale = i18nConfig.content.locale
-      }
+      // const i18nConfig = cms.getList('SystemConfig').find(i => i.type === 'I18n')
+      // if (i18nConfig) {
+      //   this.locale = i18nConfig.content.locale
+      // }
     },
     beforeDestroy() {
       this.setDateInterval && clearInterval(this.setDateInterval)
