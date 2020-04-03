@@ -311,3 +311,52 @@ body::-webkit-scrollbar {
   background-position: center;
 }
 
+.icon-note {
+  background-image: url("../assets/note.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-person {
+  background-image: url("../assets/person.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-phone2 {
+  background-image: url("../assets/phone2.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-place {
+  background-image: url("../assets/place.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-zip-code {
+  background-image: url("../assets/zip-code.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-delivery-truck {
+  background-image: url("../assets/delivery-truck.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-menu2 {
+  background-image: url("../assets/menu2.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+

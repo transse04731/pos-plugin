@@ -5,17 +5,14 @@
       <img src="/plugins/pos-plugin/assets/images/header.png" class="po-order-table__header__image"/>
     </div>
   
-    <div style="margin-left: 20px; margin-right: 20px">
+    <div class="po-order-table__main">
       <!-- header text -->
       <div class="po-order-table__header__text">
-        <g-icon v-if="confirmView" color="#424242" @click="view = 'order'">arrow_back_ios</g-icon>
-        <div style="font-weight: bold; font-size: 25px;">{{ confirmView ? 'Confirm Order' : 'Order List' }}</div>
-        <g-spacer/>
-        <div v-if="orderView">Total items: {{ totalItems }}</div>
+        <g-icon class="po-order-table__header__icon--mobile" @click="changeView">arrow_back</g-icon>
+        <g-icon class="po-order-table__header__icon" v-if="confirmView" color="#424242" @click="view = 'order'" size="20">arrow_back_ios</g-icon>
+        <div class="po-order-table__header__text--main">{{ confirmView ? 'Confirm Order' : 'Order List' }}</div>
+        <div class="po-order-table__header__total" v-if="orderView">Total items: {{ totalItems }}</div>
       </div>
-  
-      <!-- separator line -->
-      <div style="width: 100%; height: 1px; border-top: 1px solid #D8D8D8"></div>
   
       <!-- content -->
       <div class="po-order-table__content">
@@ -33,40 +30,43 @@
              class="po-order-table__item">
           <div>
             <div class="po-order-table__item__name">{{ item.name }}</div>
-            <div>{{ item.note || '...' }}</div>
+            <div class="po-order-table__item__note">
+              <g-icon size="16">icon-note</g-icon>
+              {{ item.note || 'Note ...' }}
+            </div>
           </div>
   
           <g-spacer/>
           
           <div class="po-order-table__item__price">{{ item.price | currency }}</div>
   
-          <div class="item-action">
-            <g-icon @click.stop="removeItem(item)" style="margin-right: 3px;">remove_circle_outline</g-icon>
-            <span style="margin-right: 3px;">{{item.quantity}}</span>
-            <g-icon @click.stop="addItem(item)">add_circle_outline</g-icon>
+          <div class="po-order-table__item__action">
+            <g-icon @click.stop="removeItem(item)" color="#424242" size="28">remove_circle_outline</g-icon>
+            <span>{{item.quantity}}</span>
+            <g-icon @click.stop="addItem(item)" color="#424242" size="28">add_circle</g-icon>
           </div>
         </div>
     
         <!-- Confirm -->
-        <div v-if="confirmView">
+        <template v-if="confirmView">
           <div class="section-header">CONTACT INFORMATION</div>
           <g-radio-group v-model="orderType" row class="radio-option">
-            <g-radio label="Pick-up" value="pick-up" disabled/>
-            <g-radio label="Delivery" value="delivery"/>
+            <g-radio color="#1271ff" label="Pick-up" value="pick-up"/>
+            <g-radio color="#1271ff" label="Delivery" value="delivery"/>
           </g-radio-group>
-          <div>
-            <g-text-field v-model="customer.name" label="Name" prepend-icon="person_outline"/>
-            <g-text-field v-model="customer.phone" label="Phone" prepend-icon="fas fa-phone-alt"/>
-            <g-text-field v-model="customer.address" label="Address" prepend-icon="fas fa-map-marker-alt"/>
-            <g-text-field v-model="customer.zipCode" label="Zip code" prepend-icon="mdi-qrcode-edit"/>
-            <g-text-field type="datetime-local" label="datetime-local" prepend-icon="mdi-car-estate"/>
-            <g-textarea v-model="customer.note" label="Note..." row="3" outlined background-color="#FFF"/>
+          <div class="section-form">
+            <g-text-field v-model="customer.name" label="Name" clearable clear-icon="icon-cancel@16" prepend-icon="icon-person@16"/>
+            <g-text-field v-model="customer.phone" label="Phone" clearable clear-icon="icon-cancel@16" prepend-icon="icon-phone2@16"/>
+            <g-text-field v-model="customer.address" label="Address" clearable clear-icon="icon-cancel@16" prepend-icon="icon-place@16"/>
+            <g-text-field v-model="customer.zipCode" label="Zip code" clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
+            <g-text-field type="datetime-local" label="Delivery time" clearable clear-icon="icon-cancel@16" prepend-icon="icon-delivery-truck@16"/>
+            <g-textarea v-model="customer.note" placeholder="Note..." rows="3" no-resize/>
           </div>
       
           <div class="section-header">PAYMENT</div>
           <g-radio-group v-model="paymentType" row class="radio-option">
-            <g-radio label="Cash" value="cash"/>
-            <g-radio label="Credit" value="credit" disabled/>
+            <g-radio color="#1271ff" label="Cash" value="cash" class="mr-5"/>
+            <g-radio color="#1271ff" label="Credit" value="credit"/>
           </g-radio-group>
       
           <div class="section-header">ORDER DETAILS</div>
@@ -77,7 +77,7 @@
             <div>{{ item.price * (item.quantity || 1) | currency }}</div>
           </div>
           <div class="order-item-summary">
-            <span>Total {{ totalItems }} items</span>
+            <span>Total <b>{{ totalItems }}</b> items</span>
             <g-spacer/>
             <span>{{ totalPrice | currency }}</span>
           </div>
@@ -86,16 +86,30 @@
             <g-spacer/>
             <span>{{ shippingFee | currency }}</span>
           </div>
-        </div>
+        </template>
       </div>
     </div>
     
     <!-- footer -->
     <div class="po-order-table__footer">
-      <div>Total: <span>{{ (totalPrice + shippingFee) | currency }}</span></div>
+      <div>Total: <span style="font-weight: 700; font-size: 18px; margin-left: 4px">{{ (totalPrice + shippingFee) | currency }}</span></div>
       <g-spacer/>
-      <g-btn v-if="orderView" rounded background-color="#2979FF" text-color="#FFF" @click="view = 'confirm'">Payment</g-btn>
-      <g-btn v-if="confirmView" rounded background-color="#2979FF" text-color="#FFF" @click="confirmPayment" :elevation="5">Confirm</g-btn>
+      <g-btn-bs v-if="orderView" large rounded background-color="#2979FF" @click="view = 'confirm'">PAYMENT</g-btn-bs>
+      <g-btn-bs v-if="confirmView" large rounded background-color="#2979FF" @click="confirmPayment" elevation="5">CONFIRM</g-btn-bs>
+    </div>
+    <div class="po-order-table__footer--mobile" v-if="orderItems.length > 0">
+      <g-badge :value="true" color="#4CAF50" overlay>
+        <template v-slot:badge>
+          {{orderItems.length}}
+        </template>
+        <div style="width: 40px; height: 40px; background-color: #ff5252; border-radius: 8px; display: flex; align-items: center; justify-content: center">
+          <g-icon>icon-menu2</g-icon>
+        </div>
+      </g-badge>
+      <div class="po-order-table__footer--mobile--total">{{(totalPrice + shippingFee) | currency}}</div>
+      <g-spacer/>
+      <g-btn-bs v-if="orderView" rounded background-color="#2979FF" @click="view = 'confirm'" style="padding: 8px 16px">PAYMENT</g-btn-bs>
+      <g-btn-bs v-if="confirmView" rounded background-color="#2979FF" @click="confirmPayment" style="padding: 8px 16px" elevation="5">CONFIRM</g-btn-bs>
     </div>
   </div>
 </template>
@@ -109,7 +123,6 @@
         view: 'order',
         orderType: 'delivery', // delivery || pick-up
         paymentType: 'cash', // cash || credit
-        shippingFee: 1,
         customer: {
           name: '',
           phone: '',
@@ -120,7 +133,7 @@
         }
       }
     },
-    injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems)'],
+    injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems,shippingFee)'],
     filters: {
       currency(value) {
         return '$' + value
@@ -137,6 +150,12 @@
       },
     },
     methods: {
+      changeView() {
+        if(this.view === 'order') {
+          this.$emit('back')
+        }
+        this.view = 'order'
+      },
       removeItem(item) {
         this.decreaseOrRemoveItems(item)
       },
@@ -153,7 +172,13 @@
   .po-order-table {
     position: relative;
     width: 430px;
+    height: 100vh;
     background-color: #F8F8F8;
+    display: flex;
+
+    &__main {
+      padding: 0 20px;
+    }
     
     &__header {
       &__image {
@@ -165,13 +190,29 @@
       &__text {
         display: flex;
         align-items: center;
+        margin-bottom: 4px;
+        font-size: 18px;
+        font-weight: 700;
+
+        &--main {
+          display: flex;
+          flex: 1;
+        }
+      }
+
+      &__icon--mobile {
+        display: none;
+      }
+
+      &__total {
+        font-size: 15px;
+        font-weight: 400;
       }
     }
     
     &__content {
       flex: 1;
       margin-bottom: 100px;
-      max-height: calc(100vh - 225px - 37px - 100px);
       overflow-x: hidden;
       overflow-y: scroll;
       
@@ -182,8 +223,28 @@
       
       .section-header {
         padding-top: 20px;
+        font-weight: 700;
       }
-      
+
+      .section-form {
+        .g-textarea  {
+          border: 1px solid #EFEFEF;
+          border-radius: 4px;
+          background-color: #fff;
+          padding: 8px;
+
+          ::v-deep .g-tf {
+            &:before, &:after {
+              display: none;
+            }
+          }
+
+          ::v-deep .g-tf-append__inner {
+            display: none;
+          }
+        }
+      }
+
       .order-item-detail {
         display: flex;
         flex-direction: row;
@@ -210,6 +271,9 @@
           font-style: normal;
           font-weight: bold;
           font-size: 15px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
       }
   
@@ -229,7 +293,7 @@
       align-items: center;
       width: 100%;
       height: 74px;
-      border-bottom: 1px dashed #424242;
+      border-bottom: 1px dashed #d8d8d8;
       
       &__name {
         font-weight: bold;
@@ -241,7 +305,20 @@
         font-weight: bold;
         font-size: 15px;
         line-height: 19px;
-        margin-right: 5px;
+        margin-right: 8px;
+      }
+
+      &__note {
+        font-size: 12px;
+        color: #9E9E9E;
+        margin-top: 8px;
+      }
+
+      &__action {
+        flex: 0 0 20%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
     }
     
@@ -257,6 +334,87 @@
       width: 100%;
       padding-left: 20px;
       padding-right: 20px;
+
+      .g-btn-bs {
+        padding: 8px 40px;
+      }
+
+      &--mobile {
+        display: none;
+      }
+    }
+  }
+
+  @media screen and (max-width: 600px) {
+    .po-order-table {
+      background: #F2F2F2;
+
+      &__main {
+        padding: 0;
+        height: 100%;
+      }
+
+      &__header {
+        display: none;
+
+        &__text {
+          padding: 16px;
+          font-size: 16px;
+          background-color: white;
+          box-shadow: 1px 0px 3px rgba(0, 0, 0, 0.2);
+
+          &--main {
+            justify-content: center;
+          }
+        }
+
+        &__icon {
+          display: none;
+
+          &--mobile {
+            display: inline-flex;
+            color: #000;
+          }
+        }
+
+        &__total {
+          display: none;
+        }
+      }
+
+      &__content {
+        margin-top: 16px;
+        background-color: white;
+        padding: 0 16px;
+        height: calc(100% - 50px);
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      }
+
+      &__footer {
+        display: none;
+
+        &--mobile {
+          display: flex;
+          position: fixed;
+          bottom: 0;
+          width: 100%;
+          border-top-right-radius: 32px;
+          background-color: white;
+          box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+          padding: 16px 24px;
+          z-index: 20;
+
+          &--total {
+            font-size: 18px;
+            font-weight: 700;
+            align-self: center;
+            margin-left: 16px;
+          }
+        }
+      }
     }
   }
 </style>

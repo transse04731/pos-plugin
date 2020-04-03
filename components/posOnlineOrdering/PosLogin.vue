@@ -181,4 +181,17 @@
       margin-bottom: 15px;
     }
   }
+
+  @media screen and (max-width: 600px) {
+    .pos-login {
+
+      .title {
+        font-size: 32px;
+      }
+
+      &__input {
+        width: 80%;
+      }
+    }
+  }
 </style>

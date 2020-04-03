@@ -10,7 +10,8 @@
     props: {},
     data: function () {
       return {
-        orderItems: []
+        orderItems: [],
+        shippingFee: 1,
       }
     },
     computed: {},
