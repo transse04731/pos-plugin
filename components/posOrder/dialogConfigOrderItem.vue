@@ -32,14 +32,14 @@
       return {
         tab: null,
         tabItems: [
-          {title: 'Modifier', event: 'addModifier'},
-          {title: 'Discount', event: 'changePrice'}
+          {title: this.$t('restaurant.modifier'), event: 'addModifier'},
+          {title: this.$t('common.discount'), event: 'changePrice'}
         ],
         // add modifier
         modifier: '',
         price: '',
         rules: [
-          val => !isNaN(val) || 'Please enter a number!!'
+          val => !isNaN(val) || this.$t('ui.numberRulesErr')
         ],
 
         // discount

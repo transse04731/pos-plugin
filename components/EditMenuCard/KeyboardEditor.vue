@@ -1,17 +1,17 @@
 <template>
   <div class="keyboard-editor">
-    <div class="keyboard-editor__title">Keyboard Top</div>
+    <div class="keyboard-editor__title">{{$t('restaurant.menuEdit.keyboardTop')}}</div>
     <input-number width="148" v-model="top"/>
-    <div class="keyboard-editor__title">Keyboard Left</div>
+    <div class="keyboard-editor__title">{{$t('restaurant.menuEdit.keyboardLeft')}}</div>
     <input-number width="148" v-model="left"/>
-    <div class="keyboard-editor__title">Keyboard Width</div>
+    <div class="keyboard-editor__title">{{$t('restaurant.menuEdit.keyboardWidth')}}</div>
     <input-number width="148" v-model="width"/>
-    <div class="keyboard-editor__title">Keyboard Height</div>
+    <div class="keyboard-editor__title">{{$t('restaurant.menuEdit.keyboardHeight')}}</div>
     <input-number width="148" v-model="height"/>
-    <div class="keyboard-editor__title">Expansion Column</div>
+    <div class="keyboard-editor__title">{{$t('restaurant.menuEdit.expansionColumn')}}</div>
     <div class="row-flex">
       <input-number width="148" :value="columns" @input="changeExtraColumns"/>
-      <g-btn-bs elevation="2" icon="icon-redo" @click="resetKeyboard">Reset</g-btn-bs>
+      <g-btn-bs elevation="2" icon="icon-redo" @click="resetKeyboard">{{$t('ui.reset')}}</g-btn-bs>
     </div>
     <g-checkbox v-model="active" label="Active Keyboard"/>
     <g-checkbox v-model="onlyShowInFirstPage" label="Show Keyboard only in first page"/>

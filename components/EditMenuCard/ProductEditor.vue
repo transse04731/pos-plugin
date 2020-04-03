@@ -3,24 +3,24 @@
     <!-- Product basic info -->
     <div class="product-editor__prop-grid">
       <template v-if="types">
-        <div>Type</div>
+        <div>{{$t('article.type')}}</div>
         <g-select text-field-component="GTextFieldBs" v-model="type" :items="types" @input="changeType"/>
       </template>
       <template v-if="isProductLayout">
-        <div>ID </div>
+        <div>{{$t('article.id')}} </div>
         <g-text-field-bs :value="selectedProduct.id" @click="openDialogInfo('id')"/>
 
-        <div>Name <span style="color: #FF4452">*</span></div>
+        <div>{{$t('article.name')}} <span style="color: #FF4452">*</span></div>
         <g-text-field-bs :value="selectedProduct.name" @click="openDialogInfo('name')"/>
 
-        <div>Price</div>
+        <div>{{$t('article.price')}}</div>
         <g-text-field-bs :value="selectedProduct.price" @click="openDialogInfo('price')"/>
 
         <g-switch v-model="selectedProduct.isModifier" @change="updateProduct({ isModifier: $event })" />
-        <div style="font-size: 13px">Is Modifier</div>
+        <div style="font-size: 13px">{{$t('article.isModifier')}}</div>
       </template>
       <template v-else>
-        <div>Name <span style="color: #ff4552">*</span></div>
+        <div>{{$t('article.name')}} <span style="color: #ff4552">*</span></div>
         <g-text-field v-model="selectedProductLayout.text" @click="dialog.showTextKbd = true"/>
       </template>
     </div>
@@ -29,8 +29,8 @@
       <!-- Printer -->
       <div v-if="!this.selectedProduct.isModifier">
         <div class="product-editor__prop">
-          <span class="product-editor__label">Printer</span>
-          <span v-if="showAddPrinter2" class="prop-option--printer" @click="isPrinter2Select = true">+2. Printer</span>
+          <span class="product-editor__label">{{$t('restaurant.product.printer')}}</span>
+          <span v-if="showAddPrinter2" class="prop-option--printer" @click="isPrinter2Select = true">+2. {{$t('restaurant.product.printer')}}</span>
         </div>
         <div>
           <span v-for="(item, index) in printers"
@@ -39,14 +39,14 @@
                 @click="selectPrinter(item._id)">
             {{ item.name }}
           </span>
-          <span v-if="!isPrinter2Select" :class="noPrintClasses" @click="setAsNoPrint">No Printer</span>
+          <span v-if="!isPrinter2Select" :class="noPrintClasses" @click="setAsNoPrint">{{$t('restaurant.product.noPrinter')}}</span>
         </div>
       </div>
 
       <!-- Tax -->
       <div class="row-flex mt-2 product-editor__tax">
         <div class="col-6">
-          <div class="product-editor__label">Dine in Tax</div>
+          <div class="product-editor__label">{{$t('restaurant.product.dineInTax')}}</div>
           <g-grid-select mandatory v-model="selectedProduct.tax" :items="dineInTaxes" itemCols="auto">
             <template #default="{ toggleSelect, item, index }">
               <div class="prop-option"
@@ -64,7 +64,7 @@
         </div>
 
         <div class="col-6">
-          <div class="product-editor__label">Take Away Tax</div>
+          <div class="product-editor__label">{{$t('restaurant.product.takeAwayTax')}}</div>
           <g-grid-select mandatory v-model="selectedProduct.tax2" :items="takeAwayTaxes" itemCols="auto">
             <template #default="{ toggleSelect, item, index }">
               <div class="prop-option"
@@ -84,13 +84,13 @@
 
       <!-- Color -->
       <div class="mt-2">
-        <div class="product-editor__label">Color</div>
+        <div class="product-editor__label">{{$t('ui.color')}}</div>
         <color-selector :value="selectedProductLayout.color" :colors="colors" :item-size="25" @input="updateProductLayout({ color: $event })"/>
       </div>
 
       <!-- Happy hour -->
       <div class="mt-2" v-if="isProductLayout">
-        <div class="product-editor__label">Happy Hour</div>
+        <div class="product-editor__label">{{$t('restaurant.product.happyHour')}}</div>
         <div class="prop-option i">
           <p>14:00 - 17:00 : 20%</p>
           <p>Mo Di Mi Do Fr Sa So</p>
@@ -99,7 +99,7 @@
 
       <!-- Category -->
       <div class="mt-2">
-        <div class="product-editor__label">Category</div>
+        <div class="product-editor__label">{{$t('article.category')}}</div>
         <div>
           <g-grid-select madatory v-model="selectedProduct.category" item-text="name" item-value="_id" :items="categories" itemCols="auto">
             <template #default="{ toggleSelect, item, index }">

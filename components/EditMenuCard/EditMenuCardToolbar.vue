@@ -1,12 +1,12 @@
 <template>
   <div style="height: 100%; width: 100%">
     <g-toolbar height="100%" elevation="0" color="#eee">
-      <g-btn-bs elevation="2" icon="icon-back" @click="back">Back</g-btn-bs>
-      <g-btn-bs elevation="2" icon="icon-edit-menu-card-switch" @click="switchItem" :disabled="!switchable">Switch</g-btn-bs>
-      <g-btn-bs elevation="2" icon="icon-edit-menu-card-copy" @click="copyItem" :disabled="!copyable">Copy</g-btn-bs>
-      <g-btn-bs elevation="2" icon="icon-edit-menu-card-delete" @click="showDeleteConfirmDialog" :disabled="!deletable">Delete</g-btn-bs>
+      <g-btn-bs elevation="2" icon="icon-back" @click="back">{{$t('ui.back')}}</g-btn-bs>
+      <g-btn-bs elevation="2" icon="icon-edit-menu-card-switch" @click="switchItem" :disabled="!switchable">{{$t('ui.switch')}}</g-btn-bs>
+      <g-btn-bs elevation="2" icon="icon-edit-menu-card-copy" @click="copyItem" :disabled="!copyable">{{$t('ui.copy')}}</g-btn-bs>
+      <g-btn-bs elevation="2" icon="icon-edit-menu-card-delete" @click="showDeleteConfirmDialog" :disabled="!deletable">{{$t('ui.delete')}}</g-btn-bs>
       <g-spacer/>
-      <g-btn-bs elevation="2" icon="fas fa-calculator" @click="showKeyboardEditor">Edit Keyboard</g-btn-bs>
+      <g-btn-bs elevation="2" icon="fas fa-calculator" @click="showKeyboardEditor">{{$t('restaurant.menuEdit.editKeyboard')}}</g-btn-bs>
     </g-toolbar>
     
     <dialog-confirm-delete

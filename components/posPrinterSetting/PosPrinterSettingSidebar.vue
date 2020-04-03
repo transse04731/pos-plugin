@@ -26,10 +26,10 @@
             <template v-for="(child, i) in item.items">
               <div v-if="child.type && child.type === 'edit'" class="row-flex">
                 <div class="sidebar-row__children--edit add" @click="addMenu">
-                  + Add
+                  + {{$t('ui.add')}}
                 </div>
                 <div :class="['sidebar-row__children--edit','delete', !selectedPrinterMenu && 'disabled']" @click="deleteMenu">
-                  Delete
+                  {{$t('ui.delete')}}
                 </div>
               </div>
               <div v-else :class="['sidebar-row__children--content', isSelectedItem(child) && 'sidebar-row--selected']"
@@ -42,7 +42,7 @@
         </div>
       </div>
       <div class="sidebar-footer">
-        <g-btn-bs elevation="2" icon="icon-back" background-color="white" style="display: block" @click="back">Back
+        <g-btn-bs elevation="2" icon="icon-back" background-color="white" style="display: block" @click="back">{{$t('ui.back')}}
         </g-btn-bs>
       </div>
     </div>
@@ -75,7 +75,7 @@
       computedSidebar() {
         const sidebar = this.printerSidebar
         if(sidebar) {
-          const category = sidebar.find(s => s.title === 'Receipt Category')
+          const category = sidebar.find(s => s.title === this.$t('sidebar.receiptCategory'))
           const kitchens = category ? category.items : []
           for (const kitchen of kitchens) {
             if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForKitchenPrinter) {
@@ -84,14 +84,14 @@
               kitchen.slot = 'printer'
             }
           }
-          const invoice = sidebar.find(s => s.title === 'Invoice, Report')
+          const invoice = sidebar.find(s => s.title === this.$t('sidebar.invoiceReport'))
           if(invoice)
             if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForInvoicePrinter) {
               invoice.slot = 'multiple'
             } else {
               invoice.slot = 'printer'
             }
-          const receipt = sidebar.find(s => s.title === 'Entire Receipt')
+          const receipt = sidebar.find(s => s.title === this.$t('sidebar.entireReceipt'))
           if(receipt) {
             if(receipt.items) {
               for(const item of receipt.items) {

@@ -16,7 +16,7 @@
                  flat dashed
                  border-radius="4"
                  text-color="#2979FF"
-                 class="edit-table-plan__add-new-room-btn">+ Add new room
+                 class="edit-table-plan__add-new-room-btn">+ {{$t('restaurant.addRoom')}}
           </g-btn>
         </div>
 
@@ -37,7 +37,7 @@
               <g-icon small>icon-arrow-down</g-icon>
             </g-btn>
             <g-spacer/>
-            <g-btn @click="removeRoom" background-color="#FF4452" text-color="#FFF"><g-icon>delete</g-icon>Delete</g-btn>
+            <g-btn @click="removeRoom" background-color="#FF4452" text-color="#FFF"><g-icon>delete</g-icon>{{$t('ui.delete')}}</g-btn>
           </div>
         </div>
 
@@ -53,10 +53,10 @@
               </template>
             </pos-text-field>
             <div style="margin: 5px">
-              <div> Color:</div>
+              <div> {{$t('ui.color')}}:</div>
               <color-selector key="table" :value="roomObj.bgColor" :colors="tableColors" @input="_updateRoomObject({ bgColor: $event || 'black' })" :item-size="18" :badge-size="12"/>
               <div style="display: flex; align-items: center">
-                <span style="margin-right: 10px">Take away:</span>
+                <span style="margin-right: 10px">{{$t('restaurant.takeAway')}}:</span>
                 <g-switch v-model="roomObj.takeAway" @change="_updateRoomObject({ takeAway: $event })"/>
               </div>
             </div>
@@ -65,18 +65,18 @@
           <!-- wall -->
           <template v-else-if="isWall(roomObj)">
             <div style="margin: 5px">
-              <div> Color:</div>
+              <div> {{$t('ui.color')}}:</div>
               <color-selector key="wall" :value="roomObj.bgColor" :colors="wallColors" @input="_updateRoomObject({ bgColor: $event || 'black' })" :item-size="18" :badge-size="12"/>
             </div>
           </template>
           <div style="display: flex; margin: 5px; justify-content: space-between">
             <g-btn @click="duplicateRoomObj" width="48%" style="font-size: 13px" outlined flat text-color="#2979FF">
               <g-icon size="13">fas fa-clone</g-icon>
-              Duplicate
+              {{$t('ui.duplicate')}}
             </g-btn>
             <g-btn @click="removeRoomObj" width="48%" background-color="#FF4452" text-color="#FFF" style="margin-left: 5px; font-size: 13px">
               <g-icon size="13">delete</g-icon>
-              Delete
+              {{$t('ui.delete')}}
             </g-btn>
           </div>
         </div>
@@ -85,8 +85,8 @@
       <template v-slot:footer>
         <!-- Add new room object -->
         <div style="display: flex; margin: 5px; justify-content: space-between" v-if="room">
-          <g-btn outlined flat @click="addNewWall" width="48%" text-color="#2979FF">+ Wall</g-btn>
-          <g-btn flat @click="addNewTable" width="48%" background-color="#2979FF" text-color="#FFF">+ Table</g-btn>
+          <g-btn outlined flat @click="addNewWall" width="48%" text-color="#2979FF">+ {{$t('restaurant.wall')}}</g-btn>
+          <g-btn flat @click="addNewTable" width="48%" background-color="#2979FF" text-color="#FFF">+ {{$t('restaurant.table')}}</g-btn>
         </div>
 
         <!-- Go back -->
@@ -95,7 +95,7 @@
             <g-icon class="mr-2" svg>
               icon-back
             </g-icon>
-            Back
+            {{$t('ui.back')}}
           </g-btn>
         </div>
       </template>

@@ -41,7 +41,10 @@ module.exports = {
       attributes: 'Attributes',
       attribute: 'Attribute',
       productId: 'Product ID',
-      name: 'Name'
+      id: 'ID',
+      name: 'Name',
+      type: 'Type',
+      isModifier: 'Is Modifier'
     },
 
     //UI
@@ -54,12 +57,22 @@ module.exports = {
       confirmation: 'Confirmation',
       reprint: 'Reprint',
       more: 'More',
+      moreItems: 'More items',
       save: 'Save',
       submit: 'Submit',
+      add: 'Add',
       edit: 'Edit',
       delete: 'Delete',
+      duplicate: 'Duplicate',
       change: 'Change',
-      sort: 'Sort'
+      sort: 'Sort',
+      switch: 'Switch',
+      copy: 'Copy',
+      color: 'Colour',
+      reset: 'Reset',
+      numberRulesErr: 'Please enter a number!!',
+      promotion: 'Promotion',
+      name: 'Name',
     },
 
     dialogs: {
@@ -103,7 +116,11 @@ module.exports = {
         banknote: 'Banknote',
         pay: 'Pay',
         discount: 'Discount',
-        cashDrawer: 'Cashdrawer',
+        cashDrawer: 'Cashier drawer',
+        splitCheck: 'Split check',
+        redBill: 'Red Bill',
+        bill: 'Bill',
+        promotion: 'Promotion'
       }
     },
 
@@ -232,6 +249,19 @@ module.exports = {
       ipAddress: 'IP Address',
       setupPrinter: 'Setup Printer',
       testPrinter: 'Test Printer',
+      receiptFontSize: 'Receipt Font Size',
+      receiptTopMargin: 'Receipt Top Margin',
+      onlyTakeAway: 'Only Take Away',
+      splitArticles: '1 Receipt for 1 Article',
+      groupArticles: 'Group Articles',
+      sound: 'Sound',
+      escPos: 'ESC POS',
+      newSetting: 'New Setting',
+      useFor: 'Use For',
+      entireReceiptNo: 'Number of Entire Receipt',
+      multipleKitchenPrinter: '',
+      multipleInvoicePrinter: '',
+      multipleEntirePrinter: '',
       //payment
       paymentName: 'Name',
       paymentIcon: 'Icon',
@@ -268,7 +298,43 @@ module.exports = {
       companyInfo: 'Company Info',
       payment: 'Payment',
       tax: 'Tax',
-      license: 'License'
+      license: 'License',
+      receiptCategory: 'Receipt Category',
+      invoiceReport: 'Invoice, Report',
+      entireReceipt: 'Entire Receipt'
+    },
+
+    restaurant: {
+      cashAndDineIn: 'Cash & Dine In',
+      cashAndTakeAway: 'Cash & Take Away',
+      modifier: 'Modifier',
+      table: 'Table',
+      wall: 'Wall',
+      room: 'Room',
+      addRoom: 'Add New Room',
+      takeAway: 'Take Away',
+
+      menuEdit: {
+        categoriesNo: 'Number of Categories',
+        rowsNo: 'Number of Rows',
+        columnsNo: 'Number of Columns',
+        categoryName: 'Category Name',
+        editKeyboard: 'Edit Keyboard',
+        keyboardTop: 'Keyboard Top',
+        keyboardLeft: 'Keyboard Left',
+        keyboardWidth: 'Keyboard Width',
+        keyboardHeight: 'Keyboard Height',
+        expansionColumn: 'Expansion Column'
+      },
+
+      product: {
+        printer: 'Printer',
+        noPrinter: 'No Printer',
+        dineInTax: 'Dine-in Tax',
+        takeAwayTax: 'Take-away Tax',
+        happyHour: 'Happy Hour',
+
+      }
     }
   }
 }

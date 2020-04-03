@@ -1,14 +1,18 @@
 <template>
   <div class="setting">
     <div class="checkbox-group">
-      <g-checkbox color="#1271FF" label="Use Multiple Printer For Kitchen Printer" v-model="useMultiPrinterForKitchenPrinter" @change="changeSetting"/>
-      <g-checkbox color="#1271FF" label="Use Multiple Printer For Invoice Printer" v-model="useMultiPrinterForInvoicePrinter" @change="changeSetting"/>
-      <g-checkbox color="#1271FF" label="Use Multiple Printer For Entire Printer" v-model="useMultiPrinterForEntirePrinter" @change="changeSetting"/>
+      <g-checkbox color="#1271FF" :label="$t('settings.multipleKitchenPrinter')"
+                  v-model="useMultiPrinterForKitchenPrinter" @change="changeSetting"/>
+      <g-checkbox color="#1271FF" :label="$t('settings.multipleInvoicePrinter')"
+                  v-model="useMultiPrinterForInvoicePrinter" @change="changeSetting"/>
+      <g-checkbox color="#1271FF" :label="$t('settings.multipleEntirePrinter')"
+                  v-model="useMultiPrinterForEntirePrinter" @change="changeSetting"/>
     </div>
-    <div class="setting-title">Number of Entire Receipt</div>
+    <div class="setting-title">{{$t('settings.entireReceiptNo')}}</div>
     <div class="row-flex flex-wrap">
       <div v-for="(number, i) in listNoEntireReceipt" :key="i"
-           :class="['setting-option', number === entireReceipt && 'setting-option--selected']" @click="_updateNoEntireReceipt(number)">
+           :class="['setting-option', number === entireReceipt && 'setting-option--selected']"
+           @click="_updateNoEntireReceipt(number)">
         {{number}}
       </div>
     </div>

@@ -1,28 +1,28 @@
 <template>
   <div v-if="selectedCategoryLayout" class="category-editor">
-    <div class="category-editor__label">Number of Category</div>
+    <div class="category-editor__label">{{$t('restaurant.menuEdit.categoriesNo')}}</div>
     <input-number
         :value="orderLayout.columns" :min="1" :max="8"
         width="148"
         @input="changeOrderLayoutColumn"/>
 
-    <div class="category-editor__label">Name</div>
+    <div class="category-editor__label">{{$t('ui.name')}}</div>
     <g-text-field-bs border-color="#979797" :value="selectedCategoryLayout.name" @click="dialog.showCategoryNameKbd = true"/>
 
-    <div class="category-editor__label">Color</div>
+    <div class="category-editor__label">{{$t('ui.color')}}</div>
     <color-selector
         :value="selectedCategoryLayout.color"
         :colors="colors"
         :item-size="25"
         @input="updateCategory({color: $event})"/>
 
-    <div class="category-editor__label">Number of Row</div>
+    <div class="category-editor__label">{{$t('restaurant.menuEdit.rowsNo')}}</div>
     <input-number
         :value="cateRows" :min="6" :max="10"
         width="148"
         @input="updateCategory({rows: $event})"/>
 
-    <div class="category-editor__label">Number of Column</div>
+    <div class="category-editor__label">{{$t('restaurant.menuEdit.columnsNo')}}</div>
     <input-number
         :value="cateCols" :min="3" :max="6"
         width="148"
@@ -30,7 +30,7 @@
 
     <template>
       <dialog-text-filter
-          label="Category name"
+          :label="$t('restaurant.menuEdit.categoryName')"
           :default-value="selectedCategoryLayout.name"
           v-model="dialog.showCategoryNameKbd"
           @submit="updateCategory({ name: $event}, $event)"/>

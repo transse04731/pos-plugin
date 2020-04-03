@@ -7,7 +7,7 @@
       <span class="order-detail__header-username">{{username}}</span>
       <span class="order-detail__header-title" v-if="table">Table</span>
       <span class="order-detail__header-value" v-if="table">{{table}}</span>
-      <span class="order-detail__header-title">Total</span>
+      <span class="order-detail__header-title">{{$t('common.total')}}</span>
       <span class="order-detail__header-value text-red">€{{total | convertMoney}}</span>
     </div>
     <div class="order-detail__content">

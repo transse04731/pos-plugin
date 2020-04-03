@@ -9,8 +9,8 @@
       </slot>
       <slot name="buttons">
         <div class="button" v-if="showButtons">
-          <g-btn-bs width="120" border-color="#979797" text-color="#1d1d26" @click="internalValue = false">Cancel</g-btn-bs>
-          <g-btn-bs width="120" background-color="#2979FF" :disabled="!valid" @click="$emit('submit')">OK</g-btn-bs>
+          <g-btn-bs width="120" border-color="#979797" text-color="#1d1d26" @click="internalValue = false">{{$t('ui.cancel')}}</g-btn-bs>
+          <g-btn-bs width="120" background-color="#2979FF" :disabled="!valid" @click="$emit('submit')">{{$t('ui.ok')}}</g-btn-bs>
         </div>
       </slot>
       <slot name="keyboard">

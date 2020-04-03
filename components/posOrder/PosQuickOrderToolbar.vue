@@ -1,20 +1,30 @@
 <template>
   <g-toolbar height="100%" elevation="0" color="#eee">
-    <g-btn-bs icon="icon-back" @click="back">Back</g-btn-bs>
+    <g-btn-bs icon="icon-back" @click="back">{{$t('ui.back')}}</g-btn-bs>
     <g-menu top nudge-top="5" v-model="showMenu">
       <template v-slot:activator="{toggleContent}">
-        <g-btn-bs icon="icon-menu" @click="toggleContent">More</g-btn-bs>
+        <g-btn-bs icon="icon-menu" @click="toggleContent">{{$t('ui.more')}}</g-btn-bs>
       </template>
       <div class="col-flex bg-white">
-        <g-btn-bs icon="icon-dinner_copy">More items</g-btn-bs>
-        <g-btn-bs icon="icon-promotion">Discount</g-btn-bs>
+        <g-btn-bs icon="icon-dinner_copy">{{$t('ui.moreItems')}}</g-btn-bs>
+        <g-btn-bs icon="icon-promotion">
+          {{$t('fnBtn.paymentFunctions.discount')}}
+        </g-btn-bs>
       </div>
     </g-menu>
-    <g-btn-bs icon="icon-cashier">Cashier drawer</g-btn-bs>
+    <g-btn-bs icon="icon-cashier">{{$t('paymentFunctions.cashDrawer')}}</g-btn-bs>
     <g-spacer/>
-    <g-btn-bs class="col-2" background-color="#4CAF50" :disabled="!enablePayBtn" @click.stop="quickCash(false)">Cash & Dine In</g-btn-bs>
-    <g-btn-bs class="col-2" background-color="#4CAF50" :disabled="!enablePayBtn" @click.stop="quickCash(true)">Cash & Take Away</g-btn-bs>
-    <g-btn-bs class="col-2" icon="icon-pay" :disabled="!enablePayBtn" @click="pay">Pay</g-btn-bs>
+    <g-btn-bs class="col-2" background-color="#4CAF50" :disabled="!enablePayBtn"
+              @click.stop="quickCash(false)">
+      {{$t('restaurant.cashAndDineIn')}}
+    </g-btn-bs>
+    <g-btn-bs class="col-2" background-color="#4CAF50" :disabled="!enablePayBtn"
+              @click.stop="quickCash(true)">
+      {{$t('restaurant.cashAndTakeAway')}}
+    </g-btn-bs>
+    <g-btn-bs class="col-2" icon="icon-pay" :disabled="!enablePayBtn" @click="pay">
+      {{$t('fnBtn.paymentFunctions.pay')}}
+    </g-btn-bs>
   </g-toolbar>
 </template>
 

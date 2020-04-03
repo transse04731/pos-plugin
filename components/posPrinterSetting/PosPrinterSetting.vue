@@ -1,7 +1,7 @@
 <template>
   <div class="configuration">
     <div v-if="type === 'kitchen'" class="config">
-      <g-text-field-bs label="Name" v-model="editableName" append-inner-icon="icon-keyboard-red"
+      <g-text-field-bs :label="$t('settings.name')" v-model="editableName" append-inner-icon="icon-keyboard-red"
                        @input="changePrinterName"/>
     </div>
     <div class="config">
@@ -18,13 +18,13 @@
     </div>
     <g-divider inset/>
     <div v-if="selectedPrinterType && selectedPrinterType.value === 'ip'" class="config row-flex align-items-end">
-      <g-text-field-bs label="IP Address" v-model="ipAddress" append-inner-icon="icon-keyboard"/>
+      <g-text-field-bs :label="$t('settings.ipAddress')" v-model="ipAddress" append-inner-icon="icon-keyboard"/>
       <g-btn-bs background-color="blue accent 3" style="padding: 6px; flex: 1">
         {{$t('settings.testPrinter')}}
       </g-btn-bs>
     </div>
     <div v-if="type === 'entire'" class="receipt-config">
-      <g-switch label="Only Take Away" v-model="onlyTakeAway"/>
+      <g-switch :label="$t('settings.onlyTakeAway')" v-model="onlyTakeAway"/>
       <div class="title">Include:</div>
       <g-grid-select multiple item-cols="auto" :items="listReceipt" v-model="includes">
         <template v-slot:default="{toggleSelect, item}">
@@ -41,12 +41,12 @@
     </div>
     <g-divider class="mt-2" inset/>
     <div class="switch-group">
-      <g-switch label="1 Receipt for 1 Article" v-model="oneReceiptForOneArticle" v-if="type === 'kitchen'"/>
-      <g-switch label="Group Articles" v-model="groupArticles" v-if="type === 'kitchen'"/>
-      <g-switch label="Sound" v-model="sound"/>
-      <g-switch label="ESC POS" v-model="escPOS"/>
+      <g-switch :label="$t('settings.splitArticles')" v-model="oneReceiptForOneArticle" v-if="type === 'kitchen'"/>
+      <g-switch :label="$t('settings.groupArticles')" v-model="groupArticles" v-if="type === 'kitchen'"/>
+      <g-switch :label="$t('settings.sound')" v-model="sound"/>
+      <g-switch :label="$t('settings.escPos')" v-model="escPOS"/>
     </div>
-    <div class="title" style="margin-left: 12px">Receipt Font Size</div>
+    <div class="title" style="margin-left: 12px">{{$t('settings.receiptFontSize')}}</div>
     <g-grid-select mandatory item-cols="auto" :items="listFontSize" v-model="fontSize" style="margin-left: 12px; padding-top: 4px">
       <template v-slot:default="{ toggleSelect, item }">
         <div class="option" @click="toggleSelect(item)">
@@ -59,7 +59,7 @@
         </div>
       </template>
     </g-grid-select>
-    <div class="title" style="margin-left: 12px">Receipt Top Margin</div>
+    <div class="title" style="margin-left: 12px">{{$t('settings.receiptTopMargin')}}</div>
     <g-grid-select mandatory item-cols="auto" :items="listMarginSize" v-model="marginTop" style="margin-left: 12px; padding-top: 4px">
       <template v-slot:default="{ toggleSelect, item }">
         <div class="option" @click="toggleSelect(item)">
