@@ -16,8 +16,7 @@
       return {
         systemDate: new Date(),
         user: null,
-        loginPassword: '',
-        incorrectPasscode: false,
+        
         //payment screen variables
         paymentAmountTendered: '',
         paymentTip: 0,
@@ -30,11 +29,10 @@
     domain: 'PosStore',
     methods: {
       //<!--<editor-fold desc="Login screen">-->
-      login() {
+      async login(username, password) {
         try {
-          this.user = _.find(cms.getList('PosSetting')[0].user, user => user.passcode === this.loginPassword)
+          this.user = await cms.getModel('User').findOne({ username, password })
           if (this.user) {
-            this.loginPassword = ''
             return this.$router.push({ path: `/view/pos-dashboard` })
           }
         } catch (e) {
