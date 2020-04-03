@@ -25,7 +25,7 @@
           <div>
             <g-grid-select mandatory v-model="internalTax" :items="taxes" itemCols="auto">
               <template #default="{ toggleSelect, item, index }">
-                <div @click="e => {toggleSelect(item); internalTax = item;}">
+                <div @click="e =>{ toggleSelect(item); internalTax = item;}">
                   {{item.text}}
                 </div>
               </template>
@@ -69,8 +69,9 @@
       }
     },
     methods: {
-      uploadImage() {
-        // TODO: File-upload function
+      async uploadImage() {
+        const uploadResult = await this.$getService('FileUploadStore').uploadFile()
+        this.internalImage = uploadResult._id
       },
       saveMenuItem() {
         this.$emit('save', {

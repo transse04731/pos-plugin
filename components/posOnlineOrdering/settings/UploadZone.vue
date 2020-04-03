@@ -25,10 +25,7 @@
     computed: {},
     methods: {
       async uploadImage() {
-        const fileMetaData = await this.$getService('FileUploadStore').uploadFile()
-        console.log(fileMetaData)
-        //
-        debugger
+        this.$emit('url', await this.$getService('FileUploadStore').uploadFile())
       }
     }
   }
