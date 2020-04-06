@@ -152,7 +152,7 @@
           "choice": "reducer",
           "label": "gross",
           "fn": {
-            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, item) {\n  return sum + item.price * item.quantity + _.sumBy(item.extra, e => e.price * e.quantity);\n}",
+            "_code_": "const _ = require('lodash');\nmodule.exports = function (sum, item) {\n  return sum + item.price * item.quantity + _.sumBy(item.modifiers, e => e.price * e.quantity);\n}",
             "_code_type_": "commonJs"
           },
           "resultType": "number"

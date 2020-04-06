@@ -167,10 +167,7 @@
                     "_code_": "module.exports = function() {\n  this.$router.push({path: '/view/pos-dashboard'})\n}",
                     "_code_type_": "commonJs"
                   }
-                },
-                "preprocess": [
-                  "html"
-                ]
+                }
               },
               "binding": [],
               "slotScopeBinding": [],
@@ -192,22 +189,12 @@
                   "component": "VTag",
                   "content": {
                     "props": {
-                      "html": {
-                        "_code_": "\n            module.exports = function() {\n              return $t('ui.back')\n            }",
-                        "_code_type_": "commonJs",
-                        "_metadata_": {
-                          "text": "ui.back"
-                        }
-                      },
+                      "html": "Back",
                       "tag": "span",
                       "class": [
                         "ml-2"
-                      ],
-                      "_htmlType_": "i18n"
-                    },
-                    "preprocess": [
-                      "html"
-                    ]
+                      ]
+                    }
                   },
                   "binding": [],
                   "slotScopeBinding": []
@@ -260,22 +247,12 @@
                   "component": "VTag",
                   "content": {
                     "props": {
-                      "html": {
-                        "_code_": "\n            module.exports = function() {\n              return $t('ui.delete')\n            }",
-                        "_code_type_": "commonJs",
-                        "_metadata_": {
-                          "text": "ui.delete"
-                        }
-                      },
+                      "html": "Delete Order",
                       "tag": "span",
                       "class": [
                         "ml-2"
-                      ],
-                      "_htmlType_": "i18n"
-                    },
-                    "preprocess": [
-                      "html"
-                    ]
+                      ]
+                    }
                   },
                   "binding": [],
                   "slotScopeBinding": []
@@ -319,22 +296,12 @@
                   "component": "VTag",
                   "content": {
                     "props": {
-                      "html": {
-                        "_code_": "\n            module.exports = function() {\n              return $t('ui.print')\n            }",
-                        "_code_type_": "commonJs",
-                        "_metadata_": {
-                          "text": "ui.print"
-                        }
-                      },
+                      "html": "Print",
                       "tag": "span",
                       "class": [
                         "ml-2"
-                      ],
-                      "_htmlType_": "i18n"
-                    },
-                    "preprocess": [
-                      "html"
-                    ]
+                      ]
+                    }
                   },
                   "binding": [],
                   "slotScopeBinding": []
@@ -412,7 +379,7 @@
           "label": "Barcode",
           "rules": [
             {
-              "_code_": "module.exports = function (val) {\n  const orders = root.$getService('OrderStore:orderHistoryOrders');\n  const index = orders.findIndex(o => o.barcode.includes(val))\n  return index !== -1 || 'Not found'\n}",
+              "_code_": "module.exports = function (val) {\n  const orders = root.$getService('OrderStore:orderHistoryOrders');\n  const index = orders.findIndex(o => o.bookingNumber.includes(val))\n  return index !== -1 || 'Not found'\n}",
               "_code_type_": "commonJs"
             }
           ]

@@ -159,6 +159,11 @@
               "type": ".sync",
               "root": "data.productDblClicked",
               "local": "productDblClicked"
+            },
+            {
+              "type": ".sync",
+              "root": "data.keyboardConfig",
+              "local": "keyboardConfig"
             }
           ],
           "slotScopeBinding": [],
@@ -266,6 +271,23 @@
               "url": "plugins/pos-plugin/components/EditMenuCard/ProductEditor.vue",
               "path": "components/EditMenuCard/ProductEditor.vue",
               "pluginName": "pos-plugin"
+            },
+            {
+              "choice": "view",
+              "component": "KeyboardEditor",
+              "binding": [
+                {
+                  "type": ".sync",
+                  "root": "data.keyboardConfig",
+                  "local": "keyboardConfig"
+                }
+              ],
+              "slotScopeBinding": [],
+              "slot": "KeyboardEditor",
+              "isScopedSlot": true,
+              "url": "plugins/pos-plugin/components/EditMenuCard/KeyboardEditor.vue",
+              "path": "components/EditMenuCard/KeyboardEditor.vue",
+              "pluginName": "pos-plugin"
             }
           ],
           "url": "plugins/pos-plugin/components/common/ContentRender.vue",
@@ -282,7 +304,7 @@
   "renderToRoute": "pos-edit-menu-card",
   "renderInAdminPage": true,
   "data": {
-    "_code_": "module.exports = {\n  data: {\n    productDblClicked: null,\n    view: null,\n    orderLayout: null,\n    selectedCategoryLayout: null,\n    selectedProductLayout: null,\n  }\n}",
+    "_code_": "module.exports = {\n  data: {\n    productDblClicked: null,\n    view: null,\n    orderLayout: null,\n    selectedCategoryLayout: null,\n    selectedProductLayout: null,\n    keyboardConfig: null,\n  }\n}",
     "_code_type_": "commonJs"
   }
 }

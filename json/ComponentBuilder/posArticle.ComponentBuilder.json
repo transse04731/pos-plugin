@@ -743,7 +743,7 @@
         },
         {
           "choice": "view",
-          "component": "PosOrderScreenNumberKeyboard",
+          "component": "PosArticleNumpad",
           "binding": [],
           "slotScopeBinding": [],
           "slot": "keyboard",
@@ -776,7 +776,7 @@
         },
         {
           "choice": "view",
-          "component": "PosOrderScreenButtonGroup",
+          "component": "PosArticleFunctionButton",
           "binding": [],
           "slotScopeBinding": [],
           "slot": "buttons",

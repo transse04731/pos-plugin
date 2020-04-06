@@ -496,19 +496,9 @@
                 "height": "100%"
               },
               "flat": true,
-              "uppercase": null,
-              "_htmlType_": "i18n",
-              "html": {
-                "_code_": "\n        module.exports = function() {\n          return $t('login.version')\n        }\n        ",
-                "_code_type_": "commonJs",
-                "_metadata_": {
-                  "text": "login.version"
-                }
-              }
-            },
-            "preprocess": [
-              "html"
-            ]
+              "html": "Version",
+              "uppercase": null
+            }
           },
           "binding": [],
           "slotScopeBinding": [],
@@ -573,22 +563,12 @@
                   "component": "VTag",
                   "content": {
                     "props": {
+                      "html": "Support",
                       "tag": "div",
                       "style": {
                         "marginLeft": "8px"
-                      },
-                      "_htmlType_": "i18n",
-                      "html": {
-                        "_code_": "\n        module.exports = function() {\n          return $t('login.support')\n        }\n        ",
-                        "_code_type_": "commonJs",
-                        "_metadata_": {
-                          "text": "login.support"
-                        }
                       }
-                    },
-                    "preprocess": [
-                      "html"
-                    ]
+                    }
                   },
                   "binding": [],
                   "slotScopeBinding": []

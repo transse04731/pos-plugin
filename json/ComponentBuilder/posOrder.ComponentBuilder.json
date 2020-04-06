@@ -2,11 +2,8 @@
   "events": [],
   "_id": "5e7983deefd5f205955ba034",
   "data": {
-    "data": {
-      "orderLayout": null,
-      "selectedCategoryLayout": null,
-      "selectedProductLayout": null
-    }
+    "_code_": "module.exports = {\n  data: {\n      orderLayout: null,\n      selectedCategoryLayout: null,\n      selectedProductLayout: null,\n      productDblClicked: null,\n      keyboardConfig: null,\n  }\n}",
+    "_code_type_": "commonJs"
   },
   "isProduction": true,
   "items": [
@@ -153,6 +150,11 @@
               "type": ".sync",
               "root": "data.orderLayout",
               "local": "orderLayout"
+            },
+            {
+              "type": ".sync",
+              "root": "data.keyboardConfig",
+              "local": "keyboardConfig"
             }
           ],
           "slotScopeBinding": [],
@@ -224,6 +226,16 @@
               "service": "OrderStore:updateOrderTable",
               "local": "updateOrderTable",
               "type": "event"
+            },
+            {
+              "service": "PosStore:user",
+              "local": "user",
+              "type": "prop"
+            },
+            {
+              "service": "OrderStore:updateOrderItems",
+              "local": "updateOrderItems",
+              "type": "event"
             }
           ]
         },
@@ -238,7 +250,7 @@
           "pluginName": "pos-plugin",
           "inject": [
             {
-              "service": "OrderStore:quickCash",
+              "service": "OrderStore:quickCashRestaurant",
               "local": "quickCash",
               "type": "event"
             },
@@ -246,6 +258,16 @@
               "service": "OrderStore:currentOrder",
               "local": "currentOrder",
               "type": "prop"
+            },
+            {
+              "service": "OrderStore:resetOrderData",
+              "local": "resetOrderData",
+              "type": "event"
+            },
+            {
+              "service": "OrderStore:printKitchen",
+              "local": "printKitchen",
+              "type": "event"
             }
           ]
         }
