@@ -1,46 +1,41 @@
 <template>
-  <div>
-    <div style="font-style: normal; font-weight: bold; font-size: 18px;" class="mb-2">Settings Menu</div>
+  <div class="menu-setting">
+    <div class="menu-setting__title mb-3">Settings Menu</div>
     <!-- empty -->
-    <div v-if="!categories || !categories.length">
-    
+    <div v-if="!categories || !categories.length" class="menu-setting--empty">
+      <img src="/plugins/pos-plugin/assets/folk_knife.svg">
+      <p>Menu is currently empty.</p>
+      <p><span style="color: #536DFE">"Add new category"</span> to get started.</p>
+      <div class="btn-add" @click="addNewCategory">+ Add New Category</div>
     </div>
-    <div v-else>
-      <div style="display: flex; justify-content: flex-end" class="mb-2">
-        <g-btn @click="dialog.addNewCategory = true"
-               background-color="#2979FF"
-               text-color="#FFF"
-               flat>
-          <g-icon color="#FFF" class="mr-1">add_circle</g-icon>
+    <div class="menu-setting__main" v-else>
+      <div class="row-flex justify-end mb-2">
+        <g-btn-bs background-color="#2979FF" icon="add_circle"
+          @click="dialog.addNewCategory = true">
           Add new category
-        </g-btn>
+        </g-btn-bs>
       </div>
       <!-- categories -->
-      <div>
+      <div class="menu-setting__category">
         <!-- Category -->
         <div v-for="(cate, index) in categories" :key="index" class="mb-1">
           <!-- header -->
-          <div
-              @click="cate.toggleCollapse()"
-              style="display: flex; height: 48px; background-color: #E1E8F0; align-items: center; padding: 0 20px; cursor: pointer;">
-            <div style="font-weight: bold; font-size: 18px; color: #212121;">{{cate.name}}</div>
-            <g-spacer/>
-            <div @click="() => {}">
-              <g-icon>fas fa-chevron-down</g-icon>
-            </div>
+          <div @click="cate.toggleCollapse()" class="menu-setting__category__header">
+            <div class="menu-setting__title">{{cate.name}}</div>
+            <g-icon v-if="cate.showProducts">fas fa-chevron-up</g-icon>
+            <g-icon v-else>fas fa-chevron-down</g-icon>
           </div>
           <!-- Menu item -->
           <template v-if="cate.showProducts">
             <div style="border-bottom: 1px solid #E0E0E0">
               <!-- product panels -->
-              <template v-if="cate.products && cate.products.length"
-                        v-for="(product, index) in cate.products">
-                <setting-menu-item v-bind="product" :index="index"/>
+              <template v-if="cate.products && cate.products.length > 0">
+                <setting-menu-item v-for="(product, index) in cate.products" v-bind="product" :index="index" @delete="openDeleteDialog($event)"/>
               </template>
               <!-- empty product -->
               <div v-else style="height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #fff;">
                 <img src="/plugins/pos-plugin/assets/no-items.svg" class="mb-2"/>
-                <div style="color: #9E9E9E;">No item in this group.</div>
+                <div class="text-grey">No item in this group.</div>
               </div>
               <!-- add new panel -->
               <div v-if="addNewProductPanel">
@@ -53,24 +48,22 @@
             
             <!-- Add New Product activator -->
             <div style="height: 40px; background-color: #fff; display: flex; align-items: center; justify-content: center;">
-              <g-btn text
+              <g-btn-bs text-color="#2979FF"
                      @click="addNewProductPanel = true"
-                     :disabled="addNewProductPanel"
-                     style="color: #2979FF; font-weight: bold; font-size: 15px;">+ Add New Item</g-btn>
+                     :disabled="addNewProductPanel">
+                + Add New Item
+              </g-btn-bs>
             </div>
           </template>
         </div>
       </div>
     </div>
+    <dialog-delete-item v-model="dialog.deleteProduct" @confirm="deleteProduct"/>
   </div>
 </template>
 <script>
-  import TableExpansionRow from '../../Order/components/TableExpansionRow';
-  import SettingNewMenuItem from './SettingNewMenuItem';
-  import SettingMenuItem from './SettingMenuItem';
   export default {
     name: 'SettingMenu',
-    components: { SettingMenuItem, SettingNewMenuItem, TableExpansionRow },
     props: {},
     data: function () {
       return {
@@ -118,10 +111,10 @@
         dialog: {
           addNewCategory: false,
           deleteProduct: false,
-        }
+        },
+        selectToDeleteItem: null,
       }
     },
-
     computed: {},
     methods: {
       addNewCategory() {
@@ -133,9 +126,61 @@
       },
       deleteProduct() {
         //
+      },
+      openDeleteDialog(item) {
+        this.selectToDeleteItem = item
+        this.dialog.deleteProduct = true
       }
     }
   }
 </script>
-<style scoped>
+
+<style scoped lang="scss">
+  .menu-setting {
+    height: 100%;
+
+    &__title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    &--empty {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      margin-left: 50%;
+      margin-top: 50%;
+      transform: translate(-50%, -50%);
+
+      p {
+        color: #757575;
+      }
+
+      .btn-add {
+        color: #536DFE;
+        cursor: pointer;
+        font-weight: 700;
+        margin-top: 8px;
+      }
+    }
+
+    &__main {
+      height: calc(100% - 27px - 16px);
+    }
+
+    &__category {
+      height: calc(100% - 36px - 8px);
+      overflow: hidden scroll;
+
+      &__header {
+        display: flex;
+        height: 48px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        background-color: #E1E8F0;
+        cursor: pointer;
+      }
+    }
+  }
 </style>

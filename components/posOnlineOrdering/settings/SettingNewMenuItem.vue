@@ -1,36 +1,32 @@
 <template>
-  <div>
+  <div class="menu-setting-new-item">
     <!-- Product info -->
-    <div style="display: grid;
-                grid-template-columns: 40px 106px 1fr;
-                grid-gap: 15px;
-                height: 160px;
-                background-color: #fff;
-                align-items: center;
-                border-bottom: 1px solid #E0E0E0">
-      <div style="text-align: center">{{ index + 1 }}</div>
-      <div style="width: 106px; height: 106px; border-radius: 5px; border: 1px dashed #F00" @click="uploadImage">
+    <div class="menu-setting-new-item__main">
+      <div class="ta-center">{{ index + 1 }}</div>
+      <div class="menu-setting-new-item__image" @click="uploadImage">
         <img v-if="internalImage" :src="internalImage" style="opacity: 0.8; width: 100%; height: 100%"/>
+        <div v-else class="menu-setting-new-item__image--upload">
+          <img alt src="/plugins/pos-plugin/assets/upload.svg"/>
+          <p>Upload</p>
+        </div>
       </div>
-      <div style="height: 106px;
-                display: grid;
-                grid-template-columns: 1fr 200px;
-                grid-template-rows: 40% 60%;
-                grid-gap: 5px">
-        <g-text-field-bs v-model="internalName" placeholder="Name *" style="grid-area: 1/1/2/2"/>
-        <g-text-field-bs v-model="internalPrice" placeholder="Price *" style="grid-area: 1/2/2/3;"/>
-        <g-text-field-bs dense v-model="internalDesc" placeholder="Description" style="grid-area: 2/1/3/2" row="2"/>
-        <div style="grid-area: 2/2/3/3">
+      <div class="menu-setting-new-item__content">
+        <g-text-field-bs small v-model="internalName" placeholder="Name *"/>
+        <div>
+          <g-text-field-bs small v-model="internalPrice" placeholder="Price *"/>
+        </div>
+        <g-textarea outlined no-resize :rows="2" v-model="internalDesc" placeholder="Description"/>
+        <div class="menu-setting-new-item__tax">
           <div>Tax:</div>
           <div>
-            <g-grid-select mandatory v-model="internalTax" :items="taxes" itemCols="auto">
+            <g-grid-select mandatory v-model="internalTax" :items="taxes" itemCols="6">
               <template #default="{ toggleSelect, item, index }">
-                <div @click="e =>{ toggleSelect(item); internalTax = item;}">
+                <div class="option" @click="e =>{ toggleSelect(item); internalTax = item;}">
                   {{item.text}}
                 </div>
               </template>
               <template #selected="{ toggleSelect, item, index }">
-                <div @click="e => {toggleSelect(item); internalTax = item;}">
+                <div class="option option--selected" @click="e => {toggleSelect(item); internalTax = item;}">
                   {{item.text}}
                 </div>
               </template>
@@ -41,8 +37,8 @@
     </div>
     <!-- Action button -->
     <div style="display: flex; justify-content: flex-end">
-      <g-btn @click="$emit('cancel')">Cancel</g-btn>
-      <g-btn @click="saveMenuItem">Save</g-btn>
+      <g-btn-bs @click="$emit('cancel')">Cancel</g-btn-bs>
+      <g-btn-bs text-color="#536DFE" @click="saveMenuItem">Save</g-btn-bs>
     </div>
   </div>
 </template>
@@ -85,5 +81,106 @@
     }
   }
 </script>
+
 <style scoped lang="scss">
+  .menu-setting-new-item {
+    background: #FFF;
+
+    &__main {
+      display: grid;
+      grid-template-columns: 40px 80px 1fr;
+      grid-gap: 15px;
+      align-items: center;
+    }
+
+    &__content {
+      display: grid;
+      grid-template-columns: 1fr 140px;
+      padding-top: 16px;
+
+      .g-textarea {
+        margin: 0 4px;
+        width: calc(100% - 10px);
+
+        ::v-deep fieldset {
+          border-width: 1px !important;
+          border-color: #ced4da;
+
+          &:focus-within {
+            border-color: #80bdff !important;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+            z-index: 2;
+          }
+
+          .g-tf-input {
+            padding: 6px 12px;
+            line-height: 16px !important;
+            height: 48px !important;
+          }
+
+          .g-tf-append__inner {
+            display: none;
+          }
+        }
+      }
+
+      .bs-tf-wrapper {
+        margin: 0 4px;
+
+        ::v-deep .bs-tf-input {
+          width: 100%;
+        }
+      }
+
+    }
+
+    &__image {
+      width: 80px;
+      height: 80px;
+      border-radius: 15px;
+      cursor: pointer;
+      border: 1px dashed #B1B5BA;
+
+      &--upload {
+        opacity: 0.8;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 16px;
+        color: #E0E0E0;
+
+        img {
+          width: 60%;
+        }
+      }
+    }
+
+    &__tax {
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      margin: 4px 6px 4px 4px;
+      padding: 4px;
+      font-size: 13px;
+
+      .option {
+        padding: 2px 8px;
+        text-align: center;
+        font-size: 15px;
+        font-style: italic;
+        border-radius: 2px;
+        border: 1px solid #E0E0E0;
+        margin-right: 4px;
+        cursor: pointer;
+
+        &--selected {
+          border-color: #90CAF9;
+          background-color: #E3F2FD;
+        }
+      }
+
+      ::v-deep .g-col {
+        padding: 0;
+      }
+    }
+  }
 </style>

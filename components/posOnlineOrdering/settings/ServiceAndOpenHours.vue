@@ -1,43 +1,45 @@
 <template>
-  <div>
-    <div style="font-style: normal; font-weight: bold; font-size: 18px;" class="mb-2">Service & Open hours</div>
-    <div style="background-color: #FFF; border-radius: 5px; padding: 25px 25px 50px 25px;" class="mb-2">
+  <div class="service-setting">
+    <div class="service-setting__title">Service & Open hours</div>
+    <div class="service-setting__content mb-2">
       <div style="display: flex">
-        <div style="font-style: normal; font-weight: bold; font-size: 15px;" class="mb-3">Open hours</div>
+        <div class="mb-3 fw-700">Open hours</div>
         <g-spacer/>
-        <div @click="addNewOpenHour()">+ Add new</div>
+        <div class="btn-add" @click="addNewOpenHour()">+ Add new</div>
       </div>
       <div v-for="(openHour, index) in openHours" :key="index"
-           style="display: flex; align-items: center; background: #FAFAFA; border: 1px solid #EFEFEF; box-sizing: border-box; border-radius: 4px; height: 43px; margin-top: 6px; margin-bottom: 6px;">
-        <g-checkbox v-model="openHour.dayInWeeks[0]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[0] && !availableDays[0]" label="Monday"/>
-        <g-checkbox v-model="openHour.dayInWeeks[1]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[1] && !availableDays[1]" label="Tuesday"/>
-        <g-checkbox v-model="openHour.dayInWeeks[2]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[2] && !availableDays[2]" label="Wednesday"/>
-        <g-checkbox v-model="openHour.dayInWeeks[3]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[3] && !availableDays[3]" label="Thursday"/>
-        <g-checkbox v-model="openHour.dayInWeeks[4]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[4] && !availableDays[4]" label="Friday"/>
-        <g-checkbox v-model="openHour.dayInWeeks[5]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[5] && !availableDays[5]" label="Saturday"/>
-        <g-checkbox v-model="openHour.dayInWeeks[6]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[6] && !availableDays[6]" label="Sunday"/>
+           class="open-hour__row">
+        <g-checkbox color="#536DFE" v-model="openHour.dayInWeeks[0]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[0] && !availableDays[0]" label="Monday"/>
+        <g-checkbox color="#536DFE" v-model="openHour.dayInWeeks[1]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[1] && !availableDays[1]" label="Tuesday"/>
+        <g-checkbox color="#536DFE" v-model="openHour.dayInWeeks[2]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[2] && !availableDays[2]" label="Wednesday"/>
+        <g-checkbox color="#536DFE" v-model="openHour.dayInWeeks[3]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[3] && !availableDays[3]" label="Thursday"/>
+        <g-checkbox color="#536DFE" v-model="openHour.dayInWeeks[4]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[4] && !availableDays[4]" label="Friday"/>
+        <g-checkbox color="#536DFE" v-model="openHour.dayInWeeks[5]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[5] && !availableDays[5]" label="Saturday"/>
+        <g-checkbox color="#536DFE" v-model="openHour.dayInWeeks[6]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[6] && !availableDays[6]" label="Sunday"/>
         <g-spacer/>
-        <div style="background: #E0E0E0; border-radius: 37px 0 0 37px; padding: 0 10px; margin-right: 1px">{{openHour.openTime}}</div>
-        <div style="background: #E0E0E0; border-radius: 0 37px 37px 0; padding: 0 10px">{{openHour.closeTime}}</div>
+        <div class="open-hour__row--hour left">{{openHour.openTime}}</div>
+        <div class="open-hour__row--hour right">{{openHour.closeTime}}</div>
         <g-spacer/>
-        <div @click="removeOpenHour(openHour)" style="background: #EFEFEF; width: 43px; height: 43px; line-height: 43px; text-align: center">X</div>
+        <div @click="removeOpenHour(openHour)" class="open-hour__row--btn">
+          <g-icon size="16">icon-close</g-icon>
+        </div>
       </div>
     </div>
-    <div style="background-color: #FFF; border-radius: 5px; padding: 25px 25px 50px 25px;">
-      <div style="font-style: normal; font-weight: bold; font-size: 15px;" class="mb-3">Service</div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr;">
-        <div>
+    <div class="service-setting__content w-50">
+      <div class="mb-3 fw-700">Service</div>
+      <div class="row-flex">
+        <div class="col-6">
           <div>Delivery</div>
           <g-radio-group v-model="delivery" row>
-            <g-radio label="Yes" :value="true"/>
-            <g-radio label="No" :value="false"/>
+            <g-radio color="#536DFE" label="Yes" value="1"/>
+            <g-radio color="#536DFE" label="No" value="0"/>
           </g-radio-group>
         </div>
-        <div>
+        <div class="col-6">
           <div>Allow pick-up</div>
           <g-radio-group v-model="pickup" row>
-            <g-radio label="Yes" :value="true"/>
-            <g-radio label="No" :value="false"/>
+            <g-radio color="#536DFE" label="Yes" value="1"/>
+            <g-radio color="#536DFE" label="No" value="0"/>
           </g-radio-group>
         </div>
       </div>
@@ -52,8 +54,8 @@
     props: {},
     data: function () {
       return {
-        delivery: true,
-        pickup: false,
+        delivery: null,
+        pickup: null,
         openHours: [],
         availableDays: [true, true, true, true, true, true, true]
       }
@@ -83,5 +85,66 @@
     }
   }
 </script>
-<style scoped>
+
+<style scoped lang="scss">
+  .service-setting {
+
+    &__title {
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    &__content {
+      background-color: #FFF;
+      border-radius: 5px;
+      padding: 25px 25px 50px 25px;
+
+      .btn-add {
+        color: #536DFE;
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      .open-hour__row {
+        display: flex;
+        align-items: center;
+        background: #FAFAFA;
+        border: 1px solid #EFEFEF;
+        border-radius: 6px;
+        height: 43px;
+        margin-top: 6px;
+        margin-bottom: 6px;
+
+        &--hour {
+          background: #E0E0E0;
+          padding: 0 12px;
+          font-weight: 700;
+          font-size: 15px;
+          line-height: 1.9;
+
+          &.left {
+            border-top-left-radius: 37px;
+            border-bottom-left-radius: 37px;
+            margin-right: 2px;
+          }
+
+          &.right {
+            border-top-right-radius: 37px;
+            border-bottom-right-radius: 37px;
+          }
+        }
+
+        &--btn {
+          background: #EFEFEF;
+          width: 43px;
+          height: 43px;
+          line-height: 43px;
+          text-align: center;
+          border-top-right-radius: inherit;
+          border-bottom-right-radius: inherit;
+          cursor: pointer;
+        }
+      }
+    }
+  }
 </style>
