@@ -344,7 +344,7 @@
       printOrderReport(orderId) {
         return new Promise((resolve, reject) => {
           if (_.isNil(orderId)) reject()
-          cms.socket.emit('printReport', 'OrderReport', { orderId }, ({ success, message }) => {
+          cms.socket.emit('printReport', 'OrderReport', { orderId }, this.device, ({ success, message }) => {
             if (success) resolve()
             reject(message)
           })

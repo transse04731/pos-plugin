@@ -5,24 +5,33 @@ const { renderer, print } = require('../print-utils/print-utils')
 
 module.exports = async function (cms) {
   cms.socket.on('connect', socket => {
-    socket.on('printReport', reportHandler)
+    socket.on('printReport', async (reportType, args, device, callback) => {
+      try {
+        const reportComponent = await reportHandler(reportType, args)
+        if (!reportComponent) return
+        await printReport(reportComponent, device)
+        callback({ success: true })
+      } catch (e) {
+        callbackWithError(callback, e)
+      }
+    })
   })
 
-  async function reportHandler(reportType, args, callback) {
+  async function reportHandler(reportType, args) {
     if (reportType === 'OrderReport') {
-      await orderReportHandler(args, callback)
+      return await orderReportHandler(args)
     } else if (reportType === 'ZReport') {
-      await zReportHandler(args, callback)
+      return await zReportHandler(args)
     } else if (reportType === 'MonthlyReport') {
-      await monthlyReportHandler(args, callback)
+      return await monthlyReportHandler(args)
     } else if (reportType === 'XReport') {
-      await xReportHandler(args, callback)
-    }  else if (reportType === 'StaffReport') {
-      await staffReportHandler(args, callback)
+      return await xReportHandler(args)
+    } else if (reportType === 'StaffReport') {
+      return await staffReportHandler(args)
     }
   }
 
-  async function orderReportHandler({orderId}, callback) {
+  async function orderReportHandler({ orderId }, callback) {
     const posSetting = await cms.getModel('PosSetting').findOne({})
     const order = await cms.getModel('Order').findById(orderId)
 
@@ -31,7 +40,7 @@ module.exports = async function (cms) {
       return
     }
 
-    const {name: companyName, address: companyAddress, telephone: companyTel, taxNumber: companyVatNumber} = posSetting.companyInfo
+    const { name: companyName, address: companyAddress, telephone: companyTel, taxNumber: companyVatNumber } = posSetting.companyInfo
     const orderDate = dayjs(order.date).format('DD.MM.YYYY')
     const orderTime = dayjs(order.date).format('HH:mm:ss')
     const orderNumber = order.id
@@ -69,58 +78,57 @@ module.exports = async function (cms) {
     }
 
     const OrderReport = require('../../dist/OrderReport.vue')
-    const component = new Vue({
-      components: {OrderReport},
+    return new Vue({
+      components: { OrderReport },
       render(h) {
-        return h('OrderReport', {props})
+        return h('OrderReport', { props })
       }
     })
-
-    printReport(component, callback)
   }
 
-  async function zReportHandler({z}, callback) {
+  async function zReportHandler({ z }, callback) {
     const posSetting = await cms.getModel('PosSetting').findOne({})
-    const endOfDayReport = await cms.getModel('EndOfDay').findOne({z})
+    const endOfDayReport = await cms.getModel('EndOfDay').findOne({ z })
 
     if (!endOfDayReport) {
       callbackWithError(callback, `z report number ${z} not found`)
       return
     }
 
-    const {begin} = endOfDayReport
+    const { begin } = endOfDayReport
 
     let reportData
-    try {
-      reportData = await new Promise((resolve, reject) => {
-        cms.api.processData('OrderEOD', {z}, result => {
-          if (result === 'string') reject(result)
-          else resolve(result)
-        })
+    reportData = await new Promise((resolve, reject) => {
+      cms.api.processData('OrderEOD', { z }, result => {
+        if (result === 'string') {
+          reject(result)
+        } else {
+          resolve(result)
+        }
       })
-    } catch (err) {
-      callbackWithError(callback, err)
-      return
-    }
+    })
 
     const sortedOrders = _.sortBy(reportData.paidOrders, 'date')
     const firstOrderDate = _.first(sortedOrders).date
     const lastOrderDate = _.last(sortedOrders).date
 
-    const {name: companyName, address: companyAddress, telephone: companyTel, taxNumber: companyVatNumber} = posSetting.companyInfo
+    const { name: companyName, address: companyAddress, telephone: companyTel, taxNumber: companyVatNumber } = posSetting.companyInfo
     const reportDate = dayjs(begin).format('DD.MM.YYYY')
     const firstOrderDateString = dayjs(firstOrderDate).format('DD.MM.YYYY HH:mm')
     const lastOrderDateString = dayjs(lastOrderDate).format('DD.MM.YYYY HH:mm')
-    const {net: subTotal, tax: taxTotal, sum: sumTotal, discount} = reportData.report
-    const {reportByPayment} = reportData
+    const { net: subTotal, tax: taxTotal, sum: sumTotal, discount } = reportData.report
+    const { reportByPayment } = reportData
 
     const reportGroups = _.groupBy(Object.keys(reportData.report), key => {
       const taxGroup2Chars = key.slice(key.length - 2, key.length) // 2 characters tax - for example 23%
       const taxGroup1Char = key.slice(key.length - 1, key.length) // 1 character tax - for example 5%
 
       if (!isNaN(Number.parseInt(taxGroup2Chars))) return taxGroup2Chars
-      if (!isNaN(Number.parseInt(taxGroup1Char))) return taxGroup1Char
-      else return 'other'
+      if (!isNaN(Number.parseInt(taxGroup1Char))) {
+        return taxGroup1Char
+      } else {
+        return 'other'
+      }
     })
 
     delete reportGroups.other
@@ -144,93 +152,79 @@ module.exports = async function (cms) {
     }
 
     const ZReport = require('../../dist/ZReport.vue')
-    const component = new Vue({
-      components: {ZReport},
+    return new Vue({
+      components: { ZReport },
       render(h) {
-        return h('ZReport', {props})
+        return h('ZReport', { props })
       }
     })
-
-    printReport(component, callback)
   }
 
-  async function monthlyReportHandler(report, callback) {
-    const props = {...report }
+  async function monthlyReportHandler(report) {
+    const props = { ...report }
     const MonthReport = require('../../dist/MonthReport.vue')
-    const component = new Vue({
+    return new Vue({
       components: { MonthReport },
       render(h) {
         return h('MonthReport', { props })
       }
     })
-
-    printReport(component, callback)
   }
 
-  async function staffReportHandler(report, callback) {
+  async function staffReportHandler(report) {
     const StaffReport = require('../../dist/StaffReport.vue')
-    const component = new Vue({
+    return new Vue({
       components: { StaffReport },
       render(h) {
         return h('StaffReport', { props: { orderSalesByStaff: report } })
       }
     })
-
-    printReport(component, callback)
   }
 
-  async function xReportHandler({from, to}, callback) {
-    try {
-      const report  = await new Promise((resolve, reject) => {
-        cms.api.processData('OrderXReport', {from, to}, result => {
-          if (result === 'string') reject(result)
-          else resolve(result)
-        })
-      })
-      const reportDate = dayjs(from);
-      const xReport = {
-        ...report.report,
-        ...report.dayReport[reportDate.format('DD-MM-YYYY')]
-      }
-
-      const posSettings = await cms.getModel('PosSetting').findOne()
-      const companyInfo = posSettings && posSettings.companyInfo
-      const props = {
-        ...companyInfo,
-        ...xReport,
-        date: reportDate.format('DD/MM/YYYY')
-      }
-
-      const XReport = require('../../dist/XReport.vue')
-      const component = new Vue({
-        components: { XReport },
-        render(h) {
-          return h('XReport', { props })
+  async function xReportHandler({ from, to }) {
+    const report = await new Promise((resolve, reject) => {
+      cms.api.processData('OrderXReport', { from, to }, result => {
+        if (result === 'string') {
+          reject(result)
+        } else {
+          resolve(result)
         }
       })
-
-      printReport(component, callback)
-    } catch (e) {
-      callbackWithError(callback, e)
+    })
+    const reportDate = dayjs(from);
+    const xReport = {
+      ...report.report,
+      ...report.dayReport[reportDate.format('DD-MM-YYYY')]
     }
+
+    const posSettings = await cms.getModel('PosSetting').findOne()
+    const companyInfo = posSettings && posSettings.companyInfo
+    const props = {
+      ...companyInfo,
+      ...xReport,
+      date: reportDate.format('DD/MM/YYYY')
+    }
+
+    const XReport = require('../../dist/XReport.vue')
+    return new Vue({
+      components: { XReport },
+      render(h) {
+        return h('XReport', { props })
+      }
+    })
   }
 
-  function printReport(component, callback) {
+  function printReport(component, device) {
     renderer.renderToString(component, {}, async (err, html) => {
-      if (err) {
-        callbackWithError(callback, err)
-        return
-      }
+      if (err) throw err
       // get ip
       const groupPrinters = await cms.getModel('GroupPrinter').aggregate([
         { $unwind: { path: '$printers' } },
-        { $match: { 'printers.hardwares': device, 'type': 'kitchen' } },
+        { $match: { 'printers.hardwares': device, 'type': 'invoice' } },
       ])
       if (!groupPrinters) return
-      const printerIp = printer.printers.ip
+      const printerIp = groupPrinters[0].printers.ip
       await print(html, printerIp)
-
-      callback({success: true})
     })
   }
 

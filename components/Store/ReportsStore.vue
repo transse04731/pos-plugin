@@ -9,7 +9,7 @@
   export default {
     name: 'ReportsStore',
     domain: 'ReportsStore',
-    injectService: ['PosStore:dateFormat'],
+    injectService: ['PosStore:(dateFormat, device)'],
     data() {
       return {
         selectedReportDate: null,
@@ -115,7 +115,7 @@
       printZReport(z) {
         return new Promise((resolve, reject) => {
           if (_.isNil(z)) reject()
-          cms.socket.emit('printReport', 'ZReport', { z: parseInt(z) }, ({ success, message }) => {
+          cms.socket.emit('printReport', 'ZReport', { z: parseInt(z) }, this.device, ({ success, message }) => {
             if (success) resolve()
             reject(message)
           })
@@ -141,7 +141,7 @@
 
         return new Promise((resolve, reject) => {
           cms.socket.emit('printReport', 'XReport',
-            { from, to }, ({ success, message }) => {
+            { from, to }, this.device, ({ success, message }) => {
               if (success) resolve()
               reject(message)
             })
@@ -177,7 +177,7 @@
       printMonthlyReport(report) {
         return new Promise((resolve, reject) => {
           cms.socket.emit('printReport', 'MonthlyReport',
-            report,
+            report, this.device,
             ({ success, message }) => {
               if (success) resolve()
               reject(message)
@@ -199,7 +199,7 @@
       printStaffReport(report) {
         return new Promise((resolve, reject) => {
           cms.socket.emit('printReport', 'StaffReport',
-            report,
+            report, this.device,
             ({ success, message }) => {
               if (success) {
                 resolve()
