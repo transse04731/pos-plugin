@@ -10,9 +10,26 @@
     props: {},
     data: function () {
       return {
+        storeId: null,
         setting: null,
         categories: null,
         products: null,
+      }
+    },
+    async created() {
+      // TODO: Store name alias
+      const storeName = this.$route.params.storeName
+      const store = await cms.getModel('Store').findOne({name: storeName})
+      const storeGroups = _.map(store.groups, g => g._id)
+      const userStoreGroups = _.map(this.$getService('PosStore').user.storeGroups, g => g._id)
+      const userManageStore = _.unique(storeGroups, userStoreGroups).length > 0
+      if (userManageStore) {
+        this.storeId = store._id
+        await this.loadSetting()
+        await this.loadCategories()
+        await this.loadProducts()
+      } else {
+        prompt('Permission denied!')
       }
     },
     computed: {
@@ -24,11 +41,6 @@
           cate.products = _.filter(products, p => p.category._id === cate._id)
         })
       }
-    },
-    async created() {
-      await this.loadSetting()
-      await this.loadCategories()
-      await this.loadProducts()
     },
     methods: {
       async createSetting() {
@@ -47,11 +59,12 @@
           delivery: false,
           pickup: false,
           // open hours
-          openHours: []
+          openHours: [],
+          store: this.storeId
         })
       },
       async loadSetting() {
-        const setting = await cms.getModel('PosOnlineOrderSetting').findOne({})
+        const setting = await cms.getModel('PosOnlineOrderSetting').findOne({ store: this.storeId })
         this.$set(this, 'setting', setting)
       },
       async changeRestaurantInfo(change) {
@@ -84,25 +97,25 @@
         await this.loadSetting()
       },
       async loadCategories() {
-        this.$set(this, 'categories', await cms.getModel('Category').find({}))
+        this.$set(this, 'categories', await cms.getModel('Category').find({ store: this.storeId }))
       },
       async loadProducts() {
-        this.$set(this, 'products', await cms.getModel('Product').find({}))
+        this.$set(this, 'products', await cms.getModel('Product').find({ store: this.storeId }))
       },
       async addNewCategory(name) {
-        await cms.getModel('Category').create({name})
+        await cms.getModel('Category').create({name, store: this.storeId})
         await this.loadCategories()
       },
       async addNewProduct(product) {
-        await cms.getModel('Product').create(product)
+        await cms.getModel('Product').create({...product, store: this.storeId})
         await this.loadProducts()
       },
       async updateProduct(_id, change) {
-        await cms.getModel('Product').findOneAndUpdate({_id}, change)
+        await cms.getModel('Product').findOneAndUpdate({_id, store: this.storeId}, change)
         await this.loadProducts()
       },
       async removeProduct(_id) {
-        await cms.getModel('Product').remove({_id})
+        await cms.getModel('Product').remove({_id, store: this.storeId})
         await this.loadProducts()
       }
     },
