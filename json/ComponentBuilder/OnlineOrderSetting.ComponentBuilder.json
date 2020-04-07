@@ -1,0 +1,22 @@
+{
+  "events": [],
+  "_id": "5e856d72b7b7b30cc39f259a",
+  "items": [
+    {
+      "choice": "view",
+      "component": "PosODSettings",
+      "binding": [],
+      "slotScopeBinding": [],
+      "url": "plugins/pos-plugin/components/posOnlineOrdering/PosODSettings.vue",
+      "path": "components/posOnlineOrdering/PosODSettings.vue",
+      "pluginName": "pos-plugin"
+    }
+  ],
+  "name": "OnlineOrderSetting",
+  "props": {
+    "fields": []
+  },
+  "renderToRoute": "od-setting/:storeName",
+  "isProduction": true,
+  "renderInIframe": null
+}
