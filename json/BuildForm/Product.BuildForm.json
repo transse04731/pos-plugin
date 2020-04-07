@@ -44,12 +44,6 @@
       "type": "input"
     },
     {
-      "_id": "5e858f1fb7b7b30cc39f25d7",
-      "schemaType": "string",
-      "key": "image",
-      "type": "input"
-    },
-    {
       "_id": "5dddfbd26387aac1c8e1d050",
       "schemaType": "objectId",
       "key": "category",
@@ -102,6 +96,12 @@
       ],
       "key": "tax2",
       "flex": "md4"
+    },
+    {
+      "_id": "5e870a27d06a901255871a64",
+      "schemaType": "string",
+      "key": "image",
+      "type": "input"
     },
     {
       "_id": "5ddce0a012b6deb726104504",
