@@ -1,0 +1,52 @@
+{
+  "_id": "5c88836c1591d506a250b299",
+  "__v": 0,
+  "fields": [
+    {
+      "_id": "5c8883961591d506a250b29c",
+      "schemaType": "string",
+      "key": "username",
+      "type": "input",
+      "unique": true
+    },
+    {
+      "_id": "5c8883961591d506a250b29b",
+      "schemaType": "string",
+      "key": "password",
+      "type": "input"
+    },
+    {
+      "_id": "5c8a27b939d1c91b21913071",
+      "schemaType": "objectId",
+      "key": "role",
+      "ref": "Role",
+      "autopopulate": true,
+      "type": "ref-select"
+    },
+    {
+      "_id": "5e86dfa78197ab54362973dc",
+      "schemaType": "array",
+      "key": "storeGroups",
+      "type": "array",
+      "fields": [
+        {
+          "schemaType": "objectId",
+          "ref": "StoreGroup",
+          "autopopulate": true,
+          "type": "ref-select",
+          "labelProp": "name",
+          "populateSelect": [
+            "name"
+          ]
+        }
+      ]
+    }
+  ],
+  "name": "User",
+  "tabs": [],
+  "type": "Collection",
+  "extensions": [],
+  "alwaysLoad": true,
+  "id": "5c88836c1591d506a250b299",
+  "title": "username"
+}
