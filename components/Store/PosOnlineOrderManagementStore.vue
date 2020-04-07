@@ -83,12 +83,14 @@
         return { ok: true}
       },
       async addStore({ name, storeGroups, address }) {
-        const result = await cms.getModel('Store').create({ name, storeGroups, address })
+        if (_.includes(this.storeNames, name))
+          return { ok: false, message: 'This name is already taken!' }
+        await cms.getModel('Store').create({ name, storeGroups, address })
         await this.loadStores()
         return { ok: true }
       },
       async removeStore(_id) {
-        const result = await cms.getModel('Store').remove({_id})
+        await cms.getModel('Store').remove({_id})
         await this.loadStores()
         return { ok : true }
       },
