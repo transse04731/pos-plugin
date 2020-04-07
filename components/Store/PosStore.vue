@@ -29,8 +29,11 @@
     domain: 'PosStore',
     methods: {
       async login(username, password, errCb) {
-        cms.login(username, password, '/view/pos-od-management').then(() => {
+        cms.login(username, password, null, true).then(async () => {
           console.log('Login success.')
+          this.user = await cms.getModel('User').findOne({username, password})
+          console.log(this.user)
+          location.href = '/view/pos-od-management'
         }).catch(err => {
           errCb && errCb(err.response.data.message)
         })
