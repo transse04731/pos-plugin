@@ -1,0 +1,32 @@
+{
+  "_id": "5e86c06f8197ab54362972eb",
+  "alwaysLoad": true,
+  "extensions": [],
+  "fields": [
+    {
+      "_id": "5e86c1998197ab54362972ed",
+      "schemaType": "string",
+      "key": "name",
+      "type": "input"
+    },
+    {
+      "_id": "5e86c7748197ab5436297326",
+      "schemaType": "array",
+      "key": "groups",
+      "fields": [
+        {
+          "schemaType": "objectId",
+          "ref": "StoreGroup",
+          "type": "ref-select",
+          "labelProp": "name",
+          "autopopulate": true
+        }
+      ],
+      "type": "array"
+    }
+  ],
+  "name": "Store",
+  "tabs": [],
+  "type": "Collection",
+  "title": "name"
+}

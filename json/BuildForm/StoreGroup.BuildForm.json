@@ -1,0 +1,17 @@
+{
+  "_id": "5e86c6a08197ab5436297316",
+  "extensions": [],
+  "fields": [
+    {
+      "_id": "5e86c6d88197ab5436297318",
+      "schemaType": "string",
+      "key": "name",
+      "type": "input"
+    }
+  ],
+  "name": "StoreGroup",
+  "tabs": [],
+  "title": "name",
+  "type": "Collection",
+  "alwaysLoad": true
+}

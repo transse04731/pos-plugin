@@ -1,0 +1,16 @@
+{
+  "_id": "5e86ff8ae58f1f5cd828fe42",
+  "collectionPermission": [
+    {
+      "hideFields": [],
+      "_id": "5e86ff9fe58f1f5cd828fe44",
+      "collectionName": "Product2",
+      "permission": "read",
+      "queryCondition": {
+        "_code_": "",
+        "_code_type_": "commonJs"
+      }
+    }
+  ],
+  "name": "nouser"
+}
