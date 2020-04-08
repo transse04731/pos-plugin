@@ -1,18 +1,13 @@
-<template>
-
-</template>
+<template> </template>
 <script>
   import _ from 'lodash'
-  
   export default {
     name: 'PosOnlineOrderManagementStore',
     domain: 'PosOnlineOrderManagementStore',
-    props: {},
     data: function () {
       return {
         storeGroups: [],
         stores: [],
-        // --
         searchText: null,
         orderBy: null
       }

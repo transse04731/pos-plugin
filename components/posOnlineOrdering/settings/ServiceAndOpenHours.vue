@@ -9,16 +9,16 @@
       </div>
       <div v-for="(openHour, index) in openHours" :key="index"
            class="open-hour__row">
-        <g-checkbox color="#536DFE" v-model="openHour.dayInWeeks[0]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[0] && !availableDays[0]" label="Monday"/>
-        <g-checkbox color="#536DFE" v-model="openHour.dayInWeeks[1]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[1] && !availableDays[1]" label="Tuesday"/>
-        <g-checkbox color="#536DFE" v-model="openHour.dayInWeeks[2]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[2] && !availableDays[2]" label="Wednesday"/>
-        <g-checkbox color="#536DFE" v-model="openHour.dayInWeeks[3]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[3] && !availableDays[3]" label="Thursday"/>
-        <g-checkbox color="#536DFE" v-model="openHour.dayInWeeks[4]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[4] && !availableDays[4]" label="Friday"/>
-        <g-checkbox color="#536DFE" v-model="openHour.dayInWeeks[5]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[5] && !availableDays[5]" label="Saturday"/>
-        <g-checkbox color="#536DFE" v-model="openHour.dayInWeeks[6]" @change="updateAvailableDay" :disabled="!openHour.dayInWeeks[6] && !availableDays[6]" label="Sunday"/>
+        <g-checkbox
+            v-for="(day, i) in days"
+            v-model="openHour.dayInWeeks[i]"
+            :disabled="!openHour.dayInWeeks[i] && !availableDays[i]"
+            :label="day"
+            @change="updateOpenHours"
+            color="#536DFE"/>
         <g-spacer/>
-        <div class="open-hour__row--hour left">{{openHour.openTime}}</div>
-        <div class="open-hour__row--hour right">{{openHour.closeTime}}</div>
+        <g-time-picker-input v-model="openHour.openTime" class="open-hour__row--hour left" @input="updateOpenHours"/>
+        <g-time-picker-input v-model="openHour.closeTime" class="open-hour__row--hour right" @input="updateOpenHours"/>
         <g-spacer/>
         <div @click="removeOpenHour(openHour)" class="open-hour__row--btn">
           <g-icon size="16">icon-close</g-icon>
@@ -48,31 +48,36 @@
 </template>
 <script>
   import _ from 'lodash'
-  
+  // TODO: Debounce update openHours open, close time
   export default {
     name: 'ServiceAndOpenHours',
-    props: {},
+    props: { store: Object },
     data: function () {
       return {
-        delivery: null,
-        pickup: null,
-        openHours: [],
-        availableDays: [true, true, true, true, true, true, true]
+        days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
       }
     },
-    computed: {},
-    methods: {
-      addNewOpenHour() {
-        this.openHours.push({
-          dayInWeeks: [false, false, false, false, false, false, false],
-          openTime: '06:30',
-          closeTime: '23:30'
-        })
+    computed: {
+      delivery: {
+        get() {
+          return this.store.delivery ? "1" : "0"
+        },
+        set(value) {
+          this.$emit('update', { delivery: value === "1" })
+        }
       },
-      removeOpenHour(openHour) {
-
+      pickup: {
+        get() {
+          return this.store.pickup ? "1" : "0"
+        },
+        set(value) {
+          this.$emit('update', { pickup: value === "1" })
+        }
       },
-      updateAvailableDay() {
+      openHours() {
+        return this.store.openHours
+      },
+      availableDays() {
         const availableDays = [true, true, true, true, true, true, true]
         _.each(this.openHours, openHour => {
           _.each(openHour.dayInWeeks, (checked, index) => {
@@ -80,7 +85,26 @@
               availableDays[index] = false
           })
         })
-        this.availableDays.splice(0, this.availableDays.length, ...availableDays)
+        return availableDays
+      }
+    },
+    methods: {
+      addNewOpenHour() {
+        const newOpenHour = {
+          dayInWeeks: [false, false, false, false, false, false, false],
+          openTime: '06:30',
+          closeTime: '23:30'
+        }
+        const newOpenHours = [...this.store.openHours, newOpenHour]
+        this.$emit('update', { openHours: newOpenHours })
+      },
+      removeOpenHour(openHour) {
+        const i = _.findIndex(this.store.openHours, oh => oh._id === openHour._id)
+        this.store.openHours.splice(i, 1)
+        this.$emit('update', { openHours: this.store.openHours })
+      },
+      updateOpenHours() {
+        this.$emit('update', { openHours: this.store.openHours })
       }
     }
   }

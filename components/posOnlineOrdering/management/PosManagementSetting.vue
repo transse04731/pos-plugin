@@ -15,8 +15,8 @@
       <div>
         <p>Online ordering</p>
         <g-radio-group v-model="active" row>
-          <g-radio color="#536DFE" label="Active" :value="true"/>
-          <g-radio color="#536DFE" label="Disabled" :value="false"/>
+          <g-radio color="#536DFE" label="Active" value="1"/>
+          <g-radio color="#536DFE" label="Disabled" value="0"/>
         </g-radio-group>
       </div>
       <div>
@@ -143,6 +143,14 @@
         },
         set(val) {
           this.$emit('update', { address: val })
+        }
+      },
+      computedActive: {
+        get() {
+          return this.active ? "1" : "0"
+        },
+        set(value) {
+          this.$emit('update', { active: value === "1" })
         }
       }
     }

@@ -5,9 +5,17 @@
 
     <!-- content -->
     <div style="background-color: #F4F7FB; flex: 1; padding: 50px 10%">
-      <restaurant-information v-if="view === 'restaurant-info'" :store="store" @update="changeRestaurantInfo"/>
-      <service-and-open-hours v-if="view === 'service-and-open-hours'" :store="store"/>
-      <setting-menu v-if="view === 'settings-menu'" :store="store"/>
+      <restaurant-information
+          v-if="view === 'restaurant-info'"
+          :store="store"
+          @update="updateStore"/>
+      <service-and-open-hours
+          v-if="view === 'service-and-open-hours'"
+          :store="store"
+          @update="updateStore"/>
+      <setting-menu
+          v-if="view === 'settings-menu'"
+          :store="store"/>
     </div>
   </div>
 </template>
@@ -16,11 +24,9 @@
   import RestaurantInformation from './RestaurantInformation';
   import ServiceAndOpenHours from './ServiceAndOpenHours';
   import SettingMenu from './SettingMenu';
-
   export default {
     name: 'SettingView',
     components: {SettingMenu, ServiceAndOpenHours, RestaurantInformation},
-    props: {},
     data: function () {
       return {
         sidebarItems: [
@@ -65,7 +71,7 @@
       async loadStore() {
         this.$set(this, 'store', await cms.getModel('Store').findOne({_id: this.store._id}))
       },
-      async changeRestaurantInfo(change) {
+      async updateStore(change) {
         await cms.getModel('Store').updateOne({_id: this.store._id}, change)
         await this.loadStore()
       },

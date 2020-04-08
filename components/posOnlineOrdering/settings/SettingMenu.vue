@@ -1,7 +1,6 @@
 <template>
   <div class="menu-setting">
     <div class="menu-setting__title mb-3">Settings Menu</div>
-    <!-- empty -->
     <div v-if="!categories || !categories.length" class="menu-setting--empty">
       <img src="/plugins/pos-plugin/assets/folk_knife.svg">
       <p>Menu is currently empty.</p>
@@ -15,42 +14,37 @@
           Add new category
         </g-btn-bs>
       </div>
-      <!-- categories -->
       <div class="menu-setting__category">
-        <!-- Category -->
         <div v-for="(cate, index) in categories" :key="index" class="mb-1">
-          <!-- header -->
           <div @click="cate.toggleCollapse()" class="menu-setting__category__header">
             <div class="menu-setting__title">{{cate.name}}</div>
             <g-icon v-if="cate.showProducts">fas fa-chevron-up</g-icon>
             <g-icon v-else>fas fa-chevron-down</g-icon>
           </div>
-          <!-- Menu item -->
           <template v-if="cate.showProducts">
             <div style="border-bottom: 1px solid #E0E0E0">
-              <!-- product panels -->
               <template v-if="cate.products && cate.products.length > 0">
-                <setting-menu-item v-for="(product, index) in cate.products" v-bind="product" :index="index" @delete="openDeleteDialog($event)"/>
+                <setting-menu-item
+                    v-for="(product, index) in cate.products"
+                    v-bind="product"
+                    :index="index"
+                    @delete="openDeleteDialog($event)"/>
               </template>
-              <!-- empty product -->
               <div v-else style="height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #fff;">
                 <img src="/plugins/pos-plugin/assets/no-items.svg" class="mb-2"/>
                 <div class="text-grey">No item in this group.</div>
               </div>
-              <!-- add new panel -->
-              <div v-if="addNewProductPanel">
+              <div v-if="showAddNewProductPanel">
                 <setting-new-menu-item
                     :index="cate.products.length"
-                    @cancel="addNewProductPanel = false"
+                    @cancel="showAddNewProductPanel = false"
                     @save="addNewProduct($event)"/>
               </div>
             </div>
-            
-            <!-- Add New Product activator -->
             <div style="height: 40px; background-color: #fff; display: flex; align-items: center; justify-content: center;">
               <g-btn-bs text-color="#2979FF"
-                     @click="addNewProductPanel = true"
-                     :disabled="addNewProductPanel">
+                     @click="showAddNewProductPanel = true"
+                     :disabled="showAddNewProductPanel">
                 + Add New Item
               </g-btn-bs>
             </div>
@@ -107,7 +101,7 @@
             products: []
           }
         ],
-        addNewProductPanel: false,
+        showAddNewProductPanel: false,
         dialog: {
           addNewCategory: false,
           deleteProduct: false,
@@ -115,14 +109,16 @@
         selectToDeleteItem: null,
       }
     },
-    computed: {},
+    computed: {
+    
+    },
     methods: {
       addNewCategory() {
       
       },
       addNewProduct({ name, desc, price, tax }) {
         // TODO: Add new product
-        // extra info: restaurent id
+        // extra info: restaurant id
       },
       deleteProduct() {
         //
