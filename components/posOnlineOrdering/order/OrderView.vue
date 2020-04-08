@@ -94,16 +94,9 @@
       if (storeIdOrAlias) {
         // try to find by id
         const store = await cms.getModel('Store').findOne({alias: storeIdOrAlias})
-        const storeGroups = _.map(store.groups, g => g._id)
-        const userStoreGroups = _.map(this.$getService('PosStore').user.storeGroups, g => g._id)
-        const theUserManageThisStore = _.uniq(storeGroups, userStoreGroups).length > 0
-        if (theUserManageThisStore) {
-          this.$set(this, 'store', store)
-          await this.loadCategories()
-          await this.loadProducts()
-        } else {
-          prompt('Permission denied!')
-        }
+        this.$set(this, 'store', store)
+        await this.loadCategories()
+        await this.loadProducts()
       }
       await this.loadCategories()
     },
