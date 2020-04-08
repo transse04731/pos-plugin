@@ -2,7 +2,10 @@
   <div class="pos-management-setting">
     <div class="pos-management-setting__info">
       <div class="pos-management-setting__title">Basic Information</div>
-      <g-select large deletable-chips multiple text-field-component="GTextFieldBs" label="Group" :items="listGroups"
+      <g-select large deletable-chips multiple text-field-component="GTextFieldBs" label="Group"
+                :items="groups"
+                item-text="name"
+                item-value="_id"
                 v-model="computedGroup"/>
       <g-text-field-bs large label="Name" v-model="computedName"/>
       <g-text-field-bs large label="Address" v-model="computedAddress"/>
@@ -117,12 +120,6 @@
     computed: {
       webShopUrlPrefix() {
         return`${location.host}/store/`
-      },
-      listGroups() {
-        return this.groups.map(g => ({
-          text: g.name,
-          value: g.id
-        }))
       },
       computedGroup: {
         get() {
