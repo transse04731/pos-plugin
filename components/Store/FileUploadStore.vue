@@ -33,8 +33,12 @@
           try {
             openUploadFileDialog({ multiple: false, mimeType: 'image/*' }, files => {
               this.showFileUploadProgressDialog = true
-              this.uploadingItems.push(this.gridFsHandler.uploadFile(files[0], '/', fileMetaData => {
-                resolve(`http://localhost:8888/cms-files/file/${fileMetaData.fileSource}`)
+              this.uploadingItems.push(this.gridFsHandler.uploadFile(files[0], '/', response => {
+                if (response.data[0].uploadSuccess) {
+                  resolve(`http://localhost:8888/cms-files/files/view/${response.data[0].createdFile.folderPath}${response.data[0].createdFile.fileName}`)
+                } else {
+                  reject(response)
+                }
               }))
             })
           } catch(e) {
