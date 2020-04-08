@@ -459,3 +459,17 @@ body::-webkit-scrollbar {
 .icon-arrow-down {
   background-image: url("../assets/down-arrow.svg");
 }
+
+.icon-delivery-man {
+  background-image: url("../assets/delivery-man.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-pickup {
+  background-image: url("../assets/pickup.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
