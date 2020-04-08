@@ -92,7 +92,6 @@
     async created() {
       const storeIdOrAlias = this.$route.params.storeIdOrAlias
       if (storeIdOrAlias) {
-        // try to find by id
         const store = await cms.getModel('Store').findOne({alias: storeIdOrAlias})
         this.$set(this, 'store', store)
         await this.loadCategories()
