@@ -90,7 +90,9 @@
       async addStore({ name, groups, address }) {
         if (_.includes(this.storeNames, name))
           return { ok: false, message: 'This name is already taken!' }
-        await cms.getModel('Store').create({ name, groups, address })
+        const result = await cms.getModel('Store').create({ name, groups, address })
+        // assign alias as an id by default
+        await cms.getModel('Store').updateOne({_id: result._id}, { alias: result._id })
         await this.loadStores()
         return { ok: true }
       },

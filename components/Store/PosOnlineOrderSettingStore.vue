@@ -17,19 +17,22 @@
       }
     },
     async created() {
-      // TODO: Store name alias
-      const storeName = this.$route.params.storeName
-      const store = await cms.getModel('Store').findOne({name: storeName})
-      const storeGroups = _.map(store.groups, g => g._id)
-      const userStoreGroups = _.map(this.$getService('PosStore').user.storeGroups, g => g._id)
-      const userManageStore = _.unique(storeGroups, userStoreGroups).length > 0
-      if (userManageStore) {
-        this.storeId = store._id
-        await this.loadSetting()
-        await this.loadCategories()
-        await this.loadProducts()
-      } else {
-        prompt('Permission denied!')
+      console.log('create setting store')
+      const storeIdOrAlias = this.$route.params.storeIdOrAlias
+      if (storeIdOrAlias) {
+        // try to find by id
+        const store = await cms.getModel('Store').findOne({alias: storeIdOrAlias})
+        const storeGroups = _.map(store.groups, g => g._id)
+        const userStoreGroups = _.map(this.$getService('PosStore').user.storeGroups, g => g._id)
+        const userManageStore = _.unique(storeGroups, userStoreGroups).length > 0
+        if (userManageStore) {
+          this.storeId = store._id
+          await this.loadSetting()
+          await this.loadCategories()
+          await this.loadProducts()
+        } else {
+          prompt('Permission denied!')
+        }
       }
     },
     computed: {
