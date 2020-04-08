@@ -2,8 +2,7 @@ const authenticateAPI = require('./api/authenticate')
 
 module.exports = cms => {
   cms.data['loginUrl'] = '/view/sign-in';
-  cms.data['nonAuthenticateUrls'] = ['/login']
-  cms.data['nonAuthenticateUrls'].push('/admin');
+  cms.data['nonAuthenticateUrls'] = ['/login', '/admin', '/stores']
 
   cms.app.use('/user', authenticateAPI)
 
