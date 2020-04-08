@@ -21,7 +21,7 @@
         <div class="pos-management-setting__order--url">
           <span class="i text-indigo-accent-2">{{ webShopUrlPrefix }}</span>
           <div style="flex: 1; margin-left: 8px">
-            <g-text-field-bs large v-model="alias" @input="$emit('update', { alias: $event })"/>
+            <g-text-field-bs large :placeholder="_id" v-model="alias" @input="$emit('update', { alias: $event })"/>
           </div>
         </div>
       </div>
@@ -78,6 +78,7 @@
   export default {
     name: "PosManagementSetting",
     props: {
+      _id: String,
       name: String,
       group: null,
       address: String,

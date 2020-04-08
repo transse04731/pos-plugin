@@ -83,6 +83,7 @@
           <span>Settings</span>
         </div>
         <pos-management-setting
+            :_id="selectedStore._id"
             :name="selectedStore.name"
             :group="selectedStore.groups"
             :address="selectedStore.address"
