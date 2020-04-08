@@ -45,6 +45,10 @@
     },
     async created() {
       this.setDateInterval = setInterval(() => this.systemDate = new Date(), 10000)
+      if (localStorage.getItem('__token')) {
+        // TODO: Get user information by token
+      }
+      
       // const i18nConfig = cms.getList('SystemConfig').find(i => i.type === 'I18n')
       // if (i18nConfig) {
       //   this.locale = i18nConfig.content.locale
