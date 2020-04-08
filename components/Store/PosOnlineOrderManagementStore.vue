@@ -129,6 +129,7 @@
         removeDevice: this.removeDevice,
         updateDevice: this.updateDevice,
         storeGroups: this.storeGroups,
+        stores: this.stores,
         posManagementModel: this.posManagementModel,
         searchText: this.searchText
       }

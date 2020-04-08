@@ -2,7 +2,10 @@
   <div class="pos-management-setting">
     <div class="pos-management-setting__info">
       <div class="pos-management-setting__title">Basic Information</div>
-      <g-select large deletable-chips multiple text-field-component="GTextFieldBs" label="Group" :items="listGroups"
+      <g-select large deletable-chips multiple text-field-component="GTextFieldBs" label="Group"
+                :items="groups"
+                item-text="name"
+                item-value="_id"
                 v-model="computedGroup"/>
       <g-text-field-bs large label="Name" v-model="computedName"/>
       <g-text-field-bs large label="Address" v-model="computedAddress"/>
@@ -21,7 +24,7 @@
         <div class="pos-management-setting__order--url">
           <span class="i text-indigo-accent-2">{{ webShopUrlPrefix }}</span>
           <div style="flex: 1; margin-left: 8px">
-            <g-text-field-bs large v-model="alias" @input="$emit('update', { alias: $event })"/>
+            <g-text-field-bs large :placeholder="_id" v-model="alias" @input="$emit('update', { alias: $event })"/>
           </div>
         </div>
       </div>
@@ -78,6 +81,7 @@
   export default {
     name: "PosManagementSetting",
     props: {
+      _id: String,
       name: String,
       group: null,
       address: String,
@@ -116,12 +120,6 @@
     computed: {
       webShopUrlPrefix() {
         return`${location.host}/store/`
-      },
-      listGroups() {
-        return this.groups.map(g => ({
-          text: g.name,
-          value: g.id
-        }))
       },
       computedGroup: {
         get() {
