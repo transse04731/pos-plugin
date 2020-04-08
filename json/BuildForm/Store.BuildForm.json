@@ -116,23 +116,6 @@
       "labelProp": "username"
     },
     {
-      "_id": "5e8d4aa4f74fcf31930edd85",
-      "schemaType": "string",
-      "key": "status",
-      "type": "input@select",
-      "optionsType": "textValue",
-      "options": [
-        {
-          "value": "online",
-          "text": "online"
-        },
-        {
-          "value": "offline",
-          "text": "offline"
-        }
-      ]
-    },
-    {
       "_id": "5e86c7748197ab5436297326",
       "schemaType": "array",
       "key": "groups",
@@ -146,6 +129,12 @@
         }
       ],
       "type": "array"
+    },
+    {
+      "_id": "5e8da9ca0a3d463b892c6102",
+      "schemaType": "boolean",
+      "key": "active",
+      "type": "input@switch"
     },
     {
       "_id": "5e8d5c9d7610f43263473af9",
