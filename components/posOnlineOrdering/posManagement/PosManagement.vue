@@ -61,9 +61,9 @@
             </template>
             <template v-if="groups.length !== 0 && searchResult.length === 0">
               <div class="pos-management__table-content--empty">
-                <p class="text-grey-darken-1">No Products match your</p>
-                <p class="text-grey-darken-1">search <span class="fw-700">"{{searchText}}"</span></p>
-                <div class="text-indigo-accent-2">Reset Sort</div>
+                <p class="text-grey-darken-1">No Store match your search</p>
+                <p class="text-grey-darken-1"><span class="fw-700">"{{searchText}}"</span></p>
+                <div class="text-indigo-accent-2">Reset Search</div>
               </div>
             </template>
             <template v-else>
