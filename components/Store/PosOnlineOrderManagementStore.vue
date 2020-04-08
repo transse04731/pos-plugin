@@ -13,7 +13,7 @@
         storeGroups: [],
         stores: [],
         // --
-        searchContent: null,
+        searchText: null,
         orderBy: null
       }
     },
@@ -26,25 +26,25 @@
       },
       intermediatePosManagementModel() {
         const groups = []
-        _.each(this.storeGroups, sg => {
-          const group = { name: sg.name, stores: [] }
+        _.each(this.storeGroups, storeGroup => {
+          const group = { name: storeGroup.name, stores: [] }
           _.each(this.stores, store => {
-            if (_.includes(store.storeGroups, sg._id))
-              group.stores.push({ ...store } )
+            if (_.find(store.groups, group => group._id === storeGroup._id))
+              group.stores.push({...store, id: group.stores.length + 1 })
           })
           groups.push(group)
         })
         return groups
       },
       posManagementModel() {
-        if (!this.searchContent && !this.orderBy)
+        if (!this.searchText && !this.orderBy)
           return this.intermediatePosManagementModel
         const groups = []
         _.each(this.intermediatePosManagementModel, storeGroup => {
           const group = { name: storeGroup.name }
           const stores = []
           _.each(storeGroup.stores, store => {
-            if (_.includes(store.name, this.searchContent))
+            if (_.includes(store.name, this.searchText))
               stores.push(store)
           })
           if (this.orderBy) {
@@ -66,7 +66,12 @@
             group.stores = stores
           }
         })
+        return groups
       }
+    },
+    async created() {
+      await this.loadStoreGroups()
+      await this.loadStores()
     },
     methods: {
       async loadStoreGroups() {
@@ -82,10 +87,10 @@
         await this.loadStoreGroups()
         return { ok: true}
       },
-      async addStore({ name, storeGroups, address }) {
+      async addStore({ name, groups, address }) {
         if (_.includes(this.storeNames, name))
           return { ok: false, message: 'This name is already taken!' }
-        await cms.getModel('Store').create({ name, storeGroups, address })
+        await cms.getModel('Store').create({ name, groups, address })
         await this.loadStores()
         return { ok: true }
       },
@@ -121,7 +126,9 @@
         addDevice: this.addDevice,
         removeDevice: this.removeDevice,
         updateDevice: this.updateDevice,
-        posManagementModel: this.posManagementModel
+        storeGroups: this.storeGroups,
+        posManagementModel: this.posManagementModel,
+        searchText: this.searchText
       }
     }
   }

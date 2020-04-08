@@ -44,6 +44,12 @@ module.exports = {
     },
     {
       loader: {
+        type: 'vue-singleton'
+      },
+      path: 'components/Store/PosOnlineOrderManagementStore.vue',
+    },
+    {
+      loader: {
         type: 'backend-api'
       },
       path: 'backend/print-report/report-printer.js',
