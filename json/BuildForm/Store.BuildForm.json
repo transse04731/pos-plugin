@@ -152,6 +152,12 @@
       "schemaType": "string",
       "key": "clientDomain",
       "type": "input"
+    },
+    {
+      "_id": "5e8d5da97610f43263473b15",
+      "schemaType": "date",
+      "key": "addedDate",
+      "type": "input@date"
     }
   ],
   "name": "Store",
