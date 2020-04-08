@@ -14,9 +14,9 @@
       <div class="pos-management-setting__title">Online Ordering</div>
       <div>
         <p>Online ordering</p>
-        <g-radio-group v-model="active" row>
+        <g-radio-group v-model="computedOnlineOrdering" row>
           <g-radio color="#536DFE" label="Active" value="1"/>
-          <g-radio color="#536DFE" label="Disabled" value="0"/>
+          <g-radio color="#536DFE" label="In-active" value="0"/>
         </g-radio-group>
       </div>
       <div>
@@ -85,7 +85,7 @@
       name: String,
       group: null,
       address: String,
-      active: Boolean,
+      onlineOrdering: Boolean,
       alias: String,
       clientDomain: String,
       devices: {
@@ -145,12 +145,12 @@
           this.$emit('update', { address: val })
         }
       },
-      computedActive: {
+      computedOnlineOrdering: {
         get() {
-          return this.active ? "1" : "0"
+          return this.onlineOrdering ? "1" : "0"
         },
         set(value) {
-          this.$emit('update', { active: value === "1" })
+          this.$emit('update', { onlineOrdering: value === "1" })
         }
       }
     }

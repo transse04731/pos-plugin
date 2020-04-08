@@ -88,6 +88,7 @@
             :alias="selectedStore.alias"
             :client-domain="selectedStore.clientDomain"
             :group="selectedStore.groups"
+            :online-ordering="selectedStore.onlineOrdering"
             :address="selectedStore.address"
             :devices="selectedStore.devices"
             :groups="groups"
