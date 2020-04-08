@@ -10,6 +10,129 @@
       "type": "input"
     },
     {
+      "_id": "5e859b5eb7b7b30cc39f2629",
+      "schemaType": "string",
+      "key": "phone",
+      "type": "input"
+    },
+    {
+      "_id": "5e859b5eb7b7b30cc39f262a",
+      "schemaType": "string",
+      "key": "address",
+      "type": "input"
+    },
+    {
+      "_id": "5e859b5eb7b7b30cc39f262b",
+      "schemaType": "string",
+      "key": "zipCode",
+      "type": "input"
+    },
+    {
+      "_id": "5e859b5eb7b7b30cc39f262c",
+      "schemaType": "string",
+      "key": "townCity",
+      "type": "input"
+    },
+    {
+      "_id": "5e859b5eb7b7b30cc39f262d",
+      "schemaType": "string",
+      "key": "country",
+      "type": "input"
+    },
+    {
+      "_id": "5e859b5eb7b7b30cc39f262e",
+      "schemaType": "string",
+      "key": "currency",
+      "fields": [],
+      "type": "input"
+    },
+    {
+      "_id": "5e859b5eb7b7b30cc39f262f",
+      "schemaType": "string",
+      "key": "timeZone",
+      "type": "input"
+    },
+    {
+      "_id": "5e859b5eb7b7b30cc39f2630",
+      "schemaType": "string",
+      "key": "logoImageSrc",
+      "type": "input"
+    },
+    {
+      "_id": "5e859b5eb7b7b30cc39f2631",
+      "schemaType": "string",
+      "key": "orderHeaderImageSrc",
+      "type": "input"
+    },
+    {
+      "_id": "5e859b5eb7b7b30cc39f2632",
+      "schemaType": "boolean",
+      "key": "delivery",
+      "fields": [],
+      "type": "input@switch"
+    },
+    {
+      "_id": "5e859b5eb7b7b30cc39f2633",
+      "schemaType": "boolean",
+      "key": "pickup",
+      "type": "input@switch"
+    },
+    {
+      "_id": "5e859b5eb7b7b30cc39f2634",
+      "schemaType": "array",
+      "key": "dayInWeeks",
+      "fields": [
+        {
+          "schemaType": "boolean",
+          "key": "dayInWeek",
+          "type": "input@switch"
+        }
+      ]
+    },
+    {
+      "_id": "5e859b5eb7b7b30cc39f2635",
+      "schemaType": "date",
+      "key": "openTime",
+      "type": "input@date"
+    },
+    {
+      "_id": "5e859b5eb7b7b30cc39f2636",
+      "schemaType": "date",
+      "key": "closeTime",
+      "type": "input@date"
+    },
+    {
+      "_id": "5e859b5eb7b7b30cc39f2637",
+      "schemaType": "objectId",
+      "key": "user",
+      "ref": "User",
+      "type": "ref-select",
+      "labelProp": "username"
+    },
+    {
+      "_id": "5e8d4a5bf74fcf31930edd6c",
+      "schemaType": "boolean",
+      "key": "showSetting",
+      "type": "input@switch"
+    },
+    {
+      "_id": "5e8d4aa4f74fcf31930edd85",
+      "schemaType": "string",
+      "key": "status",
+      "type": "input@select",
+      "optionsType": "textValue",
+      "options": [
+        {
+          "value": "online",
+          "text": "online"
+        },
+        {
+          "value": "offline",
+          "text": "offline"
+        }
+      ]
+    },
+    {
       "_id": "5e86c7748197ab5436297326",
       "schemaType": "array",
       "key": "groups",

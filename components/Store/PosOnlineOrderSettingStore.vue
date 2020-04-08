@@ -44,7 +44,7 @@
     },
     methods: {
       async createSetting() {
-        await cms.getModel('PosOnlineOrderSetting').create({
+        await cms.getModel('Store').create({
           name: '',
           phone: '',
           address: '',
@@ -64,36 +64,36 @@
         })
       },
       async loadSetting() {
-        const setting = await cms.getModel('PosOnlineOrderSetting').findOne({ store: this.storeId })
+        const setting = await cms.getModel('Store').findOne({ store: this.storeId })
         this.$set(this, 'setting', setting)
       },
       async changeRestaurantInfo(change) {
-        await cms.getModel('PosOnlineOrderSetting').findOneAndUpdate({_id: this.setting._id}, change)
+        await cms.getModel('Store').findOneAndUpdate({_id: this.setting._id}, change)
         await this.loadSetting()
       },
       async addNewOpenHours(openHour) {
         this.setting.openHours.push(openHour)
-        await cms.getModel('PosOnlineOrderSetting').findOneAndUpdate({_id: this.setting._id}, { openHours: this.setting.openHours } )
+        await cms.getModel('Store').findOneAndUpdate({_id: this.setting._id}, { openHours: this.setting.openHours } )
         await this.loadSetting()
       },
       async updateOpenHours(_id, change) {
         const openHour = _.find(this.setting.openHours, oh => oh._id === _id)
         _.assign(openHour, change)
-        await cms.getModel('PosOnlineOrderSetting').findOneAndUpdate({_id: this.setting._id}, { openHours: this.setting.openHours })
+        await cms.getModel('Store').findOneAndUpdate({_id: this.setting._id}, { openHours: this.setting.openHours })
         await this.loadSetting()
       },
       async deleteOpenHour(_id) {
         const openHourIndex = _.findIndex(this.setting.openHours, oh => oh._id === _id)
         this.setting.openHours.splice(openHourIndex, 1)
-        await cms.getModel('PosOnlineOrderSetting').findOneAndUpdate({ _id: this.setting._id }, { openHours: this.setting.openHours })
+        await cms.getModel('Store').findOneAndUpdate({ _id: this.setting._id }, { openHours: this.setting.openHours })
         await this.loadSetting()
       },
       async changeDeliveryServiceStatus(enable) {
-        await cms.getModel('PosOnlineOrderSetting').findOneAndUpdate({_id: this.setting._id}, { delivery: enable })
+        await cms.getModel('Store').findOneAndUpdate({_id: this.setting._id}, { delivery: enable })
         await this.loadSetting()
       },
       async changePickUpServiceStatus(enable) {
-        await cms.getModel('PosOnlineOrderSetting').findOneAndUpdate({_id: this.setting._id}, { pickup : enable })
+        await cms.getModel('Store').findOneAndUpdate({_id: this.setting._id}, { pickup : enable })
         await this.loadSetting()
       },
       async loadCategories() {
