@@ -81,31 +81,6 @@
         await cms.getModel('Store').updateOne({_id: this.store._id}, change)
         await this.loadStore()
       },
-      async addNewOpenHours(openHour) {
-        const newOpenHours = [...this.store.openHours, openHour]
-        await cms.getModel('Store').updateOne({_id: this.store._id}, { openHours: newOpenHours } )
-        await this.loadStore()
-      },
-      async updateOpenHours(_id, change) {
-        const openHour = _.find(this.store.openHours, oh => oh._id === _id)
-        _.assign(openHour, change)
-        await cms.getModel('Store').updateOne({_id: this.store._id}, { openHours: this.store.openHours })
-        await this.loadStore()
-      },
-      async deleteOpenHour(_id) {
-        const openHourIndex = _.findIndex(this.store.openHours, oh => oh._id === _id)
-        this.store.openHours.splice(openHourIndex, 1)
-        await cms.getModel('Store').updateOne({ _id: this.store._id }, { openHours: this.store.openHours })
-        await this.loadStore()
-      },
-      async changeDeliveryServiceStatus(enable) {
-        await cms.getModel('Store').updateOne({_id: this.store._id}, { delivery: enable })
-        await this.loadStore()
-      },
-      async changePickUpServiceStatus(enable) {
-        await cms.getModel('Store').updateOne({_id: this.store._id}, { pickup : enable })
-        await this.loadStore()
-      },
       
       // categories
       async loadCategories() {
