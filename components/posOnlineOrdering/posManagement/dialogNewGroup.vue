@@ -14,6 +14,8 @@
 </template>
 
 <script>
+  import _ from 'lodash'
+  
   export default {
     name: "dialogNewGroup",
     props: {
@@ -51,6 +53,7 @@
     methods: {
       submit() {
         this.$emit('submit', this.group)
+        this.internalValue = false
       }
     }
   }

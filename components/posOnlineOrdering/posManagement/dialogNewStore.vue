@@ -3,7 +3,7 @@
     <div class="dialog">
       <div class="dialog-title">Add New Store</div>
       <g-text-field-bs large label="Name" v-model="name"/>
-      <g-select deletable-chips multiple text-field-component="GTextFieldBs" label="Group" :items="listGroups" v-model="group"/>
+      <g-select v-if="groups" deletable-chips multiple text-field-component="GTextFieldBs" label="Group" :items="listGroups" v-model="group"/>
       <g-text-field-bs large label="Address" v-model="address"/>
       <div class="dialog-buttons">
         <g-btn-bs large width="100" text-color="#424242" @click="internalValue = false">Cancel</g-btn-bs>
@@ -42,7 +42,7 @@
       listGroups() {
         return this.groups.map(g => ({
           text: g.name,
-          value: g.id
+          value: g._id
         }))
       },
       invalid() {
@@ -55,10 +55,11 @@
       submit() {
         const store = {
           name: this.name,
-          group: this.group,
+          groups: this.group,
           address: this.address
         }
         this.$emit('submit', store)
+        this.internalValue = false
       }
     }
   }
