@@ -15,22 +15,23 @@
         </g-btn-bs>
       </div>
       <div class="menu-setting__category">
-        <div v-for="(cate, index) in categories" :key="index" class="mb-1">
-          <div @click="cate.toggleCollapse()" class="menu-setting__category__header">
+        <div v-for="(cate, index) in categoriesViewModel" :key="index" class="mb-1">
+          <div @click="toggleCollapse(cate)" class="menu-setting__category__header">
             <div class="menu-setting__title">{{cate.name}}</div>
             <g-icon v-if="cate.showProducts">fas fa-chevron-up</g-icon>
             <g-icon v-else>fas fa-chevron-down</g-icon>
           </div>
-          <template v-if="cate.showProducts">
+          <template v-if="showProducts[cate._id]">
             <div style="border-bottom: 1px solid #E0E0E0">
               <template v-if="cate.products && cate.products.length > 0">
                 <setting-menu-item
                     v-for="(product, index) in cate.products"
                     v-bind="product"
                     :index="index"
+                    @save="updateProduct(product._id, $event)"
                     @delete="openDeleteDialog($event)"/>
               </template>
-              <div v-else style="height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #fff;">
+              <div v-else-if="!showAddNewProductPanel" style="height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #fff;">
                 <img src="/plugins/pos-plugin/assets/no-items.svg" class="mb-2"/>
                 <div class="text-grey">No item in this group.</div>
               </div>
@@ -38,7 +39,7 @@
                 <setting-new-menu-item
                     :index="cate.products.length"
                     @cancel="showAddNewProductPanel = false"
-                    @save="addNewProduct($event)"/>
+                    @save="addNewProduct({...$event, category: cate._id})"/>
               </div>
             </div>
             <div style="height: 40px; background-color: #fff; display: flex; align-items: center; justify-content: center;">
@@ -53,75 +54,61 @@
       </div>
     </div>
     <dialog-delete-item v-model="dialog.deleteProduct" @confirm="deleteProduct"/>
+    <dialog-new-category v-model="dialog.addNewCategory" @submit="addNewCategory"/>
   </div>
 </template>
 <script>
+  import _ from 'lodash'
+  import DialogNewCategory from './dialogNewCategory';
   export default {
     name: 'SettingMenu',
-    props: {},
+    components: { DialogNewCategory },
+    props: {
+      store: Object,
+      categories: Array,
+      products: Array
+    },
     data: function () {
       return {
-        categories: [
-          {
-            name: "Pizza",
-            showProducts: false,
-            toggleCollapse: function() {
-              this.showProducts = !this.showProducts
-            },
-            products: [
-              {
-                name: 'Prime Beef',
-                image: '/plugins/pos-plugin/assets/images/product.png',
-                desc: 'Mozzarella cheese, Pizza Sauce, Onion, Tomato, Cheese Sauce, Meat ball, Mexico Beef',
-                tax: 7,
-                price: 7.99,
-              },
-              {
-                name: 'Prime Beef',
-                image: '/plugins/pos-plugin/assets/images/product.png',
-                desc: 'Mozzarella cheese, Pizza Sauce, Onion, Tomato, Cheese Sauce, Meat ball, Mexico Beef',
-                tax: 7,
-                price: 7.99,
-              },
-              {
-                name: 'Prime Beef',
-                image: '/plugins/pos-plugin/assets/images/product.png',
-                desc: 'Mozzarella cheese, Pizza Sauce, Onion, Tomato, Cheese Sauce, Meat ball, Mexico Beef',
-                tax: 7,
-                price: 7.99,
-              }
-            ]
-          },
-          {
-            name: "Drink",
-            showProducts: false,
-            toggleCollapse: function() {
-              this.showProducts = !this.showProducts
-            },
-            products: []
-          }
-        ],
+        showProducts: {},
         showAddNewProductPanel: false,
+        selectToDeleteItem: null,
         dialog: {
           addNewCategory: false,
           deleteProduct: false,
         },
-        selectToDeleteItem: null,
       }
     },
     computed: {
-    
+      categoriesViewModel() {
+        const categories = _.cloneDeep(this.categories)
+        const products = _.cloneDeep(this.products)
+        _.each(categories, cate => {
+          cate.products = _.filter(products, p => p.category._id === cate._id)
+        })
+        return categories
+      }
     },
     methods: {
-      addNewCategory() {
-      
+      toggleCollapse(category) {
+        if (_.has(this.showProducts, category._id)) {
+          this.showProducts[category._id] = !this.showProducts[category._id]
+        } else {
+          this.$set(this.showProducts, category._id, true)
+        }
       },
-      addNewProduct({ name, desc, price, tax }) {
-        // TODO: Add new product
-        // extra info: restaurant id
+      addNewCategory(name) {
+        this.$emit('add-new-category', name)
+      },
+      addNewProduct({ image, name, desc, price, tax, category }) {
+        this.$emit('add-new-product', { image, name, desc, price, tax, category } )
+        this.showAddNewProductPanel = false
+      },
+      updateProduct(productId, change) {
+        this.$emit('update-product', productId, change)
       },
       deleteProduct() {
-        //
+        this.$emit('delete-product', this.selectToDeleteItem._id)
       },
       openDeleteDialog(item) {
         this.selectToDeleteItem = item

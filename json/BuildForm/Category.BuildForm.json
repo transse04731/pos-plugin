@@ -19,13 +19,13 @@
       "type": "input@number"
     },
     {
-      "_id": "5e85c8ba344f470a8c25f942",
+      "_id": "5e8e1547c2aa6d4a9102757a",
       "schemaType": "objectId",
-      "key": "user",
-      "ref": "User",
+      "key": "store",
+      "ref": "Store",
+      "autopopulate": null,
       "type": "ref-select",
-      "labelProp": "username",
-      "autopopulate": true
+      "labelProp": "name"
     }
   ],
   "id": "5c46e2b15889c52fe001ab83",

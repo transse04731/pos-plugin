@@ -49,7 +49,7 @@
           :price="price"
           :tax="tax"
           @cancel="mode = 'view'"
-          @save="$emit('save', $event)"/>
+          @save="saveProduct"/>
     </template>
   </div>
 </template>
@@ -75,6 +75,10 @@
       deleteItem() {
         const item = {}
         this.$emit('delete', item)
+      },
+      saveProduct(change) {
+        this.$emit('save', change)
+        this.mode = 'view'
       }
     }
   }

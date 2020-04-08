@@ -15,7 +15,14 @@
           @update="updateStore"/>
       <setting-menu
           v-if="view === 'settings-menu'"
-          :store="store"/>
+          :store="store"
+          :categories="categories"
+          :products="products"
+          @add-new-category="addNewCategory"
+          @add-new-product="addNewProduct"
+          @update-product="updateProduct"
+          @delete-product="deleteProduct"
+      />
     </div>
   </div>
 </template>
@@ -46,7 +53,6 @@
         products: null,
       }
     },
-    computed: {},
     async created() {
       const storeIdOrAlias = this.$route.params.storeIdOrAlias
       if (storeIdOrAlias) {
@@ -122,7 +128,7 @@
         await cms.getModel('Product').updateOne({_id, store: this.store._id}, change)
         await this.loadProducts()
       },
-      async removeProduct(_id) {
+      async deleteProduct(_id) {
         await cms.getModel('Product').remove({_id, store: this.store._id})
         await this.loadProducts()
       }

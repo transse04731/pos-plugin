@@ -51,7 +51,7 @@
       desc: String,
       price: [String, Number],
       tax: Number,
-      image: String
+      image: String,
     },
     data: function () {
       return {
@@ -67,7 +67,8 @@
     methods: {
       async uploadImage() {
         const uploadResult = await this.$getService('FileUploadStore').uploadFile()
-        this.internalImage = uploadResult._id
+        console.log('uploadResult', uploadResult)
+        this.internalImage = uploadResult
       },
       saveMenuItem() {
         this.$emit('save', {
@@ -75,7 +76,7 @@
           name: this.internalName,
           desc: this.internalDesc,
           price: this.internalPrice,
-          tax: this.internalTax,
+          tax: this.internalTax.value,
         })
       }
     }
