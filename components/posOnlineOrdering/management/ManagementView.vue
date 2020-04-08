@@ -85,11 +85,13 @@
         <pos-management-setting
             :_id="selectedStore._id"
             :name="selectedStore.name"
+            :alias="selectedStore.alias"
+            :client-domain="selectedStore.clientDomain"
             :group="selectedStore.groups"
             :address="selectedStore.address"
             :devices="selectedStore.devices"
             :groups="groups"
-            @update="updateStore($event)"
+            @update="updateStore(selectedStore._id, $event)"
             @open:dialogDevice="dialog.newDevice = $event"
             @open:dialogDelete="dialog.deleteDevice = $event"/>
       </template>
@@ -119,25 +121,26 @@
           deleteDevice: false,
         },
         showFilterMenu: false,
-        selectedStore: null
+        selectedStoreId: null
       }
     },
-    injectService: ['PosOnlineOrderManagementStore:(loadStoreGroups,loadStores,addGroup,addStore,removeStore,updateStore,addDevice,removeDevice,updateDevice,storeGroups,posManagementModel,searchText)'],
+    injectService: ['PosOnlineOrderManagementStore:(loadStoreGroups,loadStores,addGroup,addStore,removeStore,updateStore,addDevice,removeDevice,updateDevice,storeGroups,stores,posManagementModel,searchText)'],
     computed: {
       searchResult() {
         return this.posManagementModel
       },
       groups() {
         return this.storeGroups
+      },
+      selectedStore() {
+        if (this.selectedStoreId)
+          return _.find(this.stores, store => store._id === this.selectedStoreId)
       }
     },
     methods: {
       viewStoreSetting(store) {
-        this.selectedStore = store
+        this.selectedStoreId = store._id
         this.view = 'settings'
-      },
-      async updateStore(change) {
-        await cms.getModel('Store').updateOne({_id: this.selectedStore._id}, change)
       }
     }
   }
