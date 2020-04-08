@@ -34,7 +34,7 @@
             </div>
           </div>
           <div v-if="showStoreSetting[store._id]" class="pos-management-group__content-action">
-            <g-btn-bs small text-color="grey-darken-1">Webshop Config</g-btn-bs>
+            <g-btn-bs small text-color="grey-darken-1" @click="redirectToWebShopConfig(store)">WebShop Config</g-btn-bs>
             <g-btn-bs small text-color="grey-darken-1">Remote Control</g-btn-bs>
             <g-btn-bs small text-color="grey-darken-1" @click="$emit('view:settings')">Settings</g-btn-bs>
           </div>
@@ -83,6 +83,9 @@
       },
       deleteStore(store) {
         this.$emit('delete', store)
+      },
+      redirectToWebShopConfig(store) {
+        this.$router.push(`/view/od-setting/${store.alias || store._id}`)
       }
     }
   }
