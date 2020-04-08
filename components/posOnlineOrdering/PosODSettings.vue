@@ -5,10 +5,9 @@
 
     <!-- content -->
     <div style="background-color: #F4F7FB; flex: 1; padding: 50px 10%">
-      <restaurant-information v-if="view === 'restaurant-info'"/>
-      <service-and-open-hours v-if="view === 'service-and-open-hours'"/>
-      <setting-menu v-if="view === 'settings-menu'"/>
-      <setting-tax v-if="view === 'settings-tax'"/>
+      <restaurant-information v-if="view === 'restaurant-info'" :store="store" @update="changeRestaurantInfo"/>
+      <service-and-open-hours v-if="view === 'service-and-open-hours'" :store="store"/>
+      <setting-menu v-if="view === 'settings-menu'" :store="store"/>
     </div>
   </div>
 </template>
