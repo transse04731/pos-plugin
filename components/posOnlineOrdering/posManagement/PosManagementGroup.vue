@@ -7,8 +7,8 @@
     </div>
     <template v-if="showContent">
       <div class="pos-management-group__content">
-        <div v-for="(store, i) in stores" :class="getStoreRowClass(i)" @click="toggleStoreSetting(store)">
-          <div class="pos-management-group__content-info">
+        <div v-for="(store, i) in stores" :class="getStoreRowClass(i)">
+          <div class="pos-management-group__content-info" @click="toggleStoreSetting(store)">
             <div></div>
             <div>{{store.id}}</div>
             <div>{{store.name}}</div>
@@ -120,6 +120,7 @@
         align-items: center;
         font-size: 14px;
         color: #201F28;
+        cursor: pointer;
 
         & > div {
           display: flex;
