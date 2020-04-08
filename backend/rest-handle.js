@@ -7,6 +7,10 @@ module.exports = cms => {
 
   cms.app.use('/user', authenticateAPI)
 
+  cms.socket.on('connect', socket => {
+    socket.on('get-user-info', callback => callback(socket.request.user))
+  })
+
   cms.app.use(/^\/$/, async (req, res, next) => {
     if (!req.session.userId) {
       return res.redirect('/view/od-login')

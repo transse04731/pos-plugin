@@ -41,13 +41,16 @@
         cms.logout()
         document.cookie = ''
         cb && cb()
+      },
+      getUserInfo() {
+        console.log('get user info')
+        return new Promise((resolve, reject) => cms.socket.emit('get-user-info', resolve))
       }
     },
     async created() {
       this.setDateInterval = setInterval(() => this.systemDate = new Date(), 10000)
-      if (localStorage.getItem('__token')) {
-        // TODO: Get user information by token
-      }
+      if (localStorage.getItem('__token'))
+        this.user = await this.getUserInfo()
       
       // const i18nConfig = cms.getList('SystemConfig').find(i => i.type === 'I18n')
       // if (i18nConfig) {
