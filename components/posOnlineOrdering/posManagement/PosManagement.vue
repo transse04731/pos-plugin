@@ -61,7 +61,7 @@
             </template>
             <template v-if="groups.length !== 0 && searchResult.length === 0">
               <div class="pos-management__table-content--empty">
-                <p class="text-grey-darken-1">NO Products match your</p>
+                <p class="text-grey-darken-1">No Products match your</p>
                 <p class="text-grey-darken-1">search <span class="fw-700">"{{searchText}}"</span></p>
                 <div class="text-indigo-accent-2">Reset Sort</div>
               </div>
@@ -90,6 +90,8 @@
   </div>
 </template>
 <script>
+  import _ from 'lodash'
+  
   export default {
     name: 'PosManagement',
     props: {},
@@ -98,51 +100,7 @@
         storePlaceHolder: $t('posManagement.searchPlaceholder'),
         username: 'Admin',
         srcImg: 'https://loremflickr.com/320/240',
-        view: 'settings',
-        groups: [
-          {
-            id: 1,
-            name: 'KFC',
-            stores: [
-              {
-                id: 1,
-                name: 'KFC Duy Tan',
-                address: '10 Duy Tan, Dich Vong Hau, Cau Giay, Ha Noi',
-                status: 'online',
-                webshop: true,
-                showSetting: false,
-              },
-              {
-                id: 2,
-                name: 'KFC Hoan Kiem',
-                address: '15 Trang Tien',
-                status: 'offline',
-                showSetting: false,
-              },
-              {
-                id: 3,
-                name: 'KFC BIG C HỒ GƯƠM PLAZA',
-                address: 'Kiosk 8, Tang 1, TTTM Ho Guom Plaza, 156 Tran Phu, Ha Dong, Ha Noi',
-                showSetting: false,
-              },
-              {
-                id: 4,
-                name: 'KFC TIMES CITY MEGA MALL',
-                address: 'B1-D9-3A, TTTM Times City Mega Mall',
-                status: 'online',
-                showSetting: false,
-              },
-              {
-                id: 5,
-                name: 'KFC PHẠM NGỌC THẠCH',
-                address: ' Kiốt 30, Tầng 1 B14 Kim Liên, Phạm Ngọc Thạch, Đống Đa, Hà Nội',
-                status: 'online',
-                showSetting: false,
-              },
-            ]
-          }
-        ],
-        searchText: '',
+        view: 'list',
         dialog: {
           newGroup: false,
           newStore: false,
@@ -152,18 +110,17 @@
         showFilterMenu: false,
       }
     },
+    injectService: ['PosOnlineOrderManagementStore:(loadStoreGroups,loadStores,addGroup,addStore,removeStore,updateStore,addDevice,removeDevice,updateDevice,storeGroups,posManagementModel,searchText)'],
     computed: {
       searchResult() {
-        return this.groups
+        return this.posManagementModel
+      },
+      groups() {
+        return this.storeGroups
       }
     },
     methods: {
-      addGroup(name) {
-
-      },
-      addStore(store) {
-
-      }
+  
     }
   }
 </script>
