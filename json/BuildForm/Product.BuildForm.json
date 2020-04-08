@@ -22,6 +22,12 @@
       "default": null
     },
     {
+      "_id": "5e870a27d06a901255871a64",
+      "schemaType": "string",
+      "key": "image",
+      "type": "input"
+    },
+    {
       "_id": "5c46e2065889c52fe001ab7c",
       "schemaType": "number",
       "key": "price",
@@ -96,12 +102,6 @@
       ],
       "key": "tax2",
       "flex": "md4"
-    },
-    {
-      "_id": "5e870a27d06a901255871a64",
-      "schemaType": "string",
-      "key": "image",
-      "type": "input"
     },
     {
       "_id": "5ddce0a012b6deb726104504",
@@ -250,6 +250,14 @@
       "clickable": true,
       "key": "dateAdded",
       "type": "input@date"
+    },
+    {
+      "_id": "5e8d88a159bfa6380c6e7879",
+      "schemaType": "objectId",
+      "key": "store",
+      "ref": "Store",
+      "type": "ref-select",
+      "labelProp": "name"
     }
   ],
   "id": "5c46e1c05889c52fe001ab7b",
