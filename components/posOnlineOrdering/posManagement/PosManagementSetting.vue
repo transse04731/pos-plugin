@@ -1,7 +1,7 @@
 <template>
   <div class="pos-management-setting">
     <div class="pos-management-setting__info">
-      <div class="pos-management-setting__title">Basic Infomation</div>
+      <div class="pos-management-setting__title">Basic Information</div>
       <g-select large deletable-chips multiple text-field-component="GTextFieldBs" label="Group" :items="listGroups"
                 v-model="computedGroup"/>
       <g-text-field-bs large label="Name" v-model="computedName"/>
