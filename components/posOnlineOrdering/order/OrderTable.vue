@@ -2,7 +2,7 @@
   <div class="po-order-table">
     <div class="po-order-table__header">
       <!-- header image -->
-      <img src="/plugins/pos-plugin/assets/images/header.png" class="po-order-table__header__image"/>
+      <img :src="store.orderHeaderImageSrc" class="po-order-table__header__image"/>
     </div>
   
     <div class="po-order-table__main">
@@ -118,6 +118,9 @@
   
   export default {
     name: 'OrderTable',
+    props: {
+      store: Object
+    },
     data: function () {
       return {
         view: 'order',

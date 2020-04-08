@@ -1,65 +1,73 @@
 <template>
   <div class="pos-order">
     <!-- -->
-    <div class="pos-order__left">
-      <div class="pos-order__left__header">
-        <img src="/plugins/pos-plugin/assets/images/logo.png"/>
-        <div class="pos-order__left__header--info">
-          <div>
-            <span class="phone-image">
-              <img alt src="/plugins/pos-plugin/assets/phone.svg"/>
-            </span>
-            <span class="sub-title">073 756 75 75</span>
-          </div>
-
-          <div style="display: flex; align-items: center; font-weight: 300">
-            <span style="color: #4CAF50; margin-right: 5px;">• Open door</span>
-            <span style="margin-right: 3px;">|</span>
-            <g-icon size="16">access_time</g-icon>
-            <span style="color: #424242; margin-left: 3px">9:00 - 21:00</span>
-          </div>
-        </div>
-      </div>
-      <div class="title">What you like?</div>
-      <div class="pos-order__tab">
-        <div class="pos-order__tab--icon">
-          <img src="/plugins/pos-plugin/assets/fork.svg"/>
-        </div>
-        <span v-for="(category, index) in categories"
-              :key="index"
-              @click="selectedCategoryId = category._id"
-              :style="getCategoryStyle(category)">
-          {{ category.name }}
-        </span>
-      </div>
-      <div class="pos-order__tab--content">
-        <div class="sub-title">{{ selectedCategory && selectedCategory.name }}</div>
-        <div class="pos-order__tab--content-main">
-          <div v-for="(item, index) in categoryItems" :key="index">
-            <menu-item v-bind="item" :quantity="getQuantityInOrder(item)" @menu-item-selected="addItemToOrder(item)" @increase="addItemToOrder(item)" @decrease="removeItemFromOrder(item)"/>
+    <template  v-if="store">
+      <div class="pos-order__left">
+        <div class="pos-order__left__header">
+          <img :src="store.logoImageSrc"/>
+          <div class="pos-order__left__header--info">
+            <div>
+              <span class="phone-image">
+                <img alt src="/plugins/pos-plugin/assets/phone.svg"/>
+              </span>
+              <span class="sub-title">{{store.phone}}</span>
+            </div>
+        
+            <div style="display: flex; align-items: center; font-weight: 300">
+              <span :style="storeOpenStatusStyle">{{ storeOpenStatus }}</span>
+              <span style="margin-right: 3px;">|</span>
+              <g-icon size="16">access_time</g-icon>
+              <span style="color: #424242; margin-left: 3px">{{ storeWorkingTime }}</span>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="pos-order__info" v-if="orderItems.length > 0">
-        <g-badge :value="true" color="#4CAF50" overlay>
-          <template v-slot:badge>
-            {{orderItems.length}}
-          </template>
-          <div style="width: 40px; height: 40px; background-color: #ff5252; border-radius: 8px; display: flex; align-items: center; justify-content: center">
-            <g-icon>icon-menu2</g-icon>
+        <div class="title">What you like?</div>
+        <div class="pos-order__tab">
+          <div class="pos-order__tab--icon">
+            <img src="/plugins/pos-plugin/assets/fork.svg"/>
           </div>
-        </g-badge>
-        <div class="pos-order__info--total">${{totalPrice + shippingFee}}</div>
-        <g-spacer/>
-        <g-btn-bs background-color="#2979FF" rounded style="padding: 8px 16px" @click="showOrder = true">CHECK OUT</g-btn-bs>
+          <span v-for="(category, index) in categoriesViewModel"
+                :key="index"
+                @click="selectedCategoryId = category._id"
+                :style="getCategoryStyle(category)">
+            {{ category.name }}
+          </span>
+        </div>
+        <div class="pos-order__tab--content">
+          <div class="sub-title">{{ selectedCategory && selectedCategory.name }}</div>
+          <div class="pos-order__tab--content-main">
+            <div v-for="(item, index) in categoryItems" :key="index">
+              <menu-item
+                  v-bind="item"
+                  :currency-unit="store.currency"
+                  :quantity="getQuantityInOrder(item)"
+                  @menu-item-selected="addItemToOrder(item)"
+                  @increase="addItemToOrder(item)"
+                  @decrease="removeItemFromOrder(item)"/>
+            </div>
+          </div>
+        </div>
+        <div class="pos-order__info" v-if="orderItems.length > 0">
+          <g-badge :value="true" color="#4CAF50" overlay>
+            <template v-slot:badge>
+              {{orderItems.length}}
+            </template>
+            <div style="width: 40px; height: 40px; background-color: #ff5252; border-radius: 8px; display: flex; align-items: center; justify-content: center">
+              <g-icon>icon-menu2</g-icon>
+            </div>
+          </g-badge>
+          <div class="pos-order__info--total">${{totalPrice + shippingFee}}</div>
+          <g-spacer/>
+          <g-btn-bs background-color="#2979FF" rounded style="padding: 8px 16px" @click="showOrder = true">CHECK OUT</g-btn-bs>
+        </div>
+        <order-table v-if="showOrder" @back="showOrder = false" :store="store"/>
       </div>
-      <order-table v-if="showOrder" @back="showOrder = false"/>
-    </div>
-
-    <!-- -->
-    <div class="pos-order__right">
-      <order-table/>
-    </div>
+  
+      <!-- -->
+      <div class="pos-order__right">
+        <order-table :store="store"/>
+      </div>
+    </template>
   </div>
 </template>
 <script>
@@ -73,15 +81,35 @@
     components: {MenuItem, OrderTable},
     data: function () {
       return {
-        categories: [],
         selectedCategoryId: null,
         selectedMenuItemId: null,
         showOrder: false,
+        store: null,
+        categories: null,
+        products: null,
       }
+    },
+    async created() {
+      const storeIdOrAlias = this.$route.params.storeIdOrAlias
+      if (storeIdOrAlias) {
+        // try to find by id
+        const store = await cms.getModel('Store').findOne({alias: storeIdOrAlias})
+        const storeGroups = _.map(store.groups, g => g._id)
+        const userStoreGroups = _.map(this.$getService('PosStore').user.storeGroups, g => g._id)
+        const theUserManageThisStore = _.uniq(storeGroups, userStoreGroups).length > 0
+        if (theUserManageThisStore) {
+          this.$set(this, 'store', store)
+          await this.loadCategories()
+          await this.loadProducts()
+        } else {
+          prompt('Permission denied!')
+        }
+      }
+      await this.loadCategories()
     },
     computed: {
       selectedCategory() {
-        return _.find(this.categories, c => c._id === this.selectedCategoryId)
+        return _.find(this.categoriesViewModel, c => c._id === this.selectedCategoryId)
       },
       selectedMenuItem() {
         return _.find(this.selectedCategory.items, item => item._id === this.selectedMenuItem)
@@ -94,22 +122,51 @@
       totalPrice() {
         return _.sumBy(this.orderItems, item => item.price * item.quantity)
       },
-    },
-    async created() {
-      await this.loadCategories()
+      categoriesViewModel() {
+        const categories = _.cloneDeep(this.categories)
+        const products = _.cloneDeep(this.products)
+        _.each(categories, cate => {
+          cate.items = _.filter(products, p => p.category._id === cate._id)
+        })
+        return categories
+      },
+      todayOpenHour() {
+        const dayInWeekIndex = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].indexOf(dayjs().format("dddd"))
+        for (let openHour of this.store.openHours) {
+          if (openHour.dayInWeeks[dayInWeekIndex])
+            return _.pick(openHour, 'openTime', 'closeTime')
+        }
+      },
+      storeOpenState() {
+        const now = dayjs().format('HH:mm')
+        return this.todayOpenHour.openTime <= now && now <= this.todayOpenHour.closeTime
+      },
+      storeOpenStatus() {
+        if (this.storeOpenState)
+          return '• Open door'
+        return '• Close door'
+      },
+      storeOpenStatusStyle() {
+        return {
+          color: this.storeOpenState ? '#4CAF50' : "#424242",
+          'margin-right': '5px'
+        }
+      },
+      storeWorkingTime() {
+        if (this.todayOpenHour)
+          return `${this.todayOpenHour.openTime} - ${this.todayOpenHour.closeTime}`
+        return `00:00 - 00:00`
+      }
     },
     methods: {
+      async loadStore() {
+        this.$set(this, 'store', await cms.getModel('Store').findOne({_id: this.store._id}))
+      },
       async loadCategories() {
-        // TODO: or read products -> gen categories???
-        const categories = await cms.getList('Category');
-        const categoriesId = _.map(categories, c => c._id);
-        const products = await cms.getModel('Product').find({category: {$in: categoriesId}})
-        _.each(categories, c => c.items = _.filter(products, p => p.category._id === c._id));
-        const filtered = _.filter(categories, c => c.items.length > 0)
-        if (filtered.length) {
-          this.categories.splice(0, this.categories.length, ...filtered)
-          this.selectedCategoryId = filtered[0]._id
-        }
+        this.$set(this, 'categories', await cms.getModel('Category').find({ store: this.store._id }, { store: 0 }))
+      },
+      async loadProducts() {
+        this.$set(this, 'products', await cms.getModel('Product').find({ store: this.store._id }, { store: 0 }))
       },
       getCategoryStyle(cate) {
         const common = {cursor: 'pointer', padding: '20px'};

@@ -1,18 +1,18 @@
 <template>
   <div class="po-menu-item">
-    <img draggable="false" :src="img || sampleImg" class="po-menu-item__thumbnail"/>
+    <img draggable="false" :src="image" class="po-menu-item__thumbnail"/>
     <div class="po-menu-item__content">
       <div class="po-menu-item__name">{{ name }}</div>
-      <div class="po-menu-item__desc">{{ desc || dummyText }}</div>
+      <div class="po-menu-item__desc">{{ desc }}</div>
       <div class="po-menu-item__prices--under">
-        <div :class="price2 && 'po-menu-item__prices--discount'"> {{ price | currency }}</div>
+        <div :class="price2 && 'po-menu-item__prices--discount'"> {{ getPriceWithCurrencyUnit(price) }}</div>
         <div v-if="price2"> {{ price2 | currency }}</div>
       </div>
     </div>
     <g-spacer/>
     <div class="po-menu-item__prices">
-      <div :class="price2 && 'po-menu-item__prices--discount'"> {{ price | currency }}</div>
-      <div v-if="price2"> {{ price2 | currency }}</div>
+      <div :class="price2 && 'po-menu-item__prices--discount'"> {{ getPriceWithCurrencyUnit(price) }}</div>
+      <div v-if="price2">{{ getPriceWithCurrencyUnit(price2) }}</div>
     </div>
     <g-icon @click="addToOrder"
             size="28" color="#424242"
@@ -37,28 +37,28 @@
     name: 'MenuItem',
     props: {
       _id: String,
-      img: String,
+      image: String,
       name: String,
       desc: String,
       price: [Number, String],
       price2: [Number, String],
       quantity: Number,
-    },
-    filters: {
-      currency: function(value) {
-        return '$' + value
-      }
+      currencyUnit: String
     },
     computed: {
     },
     data() {
       return {
-        sampleImg: '/plugins/pos-plugin/assets/images/product.png',
-        dummyText: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been...',
-        currencyUnit: '$',
+      
       }
     },
     methods: {
+      getPriceWithCurrencyUnit(price) {
+        if (this.currencyUnit === 'VND')
+          return `${price} ${this.currencyUnit}`
+        else
+          return `${this.currencyUnit}${price}`
+      },
       addToOrder() {
         this.$emit('menu-item-selected', this._id)
       },
