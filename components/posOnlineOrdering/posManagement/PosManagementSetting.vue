@@ -57,16 +57,6 @@
             <div class="pos-management-setting__device-content--action">
               <g-tooltip :open-on-hover="true" right speech-bubble color="#000" transition="0.3" remove-content-on-close>
                 <template v-slot:activator="{on}">
-                  <div class="pos-management-setting__device-content--action-btn"
-                       @mouseenter="on.mouseenter"
-                       @mouseleave="on.mouseleave">
-                    <g-icon color="#FFF" small>mdi-pencil-outline</g-icon>
-                  </div>
-                </template>
-                <span>Edit</span>
-              </g-tooltip>
-              <g-tooltip :open-on-hover="true" right speech-bubble color="#000" transition="0.3" remove-content-on-close>
-                <template v-slot:activator="{on}">
                   <div class="pos-management-setting__device-content--action-btn mt-1"
                        @mouseenter="on.mouseenter"
                        @mouseleave="on.mouseleave"
