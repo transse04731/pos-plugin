@@ -11,23 +11,23 @@
       <div class="pos-management-setting__title">Online Ordering</div>
       <div>
         <p>Online ordering</p>
-        <g-radio-group v-model="status" row>
-          <g-radio color="#536DFE" label="Active" value="active"/>
-          <g-radio color="#536DFE" label="Disabled" value="disabled"/>
+        <g-radio-group v-model="active" row>
+          <g-radio color="#536DFE" label="Active" :value="true"/>
+          <g-radio color="#536DFE" label="Disabled" :value="false"/>
         </g-radio-group>
       </div>
       <div>
-        <p>Webshop URL</p>
+        <p>WebShop URL</p>
         <div class="pos-management-setting__order--url">
-          <span class="i text-indigo-accent-2">pos.gigasource.io/</span>
+          <span class="i text-indigo-accent-2">{{ webShopUrlPrefix }}</span>
           <div style="flex: 1; margin-left: 8px">
-            <g-text-field-bs large v-model="url"/>
+            <g-text-field-bs large v-model="alias" @input="$emit('update', { alias: $event })"/>
           </div>
         </div>
       </div>
       <div>
         <p>Client's domain</p>
-        <g-text-field-bs large v-model="domain"/>
+        <g-text-field-bs large v-model="clientDomain" @input="$emit('update', { clientDomain: $event })"/>
       </div>
     </div>
     <div class="pos-management-setting__device">
@@ -80,8 +80,10 @@
     props: {
       name: String,
       group: null,
-      groups: Array,
       address: String,
+      active: Boolean,
+      alias: String,
+      clientDomain: String,
       devices: {
         type: Array,
         default: () => [
@@ -105,15 +107,16 @@
           },
         ]
       },
+      groups: Array,
     },
     data() {
       return {
-        status: null,
-        url: '',
-        domain: '',
       }
     },
     computed: {
+      webShopUrlPrefix() {
+        return`${location.host}/store/`
+      },
       listGroups() {
         return this.groups.map(g => ({
           text: g.name,
@@ -125,7 +128,7 @@
           return this.group
         },
         set(val) {
-          //TODO: update into db
+          this.$emit('update', { groups: val })
         }
       },
       computedName: {
@@ -133,7 +136,7 @@
           return this.name
         },
         set(val) {
-          //TODO: update into db
+          this.$emit('update', { name: val })
         }
       },
       computedAddress: {
@@ -141,7 +144,7 @@
           return this.address
         },
         set(val) {
-          //TODO: update into db
+          this.$emit('update', { address: val })
         }
       }
     }

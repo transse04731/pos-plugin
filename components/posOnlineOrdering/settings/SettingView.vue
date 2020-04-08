@@ -13,12 +13,12 @@
 </template>
 <script>
   import _ from 'lodash';
-  import RestaurantInformation from './settings/RestaurantInformation';
-  import ServiceAndOpenHours from './settings/ServiceAndOpenHours';
-  import SettingMenu from './settings/SettingMenu';
+  import RestaurantInformation from './RestaurantInformation';
+  import ServiceAndOpenHours from './ServiceAndOpenHours';
+  import SettingMenu from './SettingMenu';
 
   export default {
-    name: 'PosODSettings',
+    name: 'SettingView',
     components: {SettingMenu, ServiceAndOpenHours, RestaurantInformation},
     props: {},
     data: function () {

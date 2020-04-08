@@ -53,24 +53,24 @@
         <g-spacer/>
         <g-btn-bs background-color="#2979FF" rounded style="padding: 8px 16px" @click="showOrder = true">CHECK OUT</g-btn-bs>
       </div>
-      <pos-order-table v-if="showOrder" @back="showOrder = false"/>
+      <order-table v-if="showOrder" @back="showOrder = false"/>
     </div>
 
     <!-- -->
     <div class="pos-order__right">
-      <pos-order-table/>
+      <order-table/>
     </div>
   </div>
 </template>
 <script>
   import _ from 'lodash';
-  import PosOrderTable from './PosOrderTable';
+  import OrderTable from './OrderTable';
   import MenuItem from './MenuItem';
 
   export default {
-    name: 'PosOrder',
+    name: 'OrderView',
     injectService: ['PosOnlineOrderStore:(orderItems, increaseOrAddNewItems, decreaseOrRemoveItems, shippingFee)'],
-    components: {MenuItem, PosOrderTable},
+    components: {MenuItem, OrderTable},
     data: function () {
       return {
         categories: [],

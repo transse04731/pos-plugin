@@ -36,7 +36,7 @@
   import _ from 'lodash'
 
   export default {
-    name: 'PosLogin',
+    name: 'SignInView',
     injectService: ['PosStore:(login,createUser)'],
     props: {},
     data: function () {
