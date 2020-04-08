@@ -16,7 +16,7 @@
   "props": {
     "fields": []
   },
-  "renderToRoute": "od-setting/:storeIdOrAlias",
+  "renderToRoute": "store/:storeIdOrAlias/setting",
   "isProduction": true,
   "renderInIframe": null
 }

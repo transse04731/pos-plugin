@@ -85,7 +85,7 @@
         this.$emit('delete', store)
       },
       redirectToWebShopConfig(store) {
-        this.$router.push(`/view/od-setting/${store.alias || store._id}`)
+        this.$router.push(`/view/store/${store.alias || store._id}/setting`)
       }
     }
   }

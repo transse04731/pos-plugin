@@ -16,6 +16,6 @@
   "props": {
     "fields": []
   },
-  "renderToRoute": "od-login",
+  "renderToRoute": "login",
   "isProduction": true
 }

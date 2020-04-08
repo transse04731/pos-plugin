@@ -1,7 +1,7 @@
 const authenticateAPI = require('./api/authenticate')
 
 module.exports = cms => {
-  cms.data['loginUrl'] = '/view/od-login';
+  cms.data['loginUrl'] = '/view/login';
   cms.data['nonAuthenticateUrls'] = ['/login']
   cms.data['nonAuthenticateUrls'].push('/admin');
 
@@ -13,11 +13,12 @@ module.exports = cms => {
 
   cms.app.use(/^\/$/, async (req, res, next) => {
     if (!req.session.userId) {
-      return res.redirect('/view/od-login')
+      return res.redirect('/view/login')
     }
     if (req.session.userRole.name !== 'admin') {
-      return res.redirect('/view/od-management')
+      return res.redirect('/view/management')
     }
+    // TODO: non-user
     next()
   })
 }

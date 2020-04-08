@@ -17,5 +17,5 @@
   "props": {
     "fields": []
   },
-  "renderToRoute": "od-management"
+  "renderToRoute": "management"
 }

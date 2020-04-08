@@ -31,7 +31,7 @@
       async login(username, password, errCb) {
         cms.login(username, password, null, true).then(async () => {
           this.user = await cms.getModel('User').findOne({username, password})
-          this.$router.push('/view/od-management')
+          this.$router.push('/view/management')
         }).catch(err => {
           errCb && errCb(err.response.data.message)
         })
