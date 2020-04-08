@@ -84,48 +84,36 @@
       "type": "input@switch"
     },
     {
-      "_id": "5e859b5eb7b7b30cc39f2634",
+      "_id": "5e8e0876867e3e4a1e54c3b1",
       "schemaType": "array",
-      "key": "dayInWeeks",
+      "key": "openHours",
       "fields": [
         {
-          "schemaType": "boolean",
-          "key": "dayInWeek",
-          "type": "input@switch"
-        }
-      ]
-    },
-    {
-      "_id": "5e859b5eb7b7b30cc39f2635",
-      "schemaType": "date",
-      "key": "openTime",
-      "type": "input@date"
-    },
-    {
-      "_id": "5e859b5eb7b7b30cc39f2636",
-      "schemaType": "date",
-      "key": "closeTime",
-      "type": "input@date"
-    },
-    {
-      "_id": "5e859b5eb7b7b30cc39f2637",
-      "schemaType": "objectId",
-      "key": "user",
-      "ref": "User",
-      "type": "ref-select",
-      "labelProp": "username"
-    },
-    {
-      "_id": "5e86c7748197ab5436297326",
-      "schemaType": "array",
-      "key": "groups",
-      "fields": [
+          "_id": "5e859b5eb7b7b30cc39f2634",
+          "schemaType": "array",
+          "key": "dayInWeeks",
+          "fields": [
+            {
+              "schemaType": "boolean",
+              "key": "dayInWeek",
+              "type": "input@switch"
+            }
+          ],
+          "clipboardType": "cut"
+        },
         {
-          "schemaType": "objectId",
-          "ref": "StoreGroup",
-          "type": "ref-select",
-          "labelProp": "name",
-          "autopopulate": true
+          "_id": "5e859b5eb7b7b30cc39f2635",
+          "schemaType": "date",
+          "key": "openTime",
+          "type": "input@date",
+          "clipboardType": "cut"
+        },
+        {
+          "_id": "5e859b5eb7b7b30cc39f2636",
+          "schemaType": "date",
+          "key": "closeTime",
+          "type": "input@date",
+          "clipboardType": "cut"
         }
       ],
       "type": "array"
@@ -147,6 +135,29 @@
       "schemaType": "date",
       "key": "addedDate",
       "type": "input@date"
+    },
+    {
+      "_id": "5e86c7748197ab5436297326",
+      "schemaType": "array",
+      "key": "groups",
+      "fields": [
+        {
+          "schemaType": "objectId",
+          "ref": "StoreGroup",
+          "type": "ref-select",
+          "labelProp": "name",
+          "autopopulate": true
+        }
+      ],
+      "type": "array"
+    },
+    {
+      "_id": "5e859b5eb7b7b30cc39f2637",
+      "schemaType": "objectId",
+      "key": "user",
+      "ref": "User",
+      "type": "ref-select",
+      "labelProp": "username"
     }
   ],
   "name": "Store",
