@@ -108,7 +108,9 @@
         printerGeneralSetting: null,
         printer: null,
         printerSidebar: [],
-        selectedPrinterMenu: null
+        selectedPrinterMenu: null,
+        //online order
+        onlineDevices: []
       }
     },
     created() {
@@ -754,6 +756,12 @@
       async updateKeyboardConfig(keyboardConfig) {
         await cms.getModel('PosSetting').findOneAndUpdate({}, { keyboardConfig })
       },
+
+      //online order
+      async getOnlineDevices() {
+        const posSettings = await this.getPosSetting()
+        if (posSettings) this.onlineDevices = posSettings.onlineDevices
+      }
     },
     provide() {
       return {

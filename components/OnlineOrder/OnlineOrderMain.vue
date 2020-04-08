@@ -3,14 +3,14 @@
     <div class="pending-orders pr-2">
       <div class="header">
         Pending Orders
-        <g-badge inline :value="true" color="#4CAF50">
+        <g-badge inline :value="true" color="#4CAF50" v-if="pendingOrders && pendingOrders.length">
           <template v-slot:badge>
             <div class="px-2">{{pendingOrders.length}}</div>
           </template>
         </g-badge>
       </div>
       <div class="content">
-        <template v-if="pendingOrders.length === 0">
+        <template v-if="!pendingOrders || !pendingOrders.length">
           <div class="pending-orders--empty">
             <img alt src="/plugins/pos-plugin/assets/pending_order.svg"/>
             <p>No Pending orders yet</p>
@@ -21,13 +21,13 @@
             <g-card-title>
               <g-icon v-if="order.type === 'delivery'">icon-delivery-man</g-icon>
               <g-icon v-if="order.type === 'pickup'">icon-pickup</g-icon>
-              <span class="fs-small-2 ml-1">No. {{order.id}} | {{order.customer.name}}</span>
+              <span class="fs-small-2 ml-1">No. {{order.id}} | {{order.customer ? order.customer.name : 'No customer name'}}</span>
               <g-spacer/>
               <span class="fw-700 fs-small">{{order.received}}</span>
             </g-card-title>
             <g-card-text>
-              <p><b>Payment: </b>{{order.amount.type}} - €{{order.amount.value}}</p>
-              <p v-if="order.address"><b>Address: </b>{{`${order.address.detail} ${order.address.code}`}}</p>
+              <p><b>Payment: </b>{{getPaymentTexts(order.payment)}}</p>
+              <p v-if="order.customer"><b>Address: </b>{{`${order.customer.address} ${order.customer.address}`}}</p>
               <div v-if="order.items">
                 <p class="fw-700">Details: </p>
                 <div class="row-flex ml-3" v-for="item in order.items">
@@ -38,8 +38,8 @@
               </div>
             </g-card-text>
             <g-card-actions>
-              <g-btn-bs width="60" border-color="#C4C4C4" text-color="black">No</g-btn-bs>
-              <g-btn-bs background-color="#E0E0E0" text-color="black" style="flex: 1">Yes</g-btn-bs>
+              <g-btn-bs width="60" border-color="#C4C4C4" text-color="black" @click.stop="declineOrder(order)">No</g-btn-bs>
+              <g-btn-bs background-color="#E0E0E0" text-color="black" style="flex: 1" @click.stop="acceptOrder(order)">Yes</g-btn-bs>
             </g-card-actions>
           </g-card>
         </template>
@@ -48,31 +48,31 @@
     <div class="kitchen-orders pl-2">
       <div class="header">
         Sent to kitchen
-        <g-badge inline :value="true" color="#F9A825">
+        <g-badge inline :value="true" color="#F9A825" v-if="kitchenOrders && kitchenOrders.length">
           <template v-slot:badge>
-            <div class="px-2">{{kitchens.length}}</div>
+            <div class="px-2">{{kitchenOrders.length}}</div>
           </template>
         </g-badge>
       </div>
       <div class="content">
-        <template v-if="kitchens.length === 0">
+        <template v-if="!kitchenOrders || !kitchenOrders.length">
           <div class="kitchen-orders--empty">
             <p>No orders sent to kitchen</p>
           </div>
         </template>
         <template v-else>
-          <g-card elevation="0" v-for="order in kitchens">
+          <g-card elevation="0" v-for="order in kitchenOrders">
             <g-card-title>
               <g-icon v-if="order.type === 'delivery'">icon-delivery-man</g-icon>
               <g-icon v-if="order.type === 'pickup'">icon-pickup</g-icon>
-              <span class="fs-small-2 ml-1">No. {{order.id}} | {{order.customer.name}}</span>
+              <span class="fs-small-2 ml-1">No. {{order.id}} | {{order.customer ? order.customer.name : 'No customer name'}}</span>
               <g-spacer/>
               <span class="fw-700 fs-small">{{order.received}}</span>
             </g-card-title>
             <g-card-text>
-              <p><b>Payment: </b>{{order.amount.type}} - €{{order.amount.value}}</p>
-              <p v-if="order.address"><b>Address: </b>{{`${order.address.detail} ${order.address.code}`}}</p>
-              <div>
+              <p><b>Payment: </b>{{getPaymentTexts(order.payment)}}</p>
+              <p v-if="order.customer"><b>Address: </b>{{`${order.customer.address} ${order.customer.address}`}}</p>
+              <div v-if="order.items">
                 <p class="fw-700">Details: </p>
                 <div class="row-flex ml-3" v-for="item in order.items">
                   <div class="col-2 fw-700">{{item.quantity}}x</div>
@@ -87,8 +87,8 @@
                     <g-btn-bs :class="[order.menu && 'btn-clicked']" @click="on.click" width="60" border-color="#C4C4C4" text-color="black">...</g-btn-bs>
                   </template>
                   <div class="options">
-                    <div class="option">Return to pending orders</div>
-                    <div class="option">Cancel & move to declined orders</div>
+                    <div class="option" @click="setPendingOrder(order)">Return to pending orders</div>
+                    <div class="option" @click="declineOrder(order)">Cancel & move to declined orders</div>
                   </div>
               </g-menu>
               <g-btn-bs background-color="#E0E0E0" text-color="black" style="flex: 1">Complete order & Print receipt</g-btn-bs>
@@ -104,122 +104,31 @@
   export default {
     name: 'OnlineOrderMain',
     props: {
-      pendingOrders: {
-        type: Array,
-        default: () => [
-          {
-            id: 123,
-            customer :{
-              name: 'Carilyn',
-              phone: '086 333 333'
-            },
-            address: {
-              detail: 'Kurfuerstendamm 29 Muchen',
-              code: '80017'
-            },
-            amount: {
-              value: 120,
-              type: 'Cash'
-            },
-            received: '15:45',
-            type: 'delivery',
-            items: [
-              {quantity: 3, name: 'Chicken Soup', price: 3},
-              {quantity: 2, name: 'Salad', price: 2.5},
-              {quantity: 1, name: 'Homemade Special', price: 6},
-              {quantity: 2, name: 'Pepperoni Pizza', price: 14},
-              {quantity: 4, name: 'Coca Cola', price: 6},
-            ]
-          },
-          {
-            id: 122,
-            customer :{
-              name: 'Carilyn',
-              phone: '086 333 333'
-            },
-            amount: {
-              value: 120,
-              type: 'Cash'
-            },
-            received: '13:45',
-            type: 'pickup',
-            items: [
-              {quantity: 3, name: 'Chicken Soup', price: 3},
-              {quantity: 2, name: 'Salad', price: 2.5},
-              {quantity: 1, name: 'Homemade Special', price: 6},
-              {quantity: 2, name: 'Pepperoni Pizza', price: 14},
-              {quantity: 4, name: 'Coca Cola', price: 6},
-            ]
-          },
-        ]
-      },
-      kitchenOrders: {
-        type: Array,
-        default: () => []
-      },
+      pendingOrders: Array,
+      kitchenOrders: Array,
     },
-    injectService: ['OrderStore:addOrder'],
-    data() {
-      return {
-        kitchens: [
-          {
-            id: 121,
-            customer :{
-              name: 'Carilyn',
-              phone: '086 333 333'
-            },
-            address: {
-              detail: 'Kurfuerstendamm 29 Muchen',
-              code: '80017'
-            },
-            amount: {
-              value: 120,
-              type: 'Cash'
-            },
-            received: '14:45',
-            type: 'delivery',
-            menu: false
-          },
-          {
-            id: 121,
-            customer :{
-              name: 'Carilyn',
-              phone: '086 333 333'
-            },
-            amount: {
-              value: 120,
-              type: 'Cash'
-            },
-            received: '10:00',
-            type: 'pickup',
-            items: [
-              {quantity: 3, name: 'Chicken Soup', price: 3},
-              {quantity: 2, name: 'Salad', price: 2.5},
-              {quantity: 1, name: 'Homemade Special', price: 6},
-              {quantity: 2, name: 'Pepperoni Pizza', price: 14},
-              {quantity: 4, name: 'Coca Cola', price: 6},
-            ],
-            menu: false
-          },
-          {
-            id: 121,
-            customer :{
-              name: 'Carilyn',
-              phone: '086 333 333'
-            },
-            address: {
-              detail: 'Kurfuerstendamm 29 Muchen',
-              code: '80017'
-            },
-            amount: {
-              value: 120,
-              type: 'Cash'
-            },
-            received: '14:45',
-            type: 'delivery',
-            menu: false
-          },
-        ],
+    mounted() {
+      this.$nextTick(() => {
+        this.$emit('updateOnlineOrders')
+      })
+    },
+    activated() {
+      this.$nextTick(() => {
+        this.$emit('updateOnlineOrders')
+      })
+    },
+    methods: {
+      getPaymentTexts(payments) {
+        return payments.map(i => `${i.type} - ${i.value}`).join(', ')
+      },
+      declineOrder(order) {
+        this.$emit('declineOrder', order)
+      },
+      acceptOrder(order) {
+        this.$emit('acceptPendingOrder', order)
+      },
+      setPendingOrder(order) {
+        this.$emit('setPendingOrder', order)
       }
     }
   }

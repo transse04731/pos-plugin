@@ -21,17 +21,17 @@
             </td>
             <td>
               <div v-if="item.address">
-                <p>{{item.address.detail}}</p>
-                <p>{{item.address.code}}</p>
+                <p>{{item.customer.address}}</p>
+                <p>{{item.customer.address}}</p>
               </div>
               <div v-else>--</div>
             </td>
             <td>
-              <p class="fw-700">€{{item.amount.value}}</p>
-              <p>{{item.amount.type}}</p>
+              <p class="fw-700">€{{item.payment[0].value}}</p>
+              <p>{{item.payment[0].type}}</p>
             </td>
-            <td>{{item.received}}</td>
-            <td>{{item.delivery}}</td>
+            <td>{{item.date | formatDate}}</td>
+            <td>{{item.deliveryDate | formatDate}}</td>
             <td class="fw-700">{{item.type}}</td>
             <td :class="statusClass">{{item.status}}</td>
           </tr>
@@ -45,7 +45,8 @@
   export default {
     name: "OnlineOrderList",
     props: {
-      status: String
+      status: String,
+      onlineOrders: Array
     },
     data() {
       return {
@@ -182,14 +183,35 @@
         ]
       }
     },
+    filters: {
+      formatDate(date) {
+        return dayjs(date).format('HH:mm')
+      }
+    },
     computed: {
       computedItems() {
-        return this.items.map(i => ({...i, status: this.status}))
+        return this.onlineOrders.map(i => ({...i, status: this.status}))
       },
       statusClass() {
         return this.status
       }
-    }
+    },
+    watch: {
+      status(val) {
+        if (!val) return
+        this.$emit('getOnlineOrdersWithStatus', val)
+      }
+    },
+    mounted() {
+      this.$nextTick(() => {
+        if (this.status) this.$emit('getOnlineOrdersWithStatus', this.status)
+      })
+    },
+    activated() {
+      this.$nextTick(() => {
+        if (this.status) this.$emit('getOnlineOrdersWithStatus', this.status)
+      })
+    },
   }
 </script>
 

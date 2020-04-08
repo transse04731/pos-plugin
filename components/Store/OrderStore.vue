@@ -33,7 +33,8 @@
         orderHistoryPagination: { limit: 15, currentPage: 1 },
         // online order
         pendingOrders: [],
-        kitchenOrders: []
+        kitchenOrders: [],
+        onlineOrders: []
       }
     },
     computed: {
@@ -517,9 +518,37 @@
       //<!--</editor-fold>-->
 
       // online ordering
-      // for testing only
-      addOrder() {
-        cms.socket.emit('added-delivery-order')
+      async updateOnlineOrders() {
+        let orderModel = cms.getModel('Order');
+        this.pendingOrders = await orderModel.find({ online: true, status: 'inProgress' })
+        this.kitchenOrders = await orderModel.find({ online: true, status: 'kitchen' })
+      },
+      async declineOrder(order) {
+        await cms.getModel('Order').findOneAndUpdate({ _id: order._id},
+          Object.assign({}, order, {
+            status: 'declined'
+          }))
+        await this.updateOnlineOrders()
+      },
+      async acceptPendingOrder(order) {
+        await cms.getModel('Order').findOneAndUpdate({ _id: order._id},
+          Object.assign({}, order, {
+            status: 'kitchen'
+          }))
+        await this.updateOnlineOrders()
+      },
+      async setPendingOrder(order) {
+        await cms.getModel('Order').findOneAndUpdate({ _id: order._id},
+          Object.assign({}, order, {
+            status: 'inProgress'
+          }))
+        await this.updateOnlineOrders()
+      },
+      async getOnlineOrdersWithStatus(status) {
+        this.onlineOrders = await cms.getModel('Order').find({
+          online: true,
+          status
+        })
       }
     },
     async created() {
@@ -528,10 +557,9 @@
       const cachedPageSize = localStorage.getItem('orderHistoryPageSize')
       if (cachedPageSize) this.orderHistoryPagination.limit = parseInt(cachedPageSize)
 
-      cms.socket.on('update-delivery-orders', async () => {
-        console.log('updating delivery orders')
-        //todo fetch new pending orders
-        this.pendingOrders.push('new order')
+      // add online orders: cms.socket.emit('added-online-order')
+      cms.socket.on('update-online-orders', async () => {
+        await this.updateOnlineOrders()
       })
       // this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
     },
