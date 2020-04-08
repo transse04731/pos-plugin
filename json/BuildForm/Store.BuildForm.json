@@ -146,6 +146,12 @@
         }
       ],
       "type": "array"
+    },
+    {
+      "_id": "5e8d5c9d7610f43263473af9",
+      "schemaType": "string",
+      "key": "clientDomain",
+      "type": "input"
     }
   ],
   "name": "Store",
