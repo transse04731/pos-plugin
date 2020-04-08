@@ -67,7 +67,7 @@ module.exports = {
       loader: {
         type: 'backend-api'
       },
-      path: 'backend/order/index.js'
+      path: 'backend/online-order/online-order.js'
     },
     {
       loader: {

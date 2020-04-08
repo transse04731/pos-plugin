@@ -31,6 +31,9 @@
         orderHistoryCurrentOrder: null,
         totalOrders: null,
         orderHistoryPagination: { limit: 15, currentPage: 1 },
+        // online order
+        pendingOrders: [],
+        kitchenOrders: []
       }
     },
     computed: {
@@ -510,8 +513,14 @@
         this.lastPayment = +this.paymentTotal
         this.paymentAmountTendered = this.paymentTotal.toString()
         await this.saveRestaurantOrder({ type: 'cash', value: this.paymentTotal });
-      }
+      },
       //<!--</editor-fold>-->
+
+      // online ordering
+      // for testing only
+      addOrder() {
+        cms.socket.emit('added-delivery-order')
+      }
     },
     async created() {
       await this.getScrollWindowProducts()
@@ -519,6 +528,11 @@
       const cachedPageSize = localStorage.getItem('orderHistoryPageSize')
       if (cachedPageSize) this.orderHistoryPagination.limit = parseInt(cachedPageSize)
 
+      cms.socket.on('update-delivery-orders', async () => {
+        console.log('updating delivery orders')
+        //todo fetch new pending orders
+        this.pendingOrders.push('new order')
+      })
       // this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
     },
     watch: {
@@ -534,4 +548,6 @@
       }
     }
   }
+
+  //curl -i -N -H "Connection: Upgrade" -H "Upgrade: websocket" -H "Host: localhost:8888" -H "Origin: ws://localhost:8888" ws://localhost:8888
 </script>
