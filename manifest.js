@@ -34,12 +34,6 @@ module.exports = {
       loader: {
         type: 'vue-singleton'
       },
-      path: 'components/Store/PosOnlineOrderSettingStore.vue',
-    },
-    {
-      loader: {
-        type: 'vue-singleton'
-      },
       path: 'components/Store/FileUploadStore.vue',
     },
     {

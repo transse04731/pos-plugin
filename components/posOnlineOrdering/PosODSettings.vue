@@ -13,6 +13,7 @@
   </div>
 </template>
 <script>
+  import _ from 'lodash';
   import RestaurantInformation from './settings/RestaurantInformation';
   import ServiceAndOpenHours from './settings/ServiceAndOpenHours';
   import SettingMenu from './settings/SettingMenu';
@@ -34,12 +35,94 @@
         ],
         view: 'restaurant-info',
         sidebar: '',
+        //
+        store: null,
+        categories: null,
+        products: null,
       }
     },
     computed: {},
+    async created() {
+      const storeIdOrAlias = this.$route.params.storeIdOrAlias
+      if (storeIdOrAlias) {
+        // try to find by id
+        const store = await cms.getModel('Store').findOne({alias: storeIdOrAlias})
+        const storeGroups = _.map(store.groups, g => g._id)
+        const userStoreGroups = _.map(this.$getService('PosStore').user.storeGroups, g => g._id)
+        const userManageStore = _.uniq(storeGroups, userStoreGroups).length > 0
+        if (userManageStore) {
+          console.log('set store')
+          this.$set(this, 'store', store)
+          console.log('load categories')
+          await this.loadCategories()
+          console.log('load products')
+          await this.loadProducts()
+        } else {
+          prompt('Permission denied!')
+        }
+      }
+    },
     methods: {
       onNodeSelected(node) {
         node.onClick && node.onClick.bind(this)();
+      },
+      async loadStore() {
+        this.$set(this, 'store', await cms.getModel('Store').findOne({_id: this.store._id}))
+      },
+      async changeRestaurantInfo(change) {
+        await cms.getModel('Store').updateOne({_id: this.store._id}, change)
+        await this.loadStore()
+      },
+      async addNewOpenHours(openHour) {
+        const newOpenHours = [...this.store.openHours, openHour]
+        await cms.getModel('Store').updateOne({_id: this.store._id}, { openHours: newOpenHours } )
+        await this.loadStore()
+      },
+      async updateOpenHours(_id, change) {
+        const openHour = _.find(this.store.openHours, oh => oh._id === _id)
+        _.assign(openHour, change)
+        await cms.getModel('Store').updateOne({_id: this.store._id}, { openHours: this.store.openHours })
+        await this.loadStore()
+      },
+      async deleteOpenHour(_id) {
+        const openHourIndex = _.findIndex(this.store.openHours, oh => oh._id === _id)
+        this.store.openHours.splice(openHourIndex, 1)
+        await cms.getModel('Store').updateOne({ _id: this.store._id }, { openHours: this.store.openHours })
+        await this.loadStore()
+      },
+      async changeDeliveryServiceStatus(enable) {
+        await cms.getModel('Store').updateOne({_id: this.store._id}, { delivery: enable })
+        await this.loadStore()
+      },
+      async changePickUpServiceStatus(enable) {
+        await cms.getModel('Store').updateOne({_id: this.store._id}, { pickup : enable })
+        await this.loadStore()
+      },
+      
+      // categories
+      async loadCategories() {
+        this.$set(this, 'categories', await cms.getModel('Category').find({ store: this.store._id }, { store: 0 }))
+      },
+      async addNewCategory(name) {
+        await cms.getModel('Category').create({name, store: this.store._id})
+        await this.loadCategories()
+      },
+      
+      // products
+      async loadProducts() {
+        this.$set(this, 'products', await cms.getModel('Product').find({ store: this.store._id }, { store: 0 }))
+      },
+      async addNewProduct(product) {
+        await cms.getModel('Product').create({...product, store: this.store._id})
+        await this.loadProducts()
+      },
+      async updateProduct(_id, change) {
+        await cms.getModel('Product').updateOne({_id, store: this.store._id}, change)
+        await this.loadProducts()
+      },
+      async removeProduct(_id) {
+        await cms.getModel('Product').remove({_id, store: this.store._id})
+        await this.loadProducts()
       }
     }
   }
