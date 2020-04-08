@@ -121,6 +121,11 @@
       .bs-tf-input {
         background: transparent;
         color: white;
+        padding-left: 2px;
+
+        &::placeholder {
+          color: white;
+        }
 
         &:-webkit-autofill,
         &:-webkit-autofill:hover,
