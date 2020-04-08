@@ -49,13 +49,10 @@
         const store = await cms.getModel('Store').findOne({alias: storeIdOrAlias})
         const storeGroups = _.map(store.groups, g => g._id)
         const userStoreGroups = _.map(this.$getService('PosStore').user.storeGroups, g => g._id)
-        const userManageStore = _.uniq(storeGroups, userStoreGroups).length > 0
-        if (userManageStore) {
-          console.log('set store')
+        const theUserManageThisStore = _.uniq(storeGroups, userStoreGroups).length > 0
+        if (theUserManageThisStore) {
           this.$set(this, 'store', store)
-          console.log('load categories')
           await this.loadCategories()
-          console.log('load products')
           await this.loadProducts()
         } else {
           prompt('Permission denied!')
