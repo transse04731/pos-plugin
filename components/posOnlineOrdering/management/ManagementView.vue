@@ -67,7 +67,11 @@
               </div>
             </template>
             <template v-else>
-              <pos-management-group v-for="(group, i) in searchResult" v-bind="group" :key="`group_${i}`" @view:settings="view = 'settings'"/>
+              <pos-management-group
+                  v-for="(group, i) in searchResult"
+                  v-bind="group"
+                  :key="`group_${i}`"
+                  @view:settings="viewStoreSetting($event)"/>
             </template>
           </div>
         </div>
@@ -78,9 +82,15 @@
           <g-icon class="mx-2" size="12">fas fa-angle-double-right</g-icon>
           <span>Settings</span>
         </div>
-        <pos-management-setting :groups="groups"
-                                @open:dialogDevice="dialog.newDevice = $event"
-                                @open:dialogDelete="dialog.deleteDevice = $event"/>
+        <pos-management-setting
+            :name="selectedStore.name"
+            :group="selectedStore.groups"
+            :address="selectedStore.address"
+            :devices="selectedStore.devices"
+            :groups="groups"
+            @update="updateStore($event)"
+            @open:dialogDevice="dialog.newDevice = $event"
+            @open:dialogDelete="dialog.deleteDevice = $event"/>
       </template>
     </div>
     <dialog-new-group v-model="dialog.newGroup" @submit="addGroup($event)" :groups="groups"/>
@@ -93,7 +103,7 @@
   import _ from 'lodash'
   
   export default {
-    name: 'PosManagement',
+    name: 'ManagementView',
     props: {},
     data: function () {
       return {
@@ -108,6 +118,7 @@
           deleteDevice: false,
         },
         showFilterMenu: false,
+        selectedStore: null
       }
     },
     injectService: ['PosOnlineOrderManagementStore:(loadStoreGroups,loadStores,addGroup,addStore,removeStore,updateStore,addDevice,removeDevice,updateDevice,storeGroups,posManagementModel,searchText)'],
@@ -120,7 +131,13 @@
       }
     },
     methods: {
-  
+      viewStoreSetting(store) {
+        this.selectedStore = store
+        this.view = 'settings'
+      },
+      async updateStore(change) {
+        await cms.getModel('Store').updateOne({_id: this.selectedStore._id}, change)
+      }
     }
   }
 </script>

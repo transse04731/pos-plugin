@@ -117,7 +117,7 @@
   import _ from 'lodash'
   
   export default {
-    name: 'PosOrderTable',
+    name: 'OrderTable',
     data: function () {
       return {
         view: 'order',
