@@ -7,7 +7,7 @@
     </div>
     <template v-if="showContent">
       <div class="pos-management-group__content">
-        <div v-for="(store, i) in stores" :class="getStoreRowClass(i)">
+        <div v-for="(store, i) in stores" :class="getStoreRowClass(i)" @click="toggleStoreSetting(store)">
           <div class="pos-management-group__content-info">
             <div></div>
             <div>{{store.id}}</div>
@@ -22,17 +22,6 @@
             <div>
               <g-tooltip :open-on-hover="true" bottom speech-bubble color="#000" transition="0.3" remove-content-on-close>
                 <template v-slot:activator="{on}">
-                  <div class="pos-management-group__content-btn"
-                       @mouseenter="on.mouseenter"
-                       @mouseleave="on.mouseleave"
-                       @click.stop.prevent="editStore(store)">
-                    <g-icon color="#FFF" small>mdi-pencil-outline</g-icon>
-                  </div>
-                </template>
-                <span>Edit</span>
-              </g-tooltip>
-              <g-tooltip :open-on-hover="true" bottom speech-bubble color="#000" transition="0.3" remove-content-on-close>
-                <template v-slot:activator="{on}">
                   <div class="pos-management-group__content-btn ml-2"
                        @mouseenter="on.mouseenter"
                        @mouseleave="on.mouseleave"
@@ -44,7 +33,7 @@
               </g-tooltip>
             </div>
           </div>
-          <div v-if="store.showSetting" class="pos-management-group__content-action">
+          <div v-if="showStoreSetting[store._id]" class="pos-management-group__content-action">
             <g-btn-bs small text-color="grey-darken-1">Webshop Config</g-btn-bs>
             <g-btn-bs small text-color="grey-darken-1">Remote Control</g-btn-bs>
             <g-btn-bs small text-color="grey-darken-1" @click="$emit('view:settings')">Settings</g-btn-bs>
@@ -56,6 +45,7 @@
 </template>
 
 <script>
+  import _ from 'lodash'
   export default {
     name: "PosManagementGroup",
     props: {
@@ -64,12 +54,20 @@
     },
     data() {
       return {
-        showContent: false
+        showContent: false,
+        showStoreSetting: {}
       }
     },
     methods: {
       toggleContent() {
         this.showContent = !this.showContent
+      },
+      toggleStoreSetting(store) {
+        if (!_.has(this.showStoreSetting, store._id)) {
+          this.$set(this.showStoreSetting, store._id, true)
+        } else {
+          this.showStoreSetting[store._id] = !this.showStoreSetting[store._id]
+        }
       },
       getStoreRowClass(index) {
         if(index % 2 === 0)
@@ -82,9 +80,6 @@
         if(status === 'offline')
           return 'pos-management-group__status--offline'
         return ''
-      },
-      editStore(store) {
-        store.showSetting = true
       },
       deleteStore(store) {
         this.$emit('delete', store)
