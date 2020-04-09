@@ -19,7 +19,8 @@ module.exports = {
       adminDashboard: 'Admin Dashboard',
       staffReport: 'Staff Report',
       endOfDay: 'End of Day',
-      monthlyReport: 'Monthly Report'
+      monthlyReport: 'Monthly Report',
+      settings: 'Settings'
     },
 
     //article view

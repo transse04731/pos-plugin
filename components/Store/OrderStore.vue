@@ -540,7 +540,15 @@
       async setPendingOrder(order) {
         await cms.getModel('Order').findOneAndUpdate({ _id: order._id},
           Object.assign({}, order, {
-            status: 'inProgress'
+            status: 'inProgress',
+            deliveryDate: undefined
+          }))
+        await this.updateOnlineOrders()
+      },
+      async completeOrder(order) {
+        await cms.getModel('Order').findOneAndUpdate({ _id: order._id},
+          Object.assign({}, order, {
+            status: 'completed'
           }))
         await this.updateOnlineOrders()
       },

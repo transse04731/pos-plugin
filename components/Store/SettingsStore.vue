@@ -72,6 +72,7 @@
               /!*{ title: 'License', icon: 'radio_button_unchecked', iconType: 'small' },*!/
             ]
           },*/
+          { title: 'Online Ordering Settings', icon: 'icon-general_setting', isView: true }
         ],
         //category view
         listCategories: [],

@@ -3,27 +3,27 @@
     <div class="pending-orders pr-2">
       <div class="header">
         Pending Orders
-        <g-badge inline :value="true" color="#4CAF50" v-if="pendingOrders && pendingOrders.length">
+        <g-badge inline :value="true" color="#4CAF50" v-if="internalOrders && internalOrders.length">
           <template v-slot:badge>
-            <div class="px-2">{{pendingOrders.length}}</div>
+            <div class="px-2">{{internalOrders.length}}</div>
           </template>
         </g-badge>
       </div>
       <div class="content">
-        <template v-if="!pendingOrders || !pendingOrders.length">
+        <template v-if="!internalOrders || !internalOrders.length">
           <div class="pending-orders--empty">
             <img alt src="/plugins/pos-plugin/assets/pending_order.svg"/>
             <p>No Pending orders yet</p>
           </div>
         </template>
         <template v-else>
-          <g-card elevation="0" v-for="order in pendingOrders">
+          <g-card elevation="0" v-for="order in internalOrders">
             <g-card-title>
               <g-icon v-if="order.type === 'delivery'">icon-delivery-man</g-icon>
               <g-icon v-if="order.type === 'pickup'">icon-pickup</g-icon>
               <span class="fs-small-2 ml-1">
                 <span class="text-indigo-accent-2">#{{order.id}}</span>
-                {{order.customer ? order.customer.name : 'No customer name'}} - {{order.customer ? order.customer.phone : 'No customer phone'}}
+                {{order.customer ? order.customer.name : 'No customer name'}} - {{order.customer ? order.customer.phoneNo : 'No customer phone'}}
               </span>
               <g-spacer/>
               <span class="fw-700 fs-small">{{order.received}}</span>
@@ -48,9 +48,16 @@
                 </div>
               </div>
             </g-card-text>
+            <g-card-actions v-if="order.confirmStep2">
+              <value-picker :values="[15, 30, 45, 60]" :default-value="30" allow-custom v-model="order.prepareTime"></value-picker>
+            </g-card-actions>
             <g-card-actions>
-              <g-btn-bs width="60" border-color="#C4C4C4" text-color="black" @click.stop="declineOrder(order)">No</g-btn-bs>
-              <g-btn-bs icon="icon-printer-setting" background-color="#E0E0E0" text-color="black" style="flex: 1" @click.stop="acceptOrder(order)">{{getPaymentTexts(order.payment)}}</g-btn-bs>
+              <g-btn-bs width="60" border-color="#C4C4C4" text-color="black" @click.stop="onClickDecline(order)">
+                {{order.confirmStep2 ? 'Back' : 'No'}}
+              </g-btn-bs>
+              <g-btn-bs icon="icon-printer-setting" background-color="#E0E0E0" text-color="black" style="flex: 1" @click.stop="onClickAccept(order)">
+                {{getPaymentTexts(order.payment)}}
+              </g-btn-bs>
             </g-card-actions>
           </g-card>
         </template>
@@ -76,14 +83,23 @@
             <g-card-title>
               <span class="fs-small-2 ml-1">
                 <span class="text-indigo-accent-2">#{{order.id}}</span>
-                {{order.customer ? order.customer.name : 'No customer name'}} - {{order.customer ? order.customer.phone : 'No customer phone'}}
+                {{order.customer ? order.customer.name : 'No customer name'}} - {{order.customer ? order.customer.phoneNo : 'No customer phone'}}
               </span>
               <g-spacer/>
-              <div class="kitchen-orders__timer">
-                <g-icon v-if="order.type === 'delivery'">icon-delivery-man</g-icon>
-                <g-icon v-if="order.type === 'pickup'">icon-pickup</g-icon>
-                <span class="fw-700 fs-small">{{order.received}}</span>
-              </div>
+              <g-menu v-model="order.menu" :close-on-content-click="true" left>
+                <template v-slot:activator="{on}">
+                  <div class="kitchen-orders__timer" v-on="on">
+                    <g-icon v-if="order.type === 'delivery'">icon-delivery-man</g-icon>
+                    <g-icon v-if="order.type === 'pickup'">icon-pickup</g-icon>
+                    <span class="fw-700 fs-small">{{order.deliveryDate | formatDate}}</span>
+                  </div>
+                </template>
+                <div class="options">
+                  <div class="option" @click="completeOrder(order)">Complete Order & Print Receipt</div>
+                  <div class="option" @click="setPendingOrder(order)">Return to pending orders</div>
+                  <div class="option" @click="declineOrder(order)">Cancel & move to declined orders</div>
+                </div>
+              </g-menu>
             </g-card-title>
             <g-card-text>
               <div class="row-flex" v-if="order.customer">
@@ -117,21 +133,32 @@
 </template>
 
 <script>
+  import ValuePicker from './ValuePicker';
   export default {
     name: 'OnlineOrderMain',
+    components: { ValuePicker },
     props: {
       pendingOrders: Array,
       kitchenOrders: Array,
     },
-    mounted() {
-      this.$nextTick(() => {
-        this.$emit('updateOnlineOrders')
-      })
+    filters: {
+      formatDate(date) {
+        return dayjs(date).format('HH:mm')
+      }
     },
-    activated() {
-      this.$nextTick(() => {
-        this.$emit('updateOnlineOrders')
-      })
+    data() {
+      return {
+        internalOrders: []
+      }
+    },
+    watch: {
+      pendingOrders(val) {
+        this.internalOrders = val.map(i => ({
+          ...i,
+          confirmStep2: false,
+          prepareTime: null
+        }))
+      }
     },
     methods: {
       getPaymentTexts(payments) {
@@ -145,8 +172,32 @@
       },
       setPendingOrder(order) {
         this.$emit('setPendingOrder', order)
+      },
+      completeOrder(order) {
+        this.$emit('completeOrder', order)
+      },
+      onClickAccept(order) {
+        if (!order.confirmStep2) return this.$set(order, 'confirmStep2', true)
+        if (!order.prepareTime) return
+        order.deliveryDate = dayjs().add(+order.prepareTime, 'minute').toDate()
+        this.acceptOrder(order)
+      },
+      onClickDecline(order) {
+        if (order.confirmStep2) return this.$set(order, 'confirmStep2', false)
+        this.declineOrder(order)
       }
+    },
+    mounted() {
+      this.$nextTick(() => {
+        this.$emit('updateOnlineOrders')
+      })
+    },
+    activated() {
+      this.$nextTick(() => {
+        this.$emit('updateOnlineOrders')
+      })
     }
+
   }
 </script>
 
@@ -182,6 +233,10 @@
 
         .g-btn-bs {
           text-transform: capitalize;
+        }
+
+        .bs-tf-wrapper {
+          width: 120px;
         }
       }
     }

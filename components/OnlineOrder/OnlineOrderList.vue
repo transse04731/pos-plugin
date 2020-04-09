@@ -20,8 +20,7 @@
               <p>{{item.customer.phone}}</p>
             </td>
             <td>
-              <div v-if="item.address">
-                <p>{{item.customer.address}}</p>
+              <div v-if="item.customer.address">
                 <p>{{item.customer.address}}</p>
               </div>
               <div v-else>--</div>
