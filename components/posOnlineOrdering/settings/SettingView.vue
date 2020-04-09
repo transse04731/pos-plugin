@@ -26,6 +26,7 @@
             @add-new-product="addNewProduct"
             @update-product="updateProduct"
             @delete-product="deleteProduct"/>
+        <device v-if="view === 'setting-device'"/>
       </div>
     </template>
   </div>

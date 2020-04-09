@@ -296,6 +296,7 @@
 
     .bs-tf-input {
       line-height: 28px;
+      font-size: 15px;
     }
   }
 
@@ -306,7 +307,7 @@
     }
 
     .bs-tf-inner-input-group {
-      height: 44px;
+      height: 46px;
     }
 
     .g-chip {
