@@ -35,7 +35,7 @@
 
   export default {
     name: 'PosDashboardSidebar',
-    injectService: [ 'PosStore:user' ],
+    injectService: [ 'PosStore:(user,logout)' ],
     props: {
       title: {
         type: String,
@@ -88,10 +88,6 @@
       onNodeSelected(node) {
         this.selectedNode = node;
         node.onClick && node.onClick.bind(this)();
-      },
-      logout() {
-        this.$router.push('/view/pos-login')
-        this.user = null
       }
     }
   }

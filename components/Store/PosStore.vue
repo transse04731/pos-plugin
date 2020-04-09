@@ -15,6 +15,7 @@
     data() {
       return {
         systemDate: new Date(),
+        loginUrl: '/view/sign-in',
         user: null,
         
         //payment screen variables
@@ -37,10 +38,11 @@
         })
         this.incorrectPasscode = true
       },
-      logout(cb) {
+      logout() {
         cms.logout()
         document.cookie = ''
-        cb && cb()
+        this.$router.push(this.loginUrl || '/view/pos-login')
+        this.user = null
       },
       getUserInfo() {
         console.log('get user info')
