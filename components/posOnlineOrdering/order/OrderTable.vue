@@ -177,7 +177,6 @@
     width: 430px;
     height: 100vh;
     background-color: #F8F8F8;
-    display: flex;
 
     &__main {
       padding: 0 20px;

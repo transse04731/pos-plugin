@@ -204,6 +204,10 @@
         align-items: center;
         justify-content: space-between;
 
+        & > img {
+          width: 250px;
+        }
+
         &--info {
           text-align: right;
 
@@ -273,8 +277,8 @@
       padding: 0;
 
       .pos-order__left__header {
-        img {
-          width: 40%;
+        & > img {
+          width: 110px;
         }
 
         &--info {
