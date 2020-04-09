@@ -31,21 +31,21 @@
                     @save="updateProduct(product._id, $event)"
                     @delete="openDeleteDialog(product._id)"/>
               </template>
-              <div v-else-if="!showAddNewProductPanel" style="height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #fff;">
+              <div v-else-if="!showAddNewProductPanel[cate._id]" style="height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #fff;">
                 <img src="/plugins/pos-plugin/assets/no-items.svg" class="mb-2"/>
                 <div class="text-grey">No item in this group.</div>
               </div>
-              <div v-if="showAddNewProductPanel">
+              <div v-if="showAddNewProductPanel[cate._id]">
                 <setting-new-menu-item
                     :index="cate.products.length"
-                    @cancel="showAddNewProductPanel = false"
+                    @cancel="hideAddNewProductPanelForCategory(cate)"
                     @save="addNewProduct({...$event, category: cate._id})"/>
               </div>
             </div>
             <div style="height: 40px; background-color: #fff; display: flex; align-items: center; justify-content: center;">
               <g-btn-bs text-color="#2979FF"
-                     @click="showAddNewProductPanel = true"
-                     :disabled="showAddNewProductPanel">
+                     @click="showAddNewProductPanelForCategory(cate)"
+                     :disabled="showAddNewProductPanel[cate._id]">
                 + Add New Item
               </g-btn-bs>
             </div>
@@ -71,7 +71,7 @@
     data: function () {
       return {
         showProducts: {},
-        showAddNewProductPanel: false,
+        showAddNewProductPanel: {},
         selectedProductId: null,
         dialog: {
           addNewCategory: false,
@@ -96,6 +96,12 @@
         } else {
           this.$set(this.showProducts, category._id, true)
         }
+      },
+      showAddNewProductPanelForCategory(cate) {
+        this.$set(this.showAddNewProductPanel, cate._id, true)
+      },
+      hideAddNewProductPanelForCategory(cate) {
+        this.$set(this.showAddNewProductPanel, cate._id, false)
       },
       addNewCategory(name) {
         this.$emit('add-new-category', name)
