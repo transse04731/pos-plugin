@@ -18,7 +18,7 @@
             <div>
                 <span :class="getStatusClass(store.status)">{{store.status}}</span>
             </div>
-            <div>{{store.webshop && 'Yes'}}</div>
+            <div>{{store.onlineOrdering && 'Yes'}}</div>
             <div>
               <g-tooltip :open-on-hover="true" bottom speech-bubble color="#000" transition="0.3" remove-content-on-close>
                 <template v-slot:activator="{on}">
