@@ -11,9 +11,9 @@
         </div>
       </div>
       <div class="menu-setting-new-item__content">
-        <g-text-field-bs small v-model="internalName" placeholder="Name *"/>
+        <g-text-field-bs small v-model="internalName" :rules="productRules.name" placeholder="Name *"/>
         <div>
-          <g-text-field-bs small v-model="internalPrice" placeholder="Price *"/>
+          <g-text-field-bs small v-model="internalPrice" :rules="productRules.price" type="number" placeholder="Price *"/>
         </div>
         <g-textarea outlined no-resize :rows="2" v-model="internalDesc" placeholder="Description"/>
         <div class="menu-setting-new-item__tax">
@@ -61,7 +61,11 @@
         internalTax: this.tax || 7,
         internalImage: this.image,
         // TODO: Link database
-        taxes: [{ text: '19%', value: 19 }, { text: '7%', value: 7 }]
+        taxes: [{ text: '19%', value: 19 }, { text: '7%', value: 7 }],
+        productRules: {
+          name: [ (value) => value ? true : 'Product\'s name is missing' ],
+          price: [ (value) => value ? true : 'Product\'s price is missing' ]
+        }
       }
     },
     methods: {
@@ -71,6 +75,16 @@
         this.internalImage = uploadResult
       },
       saveMenuItem() {
+        if (!this.internalName) {
+          alert('Product name is missing')
+          return
+        }
+        
+        if (!this.internalPrice) {
+          alert('Product\'s price is missing')
+          return
+        }
+        
         this.$emit('save', {
           image: this.internalImage,
           name: this.internalName,
