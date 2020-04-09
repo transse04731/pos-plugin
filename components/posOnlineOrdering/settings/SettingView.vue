@@ -5,7 +5,7 @@
     </template>
     <template v-else>
       <!-- sidebar -->
-      <pos-dashboard-sidebar default-path="items.0" :items="sidebarItems" @node-selected="onNodeSelected"/>
+      <pos-dashboard-sidebar default-path="item.0" :items="sidebarItems" @node-selected="onNodeSelected"/>
   
       <!-- content -->
       <div style="background-color: #F4F7FB; flex: 1; padding: 50px 10%">
