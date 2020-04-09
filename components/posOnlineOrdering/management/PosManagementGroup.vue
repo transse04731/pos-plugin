@@ -110,6 +110,8 @@
     }
 
     &__content {
+      border-bottom: 1px solid #EFEFEF;
+
       &--even {
         background: #FFFFFF;
       }
