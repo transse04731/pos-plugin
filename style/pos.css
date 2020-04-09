@@ -360,3 +360,10 @@ body::-webkit-scrollbar {
   background-position: center;
 }
 
+.icon-reset {
+  background-image: url("../assets/reset.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
