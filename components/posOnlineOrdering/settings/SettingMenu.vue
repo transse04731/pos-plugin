@@ -29,7 +29,7 @@
                     v-bind="product"
                     :index="index"
                     @save="updateProduct(product._id, $event)"
-                    @delete="openDeleteDialog($event)"/>
+                    @delete="openDeleteDialog(product._id)"/>
               </template>
               <div v-else-if="!showAddNewProductPanel" style="height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #fff;">
                 <img src="/plugins/pos-plugin/assets/no-items.svg" class="mb-2"/>
@@ -72,7 +72,7 @@
       return {
         showProducts: {},
         showAddNewProductPanel: false,
-        selectToDeleteItem: null,
+        selectedProductId: null,
         dialog: {
           addNewCategory: false,
           deleteProduct: false,
@@ -108,10 +108,10 @@
         this.$emit('update-product', productId, change)
       },
       deleteProduct() {
-        this.$emit('delete-product', this.selectToDeleteItem._id)
+        this.$emit('delete-product', this.selectedProductId)
       },
-      openDeleteDialog(item) {
-        this.selectToDeleteItem = item
+      openDeleteDialog(productId) {
+        this.selectedProductId = productId
         this.dialog.deleteProduct = true
       }
     }

@@ -104,6 +104,7 @@
         await this.loadProducts()
       },
       async deleteProduct(_id) {
+        if (!_id) return
         await cms.getModel('Product').remove({_id, store: this.store._id})
         await this.loadProducts()
       }

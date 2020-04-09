@@ -59,7 +59,7 @@
   export default {
     name: 'SettingMenuItem',
     components: { SettingNewMenuItem },
-    props: [ 'index', 'image', 'name', 'desc', 'price', 'tax'],
+    props: [ '_id', 'index', 'image', 'name', 'desc', 'price', 'tax'],
     data: function () {
       return {
         mode: 'view'
@@ -73,8 +73,7 @@
     computed: {},
     methods: {
       deleteItem() {
-        const item = {}
-        this.$emit('delete', item)
+        this.$emit('delete')
       },
       saveProduct(change) {
         this.$emit('save', change)
