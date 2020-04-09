@@ -21,25 +21,36 @@
             <g-card-title>
               <g-icon v-if="order.type === 'delivery'">icon-delivery-man</g-icon>
               <g-icon v-if="order.type === 'pickup'">icon-pickup</g-icon>
-              <span class="fs-small-2 ml-1">No. {{order.id}} | {{order.customer ? order.customer.name : 'No customer name'}}</span>
+              <span class="fs-small-2 ml-1">
+                <span class="text-indigo-accent-2">#{{order.id}}</span>
+                {{order.customer ? order.customer.name : 'No customer name'}} - {{order.customer ? order.customer.phone : 'No customer phone'}}
+              </span>
               <g-spacer/>
               <span class="fw-700 fs-small">{{order.received}}</span>
             </g-card-title>
             <g-card-text>
-              <p><b>Payment: </b>{{getPaymentTexts(order.payment)}}</p>
-              <p v-if="order.customer"><b>Address: </b>{{`${order.customer.address} ${order.customer.address}`}}</p>
+              <div class="row-flex" v-if="order.customer">
+                <div class="col-2">
+                  <g-icon color="#9E9E9E" size="20">icon-place</g-icon>
+                </div>
+                <div class="col-10">{{`${order.customer.address} ${order.customer.address}`}}</div>
+              </div>
               <div v-if="order.items">
-                <p class="fw-700">Details: </p>
-                <div class="row-flex ml-3" v-for="item in order.items">
+                <div class="row-flex" v-for="item in order.items">
                   <div class="col-2 fw-700">{{item.quantity}}x</div>
-                  <div class="col-7 fs-small-2">{{item.name}}</div>
+                  <div class="col-7 fs-small-2">
+                    {{item.name}}
+                    <template v-if="item.modifiers.length > 0">
+                      <span class="i text-grey">(<span v-for="modifier in item.modifiers">{{modifier}}</span>)</span>
+                    </template>
+                  </div>
                   <div class="col-3 fs-small-2 ta-right">€{{item.price.toFixed(2)}}</div>
                 </div>
               </div>
             </g-card-text>
             <g-card-actions>
               <g-btn-bs width="60" border-color="#C4C4C4" text-color="black" @click.stop="declineOrder(order)">No</g-btn-bs>
-              <g-btn-bs background-color="#E0E0E0" text-color="black" style="flex: 1" @click.stop="acceptOrder(order)">Yes</g-btn-bs>
+              <g-btn-bs icon="icon-printer-setting" background-color="#E0E0E0" text-color="black" style="flex: 1" @click.stop="acceptOrder(order)">{{getPaymentTexts(order.payment)}}</g-btn-bs>
             </g-card-actions>
           </g-card>
         </template>
@@ -63,36 +74,41 @@
         <template v-else>
           <g-card elevation="0" v-for="order in kitchenOrders">
             <g-card-title>
-              <g-icon v-if="order.type === 'delivery'">icon-delivery-man</g-icon>
-              <g-icon v-if="order.type === 'pickup'">icon-pickup</g-icon>
-              <span class="fs-small-2 ml-1">No. {{order.id}} | {{order.customer ? order.customer.name : 'No customer name'}}</span>
+              <span class="fs-small-2 ml-1">
+                <span class="text-indigo-accent-2">#{{order.id}}</span>
+                {{order.customer ? order.customer.name : 'No customer name'}} - {{order.customer ? order.customer.phone : 'No customer phone'}}
+              </span>
               <g-spacer/>
-              <span class="fw-700 fs-small">{{order.received}}</span>
+              <div class="kitchen-orders__timer">
+                <g-icon v-if="order.type === 'delivery'">icon-delivery-man</g-icon>
+                <g-icon v-if="order.type === 'pickup'">icon-pickup</g-icon>
+                <span class="fw-700 fs-small">{{order.received}}</span>
+              </div>
             </g-card-title>
             <g-card-text>
-              <p><b>Payment: </b>{{getPaymentTexts(order.payment)}}</p>
-              <p v-if="order.customer"><b>Address: </b>{{`${order.customer.address} ${order.customer.address}`}}</p>
-              <div v-if="order.items">
-                <p class="fw-700">Details: </p>
-                <div class="row-flex ml-3" v-for="item in order.items">
-                  <div class="col-2 fw-700">{{item.quantity}}x</div>
-                  <div class="col-7 fs-small-2">{{item.name}}</div>
-                  <div class="col-3 fs-small-2 ta-right">€{{item.price.toFixed(2)}}</div>
+              <div class="row-flex" v-if="order.customer">
+                <div class="col-2">
+                  <g-icon color="#9E9E9E" size="20">icon-place</g-icon>
+                </div>
+                <div class="col-10">{{`${order.customer.address} ${order.customer.address}`}}</div>
+              </div>
+              <div class="row-flex" v-if="order.items">
+                <div class="col-2">
+                  <g-icon color="#9E9E9E" size="20">icon-food</g-icon>
+                </div>
+                <div class="row-flex">
+                  <template v-for="item in order.items">
+                    <div class="fw-700 mr-1">{{item.quantity}}x</div>
+                    <div class="mr-3">
+                      {{item.name}}
+                      <template v-if="item.modifiers.length > 0">
+                        <span class="i text-grey">(<span v-for="modifier in item.modifiers">{{modifier}}</span>)</span>
+                      </template>
+                    </div>
+                  </template>
                 </div>
               </div>
             </g-card-text>
-            <g-card-actions>
-              <g-menu v-model="order.menu" :close-on-content-click="true">
-                  <template v-slot:activator="{on}">
-                    <g-btn-bs :class="[order.menu && 'btn-clicked']" @click="on.click" width="60" border-color="#C4C4C4" text-color="black">...</g-btn-bs>
-                  </template>
-                  <div class="options">
-                    <div class="option" @click="setPendingOrder(order)">Return to pending orders</div>
-                    <div class="option" @click="declineOrder(order)">Cancel & move to declined orders</div>
-                  </div>
-              </g-menu>
-              <g-btn-bs background-color="#E0E0E0" text-color="black" style="flex: 1">Complete order & Print receipt</g-btn-bs>
-            </g-card-actions>
           </g-card>
         </template>
       </div>
@@ -158,11 +174,15 @@
       }
 
       .g-card-text {
-        padding: 0 16px;
+        padding: 0 16px 16px;
       }
 
       .g-card-actions {
-        padding: 16px 8px;
+        padding: 0 8px 16px;
+
+        .g-btn-bs {
+          text-transform: capitalize;
+        }
       }
     }
   }
@@ -183,7 +203,7 @@
   }
 
   .pending-orders {
-    width: 50%;
+    width: 40%;
     height: 100%;
     overflow: hidden;
 
@@ -206,7 +226,7 @@
   }
 
   .kitchen-orders {
-    width: 50%;
+    width: 60%;
 
     &--empty {
       height: 30%;
@@ -222,6 +242,13 @@
         color: #9E9E9E;
         margin-top: 8px;
       }
+    }
+
+    &__timer {
+      background: #EFEFEF;
+      border: 1px solid #C4C4C4;
+      border-radius: 2px;
+      padding: 0 4px;
     }
   }
 

@@ -473,3 +473,17 @@ body::-webkit-scrollbar {
   background-size: contain;
   background-position: center;
 }
+
+.icon-place {
+  background-image: url("../assets/place.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-food {
+  background-image: url("../assets/food.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
