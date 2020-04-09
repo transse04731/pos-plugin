@@ -1,54 +1,54 @@
 <template>
   <div class="restaurant-info">
     <div class="restaurant-info__title">Restaurant Information</div>
-    <div class="restaurant-info__main">
+    <div class="restaurant-info__main" v-if="store">
       <div class="restaurant-info__main--left">
         <div class="mb-3 fw-700">Basic info</div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto 1fr 1fr 1fr 1fr; grid-gap: 5px">
             <g-text-field-bs large label="Restaurant Name"
                              placeholder="Restaurant Name"
-                             :value="store && store.name"
-                             @input="$emit('update', { name: $event })"/>
+                             :value="store.name"
+                             @input="updateDebounce({ name: $event })"/>
             <g-text-field-bs large label="Restaurant Phone"
                              placeholder="Restaurant Phone"
-                             :value="store && store.phone"
-                             @input="$emit('update', { phone: $event })"/>
+                             :value="store.phone"
+                             @input="updateDebounce({ phone: $event })"/>
             <div class="span-2">
               <p>Restaurant Address</p>
               <g-textarea outlined no-resize placeholder="Address..."
                           :rows="3"
-                          :value="store && store.address"
-                          @input="$emit('update', { address: $event })"/>
+                          :value="store.address"
+                          @input="updateDebounce({ address: $event })"/>
             </div>
             <g-text-field-bs large label="Zip code"
-                             :value="store && store.zipCode"
-                             @input="$emit('update', {zipCode: $event})"/>
-            <g-select text-field-component="GTextFieldBs" label="Town/City" :items="cities"
-                             :value="store && store.townCity"
-                             @input="$emit('update', {townCity: $event})"/>
+                             :value="store.zipCode"
+                             @input="updateDebounce({zipCode: $event})"/>
+            <g-text-field-bs label="Town/City"
+                             :value="store.townCity"
+                             @input="updateDebounce({townCity: $event})"/>
             <g-select text-field-component="GTextFieldBs" :items="countries" class="span-2"
                              label="Country"
-                             :value="store && store.country"
-                             @input="$emit('update', {country: $event})"/>
-            <g-text-field-bs large class="span-2"
+                             :value="store.country"
+                             @input="update({country: $event})"/>
+            <g-select text-field-component="GTextFieldBs" :items="currencies" large class="span-2"
                              label="Currency"
-                             :value="store && store.currency"
-                             @input="$emit('update', {currency: $event})"/>
-            <g-text-field-bs large class="span-2"
+                             :value="store.currency"
+                             @input="update({ currency: $event})"/>
+            <g-select text-field-component="GTextFieldBs" :items="timeZones" large class="span-2"
                              label="Time zone"
-                             :value="store && store.timeZone"
-                             @input="$emit('update', {timeZone: $event})"/>
+                             :value="store.timeZone"
+                             @input="update({timeZone: $event})"/>
         </div>
       </div>
       <div class="restaurant-info__main--right">
         <div class="mb-3 fw-700">Upload photo</div>
         <div class="mb-5">
           <div class="mb-2">Restaurant Photo</div>
-          <upload-zone :url="store && store.orderHeaderImageSrc" @url="saveImage"/>
+          <upload-zone :url="store.orderHeaderImageSrc" @url="update({ orderHeaderImageSrc: $event })"/>
         </div>
         <div>
           <div class="mb-2">Restaurant Logo</div>
-          <upload-zone :url="store && store.logoImageSrc" @url="saveLogo"/>
+          <upload-zone :url="store.logoImageSrc" @url="update({ logoImageSrc: $event })"/>
         </div>
       </div>
     </div>
@@ -56,6 +56,7 @@
 </template>
 <script>
   import UploadZone from './UploadZone';
+  import _ from 'lodash'
   
   // TODO:
   // - remove old image when user change to new image
@@ -69,18 +70,21 @@
     },
     data: function () {
       return {
-        cities: [{text: 'Ha Noi', value: 'Ha Noi'}],
-        countries: [{text: 'Vietnam', value: 'Vietnam'}]
+        // TODO: FIll country, currencies, timezones
+        countries: [{text: 'Vietnam', value: 'Vietnam'}, { text: "USA", value: "USA" }],
+        currencies: [{text: 'Vietnam Dong (VND)', value: 'VND'}, { text: "US Dollar ($)", value: "$" }, { text: "Euro (€)", value: "€" }],
+        timeZones: [{text: '(GMT +7) Hanoi, Jakarta', value: 'GMT+7'}],
       }
     },
     computed: {},
+    created() {
+      this.updateDebounce = _.debounce(this.update, 500)
+    },
     methods: {
-      async saveImage(url) {
-        this.$emit('update', { orderHeaderImageSrc: url })
+      async update(change) {
+        console.log('update', change)
+        this.$emit('update', change)
       },
-      async saveLogo(url) {
-        this.$emit('update', { logoImageSrc: url })
-      }
     }
   }
 </script>
