@@ -133,7 +133,7 @@
         })
         return categories
       },
-      todayOpenHour() {day
+      todayOpenHour() {
         const dayInWeekIndex = this.dayInWeeks.indexOf(dayjs().format("dddd"))
         return this.getOpenHour(dayInWeekIndex)
       },
