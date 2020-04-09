@@ -8,7 +8,7 @@
       <pos-dashboard-sidebar default-path="item.0" :items="sidebarItems" @node-selected="onNodeSelected"/>
   
       <!-- content -->
-      <div style="background-color: #F4F7FB; flex: 1; padding: 50px 10%">
+      <div style="background-color: #F4F7FB; flex: 1; padding: 50px 5%">
         <restaurant-information
             v-if="view === 'restaurant-info'"
             :store="store"
@@ -49,6 +49,7 @@
             onClick: () => this.view = 'service-and-open-hours'
           },
           {title: 'Menu', icon: 'filter_list', onClick: () => this.view = 'settings-menu'},
+          {title: 'Device', icon: 'tv', onClick: () => this.view = 'setting-device'},
         ],
         view: 'restaurant-info',
         sidebar: '',
