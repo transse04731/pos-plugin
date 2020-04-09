@@ -38,17 +38,21 @@
         _.each(this.intermediatePosManagementModel, storeGroup => {
           const group = { name: storeGroup.name }
           const stores = []
-          _.each(storeGroup.stores, store => {
-            if (_.includes(store.name, this.searchText))
-              stores.push(store)
-          })
+          // search
+          if (this.searchText) {
+            _.each(storeGroup.stores, store => _.includes(store.name, this.searchText) && stores.push(store))
+          } else {
+            stores.push(...storeGroup.stores)
+          }
+          
+          // sort
           if (this.orderBy) {
             switch (this.orderBy) {
               case 'lastUpdated':
-                group.stores = _.orderBy(stores, [(s1, s2) => true], 'asc')
+                group.stores = _.orderBy(stores, 'addedDate', 'desc')
                 break;
               case 'firstUpdated':
-                group.stores = _.orderBy(stores, [(s1, s2) => true], 'desc')
+                group.stores = _.orderBy(stores, 'addedDate', 'asc')
                 break;
               case 'az':
                 group.stores = _.orderBy(stores, 'name', 'asc')
@@ -60,6 +64,9 @@
           } else {
             group.stores = stores
           }
+        
+          if (group.stores.length > 0)
+            groups.push(group)
         })
         return groups
       }
@@ -126,7 +133,8 @@
         storeGroups: this.storeGroups,
         stores: this.stores,
         posManagementModel: this.posManagementModel,
-        searchText: this.searchText
+        searchText: this.searchText,
+        orderBy: this.orderBy
       }
     }
   }

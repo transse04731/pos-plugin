@@ -24,10 +24,10 @@
               </g-btn-bs>
             </template>
             <div class="filter-options">
-              <div class="option">Last Updated</div>
-              <div class="option">First Updated</div>
-              <div class="option">A to Z</div>
-              <div class="option">Z to A</div>
+              <div :class="['option', { 'option--selected':  orderBy === 'lastUpdated' }]" @click="orderBy = 'lastUpdated'">Last Updated</div>
+              <div :class="['option', { 'option--selected':  orderBy === 'firstUpdated' }]" @click="orderBy = 'firstUpdated'">First Updated</div>
+              <div :class="['option', { 'option--selected':  orderBy === 'az' }]" @click="orderBy = 'az'">A to Z</div>
+              <div :class="['option', { 'option--selected':  orderBy === 'za' }]" @click="orderBy = 'za'">Z to A</div>
             </div>
           </g-menu>
           <g-spacer/>
@@ -125,7 +125,7 @@
         selectedStoreId: null
       }
     },
-    injectService: ['PosOnlineOrderManagementStore:(loadStoreGroups,loadStores,addGroup,addStore,removeStore,updateStore,addDevice,removeDevice,updateDevice,storeGroups,stores,posManagementModel,searchText)'],
+    injectService: ['PosOnlineOrderManagementStore:(loadStoreGroups,loadStores,addGroup,addStore,removeStore,updateStore,addDevice,removeDevice,updateDevice,storeGroups,stores,posManagementModel,searchText,orderBy)'],
     computed: {
       searchResult() {
         return this.posManagementModel
@@ -273,6 +273,10 @@
       cursor: pointer;
       color: #201F2B;
 
+      &--selected {
+        background-color: #EFEFEF;
+      }
+      
       &:hover {
         background-color: #EFEFEF;
       }
