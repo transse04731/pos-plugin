@@ -1,28 +1,33 @@
 <template>
   <div style="height: 100vh; width: 100vw; display: flex;">
-    <!-- sidebar -->
-    <pos-dashboard-sidebar default-path="items.0" :items="sidebarItems" @node-selected="onNodeSelected"/>
-
-    <!-- content -->
-    <div style="background-color: #F4F7FB; flex: 1; padding: 50px 10%">
-      <restaurant-information
-          v-if="view === 'restaurant-info'"
-          :store="store"
-          @update="updateStore"/>
-      <service-and-open-hours
-          v-if="view === 'service-and-open-hours'"
-          :store="store"
-          @update="updateStore"/>
-      <setting-menu
-          v-if="view === 'settings-menu'"
-          :store="store"
-          :categories="categories"
-          :products="products"
-          @add-new-category="addNewCategory"
-          @add-new-product="addNewProduct"
-          @update-product="updateProduct"
-          @delete-product="deleteProduct"/>
-    </div>
+    <template v-if="permissionDenied">
+      {{ permissionDeniedMessage }}
+    </template>
+    <template v-else>
+      <!-- sidebar -->
+      <pos-dashboard-sidebar default-path="items.0" :items="sidebarItems" @node-selected="onNodeSelected"/>
+  
+      <!-- content -->
+      <div style="background-color: #F4F7FB; flex: 1; padding: 50px 10%">
+        <restaurant-information
+            v-if="view === 'restaurant-info'"
+            :store="store"
+            @update="updateStore"/>
+        <service-and-open-hours
+            v-if="view === 'service-and-open-hours'"
+            :store="store"
+            @update="updateStore"/>
+        <setting-menu
+            v-if="view === 'settings-menu'"
+            :store="store"
+            :categories="categories"
+            :products="products"
+            @add-new-category="addNewCategory"
+            @add-new-product="addNewProduct"
+            @update-product="updateProduct"
+            @delete-product="deleteProduct"/>
+      </div>
+    </template>
   </div>
 </template>
 <script>
@@ -50,22 +55,29 @@
         store: null,
         categories: null,
         products: null,
+        permissionDenied: true,
+        permissionDeniedMessage: ''
       }
     },
     async created() {
       const storeIdOrAlias = this.$route.params.storeIdOrAlias
       if (storeIdOrAlias) {
-        // try to find by id
         const store = await cms.getModel('Store').findOne({alias: storeIdOrAlias})
         const storeGroups = _.map(store.groups, g => g._id)
-        const userStoreGroups = _.map(this.$getService('PosStore').user.storeGroups, g => g._id)
-        const theUserManageThisStore = _.uniq(storeGroups, userStoreGroups).length > 0
-        if (theUserManageThisStore) {
+        const user = this.$getService('PosStore').user
+        let userManageThisStore = false
+        if (uuser.role.name !== 'admin') {
+          const userStoreGroups = _.map(user.storeGroups, g => g._id)
+          userManageThisStore = _.intersection(storeGroups, userStoreGroups).length > 0
+        }
+        if (user.role.name === 'admin' || userManageThisStore) {
+          this.permissionDenied = false
           this.$set(this, 'store', store)
           await this.loadCategories()
           await this.loadProducts()
         } else {
-          prompt('Permission denied!')
+          this.permissionDenied = true;
+          this.permissionDeniedMessage = 'Permission denied!'
         }
       }
     },
