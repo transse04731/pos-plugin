@@ -21,8 +21,7 @@
           @add-new-category="addNewCategory"
           @add-new-product="addNewProduct"
           @update-product="updateProduct"
-          @delete-product="deleteProduct"
-      />
+          @delete-product="deleteProduct"/>
     </div>
   </div>
 </template>
@@ -105,7 +104,7 @@
       },
       async deleteProduct(_id) {
         if (!_id) return
-        await cms.getModel('Product').remove({_id, store: this.store._id})
+        await cms.getModel('Product').remove({_id: _id, store: this.store._id})
         await this.loadProducts()
       }
     }
