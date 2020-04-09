@@ -68,6 +68,13 @@
         <order-table :store="store"/>
       </div>
     </template>
+    
+    <g-dialog v-model="dialog.merchantClosed" persistance fullscreen>
+      <div style="width: 464px; height: 256px">
+        <div style="font-style: normal; font-weight: bold;font-size: 18px;">Merchant is temporarily closed</div>
+        <div style="font-style: normal; font-weight: normal; font-size: 15px;">The merchant is temporarily closed an will not accept orders until 9:00. Please come back after that. We applogize for any inconvenience caused</div>
+      </div>
+    </g-dialog>
   </div>
 </template>
 <script>
@@ -87,6 +94,7 @@
         store: null,
         categories: null,
         products: null,
+        dayInWeeks: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
       }
     },
     async created() {
@@ -122,12 +130,16 @@
         })
         return categories
       },
-      todayOpenHour() {
-        const dayInWeekIndex = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].indexOf(dayjs().format("dddd"))
-        for (let openHour of this.store.openHours) {
-          if (openHour.dayInWeeks[dayInWeekIndex])
-            return _.pick(openHour, 'openTime', 'closeTime')
-        }
+      todayOpenHour() {day
+        const dayInWeekIndex = this.dayInWeeks.indexOf(dayjs().format("dddd"))
+        return this.getOpenHour(dayInWeekIndex)
+      },
+      tomorrowOpenHour() {
+        // TODO: get next open day
+        let dayInWeekIndex = this.dayInWeeks.indexOf(dayjs().format("dddd"))
+        if (dayInWeekIndex === this.dayInWeeks.length - 1)
+          dayInWeekIndex = 0
+        return this.getOpenHour(dayInWeekIndex)
       },
       storeOpenState() {
         const now = dayjs().format('HH:mm')
@@ -135,8 +147,8 @@
       },
       storeOpenStatus() {
         if (this.storeOpenState)
-          return '• Open door'
-        return '• Close door'
+          return '• Open'
+        return '• Closed'
       },
       storeOpenStatusStyle() {
         return {
@@ -151,6 +163,12 @@
       }
     },
     methods: {
+      getOpenHour(dayInWeekIndex) {
+        for (let openHour of this.store.openHours) {
+          if (openHour.dayInWeeks[dayInWeekIndex])
+            return _.pick(openHour, 'openTime', 'closeTime')
+        }
+      },
       get24HourValue(time) {
         time = _.toLower(time)
         return _.includes(time, 'm') ? dayjs(time, 'hh:mma').format('HH:mm') : time
