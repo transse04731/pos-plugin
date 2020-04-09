@@ -97,9 +97,15 @@
       async loadCategories() {
         this.$set(this, 'categories', await cms.getModel('Category').find({ store: this.store._id }, { store: 0 }))
       },
-      async addNewCategory(name) {
-        await cms.getModel('Category').create({name, store: this.store._id})
-        await this.loadCategories()
+      async addNewCategory(name, callback) {
+        const isDuplicateName = _.find(this.categories, c => c.name === name)
+        if (isDuplicateName) {
+          callback && callback({ ok: false, message: 'This name is already taken!' })
+        } else {
+          await cms.getModel('Category').create({name, store: this.store._id})
+          await this.loadCategories()
+          callback && callback({ok: true})
+        }
       },
       
       // products

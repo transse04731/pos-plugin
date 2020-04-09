@@ -2,12 +2,11 @@
   <g-dialog v-model="internalValue" width="40%" eager>
     <div class="dialog">
       <div class="dialog-title">Add New Category</div>
-      <g-text-field-bs large label="Category Name:" v-model="category"/>
+      <g-text-field-bs large label="Category Name:" v-model="category" @input="errorMessage = null"/>
+      <div style="font-style: italic; font-size: 15px; color: #FF5252;">{{errorMessage}}</div>
       <div class="dialog-buttons">
-        <g-btn-bs width="100" large text-color="#424242" @click="internalValue = false">Cancel</g-btn-bs>
-        <g-btn-bs width="100" large text-color="white" background-color="indigo-accent-2" :disabled="invalid"
-                  @click="submit">OK
-        </g-btn-bs>
+        <g-btn-bs width="100" large text-color="#424242" @click="close()">Cancel</g-btn-bs>
+        <g-btn-bs width="100" large text-color="white" background-color="indigo-accent-2" @click="submit">OK</g-btn-bs>
       </div>
     </div>
   </g-dialog>
@@ -21,7 +20,8 @@
     },
     data() {
       return {
-        category: ''
+        category: '',
+        errorMessage: null
       }
     },
     computed: {
@@ -33,15 +33,20 @@
           this.category = ''
           this.$emit('input', val)
         }
-      },
-      invalid() {
-        return false
       }
     },
     methods: {
-      submit() {
-        this.$emit('submit', this.category)
+      close() {
         this.internalValue = false
+      },
+      submit() {
+        this.$emit('submit', this.category, (response) => {
+          console.log(response)
+          if (response.ok)
+            this.close()
+          else
+            this.errorMessage = response.message
+        })
       }
     }
   }

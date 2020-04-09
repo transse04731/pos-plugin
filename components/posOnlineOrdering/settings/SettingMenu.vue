@@ -5,7 +5,7 @@
       <img src="/plugins/pos-plugin/assets/folk_knife.svg">
       <p>Menu is currently empty.</p>
       <p><span style="color: #536DFE">"Add new category"</span> to get started.</p>
-      <div class="btn-add" @click="addNewCategory">+ Add New Category</div>
+      <div class="btn-add" @click="dialog.addNewCategory = true">+ Add New Category</div>
     </div>
     <div class="menu-setting__main" v-else>
       <div class="row-flex justify-end mb-2">
@@ -103,8 +103,8 @@
       hideAddNewProductPanelForCategory(cate) {
         this.$set(this.showAddNewProductPanel, cate._id, false)
       },
-      addNewCategory(name) {
-        this.$emit('add-new-category', name)
+      addNewCategory(name, callback) {
+        this.$emit('add-new-category', name, callback)
       },
       addNewProduct({ image, name, desc, price, tax, category }) {
         this.$emit('add-new-product', { image, name, desc, price, tax, category } )
