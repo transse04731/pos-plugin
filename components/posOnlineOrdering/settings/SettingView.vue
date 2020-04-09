@@ -66,7 +66,7 @@
         const storeGroups = _.map(store.groups, g => g._id)
         const user = this.$getService('PosStore').user
         let userManageThisStore = false
-        if (uuser.role.name !== 'admin') {
+        if (user.role.name !== 'admin') {
           const userStoreGroups = _.map(user.storeGroups, g => g._id)
           userManageThisStore = _.intersection(storeGroups, userStoreGroups).length > 0
         }
