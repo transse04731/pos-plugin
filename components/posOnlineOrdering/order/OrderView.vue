@@ -131,7 +131,7 @@
       },
       storeOpenState() {
         const now = dayjs().format('HH:mm')
-        return this.todayOpenHour.openTime <= now && now <= this.todayOpenHour.closeTime
+        return this.get24HourValue(this.todayOpenHour.openTime) <= now && now <= this.get24HourValue(this.todayOpenHour.closeTime)
       },
       storeOpenStatus() {
         if (this.storeOpenState)
@@ -151,6 +151,10 @@
       }
     },
     methods: {
+      get24HourValue(time) {
+        time = _.toLower(time)
+        return _.includes(time, 'm') ? dayjs(time, 'hh:mma').format('HH:mm') : time
+      },
       async loadStore() {
         this.$set(this, 'store', await cms.getModel('Store').findOne({_id: this.store._id}))
       },
