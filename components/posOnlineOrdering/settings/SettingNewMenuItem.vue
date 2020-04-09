@@ -58,7 +58,7 @@
         internalName: this.name,
         internalDesc: this.desc,
         internalPrice: this.price,
-        internalTax: this.tax,
+        internalTax: this.tax || 7,
         internalImage: this.image,
         // TODO: Link database
         taxes: [{ text: '19%', value: 19 }, { text: '7%', value: 7 }]
