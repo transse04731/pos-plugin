@@ -94,7 +94,10 @@
         store: null,
         categories: null,
         products: null,
-        dayInWeeks: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+        dayInWeeks: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        dialog: {
+          merchantClosed: false,
+        }
       }
     },
     async created() {
