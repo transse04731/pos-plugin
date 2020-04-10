@@ -19,14 +19,14 @@
         <div class="menu-setting-new-item__tax">
           <div>Tax:</div>
           <div>
-            <g-grid-select mandatory v-model="internalTax" :items="taxes" itemCols="6">
+            <g-grid-select mandatory :value="internalTax" :items="taxes" itemCols="6">
               <template #default="{ toggleSelect, item, index }">
-                <div class="option" @click="e =>{ toggleSelect(item); internalTax = item;}">
+                <div class="option" @click="e =>{ toggleSelect(item); internalTax = item.value;}">
                   {{item.text}}
                 </div>
               </template>
               <template #selected="{ toggleSelect, item, index }">
-                <div class="option option--selected" @click="e => {toggleSelect(item); internalTax = item;}">
+                <div class="option option--selected" @click="e => {toggleSelect(item); internalTax = item.value;}">
                   {{item.text}}
                 </div>
               </template>
