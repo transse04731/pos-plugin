@@ -23,6 +23,7 @@
             :categories="categories"
             :products="products"
             @add-new-category="addNewCategory"
+            @delete-category="deleteCategory"
             @add-new-product="addNewProduct"
             @update-product="updateProduct"
             @delete-product="deleteProduct"/>
@@ -114,6 +115,12 @@
         await cms.getModel('Category').create({name, store: this.store._id})
         await this.loadCategories()
         callback && callback({ok: true})
+      },
+      async deleteCategory(_id) {
+        await cms.getModel('Product').remove({ category: _id })
+        await cms.getModel('Category').remove({_id: _id})
+        await this.loadCategories()
+        await this.loadProducts()
       },
       
       // products

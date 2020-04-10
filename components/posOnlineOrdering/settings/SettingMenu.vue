@@ -18,6 +18,8 @@
         <div v-for="(cate, index) in categoriesViewModel" :key="index" class="mb-1">
           <div @click="toggleCollapse(cate)" class="menu-setting__category__header">
             <div class="menu-setting__title">{{cate.name}}</div>
+            <g-spacer/>
+            <g-icon @click.prevent.stop="openDeleteCategoryDialog(cate)">delete</g-icon>
             <g-icon v-if="cate.showProducts">fas fa-chevron-up</g-icon>
             <g-icon v-else>fas fa-chevron-down</g-icon>
           </div>
@@ -29,7 +31,7 @@
                     v-bind="product"
                     :index="index"
                     @save="updateProduct(product._id, $event)"
-                    @delete="openDeleteDialog(product._id)"/>
+                    @delete="openDeleteProductDialog(product._id)"/>
               </template>
               <div v-else-if="!showAddNewProductPanel[cate._id]" style="height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #fff;">
                 <img src="/plugins/pos-plugin/assets/no-items.svg" class="mb-2"/>
@@ -53,16 +55,18 @@
         </div>
       </div>
     </div>
-    <dialog-delete-item v-model="dialog.deleteProduct" @confirm="deleteProduct"/>
     <dialog-new-category v-model="dialog.addNewCategory" @submit="addNewCategory"/>
+    <dialog-delete-category v-model="dialog.deleteCategory" @confirm="deleteCategory"/>
+    <dialog-delete-item v-model="dialog.deleteProduct" @confirm="deleteProduct"/>
   </div>
 </template>
 <script>
   import _ from 'lodash'
   import DialogNewCategory from './dialogNewCategory';
+  import DialogDeleteCategory from './dialogDeleteCategory';
   export default {
     name: 'SettingMenu',
-    components: { DialogNewCategory },
+    components: { DialogDeleteCategory, DialogNewCategory },
     props: {
       store: Object,
       categories: Array,
@@ -72,9 +76,11 @@
       return {
         showProducts: {},
         showAddNewProductPanel: {},
+        selectedCategoryId: null,
         selectedProductId: null,
         dialog: {
           addNewCategory: false,
+          deleteCategory: false,
           deleteProduct: false,
         },
       }
@@ -106,6 +112,13 @@
       addNewCategory(name, callback) {
         this.$emit('add-new-category', name, callback)
       },
+      openDeleteCategoryDialog(cate) {
+        this.dialog.deleteCategory = true
+        this.selectedCategoryId = cate._id
+      },
+      deleteCategory() {
+        this.$emit('delete-category', this.selectedCategoryId)
+      },
       addNewProduct({ image, name, desc, price, tax, category }) {
         this.$emit('add-new-product', { image, name, desc, price, tax, category } )
         this.showAddNewProductPanel = false
@@ -116,7 +129,7 @@
       deleteProduct() {
         this.$emit('delete-product', this.selectedProductId)
       },
-      openDeleteDialog(productId) {
+      openDeleteProductDialog(productId) {
         this.selectedProductId = productId
         this.dialog.deleteProduct = true
       }
