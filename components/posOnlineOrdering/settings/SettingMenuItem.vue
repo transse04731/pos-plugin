@@ -5,8 +5,11 @@
         <div class="ta-center">{{ index + 1 }}</div>
         <img :src="image" class="menu-setting-item__image"/>
         <div class="menu-setting-item__content px-2">
-          <div class="menu-setting-item__name">{{name}}</div>
-          <div class="menu-setting-item__desc" >
+          <div class="menu-setting-item__name row-flex">
+            <span class="col-1">{{index}}.</span>
+            <span class="col-11">{{name}}</span>
+          </div>
+          <div class="menu-setting-item__desc">
             {{desc}}
           </div>
         </div>
@@ -117,6 +120,7 @@
     &__name,
     &__price {
       font-weight: 700;
+      font-size: 15px;
     }
 
     &__desc {
@@ -129,6 +133,7 @@
       font-style: italic;
       color: #757575;
       max-width: 420px;
+      margin-bottom: 24px;
     }
 
     &__tax {
