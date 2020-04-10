@@ -55,4 +55,13 @@ router.post('/register', async(req, res) => {
   }
 })
 
+router.get('/order', async (req, res) => {
+  const { orderId } = req.query
+  const result = await cms.getModel('Order').findOne({_id: orderId})
+  if (result)
+    res.status(200).json(result)
+  else
+    res.status(400).json({message: 'Order not found!'})
+})
+
 module.exports = router
