@@ -90,7 +90,7 @@
           name: this.internalName,
           desc: this.internalDesc,
           price: this.internalPrice,
-          tax: this.internalTax.value,
+          tax: this.internalTax,
         })
       }
     }
