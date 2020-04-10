@@ -34,28 +34,10 @@
       "type": "input"
     },
     {
-      "_id": "5e859b5eb7b7b30cc39f262c",
-      "schemaType": "string",
-      "key": "townCity",
-      "type": "input"
-    },
-    {
-      "_id": "5e859b5eb7b7b30cc39f262d",
-      "schemaType": "string",
-      "key": "country",
-      "type": "input"
-    },
-    {
       "_id": "5e859b5eb7b7b30cc39f262e",
       "schemaType": "string",
       "key": "currency",
       "fields": [],
-      "type": "input"
-    },
-    {
-      "_id": "5e859b5eb7b7b30cc39f262f",
-      "schemaType": "string",
-      "key": "timeZone",
       "type": "input"
     },
     {
