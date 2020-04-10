@@ -94,7 +94,7 @@
     <div class="po-order-table__footer">
       <div>Total: <span style="font-weight: 700; font-size: 18px; margin-left: 4px">{{ (totalPrice + shippingFee) | currency }}</span></div>
       <g-spacer/>
-      <g-btn-bs v-if="orderView" large rounded background-color="#2979FF" @click="view = 'confirm'">PAYMENT</g-btn-bs>
+      <g-btn-bs v-if="orderView" large rounded background-color="#2979FF" @click="view = 'confirm'" :disabled="orderItems.length === 0">PAYMENT</g-btn-bs>
       <g-btn-bs v-if="confirmView" large rounded background-color="#2979FF" @click="confirmPayment" elevation="5">CONFIRM</g-btn-bs>
     </div>
     <div class="po-order-table__footer--mobile" v-if="orderItems.length > 0">
