@@ -11,14 +11,17 @@
     data: function () {
       return {
         orderItems: [],
-        shippingFee: 1,
       }
     },
-    computed: {},
+    computed: {
+      shippingFee() {
+        // TODO: Zipcode -> shippingFee
+        return this.orderItems.length ? 1 : 0
+      }
+    },
     methods: {
       increaseOrAddNewItems(item) {
         const indexOfItem = _.findIndex(this.orderItems, i => i._id === item._id)
-        console.log(indexOfItem)
         if (indexOfItem < 0) {
           this.orderItems.push({ ..._.cloneDeep(item), quantity: 1 })
         } else {
