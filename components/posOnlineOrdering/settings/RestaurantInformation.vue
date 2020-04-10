@@ -2,9 +2,10 @@
   <div class="restaurant-info">
     <div class="restaurant-info__title">Restaurant Information</div>
     <div class="restaurant-info__main" v-if="store">
-      <div class="restaurant-info__main--left">
-        <div class="mb-3 fw-700">Basic info</div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto 1fr 1fr 1fr 1fr; grid-gap: 5px">
+      <div>
+        <div class="restaurant-info__main--left">
+          <div class="mb-3 fw-700">Basic info</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto 1fr; grid-gap: 5px">
             <g-text-field-bs large label="Restaurant Name"
                              placeholder="Restaurant Name"
                              :value="store.name"
@@ -26,6 +27,7 @@
             <g-text-field-bs label="Town/City"
                              :value="store.townCity"
                              @input="updateDebounce({townCity: $event})"/>
+          </div>
         </div>
       </div>
       <div class="restaurant-info__main--right">
