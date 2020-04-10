@@ -29,7 +29,7 @@
             @add-new-product="addNewProduct"
             @update-product="updateProduct"
             @delete-product="deleteProduct"/>
-        <device v-if="view === 'setting-device'"/>
+        <device v-if="view === 'setting-device'" :store="store"/>
         <delivery-fee v-if="view === 'setting-delivery-fee'"/>
         <multiple-printer v-if="view === 'setting-multiple-printer'"/>
       </div>

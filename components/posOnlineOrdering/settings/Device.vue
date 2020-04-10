@@ -47,7 +47,7 @@
   export default {
     name: "Device",
     props: {
-
+      store: Object,
     },
     data() {
       return {
@@ -57,10 +57,13 @@
           connect: false,
           success: false
         },
-        code: '123456XYZ',
+        code: null,
         color: 'indigo-accent-2',
         tfClass: 'bs-tf__pos'
       }
+    },
+    async created() {
+      this.code = (await axios.get(`/online-order-device/pairing-code/?storeId=${this.store._id}`)).data.code
     },
     methods: {
       resetCode() {

@@ -1,0 +1,29 @@
+{
+  "_id": "5e9043b0ab8e6f23eb5229de",
+  "extensions": [],
+  "fields": [
+    {
+      "_id": "5e9044fdab8e6f23eb5229e6",
+      "schemaType": "string",
+      "key": "code",
+      "type": "input"
+    },
+    {
+      "_id": "5e9044fdab8e6f23eb5229e7",
+      "schemaType": "string",
+      "key": "token",
+      "type": "input"
+    },
+    {
+      "_id": "5e9044fdab8e6f23eb5229e8",
+      "schemaType": "objectId",
+      "key": "store",
+      "ref": "Store",
+      "type": "ref-select",
+      "labelProp": "name"
+    }
+  ],
+  "name": "OnlineOrderDevice",
+  "tabs": [],
+  "type": "Collection"
+}

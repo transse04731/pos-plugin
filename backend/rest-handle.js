@@ -1,10 +1,12 @@
 const authenticateAPI = require('./api/authenticate')
+const onlineOrderDeviceApi = require('./api/onlineOrderDevice')
 
 module.exports = cms => {
   cms.data['loginUrl'] = '/view/sign-in';
   cms.data['nonAuthenticateUrls'] = ['/login', '/admin', '/stores']
 
   cms.app.use('/user', authenticateAPI)
+  cms.app.use('/online-order-device', onlineOrderDeviceApi)
 
   cms.socket.on('connect', socket => {
     socket.on('get-user-info', callback => {
