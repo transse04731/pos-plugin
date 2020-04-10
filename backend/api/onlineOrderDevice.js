@@ -41,14 +41,14 @@ router.get('/pairing-code', async (req, res) => {
 })
 
 router.post('/register', async(req, res) => {
-  const { token, pairingCode } = req.body
+  const { token, code } = req.body
   if (!token) {
     res.status(400).end()
     return
   }
-  const device = await cms.getModel(ONLINE_ORDER_DEVICE_COLLECTION).findOne({pairingCode})
+  const device = await cms.getModel(ONLINE_ORDER_DEVICE_COLLECTION).findOne({code})
   if (device) {
-    await cms.getModel(ONLINE_ORDER_DEVICE_COLLECTION).findOneAndUpdate({pairingCode}, {token})
+    await cms.getModel(ONLINE_ORDER_DEVICE_COLLECTION).findOneAndUpdate({code}, {token})
     res.status(200).json({message: 'Device registered'})
   } else {
     res.status(400).json({message: 'Invalid pairing code'})
