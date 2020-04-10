@@ -139,6 +139,35 @@
       "ref": "User",
       "type": "ref-select",
       "labelProp": "username"
+    },
+    {
+      "_id": "5e903b1154adb522214f571d",
+      "schemaType": "object",
+      "key": "deliveryFee",
+      "fields": [
+        {
+          "schemaType": "number",
+          "key": "default"
+        },
+        {
+          "schemaType": "array",
+          "key": "fees",
+          "fields": [
+            {
+              "schemaType": "string",
+              "key": "zipCode",
+              "type": "input"
+            },
+            {
+              "schemaType": "number",
+              "key": "fee",
+              "type": "input@number"
+            }
+          ],
+          "type": "array"
+        }
+      ],
+      "type": "object"
     }
   ],
   "name": "Store",
