@@ -23,8 +23,8 @@
                 class="menu-setting__title"
                 @input="(name, cb) => changeCategoryName(cate._id, name, cb)"/>
             <g-spacer/>
-            <g-icon @click.prevent.stop="openDeleteCategoryDialog(cate)">delete</g-icon>
-            <g-icon v-if="cate.showProducts">fas fa-chevron-up</g-icon>
+            <g-icon @click.prevent.stop="openDeleteCategoryDialog(cate)" class="mr-2">mdi-trash-can-outline</g-icon>
+            <g-icon v-if="showProducts[cate._id]">fas fa-chevron-up</g-icon>
             <g-icon v-else>fas fa-chevron-down</g-icon>
           </div>
           <template v-if="showProducts[cate._id]">
@@ -192,6 +192,13 @@
         padding: 0 20px;
         background-color: #E1E8F0;
         cursor: pointer;
+
+        .g-edit-view-input {
+          ::v-deep .g-icon {
+            font-size: 20px !important;
+            margin-left: 8px;
+          }
+        }
       }
     }
   }

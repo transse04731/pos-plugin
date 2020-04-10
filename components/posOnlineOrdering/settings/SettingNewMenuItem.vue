@@ -11,30 +11,43 @@
         </div>
       </div>
       <div class="menu-setting-new-item__content">
-        <div style="display: grid; grid-template-columns: 50px 1fr 1fr">
-          <g-text-field-bs small v-model="internalId" :rules="productRules.id" placeholder="Id *"/>
-          <g-text-field-bs small v-model="internalName" :rules="productRules.name" placeholder="Name *"/>
-          <g-select text-field-component="GTextFieldBs" :items="printers" v-model="internalPrinter"/>
+        <div class="menu-setting-new-item__content--upper">
+          <div class="col-1">
+            <g-text-field-bs small v-model="internalId" type="number" placeholder="No."/>
+          </div>
+          <div class="col-6">
+        <g-text-field-bs small v-model="internalName" :rules="productRules.name" placeholder="Name *"/>
+          </div>
+          <div class="col-3">
+            <g-select small text-field-component="GTextFieldBs" v-model="internalPrinter" :items="printers"/>
+          </div>
+          <div class="col-2">
+            <g-text-field-bs small v-model="internalPrice" :rules="productRules.price" type="number"
+                             placeholder="Price *"/>
+          </div>
         </div>
-        <div>
-          <g-text-field-bs small v-model="internalPrice" :rules="productRules.price" type="number" placeholder="Price *"/>
-        </div>
-        <g-textarea outlined no-resize :rows="2" v-model="internalDesc" placeholder="Description"/>
-        <div class="menu-setting-new-item__tax">
-          <div>Tax:</div>
-          <div>
-            <g-grid-select mandatory :value="internalTax" :items="taxes" itemCols="6">
-              <template #default="{ toggleSelect, item, index }">
-                <div class="option" @click="e =>{ toggleSelect(item); internalTax = item.value;}">
-                  {{item.text}}
-                </div>
-              </template>
-              <template #selected="{ toggleSelect, item, index }">
-                <div class="option option--selected" @click="e => {toggleSelect(item); internalTax = item.value;}">
-                  {{item.text}}
-                </div>
-              </template>
-            </g-grid-select>
+        <div class="menu-setting-new-item__content--lower">
+          <div class="col-9">
+            <g-textarea outlined no-resize :rows="2" v-model="internalDesc" placeholder="Description"/>
+          </div>
+          <div class="col-3">
+            <div class="menu-setting-new-item__tax">
+              <div>Tax:</div>
+              <div>
+                <g-grid-select mandatory :value="internalTax" :items="taxes" itemCols="6">
+                  <template #default="{ toggleSelect, item, index }">
+                    <div class="option" @click="e =>{ toggleSelect(item); internalTax = item.value;}">
+                      {{item.text}}
+                    </div>
+                  </template>
+                  <template #selected="{ toggleSelect, item, index }">
+                    <div class="option option--selected" @click="e => {toggleSelect(item); internalTax = item.value;}">
+                      {{item.text}}
+                    </div>
+                  </template>
+                </g-grid-select>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -57,6 +70,7 @@
       price: [String, Number],
       tax: Number,
       image: String,
+      number: Number,
       groupPrinter: String,
       printers: Array
     },
@@ -97,12 +111,12 @@
           alert('Product\'s id is missing')
           return
         }
-        
+
         if (!this.internalPrinter) {
           alert('Product\'s printer is missing')
           return
         }
-        
+
         this.$emit('save', {
           id: this.internalId,
           image: this.internalImage,
@@ -129,13 +143,17 @@
     }
 
     &__content {
-      display: grid;
-      grid-template-columns: 1fr 140px;
-      padding-top: 16px;
+      padding-right: 16px;
+
+      &--upper,
+      &--lower {
+        display: flex;
+        margin-top: 4px;
+      }
 
       .g-textarea {
-        margin: 0 4px;
-        width: calc(100% - 10px);
+        margin: 0 2px;
+        width: calc(100% - 4px);
 
         ::v-deep fieldset {
           border-width: 1px !important;
@@ -148,9 +166,9 @@
           }
 
           .g-tf-input {
-            padding: 6px 12px;
-            line-height: 16px !important;
-            height: 48px !important;
+            padding: 6px;
+            line-height: 18px !important;
+            height: 40px !important;
           }
 
           .g-tf-append__inner {
@@ -159,11 +177,33 @@
         }
       }
 
+      .g-select {
+        ::v-deep .bs-tf-wrapper {
+          margin: 0 2px;
+          width: calc(100% - 4px);
+
+          .bs-tf-inner-input-group {
+            height: 30px;
+            font-size: 14px;
+
+            .bs-tf-input {
+              height: 28px;
+            }
+          }
+        }
+      }
+
       .bs-tf-wrapper {
-        margin: 0 4px;
+        margin: 0 2px;
+        width: calc(100% - 4px);
+
+        ::v-deep .bs-tf-inner-input-group {
+          padding: 0 6px;
+        }
 
         ::v-deep .bs-tf-input {
           width: 100%;
+          outline: none;
         }
       }
 
@@ -193,12 +233,12 @@
     &__tax {
       border: 1px solid #ced4da;
       border-radius: 4px;
-      margin: 4px 6px 4px 4px;
-      padding: 4px;
+      margin: 0 2px;
+      padding: 0 4px 3px;
       font-size: 13px;
 
       .option {
-        padding: 2px 8px;
+        padding: 0px 8px;
         text-align: center;
         font-size: 15px;
         font-style: italic;
