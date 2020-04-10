@@ -1,0 +1,129 @@
+<template>
+  <div class="multiple-printer">
+    <div class="multiple-printer__title">Multiple Printer</div>
+    <div class="multiple-printer__content">
+      <div class="fw-700 mb-3">Use Printer</div>
+      <div class="row-flex mb-3">
+        <g-switch v-model="multiple"/>
+        <div>
+          <p class="fw-700 fs-small">Use multiple printer </p>
+          <p class="text-grey-darken-1 fs-small">(Leave this setting off if you use only 1 printer)</p>
+        </div>
+      </div>
+      <div class="row-flex justify-between mb-2">
+        <p class="fw-700">Printer name</p>
+        <div class="text-indigo-accent-2 fw-700" style="cursor: pointer" @click="dialog.newPrinter = true">+ Add New</div>
+      </div>
+      <div class="multiple-printer__printer">
+        <g-chip v-for="(printer, i) in printers" close close-icon="icon-close@14" label @close="removePrinter(printer)">
+          {{printer}}
+        </g-chip>
+      </div>
+      <p class="i fs-small mt-2">Note: Printer name must be identical to your POS settings.</p>
+    </div>
+    <g-dialog v-model="dialog.newPrinter" width="40%" eager>
+      <div class="dialog">
+        <div class="dialog__title">Add New Printer</div>
+        <g-text-field-bs label="Name" v-model="name" placeholder="e.g: Food printer"/>
+        <div class="dialog__buttons">
+          <g-btn-bs width="100" text-color="#424242" @click="closeDialog">Cancel</g-btn-bs>
+          <g-btn-bs width="100" background-color="#536DFE" text-color="white" @click="addPrinter">OK</g-btn-bs>
+        </div>
+      </div>
+    </g-dialog>
+  </div>
+</template>
+
+<script>
+  export default {
+    name: "MultiplePrinter",
+    data() {
+      return {
+        multiple: true,
+        dialog: {
+          newPrinter: false
+        },
+        printers: ['Food printer', 'Drink printer', 'Receipt printer'],
+        printer: null,
+        name: ''
+      }
+    },
+    methods: {
+      closeDialog() {
+        this.name = ''
+        this.dialog.newPrinter = false
+      },
+      addPrinter() {
+        this.printers.push(this.name)
+        this.name = ''
+        this.dialog.newPrinter = false
+      },
+      removePrinter(printer) {
+        const index = this.printers.findIndex(p => p === printer)
+        this.printers.splice(index, 1)
+      }
+    }
+  }
+</script>
+
+<style scoped lang="scss">
+  .multiple-printer {
+    font-size: 14px;
+
+    &__title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    &__content {
+      width: 70%;
+      background: white;
+      border-radius: 4px;
+      padding: 30px;
+      font-size: 15px;
+
+      .g-switch-wrapper {
+        margin-top: 4px;
+        margin-right: 16px;
+      }
+    }
+
+    &__printer {
+      background: #FAFAFA;
+      border: 1px solid #EFEFEF;
+      border-radius: 4px;
+      display: flex;
+      flex-wrap: wrap;
+
+      .g-chip {
+        color: #1d1d26
+      }
+    }
+  }
+
+  .dialog {
+    width: 100%;
+    background: white;
+    padding: 24px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &__title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #212121;
+      margin-bottom: 12px;
+      margin-left: 4px;
+      align-self: flex-start;
+    }
+
+    &__buttons {
+      display: flex;
+      align-self: flex-end;
+      margin-top: 24px;
+    }
+  }
+</style>

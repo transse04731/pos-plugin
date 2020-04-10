@@ -367,3 +367,25 @@ body::-webkit-scrollbar {
   background-position: center;
 }
 
+.icon-setting-device {
+  background-image: url("../assets/setting-device.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-setting-delivery {
+  background-image: url("../assets/setting-delivery.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-setting-multiple {
+  background-image: url("../assets/setting-multiple.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+
