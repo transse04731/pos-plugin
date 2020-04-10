@@ -47,8 +47,6 @@ module.exports = async function (cms) {
     //render report
     await Promise.all(_.map(_groupPrinters, (printer) => {
       return new Promise((resolve, reject) => {
-        const ip  = printer.printers.ip
-
         const KitchenReport = require('../../dist/Kitchen.vue')
         const props = {
           items: printer.items,
@@ -69,13 +67,12 @@ module.exports = async function (cms) {
 
         renderer.renderToString(component, {}, async (err, html) => {
           if (err) reject(err)
-          await print(html, ip)
+          await print(html, printer.printers)
 
           results.push({
             items: printer.items,
             printer: printer.printer,
             name: printer.name,
-            ip
           })
           resolve()
         })

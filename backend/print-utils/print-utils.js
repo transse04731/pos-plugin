@@ -9,14 +9,11 @@ module.exports = {
     template: fs.readFileSync(`${__dirname}/print-template.html`, 'utf-8')
   }),
 
-  async print(html, ip) {
+  async print(html, groupPrinter) {
     try {
       const png = await phantomUtil.render(html)
 
-      const printer = new EscPrinter({
-        printerType: 'ip',
-        ip,
-      });
+      const printer = new EscPrinter(groupPrinter);
       printer.printPng(png);
       await printer.print();
     } catch (e) {

@@ -223,8 +223,10 @@ module.exports = async function (cms) {
         { $match: { 'printers.hardwares': device, 'type': 'invoice' } },
       ])
       if (!groupPrinters) return
-      const printerIp = groupPrinters[0].printers.ip
-      await print(html, printerIp)
+
+      for (const groupPrinter of groupPrinters) {
+        await print(html, groupPrinter)
+      }
     })
   }
 

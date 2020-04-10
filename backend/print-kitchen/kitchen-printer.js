@@ -74,9 +74,7 @@ module.exports = async function (cms) {
         const { groupPrinter, course } = JSON.parse(key)
 
         const printer = groupPrinters.find(i => i.name === groupPrinter)
-        if (!printer || !printer.printers.ip) return
-
-        const ip  = printer.printers.ip
+        if (!printer) return
 
         const KitchenReport = require('../../dist/Kitchen.vue')
         const props = {
@@ -99,13 +97,13 @@ module.exports = async function (cms) {
 
         renderer.renderToString(component, {}, async (err, html) => {
           if (err) reject(err)
-          await print(html, ip)
+          await print(html, printer)
 
+          //todo remove from production
           results.push({
             items: value,
             printer: printer.printer,
             name: printer.name,
-            ip
           })
           resolve()
         })
