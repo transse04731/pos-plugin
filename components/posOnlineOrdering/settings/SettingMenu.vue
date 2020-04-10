@@ -17,7 +17,11 @@
       <div class="menu-setting__category">
         <div v-for="(cate, index) in categoriesViewModel" :key="index" class="mb-1">
           <div @click="toggleCollapse(cate)" class="menu-setting__category__header">
-            <div class="menu-setting__title">{{cate.name}}</div>
+            <g-edit-view-input
+                @click.native.stop.prevent="() => {}"
+                :value="cate.name"
+                class="menu-setting__title"
+                @input="(name, cb) => changeCategoryName(cate._id, name, cb)"/>
             <g-spacer/>
             <g-icon @click.prevent.stop="openDeleteCategoryDialog(cate)">delete</g-icon>
             <g-icon v-if="cate.showProducts">fas fa-chevron-up</g-icon>
@@ -111,6 +115,9 @@
       },
       addNewCategory(name, callback) {
         this.$emit('add-new-category', name, callback)
+      },
+      changeCategoryName(categoryId, name, callback) {
+        this.$emit('change-category-name', categoryId, name, callback)
       },
       openDeleteCategoryDialog(cate) {
         this.dialog.deleteCategory = true

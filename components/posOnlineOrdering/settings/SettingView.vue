@@ -23,6 +23,7 @@
             :categories="categories"
             :products="products"
             @add-new-category="addNewCategory"
+            @change-category-name="changeCategoryName"
             @delete-category="deleteCategory"
             @add-new-product="addNewProduct"
             @update-product="updateProduct"
@@ -116,6 +117,29 @@
         await this.loadCategories()
         callback && callback({ok: true})
       },
+      async changeCategoryName(_id, name, callback) {
+        if (_.trim(name) === "") {
+          alert('Category name is missing')
+          callback && callback(false)
+          return
+        }
+        
+        const category = _.find(this.categories, c => c._id === _id)
+        if (category.name === name)
+          return
+        
+        const isDuplicateName = _.find(this.categories, c => c.name === name && c._id !== _id)
+        if (isDuplicateName) {
+          alert('This name is already taken!')
+          callback && callback(false)
+          return
+        }
+        
+        await cms.getModel('Category').updateOne({_id}, { name })
+        await this.loadCategories()
+        callback && callback(true)
+      },
+      
       async deleteCategory(_id) {
         await cms.getModel('Product').remove({ category: _id })
         await cms.getModel('Category').remove({_id: _id})
