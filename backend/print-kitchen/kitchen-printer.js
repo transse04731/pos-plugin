@@ -97,12 +97,12 @@ module.exports = async function (cms) {
 
         renderer.renderToString(component, {}, async (err, html) => {
           if (err) reject(err)
-          await print(html, printer)
+          await print(html, printer.printers)
 
           //todo remove from production
           results.push({
             items: value,
-            printer: printer.printer,
+            printer: printer.printers,
             name: printer.name,
           })
           resolve()
