@@ -22,6 +22,7 @@
             :store="store"
             :categories="categories"
             :products="products"
+            :printers="printers"
             @add-new-category="addNewCategory"
             @change-category-name="changeCategoryName"
             @delete-category="deleteCategory"
@@ -60,7 +61,8 @@
         categories: null,
         products: null,
         permissionDenied: true,
-        permissionDeniedMessage: ''
+        permissionDeniedMessage: '',
+        printers: null
       }
     },
     async created() {
@@ -79,6 +81,7 @@
           this.$set(this, 'store', store)
           await this.loadCategories()
           await this.loadProducts()
+          await this.loadPrinters()
         } else {
           this.permissionDenied = true;
           this.permissionDeniedMessage = 'Permission denied!'
@@ -95,6 +98,12 @@
       async updateStore(change) {
         await cms.getModel('Store').updateOne({_id: this.store._id}, change)
         await this.loadStore()
+      },
+      
+      // printer
+      async loadPrinters() {
+        const printers = _.map(await cms.getModel('GroupPrinter').find({ store: this.store._id }), printer => ({ text: printer.name, value: printer._id }))
+        this.$set(this, 'printers', printers)
       },
       
       // categories

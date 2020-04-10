@@ -11,7 +11,11 @@
         </div>
       </div>
       <div class="menu-setting-new-item__content">
-        <g-text-field-bs small v-model="internalName" :rules="productRules.name" placeholder="Name *"/>
+        <div style="display: grid; grid-template-columns: 50px 1fr 1fr">
+          <g-text-field-bs small v-model="internalId" :rules="productRules.id" placeholder="Id *"/>
+          <g-text-field-bs small v-model="internalName" :rules="productRules.name" placeholder="Name *"/>
+          <g-select text-field-component="GTextFieldBs" :items="printers" v-model="internalPrinter"/>
+        </div>
         <div>
           <g-text-field-bs small v-model="internalPrice" :rules="productRules.price" type="number" placeholder="Price *"/>
         </div>
@@ -46,23 +50,29 @@
   export default {
     name: 'NewMenuItem',
     props: {
+      id: String,
       index: Number,
       name: String,
       desc: String,
       price: [String, Number],
       tax: Number,
       image: String,
+      groupPrinter: String,
+      printers: Array
     },
     data: function () {
       return {
+        internalId: this.id || '',
         internalName: this.name,
         internalDesc: this.desc,
         internalPrice: this.price,
         internalTax: this.tax || 7,
         internalImage: this.image,
+        internalPrinter: (this.groupPrinter && this.groupPrinter._id)|| null,
         // TODO: Link database
         taxes: [{ text: '19%', value: 19 }, { text: '7%', value: 7 }],
         productRules: {
+          id: [ (value) => value ? true : 'Product\'s id is missing' ],
           name: [ (value) => value ? true : 'Product\'s name is missing' ],
           price: [ (value) => value ? true : 'Product\'s price is missing' ]
         }
@@ -70,9 +80,7 @@
     },
     methods: {
       async uploadImage() {
-        const uploadResult = await this.$getService('FileUploadStore').uploadFile()
-        console.log('uploadResult', uploadResult)
-        this.internalImage = uploadResult
+        this.internalImage = await this.$getService('FileUploadStore').uploadFile()
       },
       saveMenuItem() {
         if (!this.internalName) {
@@ -85,10 +93,22 @@
           return
         }
         
+        if (!this.internalId) {
+          alert('Product\'s id is missing')
+          return
+        }
+        
+        if (!this.internalPrinter) {
+          alert('Product\'s printer is missing')
+          return
+        }
+        
         this.$emit('save', {
+          id: this.internalId,
           image: this.internalImage,
           name: this.internalName,
           desc: this.internalDesc,
+          groupPrinter: this.internalPrinter,
           price: this.internalPrice,
           tax: this.internalTax,
         })

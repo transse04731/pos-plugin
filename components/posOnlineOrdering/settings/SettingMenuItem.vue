@@ -43,11 +43,14 @@
     <template v-else>
       <setting-new-menu-item
           :index="index"
+          :id="id"
           :image="image"
           :name="name"
           :desc="desc"
           :price="price"
+          :group-printer="groupPrinter"
           :tax="tax"
+          :printers="printers"
           @cancel="mode = 'view'"
           @save="saveProduct"/>
     </template>
@@ -59,7 +62,7 @@
   export default {
     name: 'SettingMenuItem',
     components: { SettingNewMenuItem },
-    props: [ '_id', 'index', 'image', 'name', 'desc', 'price', 'tax'],
+    props: [ '_id', 'index', 'id', 'image', 'name', 'desc', 'price', 'groupPrinter', 'tax', 'printers'],
     data: function () {
       return {
         mode: 'view'
