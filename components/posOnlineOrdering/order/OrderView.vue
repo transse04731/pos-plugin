@@ -107,8 +107,13 @@
         this.$set(this, 'store', store)
         await this.loadCategories()
         await this.loadProducts()
+        // focus on the first category
+        if (this.categories.length)
+          this.selectedCategoryId = this.categories[0]._id
+      } else {
+        // TODO
+        alert('Store is not exist');
       }
-      await this.loadCategories()
     },
     computed: {
       selectedCategory() {
