@@ -225,7 +225,7 @@ module.exports = async function (cms) {
       if (!groupPrinters) return
 
       for (const groupPrinter of groupPrinters) {
-        await print(html, groupPrinter)
+        await print(html, groupPrinter.printers)
       }
     })
   }
