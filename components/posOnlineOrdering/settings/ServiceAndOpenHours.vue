@@ -17,8 +17,12 @@
             @change="updateOpenHours"
             color="#536DFE"/>
         <g-spacer/>
-        <g-time-picker-input v-model="openHour.openTime" class="open-hour__row--hour left" @input="updateOpenHours"/>
-        <g-time-picker-input v-model="openHour.closeTime" class="open-hour__row--hour right" @input="updateOpenHours"/>
+        <div class="open-hour__row--hour left">
+          <g-time-picker-input v-model="openHour.openTime"  @input="updateOpenHours"/>
+        </div>
+        <div class="open-hour__row--hour right">
+          <g-time-picker-input v-model="openHour.closeTime"  @input="updateOpenHours"/>
+        </div>
         <g-spacer/>
         <div @click="removeOpenHour(openHour)" class="open-hour__row--btn">
           <g-icon size="16">icon-close</g-icon>
@@ -116,6 +120,7 @@
     &__title {
       font-weight: 700;
       font-size: 18px;
+      margin-bottom: 12px;
     }
 
     &__content {
@@ -167,6 +172,19 @@
           border-top-right-radius: inherit;
           border-bottom-right-radius: inherit;
           cursor: pointer;
+        }
+
+        ::v-deep .g-tf-wrapper {
+          margin: 0;
+
+          &:before, &:after {
+            display: none;
+          }
+
+          .g-tf-input {
+            width: 80px;
+            font-weight: 700;
+          }
         }
       }
     }

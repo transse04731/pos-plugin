@@ -34,9 +34,9 @@
             </div>
           </div>
           <div v-if="showStoreSetting[store._id]" class="pos-management-group__content-action">
-            <g-btn-bs small text-color="grey-darken-1" @click="openWebShopConfig(store)">WebShop Config</g-btn-bs>
-            <g-btn-bs small text-color="grey-darken-1">Remote Control</g-btn-bs>
-            <g-btn-bs small text-color="grey-darken-1" @click="$emit('view:settings', store)">Settings</g-btn-bs>
+            <g-btn-bs small border-color="grey-darken-1" @click="openWebShopConfig(store)">WebShop Config</g-btn-bs>
+            <g-btn-bs small border-color="grey-darken-1">Remote Control</g-btn-bs>
+            <g-btn-bs small border-color="grey-darken-1" @click="$emit('view:settings', store)">Settings</g-btn-bs>
           </div>
         </div>
       </div>
@@ -191,13 +191,11 @@
 
         .g-btn-bs {
           margin: 0 2px;
-          box-shadow: 1px 0px 3px rgba(0, 0, 0, 0.41);
 
           &:hover {
-            background: #EFEFEF;
-            border: 1px solid #536DFE;
-            box-shadow: 1px 0px 3px rgba(0, 0, 0, 0.41);
-            border-radius: 2px;
+            background: #EFEFEF !important;
+            border-color: #536DFE !important;
+            color: #536DFE !important;
           }
         }
       }
