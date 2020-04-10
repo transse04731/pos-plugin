@@ -35,6 +35,7 @@
                     v-bind="product"
                     :index="index"
                     :printers="printers"
+                    :key="`item_${index}`"
                     @save="updateProduct(product._id, $event)"
                     @delete="openDeleteProductDialog(product._id)"/>
               </template>

@@ -388,4 +388,10 @@ body::-webkit-scrollbar {
   background-position: center;
 }
 
+.icon-fork {
+  background-image: url("../assets/fork.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
 

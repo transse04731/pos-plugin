@@ -24,7 +24,7 @@
         <div class="title">What you like?</div>
         <div class="pos-order__tab">
           <div class="pos-order__tab--icon">
-            <img src="/plugins/pos-plugin/assets/fork.svg"/>
+            <g-icon>icon-fork</g-icon>
           </div>
           <span v-for="(category, index) in categoriesViewModel"
                 :key="index"
@@ -191,7 +191,7 @@
         this.$set(this, 'products', await cms.getModel('Product').find({ store: this.store._id }, { store: 0 }))
       },
       getCategoryStyle(cate) {
-        const common = {cursor: 'pointer', padding: '20px'};
+        const common = {cursor: 'pointer', padding: '20px', whiteSpace: 'nowrap'};
         return cate._id === this.selectedCategoryId ? {
           fontWeight: 'bold',
           borderBottom: '2px solid #000',
@@ -277,6 +277,12 @@
       align-items: center;
       border-top-right-radius: 24px;
       border-bottom-right-radius: 24px;
+      overflow: auto;
+      position: relative;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
 
       &--icon {
         padding: 24px;
@@ -285,6 +291,9 @@
         height: calc(100% - 16px);
         border-right: 1px solid #000;
         margin: 8px 16px 8px 0;
+        position: sticky;
+        left: 0;
+        background-color: #F8F8F8;
       }
 
       &--content {

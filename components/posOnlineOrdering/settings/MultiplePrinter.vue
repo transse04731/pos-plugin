@@ -15,7 +15,7 @@
         <div class="text-indigo-accent-2 fw-700" style="cursor: pointer" @click="dialog.newPrinter = true">+ Add New</div>
       </div>
       <div class="multiple-printer__printer">
-        <g-chip v-for="(printer, i) in printers" close close-icon="icon-close@14" label @close="removePrinter(printer)">
+        <g-chip v-for="(printer, i) in printers" :key="i" close close-icon="icon-close@14" label @close="removePrinter(printer)">
           {{printer}}
         </g-chip>
       </div>

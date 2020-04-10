@@ -11,6 +11,7 @@
            class="open-hour__row">
         <g-checkbox
             v-for="(day, i) in days"
+            :key="`day_${index}_${i}`"
             v-model="openHour.dayInWeeks[i]"
             :disabled="!openHour.dayInWeeks[i] && !availableDays[i]"
             :label="day"
