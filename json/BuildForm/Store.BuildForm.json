@@ -34,10 +34,9 @@
       "type": "input"
     },
     {
-      "_id": "5e859b5eb7b7b30cc39f262e",
+      "_id": "5e90348f54adb522214f5681",
       "schemaType": "string",
-      "key": "currency",
-      "fields": [],
+      "key": "townCity",
       "type": "input"
     },
     {
