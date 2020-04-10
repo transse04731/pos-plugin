@@ -20,24 +20,12 @@
                           :value="store.address"
                           @input="updateDebounce({ address: $event })"/>
             </div>
-            <g-text-field-bs large label="Zip code"
+            <g-text-field-bs label="Zip code"
                              :value="store.zipCode"
                              @input="updateDebounce({zipCode: $event})"/>
             <g-text-field-bs label="Town/City"
                              :value="store.townCity"
                              @input="updateDebounce({townCity: $event})"/>
-            <g-select text-field-component="GTextFieldBs" :items="countries" class="span-2"
-                             label="Country"
-                             :value="store.country"
-                             @input="update({country: $event})"/>
-            <g-select text-field-component="GTextFieldBs" :items="currencies" large class="span-2"
-                             label="Currency"
-                             :value="store.currency"
-                             @input="update({ currency: $event})"/>
-            <g-select text-field-component="GTextFieldBs" :items="timeZones" large class="span-2"
-                             label="Time zone"
-                             :value="store.timeZone"
-                             @input="update({timeZone: $event})"/>
         </div>
       </div>
       <div class="restaurant-info__main--right">
@@ -69,12 +57,7 @@
       store: Object
     },
     data: function () {
-      return {
-        // TODO: FIll country, currencies, timezones
-        countries: [{text: 'Vietnam', value: 'Vietnam'}, { text: "USA", value: "USA" }],
-        currencies: [{text: 'Vietnam Dong (VND)', value: 'VND'}, { text: "US Dollar ($)", value: "$" }, { text: "Euro (€)", value: "€" }],
-        timeZones: [{text: '(GMT +7) Hanoi, Jakarta', value: 'GMT+7'}],
-      }
+      return {}
     },
     computed: {},
     created() {
