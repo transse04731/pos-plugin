@@ -19,7 +19,7 @@ module.exports = async function (cms) {
           const receiptKey = JSON.stringify({
             groupPrinter: groupPrinter,
             course: item.course,
-            takeAway: item.takeAway
+            takeout: item.takeout
           })
 
           if (!obj[receiptKey]) obj[receiptKey] = [];
@@ -39,7 +39,7 @@ module.exports = async function (cms) {
               const _receiptKey = JSON.stringify({
                 groupPrinter: _groupPrinter,
                 course: item.course,
-                takeAway: item.takeAway
+                takeout: item.takeout
               })
 
               if (!obj[_receiptKey]) obj[_receiptKey] = [];
@@ -71,7 +71,7 @@ module.exports = async function (cms) {
     //render report
     await Promise.all(_.map(receipts, (value, key) => {
       return new Promise((resolve, reject) => {
-        const { groupPrinter, course } = JSON.parse(key)
+        const { groupPrinter, course, takeout } = JSON.parse(key)
 
         const printer = groupPrinters.find(i => i.name === groupPrinter)
         if (!printer) return
@@ -85,7 +85,9 @@ module.exports = async function (cms) {
           time: dayjs(order.date).format('HH:mm'),
           fontSize: printer.printers.fontSize,
           marginTop: printer.printers.marginTop,
-          isKitchenReceipt: true
+          isKitchenReceipt: true,
+          course,
+          takeout
         }
 
         const component = new Vue({

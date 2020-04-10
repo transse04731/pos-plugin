@@ -1,6 +1,7 @@
 <template>
   <div class="kitchen-report-main-container">
     <div class="header" :style="wrapperStyle">
+      <div v-if="takeout" style="text-align: center; font-size: 40px; margin: 20px 0">TAKE AWAY</div>
       <div class="header-table" v-if="table">Table: {{table}}</div>
       <div class="header-time text-end">{{time}}</div>
     </div>
@@ -19,6 +20,7 @@
       </div>
     </div>
     <div class="divider-dashed"/>
+    <div class="footer text-center" v-if="course && course > 1">Course {{course}}</div>
     <div class="footer text-center" v-if="isKitchenReceipt">{{`${printer} Printer - ${user}`}}</div>
     <div class="footer text-center" v-else>Entire Receipt</div>
   </div>
@@ -35,7 +37,9 @@
       time: String,
       isKitchenReceipt: Boolean,
       fontSize: Number,
-      marginTop: Number
+      marginTop: Number,
+      course: Number,
+      takeout: Boolean
     },
     filters: {
       convertMoney(value) {
