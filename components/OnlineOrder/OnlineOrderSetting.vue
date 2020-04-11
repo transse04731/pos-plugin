@@ -10,14 +10,16 @@
         <g-radio color="indigo-accent-2" label="Disabled" :value="false"/>
       </g-radio-group>
       <g-btn-bs v-if="status" large background-color="#E0E0E0" @click="dialog.disconnect = true">Disconnect</g-btn-bs>
-      <g-btn-bs v-else large background-color="#E0E0E0" @click="dialog.connect = true">Connect</g-btn-bs>
+      <g-btn-bs v-else large background-color="#E0E0E0" @click="openConnectDialog(device)">Connect</g-btn-bs>
     </div>
-    <dialog-connect v-model="dialog.connect" @confirm="connect(device)"/>
-    <dialog-disconnect v-model="dialog.disconnect" @confirm="disconnect(device)"/>
+    <dialog-connect v-model="dialog.connect" @confirm="connect"/>
+    <dialog-disconnect v-model="dialog.disconnect" @confirm="disconnect"/>
   </div>
 </template>
 
 <script>
+  import axios from 'axios';
+
   export default {
     name: "OnlineOrderSetting",
     props: {
@@ -25,6 +27,7 @@
     },
     data() {
       return {
+        selectedDevice: null,
         internalDevices: [],
         status: false,
         dialog: {
@@ -52,11 +55,31 @@
       }
     },
     methods: {
-      connect(device) {
-        this.status = true
-        //todo connect logic
+      openConnectDialog(device) {
+        this.dialog.connect = true
+        this.selectedDevice = device
       },
-      disconnect(device) {
+      async connect(pairingCode) {
+        const serverUrl = this.selectedDevice.url
+        const pairingApiUrl = `${serverUrl}/online-order-device/register`
+        const requestBody = {pairingCode}
+
+        const requestResponse = await axios.post(pairingApiUrl, requestBody)
+
+        //TODO: Handle error when user enters incorrect pairing code
+        const {deviceId} = requestResponse.data
+        const io = window['socket.io-client'];
+
+        const socket = io(`${serverUrl}?clientId=${deviceId}`)
+        socket.on('createOrder', (orderData, ackFn) => {
+          const {socket: sk} = window.cms
+          sk.emit('createOrder', orderData)
+          ackFn()
+        })
+
+        this.status = true
+      },
+      disconnect() {
         this.status = false
         //todo disconnect logic
       }
@@ -64,7 +87,9 @@
     mounted() {
       this.$nextTick(() => {
         this.$emit('getOnlineDevices')
-      })
+      });
+
+
     },
     activated() {
       this.$nextTick(() => {
