@@ -9,7 +9,7 @@
     <g-dialog v-model="dialog.connect" width="40%" eager>
       <div class="dialog">
         <div class="dialog__title">Connect a new device:</div>
-        <g-text-field-bs large :class="tfClass" label=" Enter your pairing code:" :value="code">
+        <g-text-field-bs large :class="tfClass" label=" Enter your pairing code:" :value="pairingCode">
           <template v-slot:append-inner>
             <g-tooltip :open-on-hover="true" bottom speech-bubble color="#000" transition="0.3" remove-content-on-close>
               <template v-slot:activator="{on}">
@@ -24,7 +24,8 @@
             </g-tooltip>
           </template>
         </g-text-field-bs>
-        <p class="dialog__note"><b>Note: </b>Code is valid within 15 minutes after generation. Only one device can be connected to online ordering at a time.</p>
+        <p class="dialog__note"><b>Note: </b>Code is valid within 15 minutes after generation. Only one device can be
+          connected to online ordering at a time.</p>
         <div class="dialog__buttons">
           <g-btn-bs width="100" text-color="#424242" @click="dialog.connect = false">Cancel</g-btn-bs>
         </div>
@@ -36,7 +37,8 @@
         <img alt src="/plugins/pos-plugin/assets/connected.svg"/>
         <p class="dialog__note">Device added successfully!</p>
         <div class="dialog__buttons">
-          <g-btn-bs width="100" background-color="#536DFE" text-color="white" @click="dialog.success = false">OK</g-btn-bs>
+          <g-btn-bs width="100" background-color="#536DFE" text-color="white" @click="dialog.success = false">OK
+          </g-btn-bs>
         </div>
       </div>
     </g-dialog>
@@ -57,13 +59,13 @@
           connect: false,
           success: false
         },
-        code: null,
+        pairingCode: null,
         color: 'indigo-accent-2',
         tfClass: 'bs-tf__pos'
       }
     },
     async created() {
-      this.code = (await axios.get(`/online-order-device/pairing-code/?storeId=${this.store._id}`)).data.code
+      this.pairingCode = (await axios.get(`/online-order-device/pairing-code?storeId=${this.store._id}`)).data.pairingCode;
     },
     methods: {
       resetCode() {

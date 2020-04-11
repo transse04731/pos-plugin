@@ -58,6 +58,13 @@ module.exports = {
     },
     {
       loader: {
+        type: 'backend-api'
+      },
+      path: 'backend/socket-io-server.js',
+      type: 'backend'
+    },
+    {
+      loader: {
         type: 'css-loader'
       },
       path: 'style/pos.css'

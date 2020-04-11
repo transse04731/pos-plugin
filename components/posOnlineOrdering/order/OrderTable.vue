@@ -4,7 +4,7 @@
       <!-- header image -->
       <img :src="store.orderHeaderImageSrc" class="po-order-table__header__image"/>
     </div>
-  
+
     <div class="po-order-table__main">
       <!-- header text -->
       <div class="po-order-table__header__text">
@@ -13,7 +13,7 @@
         <div class="po-order-table__header__text--main">{{ confirmView ? 'Confirm Order' : 'Order List' }}</div>
         <div class="po-order-table__header__total" v-if="orderView">Total items: {{ totalItems }}</div>
       </div>
-  
+
       <!-- content -->
       <div class="po-order-table__content">
         <!-- 0 items -->
@@ -23,7 +23,7 @@
             You haven't ordered any food yet. Click "<span stype="color: #2979FF; font-weight: bold;">List Food</span>" to get started.
           </div>
         </div>
-    
+
         <!-- > 0 items -->
         <div v-if="orderView && hasMenuItem"
              v-for="(item, index) in orderItems" :key="index"
@@ -35,18 +35,18 @@
               {{ item.note || 'Note ...' }}
             </div>
           </div>
-  
+
           <g-spacer/>
-          
+
           <div class="po-order-table__item__price">{{ item.price | currency }}</div>
-  
+
           <div class="po-order-table__item__action">
             <g-icon @click.stop="removeItem(item)" color="#424242" size="28">remove_circle_outline</g-icon>
             <span>{{item.quantity}}</span>
             <g-icon @click.stop="addItem(item)" color="#424242" size="28">add_circle</g-icon>
           </div>
         </div>
-    
+
         <!-- Confirm -->
         <template v-if="confirmView">
           <div class="section-header">CONTACT INFORMATION</div>
@@ -62,13 +62,13 @@
             <g-text-field type="datetime-local" label="Delivery time" clearable clear-icon="icon-cancel@16" prepend-icon="icon-delivery-truck@16"/>
             <g-textarea v-model="customer.note" placeholder="Note..." rows="3" no-resize/>
           </div>
-      
+
           <div class="section-header">PAYMENT</div>
           <g-radio-group v-model="paymentType" row class="radio-option">
             <g-radio color="#1271ff" label="Cash" value="cash" class="mr-5"/>
             <g-radio color="#1271ff" label="Credit" value="credit"/>
           </g-radio-group>
-      
+
           <div class="section-header">ORDER DETAILS</div>
           <div v-for="(item, index) in orderItems" :key="index" class="order-item-detail">
             <div class="order-item-detail__index" >{{ index + 1 }}</div>
@@ -89,7 +89,7 @@
         </template>
       </div>
     </div>
-    
+
     <!-- footer -->
     <div class="po-order-table__footer">
       <div>Total: <span style="font-weight: 700; font-size: 18px; margin-left: 4px">{{ (totalPrice + shippingFee) | currency }}</span></div>
@@ -115,7 +115,7 @@
 </template>
 <script>
   import _ from 'lodash'
-  
+
   export default {
     name: 'OrderTable',
     props: {
@@ -166,7 +166,20 @@
         this.increaseOrAddNewItems(item)
       },
       confirmPayment() {
-      
+        const {socket} = window.cms
+
+        const {note, deliveryTime, ...customer} = this.customer;
+
+        const orderData = {
+          orderType: this.orderType,
+          paymentType: this.paymentType,
+          customer,
+          products: this.orderItems,
+          deliveryTime,
+          note,
+        }
+
+        socket.emit('createOrder', this.store._id, orderData)
       }
     }
   }
@@ -181,14 +194,14 @@
     &__main {
       padding: 0 20px;
     }
-    
+
     &__header {
       &__image {
         width: 430px;
         height: 205px;
         margin-bottom: 20px;
       }
-      
+
       &__text {
         display: flex;
         align-items: center;
@@ -211,18 +224,18 @@
         font-weight: 400;
       }
     }
-    
+
     &__content {
       flex: 1;
       margin-bottom: 100px;
       overflow-x: hidden;
       overflow-y: scroll;
-      
+
       .radio-option {
         padding-top: 20px;
         text-align: center;
       }
-      
+
       .section-header {
         padding-top: 20px;
         font-weight: 700;
@@ -253,7 +266,7 @@
         border-bottom: 1px solid #D8D8D8;
         padding-top: 5px;
         padding-bottom: 5px;
-        
+
         &__index {
           width: 20px;
           height: 20px;
@@ -268,7 +281,7 @@
           text-align: center;
           border-radius: 50%;
         }
-        
+
         &__name {
           font-style: normal;
           font-weight: bold;
@@ -278,17 +291,17 @@
           text-overflow: ellipsis;
         }
       }
-  
+
       .order-item-summary {
         @extend .order-item-detail;
         border-bottom: 1px solid transparent;
-        
+
         &--end {
           margin-bottom: 100px;
         }
       }
     }
-    
+
     &__item {
       display: flex;
       flex-direction: row;
@@ -296,13 +309,13 @@
       width: 100%;
       height: 74px;
       border-bottom: 1px dashed #d8d8d8;
-      
+
       &__name {
         font-weight: bold;
         font-size: 15px;
         line-height: 19px;
       }
-      
+
       &__price {
         font-weight: bold;
         font-size: 15px;
@@ -323,7 +336,7 @@
         align-items: center;
       }
     }
-    
+
     &__footer {
       position: absolute;
       left: 0;

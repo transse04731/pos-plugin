@@ -3,60 +3,58 @@ const randomstring = require('randomstring')
 const express = require('express')
 const router = express.Router()
 
-const ONLINE_ORDER_DEVICE_COLLECTION = 'OnlineOrderDevice'
+const OnlineOderDeviceModel = cms.getModel('OnlineOrderDevice');
 
 function generateDeviceCode() {
-  return randomstring.generate({ length: 6 })
+  return randomstring.generate({length: 6})
 }
 
 async function generateUniqueDeviceCode() {
-  const deviceCodes = _.map(await cms.getModel(ONLINE_ORDER_DEVICE_COLLECTION).find({}, { deviceCode: 1 }), device => device.deviceCode)
+  const deviceCodes = _.map(await OnlineOderDeviceModel.find({}, {deviceCode: 1}), device => device.deviceCode)
   let newDeviceCode = generateDeviceCode()
-  while(_.includes(deviceCodes, newDeviceCode))
+  while (_.includes(deviceCodes, newDeviceCode))
     newDeviceCode = generateDeviceCode()
   return newDeviceCode
 }
 
 router.get('/pairing-code', async (req, res) => {
-  const { storeId } = req.query
-  // if paring code of specifed store has been created then return this value
-  const device = await cms.getModel(ONLINE_ORDER_DEVICE_COLLECTION).findOne({ store: storeId })
-  if (device) {
-    res.status(200).json({ code: device.code })
-    return
-  }
+  const {storeId} = req.query
 
-  // if not, then generate new paring code
-  const code = generateUniqueDeviceCode()
-  await cms.getModel(ONLINE_ORDER_DEVICE_COLLECTION).create({ code, store: storeId })
+  // if pairing code of specified store has been created then return this value
+  const device = await OnlineOderDeviceModel.findOne({storeId})
+  if (device) return res.status(200).json({pairingCode: device.pairingCode})
+
+  // if not, then generate new pairing code
+  const pairingCode = await generateUniqueDeviceCode()
+  await OnlineOderDeviceModel.create({pairingCode, storeId, paired: false})
 
   // // after 15 minutes, if no device register to system by this pairing code, then delete it
   // setTimeout(async() => {
-  //   const device = await cms.getModel(ONLINE_ORDER_DEVICE_COLLECTION).find({ code, store: storeId })
+  //   const device = await OnlineOderDeviceModel.find({ code, store: storeId })
   //   if (!device.token)
-  //     await cms.getModel(ONLINE_ORDER_DEVICE_COLLECTION).remove({ code, store: storeId })
+  //     await OnlineOderDeviceModel.remove({ code, store: storeId })
   // }, 15 * 60 * 1000) // 15 minutes
 
-  res.status(200).json({ code })
+  res.status(200).json({pairingCode})
 })
 
-router.post('/register', async(req, res) => {
-  const { token, code } = req.body
-  if (!token) {
-    res.status(400).end()
-    return
-  }
-  const device = await cms.getModel(ONLINE_ORDER_DEVICE_COLLECTION).findOne({code})
+router.post('/register', async (req, res) => {
+  const {pairingCode} = req.body;
+
+  if (!pairingCode) return res.status(400).json({message: 'Missing pairingCode in request body'});
+
+  const device = await OnlineOderDeviceModel.findOne({pairingCode});
+
   if (device) {
-    await cms.getModel(ONLINE_ORDER_DEVICE_COLLECTION).findOneAndUpdate({code}, {token})
-    res.status(200).json({message: 'Device registered'})
+    await OnlineOderDeviceModel.findOneAndUpdate({pairingCode}, {paired: true})
+    res.status(200).json({deviceId: device._id})
   } else {
     res.status(400).json({message: 'Invalid pairing code'})
   }
 })
 
 router.get('/order', async (req, res) => {
-  const { orderId } = req.query
+  const {orderId} = req.query
   const result = await cms.getModel('Order').findOne({_id: orderId})
   if (result)
     res.status(200).json(result)
