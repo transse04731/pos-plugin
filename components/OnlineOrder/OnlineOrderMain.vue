@@ -82,7 +82,7 @@
           </div>
         </template>
         <template v-else>
-          <g-card elevation="0" v-for="order in kitchenOrders">
+          <g-card elevation="0" v-for="(order, index) in kitchenOrders" :key="index">
             <g-card-title>
               <span class="fs-small-2 ml-1">
                 <span class="text-indigo-accent-2">#{{order.id}}</span>

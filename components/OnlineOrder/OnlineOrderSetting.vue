@@ -3,10 +3,10 @@
     <div class="online-order-setting__title">Online Order Settings</div>
     <div class="online-order-setting__content">
       <g-row v-if="computedDevice">
-        <g-text-field-bs label="Status" :value="status ? 'Connected' : 'No connection'" readonly/>
+        <g-text-field-bs label="Status" :value="connected ? 'Connected' : 'No connection'" readonly/>
         <g-text-field-bs label="Webshop URL" :value="computedDevice.url" readonly/>
       </g-row>
-      <g-btn-bs v-if="status" large background-color="#E0E0E0" style="margin-top: 24px;"
+      <g-btn-bs v-if="connected" large background-color="#E0E0E0" style="margin-top: 24px;"
                 @click.stop="dialog.disconnect = true">
         Disconnect
       </g-btn-bs>
@@ -24,12 +24,14 @@
           <template #default="{item}">
             <g-btn-bs border-color="#e0e0e0" text-color="black" width="72" height="30"
                       style="margin-top: 12px"
-            >{{item}}</g-btn-bs>
+            >{{item}}
+            </g-btn-bs>
           </template>
           <template #selected="{item}">
             <g-btn-bs border-color="#90CAF9" text-color="black" width="72" height="30" background-color="#E3F2FD"
                       style="margin-top: 12px"
-            >{{item}}</g-btn-bs>
+            >{{item}}
+            </g-btn-bs>
           </template>
         </g-grid-select>
       </g-row>
@@ -39,12 +41,14 @@
         <template #default="{item}">
           <g-btn-bs border-color="#e0e0e0" text-color="black" width="160" height="30"
                     style="margin-top: 12px"
-          >{{item.text}}</g-btn-bs>
+          >{{item.text}}
+          </g-btn-bs>
         </template>
         <template #selected="{item}">
           <g-btn-bs border-color="#90CAF9" text-color="black" width="160" height="30" background-color="#E3F2FD"
                     style="margin-top: 12px"
-          >{{item.text}}</g-btn-bs>
+          >{{item.text}}
+          </g-btn-bs>
         </template>
       </g-grid-select>
     </div>
@@ -61,23 +65,23 @@
 
   export default {
     name: "OnlineOrderSetting",
-    components: { GGridItemSelector, ValuePicker },
+    components: {GGridItemSelector, ValuePicker},
     props: {
       onlineDevice: null
     },
     data() {
       return {
         internalDevice: null,
-        status: false,
+        connected: false,
         dialog: {
           connect: false,
           disconnect: false
         },
         deliveryTimes: [15, 30, 45, 60],
         orderSorting: [
-          { text: 'Order Number', value: 'order' },
-          { text: 'Time to Complete', value: 'time' },
-        ]
+          {text: 'Order Number', value: 'order'},
+          {text: 'Time to Complete', value: 'time'},
+        ],
       }
     },
     computed: {
@@ -86,27 +90,48 @@
           return this.internalDevice
         },
         set(val) {
-          this.$emit('updateDevices', val)
+          this.$emit('updateDevice', val)
         }
       }
     },
     watch: {
       onlineDevice(val) {
-        this.internalDevice = {
-          ...val,
-          connected: false
-        }
+        this.internalDevice = val
+
+        if (this.internalDevice.paired) this.connected = true;
       }
     },
     methods: {
-      connect() {
-        this.status = true
-        //todo connect logic
+      async connect(pairingCode) {
+        const serverUrl = this.internalDevice.url
+        const pairingApiUrl = `${serverUrl}/online-order-device/register`
+        const requestBody = {pairingCode}
+        const requestResponse = await axios.post(pairingApiUrl, requestBody)
+        const {deviceId} = requestResponse.data
+
+        this.$emit('registerOnlineOrder', deviceId)
+
+        this.computedDevice = {
+          id: deviceId,
+          paired: true,
+          url: this.internalDevice.url,
+          sound: this.internalDevice.sound,
+        }
+
+        this.connected = true;
       },
       disconnect() {
-        this.status = false
-        //todo disconnect logic
-      }
+        this.$emit('unregisterOnlineOrder')
+
+        this.computedDevice = {
+          id: null,
+          paired: false,
+          url: this.internalDevice.url,
+          sound: this.internalDevice.sound,
+        }
+
+        this.connected = false
+      },
     },
     mounted() {
       this.$nextTick(() => {

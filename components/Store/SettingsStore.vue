@@ -3,8 +3,8 @@
 </template>
 
 <script>
-  import { getHighestFavouriteProductOrder, getHighestProductOrder, getProductGridOrder } from '../logic/productUtils';
-  import { getProvided } from '../logic/commonUtils';
+  import {getHighestFavouriteProductOrder, getHighestProductOrder, getProductGridOrder} from '../logic/productUtils';
+  import {getProvided} from '../logic/commonUtils';
 
   const printerSidebarDefault = [
     {
@@ -30,7 +30,7 @@
     injectService: ['PosStore:user'],
     data() {
       const i18n = this.$i18n;
-      const { sidebar } = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
+      const {sidebar} = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
 
       return {
         sidebarData: [
@@ -43,7 +43,7 @@
             ]
           },*/
           /*{ title: 'Reporting', icon: 'icon-bar_chart', svgIcon: true },*/
-          { title: sidebar.user, icon: 'person', isView: true /*href: '/setting/user'*/ },
+          {title: sidebar.user, icon: 'person', isView: true /*href: '/setting/user'*/},
           /*{
             title: sidebar.settings, icon: 'icon-cog', svgIcon: true, /!*badge: '3', badgeColor: '#9C24AC',*!/
             items: [
@@ -72,7 +72,7 @@
               /!*{ title: 'License', icon: 'radio_button_unchecked', iconType: 'small' },*!/
             ]
           },*/
-          { title: 'Online Ordering', icon: 'icon-general_setting', isView: true }
+          {title: 'Online Ordering', icon: 'icon-general_setting', isView: true}
         ],
         //category view
         listCategories: [],
@@ -82,7 +82,7 @@
         listProducts: [],
         selectedProductIDs: [],
         totalProducts: null,
-        productPagination: { limit: 15, currentPage: 1 },
+        productPagination: {limit: 15, currentPage: 1},
         selectedProduct: null,
         productSortCondition: {},
         //payment view
@@ -111,12 +111,15 @@
         printerSidebar: [],
         selectedPrinterMenu: null,
         //online order
-        onlineDevice: null
+        onlineDevice: null,
+        onlineOrderSocket: null,
       }
     },
-    created() {
-      const cachedArticlePageSize = localStorage.getItem('viewArticlePageSize');
-      if (cachedArticlePageSize) this.productPagination.limit = parseInt(cachedArticlePageSize);
+    async created() {
+      const cachedArticlePageSize = localStorage.getItem('viewArticlePageSize')
+      if (cachedArticlePageSize) this.productPagination.limit = parseInt(cachedArticlePageSize)
+      await this.getOnlineDevice()
+      if (this.onlineDevice.paired && this.onlineDevice.id && !this.onlineOrderSocket) this.registerOnlineOrder(this.onlineDevice.id)
     },
     watch: {
       'productPagination.limit'(newVal) {
@@ -139,15 +142,15 @@
         const categoryModel = cms.getModel('Category');
         if (oldID && !newName) {
           const deletedCategory = this.listCategories.find(c => c._id === oldID);
-          let res = await categoryModel.deleteOne({ '_id': oldID });
+          let res = await categoryModel.deleteOne({'_id': oldID});
           if (res.deletedCount === 1) {
             const ids = this.listCategories.filter(c => c.position > deletedCategory.position).map(c => c._id)
-            await categoryModel.updateMany({ '_id': { '$in': ids } }, { '$inc': { position: -1 } })
+            await categoryModel.updateMany({'_id': {'$in': ids}}, {'$inc': {position: -1}})
           }
         } else if (!oldID && newName) {
-          await categoryModel.create({ name: newName, position: newPosition });
+          await categoryModel.create({name: newName, position: newPosition});
         } else {
-          await categoryModel.findOneAndUpdate({ '_id': oldID }, { name: newName });
+          await categoryModel.findOneAndUpdate({'_id': oldID}, {name: newName});
         }
         this.listCategories = await this.getAllCategories();
       },
@@ -160,8 +163,8 @@
           const swapItem = this.listCategories[selectedIndex - increment]
           if (!swapItem) return
 
-          await categoryModel.updateOne({ _id: this.selectedCategory._id }, { '$set': { position: swapItem.position } })
-          await categoryModel.updateOne({ _id: swapItem._id }, { '$set': { position: this.selectedCategory.position } })
+          await categoryModel.updateOne({_id: this.selectedCategory._id}, {'$set': {position: swapItem.position}})
+          await categoryModel.updateOne({_id: swapItem._id}, {'$set': {position: this.selectedCategory.position}})
 
           this.listCategories = await this.getAllCategories()
           this.selectedCategory = this.listCategories.find(c => c._id === this.selectedCategory._id)
@@ -171,7 +174,7 @@
       },
       //article view
       async findCategoryByName(name) {
-        return cms.getModel('Category').find({ name: { $regex: name, $options: 'i' } })
+        return cms.getModel('Category').find({name: {$regex: name, $options: 'i'}})
       },
       updateProductFilters(filter) {
         const index = this.productFilters.findIndex(f => f.title === filter.title);
@@ -184,51 +187,51 @@
       },
       async getListProducts() {
         const productModel = cms.getModel('Product');
-        const condition = this.productFilters.reduce((acc, filter) => ({ ...acc, ...filter['condition'] }), {});
-        const { limit, currentPage } = this.productPagination;
+        const condition = this.productFilters.reduce((acc, filter) => ({...acc, ...filter['condition']}), {});
+        const {limit, currentPage} = this.productPagination;
         this.listProducts = await productModel.find(condition).sort(this.productSortCondition).skip(limit * (currentPage - 1)).limit(limit);
       },
       async getTotalProducts() {
         const productModel = cms.getModel('Product');
-        const condition = this.productFilters.reduce((acc, filter) => ({ ...acc, ...filter['condition'] }), {});
+        const condition = this.productFilters.reduce((acc, filter) => ({...acc, ...filter['condition']}), {});
         this.totalProducts = await productModel.count(condition);
       },
       async deleteSelectedProducts() {
         const productModel = cms.getModel('Product');
         if (this.selectedProductIDs && this.selectedProductIDs.length > 0) {
-          await productModel.deleteMany({ '_id': { '$in': this.selectedProductIDs } });
+          await productModel.deleteMany({'_id': {'$in': this.selectedProductIDs}});
         }
 
         // reset related fn buttons
         const settingModel = cms.getModel('PosSetting');
         await settingModel.findOneAndUpdate(
-          {
-            'leftFunctionButtons.buyback.product': { '$in': this.selectedProductIDs }
-          },
-          {
-            $set: {
-              'leftFunctionButtons.$.text': null,
-              'leftFunctionButtons.$.buttonFunction': null,
-              'leftFunctionButtons.$.buttonFunctionValue': null,
-              'leftFunctionButtons.$.buyback': null,
-              'leftFunctionButtons.$.backgroundColor': '#FFFFFF',
-              'leftFunctionButtons.$.textColor': '#1D1D26',
-            }
-          });
+            {
+              'leftFunctionButtons.buyback.product': {'$in': this.selectedProductIDs}
+            },
+            {
+              $set: {
+                'leftFunctionButtons.$.text': null,
+                'leftFunctionButtons.$.buttonFunction': null,
+                'leftFunctionButtons.$.buttonFunctionValue': null,
+                'leftFunctionButtons.$.buyback': null,
+                'leftFunctionButtons.$.backgroundColor': '#FFFFFF',
+                'leftFunctionButtons.$.textColor': '#1D1D26',
+              }
+            });
         await settingModel.findOneAndUpdate(
-          {
-            'rightFunctionButtons.buyback.product': { '$in': this.selectedProductIDs }
-          },
-          {
-            $set: {
-              'rightFunctionButtons.$.text': null,
-              'rightFunctionButtons.$.buttonFunction': null,
-              'rightFunctionButtons.$.buttonFunctionValue': null,
-              'rightFunctionButtons.$.buyback': null,
-              'rightFunctionButtons.$.backgroundColor': '#FFFFFF',
-              'rightFunctionButtons.$.textColor': '#1D1D26',
-            }
-          });
+            {
+              'rightFunctionButtons.buyback.product': {'$in': this.selectedProductIDs}
+            },
+            {
+              $set: {
+                'rightFunctionButtons.$.text': null,
+                'rightFunctionButtons.$.buttonFunction': null,
+                'rightFunctionButtons.$.buttonFunctionValue': null,
+                'rightFunctionButtons.$.buyback': null,
+                'rightFunctionButtons.$.backgroundColor': '#FFFFFF',
+                'rightFunctionButtons.$.textColor': '#1D1D26',
+              }
+            });
 
         // fetch data
         await this.getListProducts();
@@ -244,10 +247,10 @@
       async updateProduct(product) {
         const productModel = cms.getModel('Product');
         await productModel.findOneAndUpdate(
-          {
-            _id: product._id
-          },
-          product
+            {
+              _id: product._id
+            },
+            product
         )
         await this.getListProducts();
         await this.getTotalProducts();
@@ -264,32 +267,32 @@
         const settingsModel = cms.getModel('PosSetting');
         if (oldTaxId && !newTaxCategory) {
           await settingsModel.findOneAndUpdate(
-            {},
-            {
-              $pull: {
-                taxCategory: { _id: oldTaxId }
+              {},
+              {
+                $pull: {
+                  taxCategory: {_id: oldTaxId}
+                }
               }
-            }
           )
         } else if (newTaxCategory && !oldTaxId) {
           await settingsModel.findOneAndUpdate(
-            {},
-            {
-              $push: {
-                taxCategory: { ...newTaxCategory }
+              {},
+              {
+                $push: {
+                  taxCategory: {...newTaxCategory}
+                }
               }
-            }
           )
         } else {
           await settingsModel.findOneAndUpdate(
-            {
-              'taxCategory._id': oldTaxId
-            },
-            {
-              $set: {
-                'taxCategory.$': newTaxCategory,
+              {
+                'taxCategory._id': oldTaxId
+              },
+              {
+                $set: {
+                  'taxCategory.$': newTaxCategory,
+                }
               }
-            }
           )
         }
         const setting = await settingsModel.findOne();
@@ -304,32 +307,32 @@
         const settingModel = cms.getModel('PosSetting');
         if (oldPayment && !newPayment) {
           await settingModel.findOneAndUpdate(
-            {},
-            {
-              $pull: {
-                payment: { _id: oldPayment._id }
+              {},
+              {
+                $pull: {
+                  payment: {_id: oldPayment._id}
+                }
               }
-            }
           )
         } else if (newPayment && !oldPayment) {
           await settingModel.findOneAndUpdate(
-            {},
-            {
-              $push: {
-                payment: { ...newPayment }
+              {},
+              {
+                $push: {
+                  payment: {...newPayment}
+                }
               }
-            }
           )
         } else {
           await settingModel.findOneAndUpdate(
-            {
-              'payment._id': oldPayment._id
-            },
-            {
-              $set: {
-                'payment.$': newPayment,
+              {
+                'payment._id': oldPayment._id
+              },
+              {
+                $set: {
+                  'payment.$': newPayment,
+                }
               }
-            }
           )
         }
         await this.getListPayments();
@@ -342,10 +345,10 @@
       async updateSettings() {
         const settingModel = cms.getModel('PosSetting');
         await settingModel.findOneAndUpdate(
-          {},
-          {
-            generalSetting: this.generalSettings
-          }
+            {},
+            {
+              generalSetting: this.generalSettings
+            }
         )
       },
       //company info view
@@ -355,10 +358,10 @@
       },
       async updateCompanyInfo() {
         await cms.getModel('PosSetting').findOneAndUpdate(
-          {},
-          {
-            companyInfo: this.companyInfo
-          }
+            {},
+            {
+              companyInfo: this.companyInfo
+            }
         );
       },
       //user view
@@ -371,25 +374,25 @@
         if (oldUserId && !newUser) {
           await settingModel.findOneAndUpdate({}, {
             $pull: {
-              user: { _id: oldUserId }
+              user: {_id: oldUserId}
             }
           })
         } else if (newUser && !oldUserId) {
           await settingModel.findOneAndUpdate({}, {
             $push: {
-              user: { ...newUser }
+              user: {...newUser}
             }
           })
         } else {
           await settingModel.findOneAndUpdate(
-            {
-              'user._id': oldUserId
-            },
-            {
-              $set: {
-                'user.$': newUser,
+              {
+                'user._id': oldUserId
+              },
+              {
+                $set: {
+                  'user.$': newUser,
+                }
               }
-            }
           )
         }
         await this.getListUsers();
@@ -404,32 +407,32 @@
       //printer view
       async getThermalPrinter() {
         const terminalModel = cms.getModel('Terminal');
-        const terminal = await terminalModel.findOne({ name: 'Terminal 1' })
+        const terminal = await terminalModel.findOne({name: 'Terminal 1'})
         this.thermalPrinter = terminal && terminal.thermalPrinters && terminal.thermalPrinters[0] || {};
       },
       async updateThermalPrinter(oldPrinterId, newPrinter) {
         const terminalModel = cms.getModel('Terminal');
         if (!oldPrinterId) {
           await terminalModel.findOneAndUpdate(
-            { name: 'Terminal 1' },
-            {
-              $push: {
-                thermalPrinters: newPrinter
-              }
-            }, { upsert: true }
+              {name: 'Terminal 1'},
+              {
+                $push: {
+                  thermalPrinters: newPrinter
+                }
+              }, {upsert: true}
           )
           //update thermal printer with new _id
           await this.getThermalPrinter();
         } else {
           await terminalModel.findOneAndUpdate(
-            {
-              'thermalPrinters._id': oldPrinterId
-            },
-            {
-              $set: {
-                'thermalPrinters.$': newPrinter
-              }
-            }, { upsert: true }
+              {
+                'thermalPrinters._id': oldPrinterId
+              },
+              {
+                $set: {
+                  'thermalPrinters.$': newPrinter
+                }
+              }, {upsert: true}
           )
         }
       },
@@ -461,7 +464,7 @@
           await Promise.all(this.activeCategoryProducts.map(async (article, index) => {
             const articleLayout = this.getProductLayout(article, this.activeCategory)
             if (articleLayout.order !== index + 1) {
-              await productModel.findOneAndUpdate({ 'layouts._id': articleLayout._id }, {
+              await productModel.findOneAndUpdate({'layouts._id': articleLayout._id}, {
                 '$set': {
                   'layouts.$.order': index + 1
                 }
@@ -487,7 +490,7 @@
         let foundItem = this.activeCategoryProducts.find((item) => item._id === this.articleSelectedProductButton._id);
         if (foundItem) {
           try {
-            let updateColorResult = await productModel.findOneAndUpdate({ 'layouts._id': layoutID }, {
+            let updateColorResult = await productModel.findOneAndUpdate({'layouts._id': layoutID}, {
               '$set': {
                 'layouts.$.color': this.articleSelectedColor
               }
@@ -525,13 +528,13 @@
             //Update db order
             const productModel = cms.getModel('Product')
             try {
-              let currentItemResult = await productModel.findOneAndUpdate({ 'layouts._id': currentItemLayout._id }, {
+              let currentItemResult = await productModel.findOneAndUpdate({'layouts._id': currentItemLayout._id}, {
                 '$set': {
                   'layouts.$.order': nextItemLayout.order
                 }
               });
 
-              let nextItemResult = await productModel.findOneAndUpdate({ 'layouts._id': nextItemLayout._id }, {
+              let nextItemResult = await productModel.findOneAndUpdate({'layouts._id': nextItemLayout._id}, {
                 '$set': {
                   'layouts.$.order': currentItemLayout.order
                 }
@@ -547,7 +550,7 @@
             }
 
             this.activeCategoryProducts = this.activeCategoryProducts.sort((current, next) =>
-              getProductGridOrder(current) - getProductGridOrder(next))
+                getProductGridOrder(current) - getProductGridOrder(next))
           }
         }
       },
@@ -561,7 +564,7 @@
         if (posSettings[dbButtonList]) {
           try {
             for (let item of posSettings[dbButtonList]) {
-              await cms.getModel('PosSetting').findOneAndUpdate({ [`${dbButtonList}._id`]: item._id }, {
+              await cms.getModel('PosSetting').findOneAndUpdate({[`${dbButtonList}._id`]: item._id}, {
                 '$set': {
                   [`${dbButtonList}.$.rows`]: item.originalRows,
                   [`${dbButtonList}.$.cols`]: item.originalCols,
@@ -579,14 +582,17 @@
         const categories = await cms.getModel('Category').find().sort('position')
         const posSettings = (await cms.getModel('PosSetting').find())[0];
         let favoriteArticle = posSettings.generalSetting.favoriteArticle;
-        return favoriteArticle ? categories : categories.filter(cat => cat.name !== 'Favourite').map(c => ({ ...c, position: c.position }))
+        return favoriteArticle ? categories : categories.filter(cat => cat.name !== 'Favourite').map(c => ({
+          ...c,
+          position: c.position
+        }))
       },
       async getActiveProducts() {
         let products
         if (this.activeCategory.name === 'Favourite') {
-          products = await cms.getModel('Product').find({ 'option.favorite': true })
+          products = await cms.getModel('Product').find({'option.favorite': true})
         } else {
-          products = await cms.getModel('Product').find({ 'category': this.activeCategory._id })
+          products = await cms.getModel('Product').find({'category': this.activeCategory._id})
         }
         this.activeCategoryProducts = products.sort((current, next) => getProductGridOrder(current) - getProductGridOrder(next))
       },
@@ -597,7 +603,7 @@
       getHighestFavouriteProductOrder,
       async updatePosSettings(item, dbButtonList, mergeMap) {
         try {
-          await cms.getModel('PosSetting').findOneAndUpdate({ [`${dbButtonList}._id`]: item.buttonId }, {
+          await cms.getModel('PosSetting').findOneAndUpdate({[`${dbButtonList}._id`]: item.buttonId}, {
             '$set': {
               [`${dbButtonList}.$.backgroundColor`]: item.style.backgroundColor,
               [`${dbButtonList}.$.text`]: item.text,
@@ -620,7 +626,7 @@
         const groupPrinters = await cms.getModel('GroupPrinter').find()
         const kitchenPrinters = groupPrinters.filter(p => p.type === 'kitchen')
         const category = this.printerSidebar[0]
-        for(const printer of kitchenPrinters) {
+        for (const printer of kitchenPrinters) {
           category.items.unshift({
             title: printer.name,
             id: printer._id,
@@ -634,7 +640,7 @@
 
         const receiptPrinter = groupPrinters.filter(p => p.type === 'entire')
         const receipt = this.printerSidebar[2]
-        if(receiptPrinter.length === 0) {
+        if (receiptPrinter.length === 0) {
           this.printerSidebar.splice(2, 1)
         } else if (receiptPrinter.length === 1) {
           receipt.id = receiptPrinter[0]._id
@@ -685,7 +691,7 @@
           name = `New Printer (${i})`
           i++
         }
-        const printer = await cms.getModel('GroupPrinter').create({name, type: 'kitchen' })
+        const printer = await cms.getModel('GroupPrinter').create({name, type: 'kitchen'})
         await this.genPrinterSidebar()
         return printer
       },
@@ -739,30 +745,56 @@
       },
       async addEntirePrinter(lower, upper) {
         let i = lower, printers = []
-        while(i < upper) {
+        while (i < upper) {
           i++
-          printers.push({name: 'EntireReceipt'+i, type: 'entire'})
+          printers.push({name: 'EntireReceipt' + i, type: 'entire'})
         }
         await cms.getModel('GroupPrinter').create(printers)
         await this.genPrinterSidebar()
         this.selectedPrinterMenu = this.printerSidebar.find(s => s.title === 'General Setting')
       },
       async removeEntirePrinter(lower, upper) {
-        const regex = `EntireReceipt[${lower+1}-${upper}]`
+        const regex = `EntireReceipt[${lower + 1}-${upper}]`
         await cms.getModel('GroupPrinter').deleteMany({name: {$regex: regex}, type: 'entire'})
         await this.genPrinterSidebar()
         this.selectedPrinterMenu = this.printerSidebar.find(s => s.title === 'General Setting')
       },
       //keyboard Config
       async updateKeyboardConfig(keyboardConfig) {
-        await cms.getModel('PosSetting').findOneAndUpdate({}, { keyboardConfig })
+        await cms.getModel('PosSetting').findOneAndUpdate({}, {keyboardConfig})
       },
 
       //online order
       async getOnlineDevice() {
         const posSettings = await this.getPosSetting()
         if (posSettings) this.onlineDevice = posSettings.onlineDevice
-      }
+      },
+
+      async updateDevice(device) {
+        await cms.getModel('PosSetting').updateOne({}, {onlineDevice: device});
+      },
+
+      registerOnlineOrder(deviceId) {
+        if (this.onlineOrderSocket) return
+
+        const serverUrl = this.onlineDevice.url
+        const io = window['socket.io-client']
+
+        this.onlineOrderSocket = io(`${serverUrl}?clientId=${deviceId}`)
+        this.onlineOrderSocket.on('createOrder', (orderData, ackFn) => {
+          const {socket: sk} = window.cms
+          sk.emit('createOrder', orderData)
+          ackFn()
+        })
+      },
+
+      unregisterOnlineOrder() {
+        if (this.onlineOrderSocket) {
+          this.onlineOrderSocket.off('createOrder')
+          this.onlineOrderSocket.close()
+          this.onlineOrderSocket = null
+        }
+      },
     },
     provide() {
       return {

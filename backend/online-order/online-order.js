@@ -39,7 +39,7 @@ module.exports = cms => {
       }
 */
 
-      // socket.emit('update-online-orders')
+      // socket.emit('updateOnlineOrders')
     })
   })
 }
