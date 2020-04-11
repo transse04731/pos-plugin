@@ -26,19 +26,19 @@
                 {{order.customer ? order.customer.name : 'No customer name'}} - {{order.customer ? order.customer.phoneNo : 'No customer phone'}}
               </span>
               <g-spacer/>
-              <span class="fw-700 fs-small">{{order.received}}</span>
+              <span class="fw-700 fs-small">{{order.date | formatDate}}</span>
             </g-card-title>
             <g-card-text>
               <div class="row-flex" v-if="order.customer">
-                <div class="col-2">
+                <div class="col-1">
                   <g-icon color="#9E9E9E" size="20">icon-place</g-icon>
                 </div>
                 <div class="col-10">{{`${order.customer.address} ${order.customer.address}`}}</div>
               </div>
               <div v-if="order.items">
                 <div class="row-flex" v-for="item in order.items">
-                  <div class="col-2 fw-700">{{item.quantity}}x</div>
-                  <div class="col-7 fs-small-2">
+                  <div class="col-1 fw-700">{{item.quantity}}x</div>
+                  <div class="col-8 fs-small-2">
                     {{item.name}}
                     <template v-if="item.modifiers.length > 0">
                       <span class="i text-grey">(<span v-for="modifier in item.modifiers">{{modifier}}</span>)</span>
@@ -48,6 +48,9 @@
                 </div>
               </div>
             </g-card-text>
+            <g-card-actions v-if="order.declineStep2">
+              <g-text-field-bs label="Reason to decline (optional)" v-model="order.declineReason"/>
+            </g-card-actions>
             <g-card-actions v-if="order.confirmStep2">
               <value-picker :values="[15, 30, 45, 60]" :default-value="30" allow-custom v-model="order.prepareTime"></value-picker>
             </g-card-actions>
@@ -86,30 +89,21 @@
                 {{order.customer ? order.customer.name : 'No customer name'}} - {{order.customer ? order.customer.phoneNo : 'No customer phone'}}
               </span>
               <g-spacer/>
-              <g-menu v-model="order.menu" :close-on-content-click="true" left>
-                <template v-slot:activator="{on}">
-                  <div class="kitchen-orders__timer" v-on="on">
-                    <g-icon v-if="order.type === 'delivery'">icon-delivery-man</g-icon>
-                    <g-icon v-if="order.type === 'pickup'">icon-pickup</g-icon>
-                    <span class="fw-700 fs-small">{{order.deliveryDate | formatDate}}</span>
-                  </div>
-                </template>
-                <div class="options">
-                  <div class="option" @click="completeOrder(order)">Complete Order & Print Receipt</div>
-                  <div class="option" @click="setPendingOrder(order)">Return to pending orders</div>
-                  <div class="option" @click="declineOrder(order)">Cancel & move to declined orders</div>
-                </div>
-              </g-menu>
+              <div class="kitchen-orders__timer" @click.stop="openDialog(order)">
+                <g-icon v-if="order.type === 'delivery'">icon-delivery-man</g-icon>
+                <g-icon v-if="order.type === 'pickup'">icon-pickup</g-icon>
+                <span class="fw-700 fs-small">{{order.deliveryDate | formatDate}}</span>
+              </div>
             </g-card-title>
             <g-card-text>
               <div class="row-flex" v-if="order.customer">
-                <div class="col-2">
+                <div class="col-1">
                   <g-icon color="#9E9E9E" size="20">icon-place</g-icon>
                 </div>
                 <div class="col-10">{{`${order.customer.address} ${order.customer.address}`}}</div>
               </div>
               <div class="row-flex" v-if="order.items">
-                <div class="col-2">
+                <div class="col-1">
                   <g-icon color="#9E9E9E" size="20">icon-food</g-icon>
                 </div>
                 <div class="row-flex">
@@ -129,14 +123,20 @@
         </template>
       </div>
     </div>
+    <dialog-complete-order ref="dialog" v-model="showDialog"
+                           @completeOrder="completeOrder"
+                           @setPendingOrder="setPendingOrder"
+                           @declineOrder="declineOrder"
+    ></dialog-complete-order>
   </div>
 </template>
 
 <script>
   import ValuePicker from './ValuePicker';
+  import DialogCompleteOrder from './dialogCompleteOrder';
   export default {
     name: 'OnlineOrderMain',
-    components: { ValuePicker },
+    components: { DialogCompleteOrder, ValuePicker },
     props: {
       pendingOrders: Array,
       kitchenOrders: Array,
@@ -148,7 +148,8 @@
     },
     data() {
       return {
-        internalOrders: []
+        internalOrders: [],
+        showDialog: false
       }
     },
     watch: {
@@ -156,7 +157,10 @@
         this.internalOrders = val.map(i => ({
           ...i,
           confirmStep2: false,
-          prepareTime: null
+          declineStep2: false,
+          prepareTime: null,
+          deliveryDate: null,
+          declineReason: ''
         }))
       }
     },
@@ -177,6 +181,7 @@
         this.$emit('completeOrder', order)
       },
       onClickAccept(order) {
+        if (order.declineStep2) this.$set(order, 'declineStep2', false)
         if (!order.confirmStep2) return this.$set(order, 'confirmStep2', true)
         if (!order.prepareTime) return
         order.deliveryDate = dayjs().add(+order.prepareTime, 'minute').toDate()
@@ -184,7 +189,11 @@
       },
       onClickDecline(order) {
         if (order.confirmStep2) return this.$set(order, 'confirmStep2', false)
+        if (!order.declineStep2) return this.$set(order, 'declineStep2', true)
         this.declineOrder(order)
+      },
+      openDialog(order) {
+        this.$refs.dialog.showDialog(order)
       }
     },
     mounted() {
