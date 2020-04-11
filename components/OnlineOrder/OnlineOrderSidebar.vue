@@ -78,7 +78,7 @@
             ]
           },
           {
-            title: 'Online Ordering Settings', icon: 'icon-general_setting',
+            title: 'Online Ordering', icon: 'icon-general_setting',
             onClick: () => {
               this.$emit('update:view', {
                 name: 'Setting'

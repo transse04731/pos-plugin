@@ -1,17 +1,54 @@
 <template>
   <div class="online-order-setting">
     <div class="online-order-setting__title">Online Order Settings</div>
-    <div class="online-order-setting__content" v-for="device in computedDevices">
-      <p><b>Status: </b>{{status ? 'Connected' : 'No connection'}}</p>
-      <p><b>Webshop URL: </b>{{device.url}}</p>
-      <p><b>Incoming order notification sound: </b></p>
-      <g-radio-group row v-model="device.sound">
-        <g-radio color="indigo-accent-2" label="Active" :value="true"/>
-        <g-radio color="indigo-accent-2" label="Disabled" :value="false"/>
-      </g-radio-group>
-      <g-btn-bs v-if="status" large background-color="#E0E0E0" @click="dialog.disconnect = true">Disconnect</g-btn-bs>
-      <g-btn-bs v-else large background-color="#E0E0E0" @click="openConnectDialog(device)">Connect</g-btn-bs>
+    <div class="online-order-setting__content">
+      <g-row v-if="computedDevice">
+        <g-text-field-bs label="Status" :value="status ? 'Connected' : 'No connection'" readonly/>
+        <g-text-field-bs label="Webshop URL" :value="computedDevice.url" readonly/>
+      </g-row>
+      <g-btn-bs v-if="status" large background-color="#E0E0E0" style="margin-top: 24px;"
+                @click.stop="dialog.disconnect = true">
+        Disconnect
+      </g-btn-bs>
+      <g-btn-bs v-else large background-color="#E0E0E0" style="margin-top: 24px;"
+                @click.stop="dialog.connect = true">
+        Connect
+      </g-btn-bs>
+      <g-divider style="margin-top: 24px"/>
     </div>
+    <div class="online-order-setting__title">General Settings</div>
+    <div class="online-order-setting__content">
+      <p><b>Default time to complete order: </b></p>
+      <g-row>
+        <g-grid-select :grid="false" :items="deliveryTimes">
+          <template #default="{item}">
+            <g-btn-bs border-color="#e0e0e0" text-color="black" width="72" height="30"
+                      style="margin-top: 12px"
+            >{{item}}</g-btn-bs>
+          </template>
+          <template #selected="{item}">
+            <g-btn-bs border-color="#90CAF9" text-color="black" width="72" height="30" background-color="#E3F2FD"
+                      style="margin-top: 12px"
+            >{{item}}</g-btn-bs>
+          </template>
+        </g-grid-select>
+      </g-row>
+      <g-switch label="Incoming order notification sound"></g-switch>
+      <p><b>Order sorting option: </b></p>
+      <g-grid-select :grid="false" :items="orderSorting">
+        <template #default="{item}">
+          <g-btn-bs border-color="#e0e0e0" text-color="black" width="160" height="30"
+                    style="margin-top: 12px"
+          >{{item.text}}</g-btn-bs>
+        </template>
+        <template #selected="{item}">
+          <g-btn-bs border-color="#90CAF9" text-color="black" width="160" height="30" background-color="#E3F2FD"
+                    style="margin-top: 12px"
+          >{{item.text}}</g-btn-bs>
+        </template>
+      </g-grid-select>
+    </div>
+
     <dialog-connect v-model="dialog.connect" @confirm="connect"/>
     <dialog-disconnect v-model="dialog.disconnect" @confirm="disconnect"/>
   </div>
@@ -19,27 +56,34 @@
 
 <script>
   import axios from 'axios';
+  import ValuePicker from './ValuePicker';
+  import GGridItemSelector from '../FnButton/components/GGridItemSelector';
 
   export default {
     name: "OnlineOrderSetting",
+    components: { GGridItemSelector, ValuePicker },
     props: {
-      onlineDevices: Array
+      onlineDevice: null
     },
     data() {
       return {
-        selectedDevice: null,
-        internalDevices: [],
+        internalDevice: null,
         status: false,
         dialog: {
           connect: false,
           disconnect: false
-        }
+        },
+        deliveryTimes: [15, 30, 45, 60],
+        orderSorting: [
+          { text: 'Order Number', value: 'order' },
+          { text: 'Time to Complete', value: 'time' },
+        ]
       }
     },
     computed: {
-      computedDevices: {
+      computedDevice: {
         get() {
-          return this.internalDevices
+          return this.internalDevice
         },
         set(val) {
           this.$emit('updateDevices', val)
@@ -47,37 +91,17 @@
       }
     },
     watch: {
-      onlineDevices(val) {
-        this.internalDevices = val.map(item => ({
-          ...item,
+      onlineDevice(val) {
+        this.internalDevice = {
+          ...val,
           connected: false
-        }))
+        }
       }
     },
     methods: {
-      openConnectDialog(device) {
-        this.dialog.connect = true
-        this.selectedDevice = device
-      },
-      async connect(pairingCode) {
-        const serverUrl = this.selectedDevice.url
-        const pairingApiUrl = `${serverUrl}/online-order-device/register`
-        const requestBody = {pairingCode}
-
-        const requestResponse = await axios.post(pairingApiUrl, requestBody)
-
-        //TODO: Handle error when user enters incorrect pairing code
-        const {deviceId} = requestResponse.data
-        const io = window['socket.io-client'];
-
-        const socket = io(`${serverUrl}?clientId=${deviceId}`)
-        socket.on('createOrder', (orderData, ackFn) => {
-          const {socket: sk} = window.cms
-          sk.emit('createOrder', orderData)
-          ackFn()
-        })
-
+      connect() {
         this.status = true
+        //todo connect logic
       },
       disconnect() {
         this.status = false
@@ -86,14 +110,12 @@
     },
     mounted() {
       this.$nextTick(() => {
-        this.$emit('getOnlineDevices')
-      });
-
-
+        this.$emit('getOnlineDevice')
+      })
     },
     activated() {
       this.$nextTick(() => {
-        this.$emit('getOnlineDevices')
+        this.$emit('getOnlineDevice')
       })
     }
   }
@@ -101,30 +123,32 @@
 
 <style scoped lang="scss">
   .online-order-setting {
-    background-image: url('/plugins/pos-plugin/assets/out.png');
+    /*background-image: url('/plugins/pos-plugin/assets/out.png');*/
     width: 100%;
     height: 100%;
-    padding: 24px 16px;
+    padding: 24px 48px;
 
     &__title {
       font-size: 15px;
       font-weight: 700;
-      margin-bottom: 16px;
+      margin-bottom: 24px;
     }
 
     &__content {
       background: #FFFFFF;
       border: 0.4px solid #9E9E9E;
       border-radius: 4px;
-      padding: 20px 24px;
-      width: 60%;
+      width: 80%;
       display: flex;
       flex-direction: column;
       font-size: 14px;
       margin-bottom: 16px;
 
-      p {
-        margin-bottom: 8px;
+      .g-row {
+        .bs-tf-wrapper--readonly {
+          flex: 1 1;
+          margin-left: 0;
+        }
       }
 
       .g-radio-wrapper {
@@ -151,10 +175,8 @@
       }
 
       .g-btn-bs {
-        margin-top: 24px;
+        margin-left: 0;
         width: 25%;
-        align-self: flex-end;
-        font-size: 16px;
       }
     }
   }

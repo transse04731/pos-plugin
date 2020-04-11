@@ -72,7 +72,7 @@
               /!*{ title: 'License', icon: 'radio_button_unchecked', iconType: 'small' },*!/
             ]
           },*/
-          { title: 'Online Ordering Settings', icon: 'icon-general_setting', isView: true }
+          { title: 'Online Ordering', icon: 'icon-general_setting', isView: true }
         ],
         //category view
         listCategories: [],
@@ -111,7 +111,7 @@
         printerSidebar: [],
         selectedPrinterMenu: null,
         //online order
-        onlineDevices: []
+        onlineDevice: null
       }
     },
     created() {
@@ -759,9 +759,9 @@
       },
 
       //online order
-      async getOnlineDevices() {
+      async getOnlineDevice() {
         const posSettings = await this.getPosSetting()
-        if (posSettings) this.onlineDevices = posSettings.onlineDevices
+        if (posSettings) this.onlineDevice = posSettings.onlineDevice
       }
     },
     provide() {

@@ -1,10 +1,14 @@
 <template>
   <div class="picker-wrapper">
-    <g-btn-bs v-for="item in values" @click.stop="pickValue(item)"
-              :class="[isValueSelected(item) ? 'selected' : null]"
-              border-color="#C4C4C4" text-color="black" width="40" height="30">
-      {{item}}
-    </g-btn-bs>
+    <template v-for="item in values">
+      <slot name="item" :item="item" :select="pickValue" :isSelected="isValueSelected">
+        <g-btn-bs  @click.stop="pickValue(item)"
+                   :class="[isValueSelected(item) ? 'selected' : null]"
+                   border-color="#C4C4C4" text-color="black" width="40" height="30">
+          {{item}}
+        </g-btn-bs>
+      </slot>
+    </template>
     <g-text-field-bs ref="input" v-if="allowCustom" placeholder="Custom..." :value="inputValue" @input="pickCustomValue"></g-text-field-bs>
   </div>
 </template>
