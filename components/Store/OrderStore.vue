@@ -566,7 +566,7 @@
       if (cachedPageSize) this.orderHistoryPagination.limit = parseInt(cachedPageSize)
 
       // add online orders: cms.socket.emit('added-online-order')
-      cms.socket.on('update-online-orders', async () => {
+      cms.socket.on('updateOnlineOrders', async () => {
         await this.updateOnlineOrders()
       })
       // this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
