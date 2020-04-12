@@ -20,16 +20,16 @@
     <div class="online-order-setting__content">
       <p><b>Default time to complete order: </b></p>
       <g-row>
-        <g-grid-select :grid="false" :items="deliveryTimes">
-          <template #default="{item}">
+        <g-grid-select :grid="false" :items="deliveryTimes" v-model="computedDefaultPrepareTime" mandatory>
+          <template #default="{item, toggleSelect}">
             <g-btn-bs border-color="#e0e0e0" text-color="black" width="72" height="30"
-                      style="margin-top: 12px"
+                      style="margin-top: 12px" @click.stop="toggleSelect(item)"
             >{{item}}
             </g-btn-bs>
           </template>
           <template #selected="{item}">
             <g-btn-bs border-color="#90CAF9" text-color="black" width="72" height="30" background-color="#E3F2FD"
-                      style="margin-top: 12px"
+                      style="margin-top: 12px" @click.stop="toggleSelect(item)"
             >{{item}}
             </g-btn-bs>
           </template>
@@ -37,16 +37,16 @@
       </g-row>
       <g-switch label="Incoming order notification sound"></g-switch>
       <p><b>Order sorting option: </b></p>
-      <g-grid-select :grid="false" :items="orderSorting">
-        <template #default="{item}">
+      <g-grid-select :grid="false" :items="orderSorting" v-model="computedOnlineOrderSorting" mandatory>
+        <template #default="{item, toggleSelect}">
           <g-btn-bs border-color="#e0e0e0" text-color="black" width="160" height="30"
-                    style="margin-top: 12px"
+                    style="margin-top: 12px" @click.stop="toggleSelect(item)"
           >{{item.text}}
           </g-btn-bs>
         </template>
         <template #selected="{item}">
           <g-btn-bs border-color="#90CAF9" text-color="black" width="160" height="30" background-color="#E3F2FD"
-                    style="margin-top: 12px"
+                    style="margin-top: 12px" @click.stop="toggleSelect(item)"
           >{{item.text}}
           </g-btn-bs>
         </template>
@@ -67,7 +67,9 @@
     name: "OnlineOrderSetting",
     components: {GGridItemSelector, ValuePicker},
     props: {
-      onlineDevice: null
+      onlineDevice: null,
+      defaultPrepareTime: Number,
+      onlineOrderSorting: String
     },
     data() {
       return {
@@ -91,6 +93,22 @@
         },
         set(val) {
           this.$emit('updateDevice', val)
+        }
+      },
+      computedDefaultPrepareTime: {
+        get() {
+          return this.defaultPrepareTime
+        },
+        set(val) {
+          this.$emit('updateDefaultPrepareTime', val)
+        }
+      },
+      computedOnlineOrderSorting: {
+        get() {
+          return this.onlineOrderSorting
+        },
+        set(val) {
+          this.$emit('updateOnlineOrderSorting', val)
         }
       }
     },

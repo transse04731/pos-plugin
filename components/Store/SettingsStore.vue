@@ -113,6 +113,8 @@
         //online order
         onlineDevice: null,
         onlineOrderSocket: null,
+        defaultPrepareTime: null,
+        onlineOrderSorting: null
       }
     },
     async created() {
@@ -120,6 +122,11 @@
       if (cachedArticlePageSize) this.productPagination.limit = parseInt(cachedArticlePageSize)
       await this.getOnlineDevice()
       if (this.onlineDevice.paired && this.onlineDevice.id && !this.onlineOrderSocket) this.registerOnlineOrder(this.onlineDevice.id)
+      const posSettings = await this.getPosSetting()
+      if (posSettings) {
+        this.defaultPrepareTime = posSettings.defaultPrepareTime
+        this.onlineOrderSorting = posSettings.onlineOrderSorting
+      }
     },
     watch: {
       'productPagination.limit'(newVal) {
@@ -767,7 +774,17 @@
       //online order
       async getOnlineDevice() {
         const posSettings = await this.getPosSetting()
-        if (posSettings) this.onlineDevice = posSettings.onlineDevice
+        if (posSettings) {
+          this.onlineDevice = posSettings.onlineDevice
+        }
+      },
+
+      async updateDefaultPrepareTime(value) {
+        await cms.getModel('PosSetting').updateOne({}, {defaultPrepareTime: value});
+      },
+
+      async updateOnlineOrderSorting(value) {
+        await cms.getModel('PosSetting').updateOne({}, {onlineOrderSorting: value});
       },
 
       async updateDevice(device) {

@@ -52,7 +52,7 @@
               <g-text-field-bs label="Reason to decline (optional)" v-model="order.declineReason"/>
             </g-card-actions>
             <g-card-actions v-if="order.confirmStep2">
-              <value-picker :values="[15, 30, 45, 60]" :default-value="30" allow-custom v-model="order.prepareTime"></value-picker>
+              <value-picker :values="[15, 30, 45, 60]" :default-value="defaultPrepareTime || 30" allow-custom v-model="order.prepareTime"></value-picker>
             </g-card-actions>
             <g-card-actions>
               <g-btn-bs width="60" border-color="#C4C4C4" text-color="black" @click.stop="onClickDecline(order)">
@@ -69,20 +69,21 @@
     <div class="kitchen-orders pl-2">
       <div class="header">
         Sent to kitchen
-        <g-badge inline :value="true" color="#F9A825" v-if="kitchenOrders && kitchenOrders.length">
+        <g-badge inline :value="true" color="#F9A825" v-if="sortedKitchenOrders && sortedKitchenOrders.length">
           <template v-slot:badge>
-            <div class="px-2">{{kitchenOrders.length}}</div>
+            <div class="px-2">{{sortedKitchenOrders.length}}</div>
           </template>
         </g-badge>
       </div>
       <div class="content">
-        <template v-if="!kitchenOrders || !kitchenOrders.length">
+        <template v-if="!sortedKitchenOrders || !sortedKitchenOrders.length">
           <div class="kitchen-orders--empty">
             <p>No orders sent to kitchen</p>
           </div>
         </template>
         <template v-else>
-          <g-card elevation="0" v-for="(order, index) in kitchenOrders" :key="index">
+          <g-card elevation="0" v-for="(order, index) in sortedKitchenOrders" :key="index"
+                  :style="[order.prepareTime < 10 && {border: '1px solid #FF4452'}]">
             <g-card-title>
               <span class="fs-small-2 ml-1">
                 <span class="text-indigo-accent-2">#{{order.id}}</span>
@@ -140,6 +141,8 @@
     props: {
       pendingOrders: Array,
       kitchenOrders: Array,
+      defaultPrepareTime: Number,
+      onlineOrderSorting: String
     },
     filters: {
       formatDate(date) {
@@ -159,9 +162,19 @@
           confirmStep2: false,
           declineStep2: false,
           prepareTime: null,
-          deliveryDate: null,
           declineReason: ''
         }))
+      }
+    },
+    computed: {
+      sortedKitchenOrders() {
+        if (this.onlineOrderSorting) this.internalOrders = this.internalOrders.sort((current, next) => {
+          if (!current.id || next.id) return false
+          if (this.onlineOrderSorting === 'order') {
+            return next.id - current.id
+          } else return current.prepareTime - next.prepareTime
+        })
+        return this.kitchenOrders
       }
     },
     methods: {
@@ -184,7 +197,6 @@
         if (order.declineStep2) this.$set(order, 'declineStep2', false)
         if (!order.confirmStep2) return this.$set(order, 'confirmStep2', true)
         if (!order.prepareTime) return
-        order.deliveryDate = dayjs().add(+order.prepareTime, 'minute').toDate()
         this.acceptOrder(order)
       },
       onClickDecline(order) {
