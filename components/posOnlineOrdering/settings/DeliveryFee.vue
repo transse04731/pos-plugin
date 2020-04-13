@@ -90,7 +90,7 @@
       },
       updateDeliveryFee(change) {
         const deliveryFee = {...this.store.deliveryFee, ...change}
-        this.$emit('update', deliveryFee)
+        this.$emit('update', { deliveryFee })
       },
     }
   }
