@@ -3,7 +3,7 @@
     <template v-if="mode === 'view'">
       <div class="menu-setting-item">
         <div class="ta-center">{{ index + 1 }}</div>
-        <img :src="image" class="menu-setting-item__image"/>
+        <img :src="image" class="menu-setting-item__image" draggable="false"/>
         <div class="menu-setting-item__content px-2">
           <div class="menu-setting-item__name row-flex">
             <span class="col-1">{{id}}.</span>

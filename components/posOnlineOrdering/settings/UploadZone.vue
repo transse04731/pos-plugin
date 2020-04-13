@@ -1,7 +1,7 @@
 <template>
   <div class="upload-zone" >
     <div v-if="url">
-      <img :src="url" class="uploaded-image"/>
+      <img :src="url" class="uploaded-image" draggable="false"/>
       <g-btn @click="uploadImage" class="edit-image-btn">Change Image</g-btn>
     </div>
     <div v-else @click="uploadImage" style="padding: 20px;">
