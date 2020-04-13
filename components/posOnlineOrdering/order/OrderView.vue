@@ -67,14 +67,14 @@
       <div class="pos-order__right">
         <order-table :store="store"/>
       </div>
+  
+      <g-dialog v-model="dialog.merchantClosed" persistance fullscreen>
+        <div style="width: 464px; height: 256px">
+          <div style="font-style: normal; font-weight: bold;font-size: 18px;">Merchant is temporarily closed</div>
+          <div style="font-style: normal; font-weight: normal; font-size: 15px;">{{ merchantMessage }}</div>
+        </div>
+      </g-dialog>
     </template>
-    
-    <g-dialog v-model="dialog.merchantClosed" persistance fullscreen>
-      <div style="width: 464px; height: 256px">
-        <div style="font-style: normal; font-weight: bold;font-size: 18px;">Merchant is temporarily closed</div>
-        <div style="font-style: normal; font-weight: normal; font-size: 15px;">{{ merchantMessage }}</div>
-      </div>
-    </g-dialog>
   </div>
 </template>
 <script>
@@ -155,10 +155,10 @@
       },
       nextOpenHour() {
         if (this.todayOpenHour) {
-          if (this.get24HourValue(todayOpenHour.openTime) > now)
+          if (this.get24HourValue(this.todayOpenHour.openTime) > this.now)
             return {
               day: this.dayInWeeks[dayInWeekIndex],
-              hour: todayOpenHour.openTime
+              hour: this.todayOpenHour.openTime
           }
         }
         
@@ -178,12 +178,12 @@
       },
       merchantMessage() {
         if (this.nextOpenHour)
-          return `The merchant is temporarily closed and will not accept orders until ${nextOpenHour.hour }, ${ nextOpenHour.day }. Please come back after that. We apologize for any inconvenience caused`
+          return `The merchant is temporarily closed and will not accept orders until ${this.nextOpenHour.hour }, ${ this.nextOpenHour.day }. Please come back after that. We apologize for any inconvenience caused`
         return  'The merchant is temporarily closed. We apologize for any inconvenience caused'
       },
       isStoreOpening() {
         if (this.todayOpenHour) {
-          return this.get24HourValue(this.todayOpenHour.openTime) <= now && now <= this.get24HourValue(this.todayOpenHour.closeTime)
+          return this.get24HourValue(this.todayOpenHour.openTime) <= this.now && this.now <= this.get24HourValue(this.todayOpenHour.closeTime)
         }
         return false
       },
