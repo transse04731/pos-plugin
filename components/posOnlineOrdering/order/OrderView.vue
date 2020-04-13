@@ -15,9 +15,11 @@
         
             <div style="display: flex; align-items: center; font-weight: 300">
               <span :style="storeOpenStatusStyle">{{ storeOpenStatus }}</span>
-              <span style="margin-right: 3px;">|</span>
-              <g-icon size="16">access_time</g-icon>
-              <span style="color: #424242; margin-left: 3px">{{ storeWorkingTime }}</span>
+              <template v-if="storeWorkingTime">
+                <span style="margin-right: 3px;">|</span>
+                <g-icon size="16">access_time</g-icon>
+                <span style="color: #424242; margin-left: 3px">{{ storeWorkingTime }}</span>
+              </template>
             </div>
           </div>
         </div>
