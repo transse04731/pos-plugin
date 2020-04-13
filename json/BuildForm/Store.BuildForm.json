@@ -173,6 +173,24 @@
         }
       ],
       "type": "object"
+    },
+    {
+      "_id": "5e93d961a403ff2fddae4f02",
+      "schemaType": "array",
+      "key": "printers",
+      "type": "array",
+      "fields": [
+        {
+          "schemaType": "string",
+          "key": "printer"
+        }
+      ]
+    },
+    {
+      "_id": "5e93d961a403ff2fddae4f03",
+      "schemaType": "boolean",
+      "key": "useMultiplePrinters",
+      "type": "input@switch"
     }
   ],
   "name": "Store",

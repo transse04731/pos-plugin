@@ -35,17 +35,32 @@
 </template>
 
 <script>
+  import _ from 'lodash'
+  
   export default {
     name: "MultiplePrinter",
+    props: {
+      store: Object,
+    },
     data() {
       return {
-        multiple: true,
         dialog: {
           newPrinter: false
         },
-        printers: ['Food printer', 'Drink printer', 'Receipt printer'],
-        printer: null,
         name: ''
+      }
+    },
+    computed: {
+      multiple: {
+        get() {
+          return this.store.multiplePrinters
+        },
+        set(value) {
+          this.$emit('update', { multiplePrinters: value })
+        }
+      },
+      printers() {
+        return this.store.printers
       }
     },
     methods: {
@@ -57,10 +72,12 @@
         this.printers.push(this.name)
         this.name = ''
         this.dialog.newPrinter = false
+        this.$emit('update', { printers: this.printers })
       },
       removePrinter(printer) {
         const index = this.printers.findIndex(p => p === printer)
         this.printers.splice(index, 1)
+        this.$emit('update', { printers: this.printers })
       }
     }
   }

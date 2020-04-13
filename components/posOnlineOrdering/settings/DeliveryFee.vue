@@ -9,45 +9,89 @@
       <div class="delivery-fee__content-main">
         <div class="delivery-fee__content-item" v-for="(item, i) in items" :key="i">
           <div class="item-code col-9">
-            <input type="text" v-model="item.code"/>
+            <input type="text" v-model="item.zipCode" @input="e => updateZipCodeDebounce(item, e)"/>
           </div>
           <div class="item-fee col-2">
-            <input type="numer" v-model="item.fee" placeholder="€"/>
+            <input type="numer" v-model="item.fee" placeholder="€" @input="e => updateFeeDebounce(item, e)"/>
           </div>
           <div class="item-btn--delete col-1">
             <g-icon size="16" color="#424242">icon-close</g-icon>
           </div>
         </div>
-        <div class="item-btn--add">
+        <div class="item-btn--add" @click="addNewFee">
           <g-icon size="40" color="#2979FF">add</g-icon>
         </div>
       </div>
-      <g-switch v-model="acceptOtherZipCode" label="Accept orders with other zip codes"/>
+      <g-switch v-model="acceptOrderInOtherZipCodes" label="Accept orders with other zip codes" @change="updateAcceptOrderInOtherZipCode"/>
       <div class="row-flex align-items-center">
         <span class="fw-700 mr-2 nowrap">Shipping fee for other zip codes</span>
-        <g-text-field-bs class="bs-tf__pos col-2" v-model="otherFee"/>
+        <g-text-field-bs class="bs-tf__pos col-2" v-model="defaultFee" @input="setDefaultFeeDebounce"/>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import _ from 'lodash'
+  
   export default {
     name: "DeliveryFee",
     props: {
-
+      store: Object
     },
     data() {
       return {
-        items: [
-          {code: '12345', fee: 5},
-          {code: 'EH12345', fee: 1},
-        ],
-        acceptOtherZipCode: true,
-        otherFee: ''
+      }
+    },
+    created() {
+      this.setDefaultFeeDebounce = _.debounce(this.setDefaultFee, 500)
+      this.updateZipCodeDebounce = _.debounce(this.updateZipCode, 500)
+      this.updateFeeDebounce = _.debounce(this.updateFee, 500)
+    },
+    computed: {
+      items() {
+        return this.store.deliveryFee.fees
+      },
+      acceptOrderInOtherZipCodes() {
+        return this.store.deliveryFee.acceptOrderInOtherZipCodes
+      },
+      defaultFee() {
+        return this.store.deliveryFee.defaultFee
       }
     },
     methods: {
+      addNewFee() {
+        this.store.deliveryFee.fees.push({zipCode: '', fee: 0})
+        this.updateFees()
+      },
+      updateZipCode(item, e) {
+        _.each(this.store.deliveryFee.fees, fee => {
+          if (fee === item)
+            fee.zipCode = e.target.value
+        })
+        this.updateFees()
+      },
+      updateFee(item, e) {
+        _.each(this.store.deliveryFee.fees, fee => {
+          if (fee === item) {
+            fee.fee = e.target.value
+          }
+        })
+        this.updateFees()
+      },
+      updateFees() {
+        this.updateDeliveryFee({ fees: this.store.deliveryFee.fees })
+      },
+      updateAcceptOrderInOtherZipCode(value) {
+        this.updateDeliveryFee({ acceptOrderInOtherZipCodes: value })
+      },
+      setDefaultFee(value) {
+        this.updateDeliveryFee({ defaultFee: value })
+      },
+      updateDeliveryFee(change) {
+        const deliveryFee = {...this.store.deliveryFee, ...change}
+        this.$emit('update', deliveryFee)
+      },
     }
   }
 </script>
