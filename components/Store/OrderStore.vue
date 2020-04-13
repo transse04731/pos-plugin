@@ -556,6 +556,8 @@
       // add online orders: cms.socket.emit('added-online-order')
       cms.socket.on('updateOnlineOrders', async () => {
         await this.updateOnlineOrders()
+        const bell = new Audio('/plugins/pos-plugin/assets/sounds/bell.mp3')
+        bell.addEventListener('canplaythrough', () => bell.play())
       })
       // this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
     },
