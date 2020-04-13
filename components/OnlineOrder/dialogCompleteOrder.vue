@@ -40,9 +40,9 @@
         </div>
       </g-card-text>
       <g-card-actions>
-        <g-btn-bs background-color="#E57373" text-color="white" @click.stop="$emit('declineOrder', order)">Cancel & move to declined orders</g-btn-bs>
-        <g-btn-bs background-color="#4CAF50" text-color="white" @click.stop="$emit('setPendingOrder', order)">Return to pending orders</g-btn-bs>
-        <g-btn-bs background-color="#2979FF" text-color="white" @click.stop="$emit('completeOrder', order)">Complete order & Print receipt</g-btn-bs>
+        <g-btn-bs background-color="#E57373" text-color="white" @click.stop="declineOrder(order)">Cancel & move to declined orders</g-btn-bs>
+        <g-btn-bs background-color="#4CAF50" text-color="white" @click.stop="setPendingOrder(order)">Return to pending orders</g-btn-bs>
+        <g-btn-bs background-color="#2979FF" text-color="white" @click.stop="completeOrder(order)">Complete order & Print receipt</g-btn-bs>
       </g-card-actions>
     </g-card>
   </g-dialog>
@@ -75,6 +75,18 @@
           this.order = order
           this.dialog = true
         }
+      },
+      declineOrder(order) {
+        this.$emit('declineOrder', order)
+        this.dialog = false
+      },
+      setPendingOrder(order) {
+        this.$emit('setPendingOrder', order)
+        this.dialog = false
+      },
+      completeOrder() {
+        this.$emit('completeOrder', order)
+        this.dialog = false
       }
     }
   }

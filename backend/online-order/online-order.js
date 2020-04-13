@@ -4,8 +4,7 @@ const  { getBookingNumber, getVDate } = require('../../components/logic/productU
 module.exports = cms => {
   cms.socket.on('connect', socket => {
     socket.on('createOrder', async orderData => {
-      debugger
-      console.log(orderData);
+      if (!orderData) return
       const { orderType: type, paymentType, customer, products, deliveryTime } = orderData
       
       const date = new Date();
