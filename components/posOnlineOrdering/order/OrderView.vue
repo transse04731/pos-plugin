@@ -1,6 +1,5 @@
 <template>
   <div class="pos-order">
-    <!-- -->
     <template  v-if="store">
       <div class="pos-order__left">
         <div class="pos-order__left__header">
@@ -65,8 +64,7 @@
         </div>
         <order-table v-if="showOrder" @back="showOrder = false" :store="store"/>
       </div>
-  
-      <!-- -->
+      
       <div class="pos-order__right">
         <order-table :store="store"/>
       </div>
@@ -247,7 +245,9 @@
   .pos-order {
     box-sizing: border-box;
     display: flex;
-    width: 100vw;
+    width: 1140px;
+    max-width: 1140px;
+    margin: 0 auto;
     height: 100vh;
 
     &__left {
