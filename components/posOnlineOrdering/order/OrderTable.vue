@@ -126,6 +126,8 @@
     data: function () {
       return {
         view: 'order',
+        orderType: 'delivery', // delivery || pick-up
+        paymentType: 'cash', // cash || credit
         customer: {
           name: '',
           phone: '',
@@ -136,7 +138,7 @@
         },
       }
     },
-    injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems,shippingFee,orderType,paymentType)'],
+    injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems)'],
     filters: {
       currency(value) {
         return '$' + value
@@ -151,6 +153,26 @@
       totalPrice() {
         return _.sumBy(this.orderItems, item => item.price * item.quantity)
       },
+      shippingFee() {
+        if (this.orderBy === 'pick-up')
+          return 0
+        
+        // empty order list
+        if (!this.orderItems.length)
+          return 0
+        
+        // calculate zip code from store setting
+        for(let deliveryFee of this.store.deliveryFee.fees) {
+         if (_.lowerCase(_.trim(deliveryFee.zipCode)) === _.lowerCase(_.trim(this.customer.zipCode)))
+           return deliveryFee.fee
+        }
+        
+        // other zip code will get default fee if store accept order from another zip code
+        if (this.store.delivery.acceptOrderInOtherZipCodes)
+          return this.store.delivery.defaultFee
+        
+        return 0
+      }
     },
     methods: {
       changeView() {
