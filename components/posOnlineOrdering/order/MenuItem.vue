@@ -26,7 +26,7 @@
       </g-icon>
       <template v-else>
         <g-icon @click.stop="decreaseQuantity" color="#424242" size="28">remove_circle_outline</g-icon>
-        <span>{{quantity}}</span>
+        <span style="margin-left: 4px; margin-right: 4px">{{quantity}}</span>
         <g-icon @click.stop="increaseQuantity" color="#424242" size="28">add_circle</g-icon>
       </template>
     </div>
