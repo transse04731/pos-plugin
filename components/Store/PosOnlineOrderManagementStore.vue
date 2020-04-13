@@ -25,7 +25,7 @@
       intermediatePosManagementModel() {
         const groups = []
         _.each(this.storeGroups, storeGroup => {
-          const group = { name: storeGroup.name, stores: [] }
+          const group = { _id: storeGroup._id, name: storeGroup.name, stores: [] }
           _.each(this.stores, store => {
             if (_.find(store.groups, group => group._id === storeGroup._id))
               group.stores.push({...store, id: group.stores.length + 1 })
@@ -39,7 +39,7 @@
           return this.intermediatePosManagementModel
         const groups = []
         _.each(this.intermediatePosManagementModel, storeGroup => {
-          const group = { name: storeGroup.name }
+          const group = { _id: storeGroup._id, name: storeGroup.name }
           const stores = []
           // search
           if (this.searchText) {
@@ -101,10 +101,23 @@
         await this.loadStores()
         return { ok: true }
       },
-      async removeStore(_id) {
-        await cms.getModel('Store').remove({_id})
-        await this.loadStores()
-        return { ok : true }
+      async removeStore(groupId, store) {
+        console.log('remove store')
+        console.log('group id', groupId)
+        console.log('store', store)
+        const indexOfGroup = _.findIndex(store.groups, g => g._id === groupId)
+        store.groups.splice(indexOfGroup, 1)
+        const groups = _.map(store.groups, g => g._id)
+        if (groups.length > 0) {
+          console.log('remove store', store._id, 'from group', groupId)
+          console.log('store still exist in another group')
+          return await this.updateStore(store._id, { groups })
+        } else {
+          console.log('remove store')
+          await cms.getModel('Store').remove({_id : store._id})
+          await this.loadStores()
+          return { ok : true }
+        }
       },
       async updateStore(_id, change) {
         await cms.getModel('Store').findOneAndUpdate({_id}, {...change})

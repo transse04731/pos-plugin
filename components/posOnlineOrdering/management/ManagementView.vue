@@ -71,6 +71,7 @@
                   v-for="(group, i) in searchResult"
                   v-bind="group"
                   :key="`group_${i}`"
+                  @delete="removeStore(group._id, $event)"
                   @view:settings="viewStoreSetting($event)"/>
             </template>
           </div>
