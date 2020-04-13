@@ -71,10 +71,10 @@
         <order-table :store="store"/>
       </div>
   
-      <g-dialog v-model="dialog.merchantClosed" persistance fullscreen>
-        <div style="width: 464px; height: 256px">
-          <div style="font-style: normal; font-weight: bold;font-size: 18px;">Merchant is temporarily closed</div>
-          <div style="font-style: normal; font-weight: normal; font-size: 15px;">{{ merchantMessage }}</div>
+      <g-dialog :value="!isStoreOpening" persistent>
+        <div style="width: 464px; height: 256px; background: #FFFFFF; box-shadow: 0px 0px 28px rgba(58, 56, 56, 0.15); border-radius: 4px; display: flex; flex-direction: column; align-items: center; padding: 40px; margin: 0 auto;">
+          <div style="font-style: normal; font-weight: bold;font-size: 18px; margin-bottom: 22px;">Merchant is temporarily closed</div>
+          <div style="font-style: normal; font-weight: normal; font-size: 15px; max-width: 410px; text-align: center">{{ merchantMessage }}</div>
         </div>
       </g-dialog>
     </template>
@@ -100,9 +100,6 @@
         dayInWeeks: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         today: dayjs().format("dddd"),
         now: dayjs().format('HH:mm'),
-        dialog: {
-          merchantClosed: false,
-        }
       }
     },
     async created() {
@@ -174,14 +171,14 @@
           if (openHour) {
             return {
               hour: openHour.openTime,
-              day: this.dayInWeeks[dayInWeekIndex]
+              day: dayInWeekIndex === this.dayInWeekIndex + 1 ? 'tomorrow' : this.dayInWeeks[dayInWeekIndex]
             }
           }
         } while (dayInWeekIndex !== this.dayInWeekIndex)
       },
       merchantMessage() {
         if (this.nextOpenHour)
-          return `The merchant is temporarily closed and will not accept orders until ${this.nextOpenHour.hour }, ${ this.nextOpenHour.day }. Please come back after that. We apologize for any inconvenience caused`
+          return `The merchant is temporarily closed and will not accept orders until ${this.nextOpenHour.hour } ${ this.nextOpenHour.day }. Please come back after that. We apologize for any inconvenience caused`
         return  'The merchant is temporarily closed. We apologize for any inconvenience caused'
       },
       isStoreOpening() {
