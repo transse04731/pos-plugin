@@ -11,11 +11,24 @@
     data: function () {
       return {
         orderItems: [],
+        orderType: 'delivery', // delivery || pick-up
+        paymentType: 'cash', // cash || credit
+        customer: {
+          name: '',
+          phone: '',
+          address: '',
+          zipCode: '',
+          deliveryTime: new Date(),
+          note: ''
+        }
       }
     },
     computed: {
       shippingFee() {
         // TODO: Zipcode -> shippingFee
+        if (this.orderBy === 'pick-up')
+          return 0
+        
         return this.orderItems.length ? 1 : 0
       }
     },
@@ -41,6 +54,9 @@
     provide() {
       return {
         orderItems: this.orderItems,
+        orderType: this.orderType,
+        paymentType: this.paymentType,
+        customer: this.customer,
         increaseOrAddNewItems: this.increaseOrAddNewItems,
         decreaseOrRemoveItems: this.decreaseOrRemoveItems
       }

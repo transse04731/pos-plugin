@@ -126,19 +126,9 @@
     data: function () {
       return {
         view: 'order',
-        orderType: 'delivery', // delivery || pick-up
-        paymentType: 'cash', // cash || credit
-        customer: {
-          name: '',
-          phone: '',
-          address: '',
-          zipCode: '',
-          deliveryTime: new Date(),
-          note: ''
-        }
       }
     },
-    injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems,shippingFee)'],
+    injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems,shippingFee,orderType,paymentType)'],
     filters: {
       currency(value) {
         return '$' + value
