@@ -78,6 +78,8 @@
 </template>
 
 <script>
+  import _ from 'lodash'
+  
   export default {
     name: "PosManagementSetting",
     props: {
@@ -117,6 +119,9 @@
       return {
       }
     },
+    created() {
+      this.updateDebounce = _.debounce(this.update, 500)
+    },
     computed: {
       webShopUrlPrefix() {
         return`${location.host}/store/`
@@ -126,7 +131,7 @@
           return this.group
         },
         set(val) {
-          this.$emit('update', { groups: val })
+          this.updateDebounce({ groups: val })
         }
       },
       computedName: {
@@ -134,7 +139,7 @@
           return this.name
         },
         set(val) {
-          this.$emit('update', { name: val })
+          this.updateDebounce({ name: val })
         }
       },
       computedAddress: {
@@ -142,7 +147,7 @@
           return this.address
         },
         set(val) {
-          this.$emit('update', { address: val })
+          this.updateDebounce({ address: val })
         }
       },
       computedOnlineOrdering: {
@@ -150,8 +155,13 @@
           return this.onlineOrdering ? "1" : "0"
         },
         set(value) {
-          this.$emit('update', { onlineOrdering: value === "1" })
+          this.update({ onlineOrdering: value === "1" })
         }
+      }
+    },
+    methods: {
+      update(change) {
+        this.$emit('update', change)
       }
     }
   }
