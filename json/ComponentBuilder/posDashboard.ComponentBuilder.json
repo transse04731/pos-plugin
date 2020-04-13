@@ -109,13 +109,7 @@
               "local": "view"
             }
           ],
-          "slotScopeBinding": [
-            {
-              "type": "prop",
-              "slotScope": "id",
-              "local": "id"
-            }
-          ],
+          "slotScopeBinding": [],
           "slot": "sidebar",
           "url": "plugins/pos-plugin/components/Dashboard/PosDashboardSidebar.vue",
           "path": "components/Dashboard/PosDashboardSidebar.vue",
@@ -150,6 +144,43 @@
                     "_code_": "module.exports = function() {\n  this.$emit('update:view', {\n    name: 'Functions',\n    params: ''\n  })\n}",
                     "_code_type_": "commonJs"
                   }
+                },
+                {
+                  "choice": "item",
+                  "title": "Online Orders",
+                  "icon": "icon-delivery",
+                  "items": [
+                    {
+                      "choice": "item",
+                      "title": "Dashboard",
+                      "icon": "radio_button_unchecked",
+                      "iconType": "small",
+                      "onClick": {
+                        "_code_": "module.exports = function() {\n  this.$emit('update:view', {\n    name: 'Dashboard'\n  })\n}",
+                        "_code_type_": "commonJs"
+                      }
+                    },
+                    {
+                      "choice": "item",
+                      "title": "Completed Orders",
+                      "icon": "radio_button_unchecked",
+                      "iconType": "small",
+                      "onClick": {
+                        "_code_": "module.exports = function () {\n  this.$emit('update:view', {\n    name: 'Order',\n    params: {\n      status: 'completed'\n    }\n  })\n}",
+                        "_code_type_": "commonJs"
+                      }
+                    },
+                    {
+                      "choice": "item",
+                      "title": "Declined Orders",
+                      "icon": "radio_button_unchecked",
+                      "iconType": "small",
+                      "onClick": {
+                        "_code_": "module.exports = function () {\n  this.$emit('update:view', {\n    name: 'Order',\n    params: {\n      status: 'declined'\n    }\n  })\n}",
+                        "_code_type_": "commonJs"
+                      }
+                    }
+                  ]
                 }
               ],
               "afterMountFn": {
@@ -209,6 +240,92 @@
               "url": "plugins/pos-plugin/components/Restaurant/RestaurantRoom.vue",
               "path": "components/Restaurant/RestaurantRoom.vue",
               "pluginName": "pos-plugin"
+            },
+            {
+              "choice": "view",
+              "component": "OnlineOrderMain",
+              "binding": [],
+              "slotScopeBinding": [],
+              "slot": "Dashboard",
+              "url": "plugins/pos-plugin/components/OnlineOrder/OnlineOrderMain.vue",
+              "path": "components/OnlineOrder/OnlineOrderMain.vue",
+              "pluginName": "pos-plugin",
+              "inject": [
+                {
+                  "service": "OrderStore:pendingOrders",
+                  "local": "pendingOrders",
+                  "type": "prop"
+                },
+                {
+                  "service": "OrderStore:kitchenOrders",
+                  "local": "kitchenOrders",
+                  "type": "prop"
+                },
+                {
+                  "service": "OrderStore:updateOnlineOrders",
+                  "local": "updateOnlineOrders",
+                  "type": "event"
+                },
+                {
+                  "service": "OrderStore:declineOrder",
+                  "local": "declineOrder",
+                  "type": "event"
+                },
+                {
+                  "service": "OrderStore:acceptPendingOrder",
+                  "local": "acceptPendingOrder",
+                  "type": "event"
+                },
+                {
+                  "service": "OrderStore:setPendingOrder",
+                  "local": "setPendingOrder",
+                  "type": "event"
+                },
+                {
+                  "service": "OrderStore:completeOrder",
+                  "local": "completeOrder",
+                  "type": "event"
+                },
+                {
+                  "service": "SettingsStore:defaultPrepareTime",
+                  "local": "defaultPrepareTime",
+                  "type": "prop"
+                },
+                {
+                  "service": "SettingsStore:onlineOrderSorting",
+                  "local": "onlineOrderSorting",
+                  "type": "prop"
+                }
+              ]
+            },
+            {
+              "choice": "view",
+              "component": "OnlineOrderList",
+              "binding": [],
+              "slotScopeBinding": [
+                {
+                  "type": "prop",
+                  "slotScope": "status",
+                  "local": "status"
+                }
+              ],
+              "slot": "Order",
+              "url": "plugins/pos-plugin/components/OnlineOrder/OnlineOrderList.vue",
+              "path": "components/OnlineOrder/OnlineOrderList.vue",
+              "pluginName": "pos-plugin",
+              "inject": [
+                {
+                  "service": "OrderStore:getOnlineOrdersWithStatus",
+                  "local": "getOnlineOrdersWithStatus",
+                  "type": "event"
+                },
+                {
+                  "service": "OrderStore:onlineOrders",
+                  "local": "onlineOrders",
+                  "type": "prop"
+                }
+              ],
+              "isScopedSlot": true
             }
           ]
         }

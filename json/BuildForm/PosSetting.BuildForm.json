@@ -549,6 +549,11 @@
           "schemaType": "string",
           "key": "invoiceLetter",
           "type": "input"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "hideAtEditView",
+          "type": "input@checkbox"
         }
       ],
       "lazy": true
@@ -656,6 +661,209 @@
       "flex": "",
       "addable": null,
       "lazy": true
+    },
+    {
+      "_id": "5e7acfa6b6acd33c45944710",
+      "schemaType": "object",
+      "key": "keyboardConfig",
+      "fields": [
+        {
+          "schemaType": "boolean",
+          "key": "active",
+          "type": "input@checkbox",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "onlyShowInFirstPage",
+          "type": "input@checkbox",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "x",
+          "default": "true",
+          "type": "input@checkbox",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "number",
+          "key": "top",
+          "type": "input@number",
+          "flex": "md3"
+        },
+        {
+          "schemaType": "number",
+          "key": "left",
+          "type": "input@number",
+          "flex": "md3"
+        },
+        {
+          "schemaType": "number",
+          "key": "width",
+          "type": "input@number",
+          "flex": "md3"
+        },
+        {
+          "schemaType": "number",
+          "key": "height",
+          "type": "input@number",
+          "flex": "md3"
+        },
+        {
+          "_id": "5e7ace78b6acd33c45944693",
+          "schemaType": "array",
+          "key": "layout",
+          "type": "tableArray",
+          "fields": [
+            {
+              "schemaType": "array",
+              "key": "rows",
+              "type": "input@multiSelect",
+              "fields": [
+                {
+                  "schemaType": "string"
+                }
+              ],
+              "optionsType": "onlyValue",
+              "options": [
+                "a",
+                "b",
+                "c",
+                "d",
+                "e",
+                "f",
+                "g",
+                "h",
+                "i",
+                "j",
+                "k",
+                "l",
+                "m",
+                "n",
+                "o",
+                "p",
+                "q",
+                "r",
+                "s",
+                "t",
+                "u",
+                "v",
+                "w",
+                "x",
+                "y",
+                "z"
+              ],
+              "allowDuplicates": true
+            }
+          ],
+          "clipboardType": "cut"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "_id": "5e7d74202526c64008ced791",
+      "schemaType": "array",
+      "key": "hardwares",
+      "type": "tableArray",
+      "fields": [
+        {
+          "schemaType": "string",
+          "key": "name",
+          "type": "input"
+        },
+        {
+          "schemaType": "string",
+          "key": "config",
+          "type": "input"
+        }
+      ]
+    },
+    {
+      "_id": "5e7d75aa2526c64008ced80b",
+      "schemaType": "object",
+      "key": "printerGeneralSetting",
+      "type": "object",
+      "fields": [
+        {
+          "schemaType": "boolean",
+          "key": "useMultiPrinterForKitchenPrinter",
+          "type": "input@checkbox",
+          "flex": "md4",
+          "fields": []
+        },
+        {
+          "schemaType": "boolean",
+          "key": "useMultiPrinterForInvoicePrinter",
+          "type": "input@checkbox",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "useMultiPrinterForEntirePrinter",
+          "type": "input@checkbox",
+          "flex": "md4"
+        },
+        {
+          "schemaType": "number",
+          "key": "entireReceipt",
+          "type": "input@select:number",
+          "optionsType": "onlyValue",
+          "options": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4"
+          ]
+        }
+      ]
+    },
+    {
+      "_id": "5e91b0a8e4010703a5932ffc",
+      "schemaType": "object",
+      "key": "onlineDevice",
+      "type": "object",
+      "fields": [
+        {
+          "schemaType": "string",
+          "key": "id",
+          "type": "input"
+        },
+        {
+          "schemaType": "string",
+          "key": "url",
+          "type": "input"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "sound",
+          "type": "input@switch"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "paired",
+          "type": "input@switch"
+        }
+      ]
+    },
+    {
+      "_id": "5e93897a1df7eb1e59a859e5",
+      "schemaType": "number",
+      "key": "defaultPrepareTime",
+      "type": "input@number"
+    },
+    {
+      "_id": "5e93897a1df7eb1e59a859e6",
+      "schemaType": "string",
+      "key": "onlineOrderSorting",
+      "type": "input@select",
+      "optionsType": "onlyValue",
+      "options": [
+        "time",
+        "order"
+      ]
     }
   ],
   "id": "5ddb985ff26bb37e5ccc5c43",
@@ -716,6 +924,36 @@
       ],
       "_id": "5e0ab31749b6aa0421cceba0",
       "name": "PaymentFunctionButtons"
+    },
+    {
+      "fields": [
+        "keyboardConfig"
+      ],
+      "_id": "5e7ace78b6acd33c4594469c",
+      "name": "KeyboardConfig"
+    },
+    {
+      "fields": [
+        "hardwares"
+      ],
+      "_id": "5e7d74202526c64008ced79b",
+      "name": "Hardware"
+    },
+    {
+      "fields": [
+        "printerGeneralSetting"
+      ],
+      "_id": "5e7db3c12526c64008ced8cb",
+      "name": "PrinterGeneralSetting"
+    },
+    {
+      "fields": [
+        "onlineDevice",
+        "defaultPrepareTime",
+        "onlineOrderSorting"
+      ],
+      "_id": "5e8e3ffc9239c47dba244d2e",
+      "name": "OnlineDevices"
     }
   ],
   "title": "",

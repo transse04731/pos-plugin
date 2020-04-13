@@ -451,6 +451,63 @@
               "url": "plugins/pos-plugin/components/Settings/view/viewTax.vue",
               "path": "components/Settings/view/viewTax.vue",
               "pluginName": "pos-plugin"
+            },
+            {
+              "choice": "view",
+              "component": "OnlineOrderSetting",
+              "binding": [],
+              "slotScopeBinding": [],
+              "slot": "Online Ordering",
+              "url": "plugins/pos-plugin/components/OnlineOrder/OnlineOrderSetting.vue",
+              "path": "components/OnlineOrder/OnlineOrderSetting.vue",
+              "pluginName": "pos-plugin",
+              "inject": [
+                {
+                  "service": "SettingsStore:onlineDevice",
+                  "local": "onlineDevice",
+                  "type": "prop"
+                },
+                {
+                  "service": "SettingsStore:getOnlineDevice",
+                  "local": "getOnlineDevice",
+                  "type": "event"
+                },
+                {
+                  "service": "SettingsStore:updateDevice",
+                  "local": "updateDevice",
+                  "type": "event"
+                },
+                {
+                  "service": "SettingsStore:registerOnlineOrder",
+                  "local": "registerOnlineOrder",
+                  "type": "event"
+                },
+                {
+                  "service": "SettingsStore:unregisterOnlineOrder",
+                  "local": "unregisterOnlineOrder",
+                  "type": "event"
+                },
+                {
+                  "service": "SettingsStore:defaultPrepareTime",
+                  "local": "defaultPrepareTime",
+                  "type": "prop"
+                },
+                {
+                  "service": "SettingsStore:onlineOrderSorting",
+                  "local": "onlineOrderSorting",
+                  "type": "prop"
+                },
+                {
+                  "service": "SettingsStore:updateDefaultPrepareTime",
+                  "local": "updateDefaultPrepareTime",
+                  "type": "event"
+                },
+                {
+                  "service": "SettingsStore:updateOnlineOrderSorting",
+                  "local": "updateOnlineOrderSorting",
+                  "type": "event"
+                }
+              ]
             }
           ],
           "inject": [

@@ -7,7 +7,15 @@
         "address": "1 A Street, XYZ 9999",
         "telephone": "0123 456 789",
         "taxNumber": "9999 9999 9999"
-      }
+      },
+      "onlineDevice": {
+        "id": "5e91740035f42398b53fe3c7",
+        "paired": true,
+        "url": "http://127.0.0.1:8888",
+        "sound": true
+      },
+      "defaultPrepareTime": 30,
+      "onlineOrderSorting": "order"
     }
   ],
   "Terminal": [
