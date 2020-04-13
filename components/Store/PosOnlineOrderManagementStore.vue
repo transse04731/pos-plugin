@@ -1,4 +1,6 @@
-<template> </template>
+<template>
+  <g-snackbar v-model="showSnackbar" top right color="#536dfe">Saved</g-snackbar>
+</template>
 <script>
   import _ from 'lodash'
   export default {
@@ -6,6 +8,7 @@
     domain: 'PosOnlineOrderManagementStore',
     data: function () {
       return {
+        showSnackbar: false,
         storeGroups: [],
         stores: [],
         searchText: null,
@@ -106,6 +109,7 @@
       async updateStore(_id, change) {
         await cms.getModel('Store').findOneAndUpdate({_id}, {...change})
         await this.loadStores()
+        this.showSnackbar = true
         return { ok : true }
       },
       async addDevice({pairingCode}) {
