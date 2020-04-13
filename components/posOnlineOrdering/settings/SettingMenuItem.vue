@@ -109,6 +109,7 @@
     &__image {
       width: 80px;
       height: 80px;
+      border-radius: 10px;
     }
 
     &__content {
