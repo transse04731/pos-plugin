@@ -57,9 +57,11 @@
           <div class="section-form">
             <g-text-field v-model="customer.name" label="Name" clearable clear-icon="icon-cancel@16" prepend-icon="icon-person@16"/>
             <g-text-field v-model="customer.phone" label="Phone" clearable clear-icon="icon-cancel@16" prepend-icon="icon-phone2@16"/>
-            <g-text-field v-model="customer.address" label="Address" clearable clear-icon="icon-cancel@16" prepend-icon="icon-place@16"/>
-            <g-text-field v-model="customer.zipCode" label="Zip code" clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
-            <g-text-field type="datetime-local" label="Delivery time" clearable clear-icon="icon-cancel@16" prepend-icon="icon-delivery-truck@16"/>
+            <template v-if="orderType === 'delivery'">
+              <g-text-field v-model="customer.address" label="Address" clearable clear-icon="icon-cancel@16" prepend-icon="icon-place@16"/>
+              <g-text-field v-model="customer.zipCode" label="Zip code" clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
+              <g-text-field type="datetime-local" label="Delivery time" clearable clear-icon="icon-cancel@16" prepend-icon="icon-delivery-truck@16"/>
+            </template>
             <g-textarea v-model="customer.note" placeholder="Note..." rows="3" no-resize/>
           </div>
 
