@@ -17,7 +17,7 @@
           </div>
         </template>
         <template v-else>
-          <g-card elevation="0" v-for="order in internalOrders">
+          <g-card elevation="0" v-for="(order, index) in internalOrders" :key="index">
             <g-card-title>
               <g-icon v-if="order.type === 'delivery'">icon-delivery-man</g-icon>
               <g-icon v-if="order.type === 'pickup'">icon-pickup</g-icon>

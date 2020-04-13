@@ -792,25 +792,11 @@
       },
 
       registerOnlineOrder(deviceId) {
-        if (this.onlineOrderSocket) return
-
-        const serverUrl = this.onlineDevice.url
-        const io = window['socket.io-client']
-
-        this.onlineOrderSocket = io(`${serverUrl}?clientId=${deviceId}`)
-        this.onlineOrderSocket.on('createOrder', (orderData, ackFn) => {
-          const {socket: sk} = window.cms
-          sk.emit('createOrder', orderData)
-          ackFn()
-        })
+        window.cms.socket.emit('registerOnlineOrderDevice', deviceId)
       },
 
       unregisterOnlineOrder() {
-        if (this.onlineOrderSocket) {
-          this.onlineOrderSocket.off('createOrder')
-          this.onlineOrderSocket.close()
-          this.onlineOrderSocket = null
-        }
+        window.cms.socket.emit('unregisterOnlineOrderDevice')
       },
     },
     provide() {
