@@ -34,7 +34,8 @@
                     v-for="(product, index) in cate.products"
                     v-bind="product"
                     :index="index"
-                    :printers="printers"
+                    :available-printers="store.printers"
+                    :use-multiple-printers="store.useMultiplePrinters"
                     :key="`item_${index}`"
                     @save="updateProduct(product._id, $event)"
                     @delete="openDeleteProductDialog(product._id)"/>
@@ -46,7 +47,8 @@
               <div v-if="showAddNewProductPanel[cate._id]">
                 <setting-new-menu-item
                     :index="cate.products.length"
-                    :printers="printers"
+                    :available-printers="store.printers"
+                    :use-multiple-printers="store.useMultiplePrinters"
                     @cancel="hideAddNewProductPanelForCategory(cate)"
                     @save="addNewProduct({...$event, category: cate._id})"/>
               </div>
@@ -78,7 +80,6 @@
       store: Object,
       categories: Array,
       products: Array,
-      printers: Array
     },
     data: function () {
       return {

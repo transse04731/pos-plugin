@@ -19,11 +19,10 @@
         <g-text-field-bs small v-model="internalName" :rules="productRules.name" placeholder="Name *"/>
           </div>
           <div class="col-3">
-            <g-select small text-field-component="GTextFieldBs" v-model="internalPrinter" :items="printers"/>
+            <g-select :multiple="useMultiplePrinters" small text-field-component="GTextFieldBs" v-model="internalPrinters" :items="internalAvailablePrinters"/>
           </div>
           <div class="col-2">
-            <g-text-field-bs small v-model="internalPrice" :rules="productRules.price" type="number"
-                             placeholder="Price *"/>
+            <g-text-field-bs small v-model="internalPrice" :rules="productRules.price" type="number" placeholder="Price *"/>
           </div>
         </div>
         <div class="menu-setting-new-item__content--lower">
@@ -60,6 +59,8 @@
   </div>
 </template>
 <script>
+  import _ from 'lodash'
+  
   export default {
     name: 'NewMenuItem',
     props: {
@@ -71,8 +72,9 @@
       tax: Number,
       image: String,
       number: Number,
-      groupPrinter: String,
-      printers: Array
+      printers: Array,
+      availablePrinters: Array,
+      useMultiplePrinters: Boolean,
     },
     data: function () {
       return {
@@ -82,7 +84,7 @@
         internalPrice: this.price,
         internalTax: this.tax || 7,
         internalImage: this.image,
-        internalPrinter: (this.groupPrinter && this.groupPrinter._id)|| null,
+        internalPrinters: this.printers || [],
         // TODO: Link database
         taxes: [{ text: '19%', value: 19 }, { text: '7%', value: 7 }],
         productRules: {
@@ -90,6 +92,11 @@
           name: [ (value) => value ? true : 'Product\'s name is missing' ],
           price: [ (value) => value ? true : 'Product\'s price is missing' ]
         }
+      }
+    },
+    computed: {
+      internalAvailablePrinters() {
+        return _.map(this.availablePrinters, printer => ({ text: printer, value: printer }))
       }
     },
     methods: {
@@ -112,7 +119,7 @@
           return
         }
 
-        if (!this.internalPrinter) {
+        if (!this.internalPrinters.length) {
           alert('Product\'s printer is missing')
           return
         }
@@ -122,7 +129,7 @@
           image: this.internalImage,
           name: this.internalName,
           desc: this.internalDesc,
-          groupPrinter: this.internalPrinter,
+          printers: this.internalPrinters,
           price: this.internalPrice,
           tax: this.internalTax,
         })

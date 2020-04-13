@@ -7,7 +7,8 @@
         <div class="menu-setting-item__content px-2">
           <div class="menu-setting-item__name row-flex">
             <span class="col-1">{{index}}.</span>
-            <span class="col-11">{{name}}</span>
+            <span class="col-7">{{name}}</span>
+            <span class="col-6">{{printerStr}}</span>
           </div>
           <div class="menu-setting-item__desc">
             {{desc}}
@@ -51,21 +52,23 @@
           :name="name"
           :desc="desc"
           :price="price"
-          :group-printer="groupPrinter"
-          :tax="tax"
           :printers="printers"
+          :tax="tax"
+          :available-printers="availablePrinters"
+          :use-multiple-printers="useMultiplePrinters"
           @cancel="mode = 'view'"
           @save="saveProduct"/>
     </template>
   </div>
 </template>
 <script>
+  import _ from 'lodash'
   import SettingNewMenuItem from './SettingNewMenuItem';
   
   export default {
     name: 'SettingMenuItem',
     components: { SettingNewMenuItem },
-    props: [ '_id', 'index', 'id', 'image', 'name', 'desc', 'price', 'groupPrinter', 'tax', 'printers'],
+    props: [ '_id', 'index', 'id', 'image', 'name', 'desc', 'price', 'printers', 'tax', 'printers', 'availablePrinters', 'useMultiplePrinters'],
     data: function () {
       return {
         mode: 'view'
@@ -76,7 +79,11 @@
         return '$' + value
       }
     },
-    computed: {},
+    computed: {
+      printerStr() {
+        return _.join(this.printers, ', ')
+      }
+    },
     methods: {
       deleteItem() {
         this.$emit('delete')
