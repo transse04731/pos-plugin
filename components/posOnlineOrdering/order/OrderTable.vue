@@ -51,8 +51,8 @@
         <template v-if="confirmView">
           <div class="section-header">CONTACT INFORMATION</div>
           <g-radio-group v-model="orderType" row class="radio-option">
-            <g-radio color="#1271ff" label="Pick-up" value="pick-up"/>
-            <g-radio color="#1271ff" label="Delivery" value="delivery"/>
+            <g-radio color="#1271ff" label="Pick-up" value="pick-up" :disabled="!store.pickup"/>
+            <g-radio color="#1271ff" label="Delivery" value="delivery" :disabled="!store.delivery"/>
           </g-radio-group>
           <div class="section-form">
             <g-text-field v-model="customer.name" label="Name" clearable clear-icon="icon-cancel@16" prepend-icon="icon-person@16"/>
