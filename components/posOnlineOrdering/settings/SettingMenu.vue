@@ -131,8 +131,9 @@
       deleteCategory() {
         this.$emit('delete-category', this.selectedCategoryId)
       },
-      addNewProduct({ image, name, desc, price, tax, category }) {
-        this.$emit('add-new-product', { image, name, desc, price, tax, category } )
+      addNewProduct(product) {
+        console.log('product', product)
+        this.$emit('add-new-product', product )
         this.showAddNewProductPanel = false
       },
       updateProduct(productId, change) {
