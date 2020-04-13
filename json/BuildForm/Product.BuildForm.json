@@ -258,6 +258,19 @@
       "ref": "Store",
       "type": "ref-select",
       "labelProp": "name"
+    },
+    {
+      "_id": "5e9416f0408cad381092f425",
+      "schemaType": "array",
+      "key": "printers",
+      "type": "array",
+      "fields": [
+        {
+          "schemaType": "string",
+          "key": "printer",
+          "type": "input"
+        }
+      ]
     }
   ],
   "id": "5c46e1c05889c52fe001ab7b",
