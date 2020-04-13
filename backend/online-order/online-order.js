@@ -22,7 +22,7 @@ module.exports = cms => {
       
       const order = {
         id: await orderUtil.getLatestOrderId(),
-        status: 'pending',
+        status: 'inProgress',
         items,
         customer,
         deliveryDate: deliveryTime,
