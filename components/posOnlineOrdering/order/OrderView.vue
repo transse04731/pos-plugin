@@ -72,7 +72,7 @@
     <g-dialog v-model="dialog.merchantClosed" persistance fullscreen>
       <div style="width: 464px; height: 256px">
         <div style="font-style: normal; font-weight: bold;font-size: 18px;">Merchant is temporarily closed</div>
-        <div style="font-style: normal; font-weight: normal; font-size: 15px;">The merchant is temporarily closed an will not accept orders until 9:00. Please come back after that. We applogize for any inconvenience caused</div>
+        <div style="font-style: normal; font-weight: normal; font-size: 15px;">{{ merchantMessage }}</div>
       </div>
     </g-dialog>
   </div>
@@ -95,6 +95,8 @@
         categories: null,
         products: null,
         dayInWeeks: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        today: dayjs().format("dddd"),
+        now: dayjs().format('HH"mm'),
         dialog: {
           merchantClosed: false,
         }
@@ -114,6 +116,13 @@
         // TODO
         alert('Store is not exist');
       }
+      this.dayInterval = setInterval(() => {
+        this.today = dayjs().format('dddd')
+        this.now = dayjs().format('HH"mm')
+      }, 1000)
+    },
+    beforeDestroy() {
+      clearInterval(this.dayInterval)
     },
     computed: {
       selectedCategory() {
@@ -138,36 +147,57 @@
         })
         return categories
       },
+      dayInWeekIndex() {
+        return this.dayInWeeks.indexOf(this.today)
+      },
       todayOpenHour() {
-        const dayInWeekIndex = this.dayInWeeks.indexOf(dayjs().format("dddd"))
-        return this.getOpenHour(dayInWeekIndex)
+        return this.getOpenHour(this.dayInWeekIndex)
       },
-      tomorrowOpenHour() {
-        // TODO: get next open day
-        let dayInWeekIndex = this.dayInWeeks.indexOf(dayjs().format("dddd"))
-        if (dayInWeekIndex === this.dayInWeeks.length - 1)
-          dayInWeekIndex = 0
-        return this.getOpenHour(dayInWeekIndex)
+      nextOpenHour() {
+        if (this.todayOpenHour) {
+          if (this.get24HourValue(todayOpenHour.openTime) > now)
+            return {
+              day: this.dayInWeeks[dayInWeekIndex],
+              hour: todayOpenHour.openTime
+          }
+        }
+        
+        let dayInWeekIndex = this.dayInWeekIndex
+        do {
+          dayInWeekIndex++
+          if (dayInWeekIndex >= this.dayInWeeks.length - 1)
+            dayInWeekIndex = 0
+          let openHour = this.getOpenHour(dayInWeekIndex)
+          if (openHour) {
+            return {
+              hour: openHour.openTime,
+              day: this.dayInWeeks[dayInWeekIndex]
+            }
+          }
+        } while (dayInWeekIndex !== this.dayInWeekIndex)
       },
-      storeOpenState() {
-        const now = dayjs().format('HH:mm')
-        return this.get24HourValue(this.todayOpenHour.openTime) <= now && now <= this.get24HourValue(this.todayOpenHour.closeTime)
+      merchantMessage() {
+        if (this.nextOpenHour)
+          return `The merchant is temporarily closed and will not accept orders until ${nextOpenHour.hour }, ${ nextOpenHour.day }. Please come back after that. We apologize for any inconvenience caused`
+        return  'The merchant is temporarily closed. We apologize for any inconvenience caused'
+      },
+      isStoreOpening() {
+        if (this.todayOpenHour) {
+          return this.get24HourValue(this.todayOpenHour.openTime) <= now && now <= this.get24HourValue(this.todayOpenHour.closeTime)
+        }
+        return false
       },
       storeOpenStatus() {
-        if (this.storeOpenState)
-          return '• Open'
-        return '• Closed'
+        return this.isStoreOpening ? '• Open' : '• Closed'
       },
       storeOpenStatusStyle() {
         return {
-          color: this.storeOpenState ? '#4CAF50' : "#424242",
+          color: this.isStoreOpening ? '#4CAF50' : "#424242",
           'margin-right': '5px'
         }
       },
       storeWorkingTime() {
-        if (this.todayOpenHour)
-          return `${this.todayOpenHour.openTime} - ${this.todayOpenHour.closeTime}`
-        return `00:00 - 00:00`
+        return this.todayOpenHour ? `${this.todayOpenHour.openTime} - ${this.todayOpenHour.closeTime}` : null
       }
     },
     methods: {
