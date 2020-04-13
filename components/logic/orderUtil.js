@@ -47,8 +47,27 @@ const orderUtil = {
       }
     }
     return items;
-  }
+  },
+  async getLatestOrderId() {
+    try {
+      const orderWithHighestId = await cms.getModel('Order').findOne().sort('-id');
+      return ((orderWithHighestId && orderWithHighestId.id) || 0) + 1
+    } catch (e) {
+      console.error(e)
+    }
+  },
+  getComputedOrderItems(orderItems, date) {
+    return orderItems.map(item => {
+      return {
+        ..._.omit(item, 'category'),
+        product: item._id,
+        category: item.category && item.category.name ? item.category.name : '', // saved order then pay have a string category
+        date,
+        ...item.groupPrinter && { groupPrinter: item.groupPrinter.name },
+        ...item.groupPrinter2 && { groupPrinter2: item.groupPrinter2.name },
+      };
+    })
+  },
 }
 
-export default orderUtil
-
+module.exports = orderUtil

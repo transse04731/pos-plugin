@@ -4,7 +4,7 @@
 
 <script>
   import orderUtil from '../logic/orderUtil';
-  import { getBookingNumber, getLatestOrderId, getProductGridOrder, getVDate } from '../logic/productUtils';
+  import { getBookingNumber, getProductGridOrder, getVDate } from '../logic/productUtils';
   import { getProvided } from '../logic/commonUtils';
 
   export default {
@@ -222,7 +222,7 @@
       },
       async getMappedOrder(paymentMethod, useCompactOrder = true) {
         const orderDateTime = new Date()
-        const id = await getLatestOrderId()
+        const id = await orderUtil.getLatestOrderId()
         const taxGroups = _.groupBy(this.currentOrder.items, 'tax')
         const vTaxGroups = _.map(taxGroups, (val, key) => ({
           taxType: key,
@@ -238,7 +238,7 @@
           id,
           status: 'paid',
           takeOut: this.currentOrder.takeOut,
-          items: this.getComputedOrderItems(items, orderDateTime),
+          items: orderUtil.getComputedOrderItems(items, orderDateTime),
           user: this.currentOrder.user
             ? [...this.currentOrder.user, { name: this.user.name, date: orderDateTime }]
             : [{ name: this.user.name, date: orderDateTime }],
@@ -287,18 +287,6 @@
       discountCurrentOrder(change) {
         this.$set(this.currentOrder, 'items', orderUtil.applyDiscountForOrder(this.compactOrder(this.currentOrder.items), change));
         this.$set(this.currentOrder, 'hasOrderWideDiscount', true);
-      },
-      getComputedOrderItems(orderItems, date) {
-        return orderItems.map(item => {
-          return {
-            ..._.omit(item, 'category'),
-            product: item._id,
-            category: item.category && item.category.name ? item.category.name : '', // saved order then pay have a string category
-            date,
-            ...item.groupPrinter && { groupPrinter: item.groupPrinter.name },
-            ...item.groupPrinter2 && { groupPrinter2: item.groupPrinter2.name },
-          };
-        })
       },
       //<!--</editor-fold>-->
 
@@ -401,7 +389,7 @@
 
         const order = Object.assign({}, this.currentOrder, {
           status: 'inProgress',
-          items: this.getComputedOrderItems(this.compactOrder(this.currentOrder.items), date),
+          items: orderUtil.getComputedOrderItems(this.compactOrder(this.currentOrder.items), date),
           date,
           vDate: getVDate(date),
           user: [{ name: this.user.name || '', date }],
@@ -535,6 +523,7 @@
           Object.assign({}, order, {
             status: 'kitchen'
           }))
+        this.printKitchen(order)
         await this.updateOnlineOrders()
       },
       async setPendingOrder(order) {

@@ -39,7 +39,7 @@
                 <div class="row-flex" v-for="item in order.items">
                   <div class="col-1 fw-700">{{item.quantity}}x</div>
                   <div class="col-8 fs-small-2">
-                    {{item.name}}
+                    {{item.id}}. {{item.name}}
                     <template v-if="item.modifiers.length > 0">
                       <span class="i text-grey">(<span v-for="modifier in item.modifiers">{{modifier}}</span>)</span>
                     </template>
@@ -111,7 +111,7 @@
                   <template v-for="item in order.items">
                     <div class="fw-700 mr-1">{{item.quantity}}x</div>
                     <div class="mr-3">
-                      {{item.name}}
+                      {{item.id}}. {{item.name}}
                       <template v-if="item.modifiers.length > 0">
                         <span class="i text-grey">(<span v-for="modifier in item.modifiers">{{modifier}}</span>)</span>
                       </template>
