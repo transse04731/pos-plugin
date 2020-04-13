@@ -166,7 +166,6 @@
 
 <style scoped lang="scss">
   .online-order-setting {
-    /*background-image: url('/plugins/pos-plugin/assets/out.png');*/
     width: 100%;
     height: 100%;
     padding: 24px 48px;

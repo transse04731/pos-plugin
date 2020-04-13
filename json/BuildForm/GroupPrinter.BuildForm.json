@@ -87,12 +87,6 @@
         },
         {
           "schemaType": "string",
-          "key": "usb",
-          "type": "input",
-          "flex": "md6"
-        },
-        {
-          "schemaType": "string",
           "key": "port",
           "type": "input",
           "flex": "md6"
@@ -198,10 +192,33 @@
             "2",
             "3"
           ]
+        },
+        {
+          "schemaType": "string",
+          "key": "usb",
+          "type": "input"
         }
       ],
       "type": "array",
       "flex": "md12"
+    },
+    {
+      "_id": "5e943cb78ba20323f4c1a657",
+      "schemaType": "number",
+      "key": "defaultDineInTax",
+      "type": "input@number"
+    },
+    {
+      "_id": "5e943cb78ba20323f4c1a658",
+      "schemaType": "number",
+      "key": "defaultTakeAwayTax",
+      "type": "input@number"
+    },
+    {
+      "_id": "5e943cb78ba20323f4c1a659",
+      "schemaType": "boolean",
+      "key": "showDineInTax",
+      "type": "input@checkbox"
     }
   ],
   "id": "5c5ee40bc1c8891f00507c68",

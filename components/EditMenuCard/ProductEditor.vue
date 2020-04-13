@@ -45,7 +45,7 @@
 
       <!-- Tax -->
       <div class="row-flex mt-2 product-editor__tax">
-        <div class="col-6">
+        <div class="col-6" v-show="showDineInTax">
           <div class="product-editor__label">{{$t('restaurant.product.dineInTax')}}</div>
           <g-grid-select mandatory v-model="selectedProduct.tax" :items="dineInTaxes" itemCols="auto">
             <template #default="{ toggleSelect, item, index }">
@@ -159,7 +159,8 @@
           focus: 'id'
         },
         showSnackbar: false,
-        notifyContent: null
+        notifyContent: null,
+        showDineInTax: true
       }
     },
     computed: {
@@ -208,6 +209,9 @@
     watch: {
       selectedProductLayout(value) {
         this.type = value.type
+        const { groupPrinter, groupPrinter2 } = value.product
+        if (groupPrinter) this.showDineInTax = groupPrinter.showDineInTax
+        if (groupPrinter2) this.showDineInTax = groupPrinter2.showDineInTax
       }
     },
     async created() {
@@ -248,11 +252,14 @@
         }
       },
       async selectPrinter(id) {
-        const printer = _.find(this.printers, p => p._id === id)
+        const printer = this.printers.find(p => p._id === id)
+        this.showDineInTax = printer.showDineInTax
+
         const change = {
           isItemNote: false,
           isNoPrint: false
         }
+
         if (this.isPrinter2Select) {
           if (this.selectedProduct.groupPrinter !== printer) {
             change.groupPrinter2 = printer;
@@ -262,6 +269,16 @@
           change.groupPrinter = printer;
           change.groupPrinter2 = null;
         }
+
+        if (!this.selectedProduct.tax && printer.defaultDineInTax) {
+          this.$set(this.selectedProduct, 'tax', printer.defaultDineInTax)
+          change.tax = printer.defaultDineInTax
+        }
+        if (!this.selectedProduct.tax2 && printer.defaultTakeAwayTax) {
+          this.$set(this.selectedProduct, 'tax2', printer.defaultTakeAwayTax)
+          change.tax2 = printer.defaultTakeAwayTax
+        }
+
         await this.updateProduct(change)
       },
       async setAsNoPrint() {

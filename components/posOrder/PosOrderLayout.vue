@@ -314,13 +314,11 @@
           const timeout = 200
           setTimeout(() => {
             if (new Date().getTime() - this.lastSelectMoment < timeout) {
-              console.log('emit double click')
               this.doubleClicked = true
               this.selectProduct(productLayout);
               this.$emit('update:productDblClicked', true)
             } else {
               if (!this.doubleClicked) {
-                console.log('emit click')
                 this.selectProduct(productLayout);
                 this.addProductToOrder(productLayout);
                 this.$emit('update:productDblClicked', false)
@@ -350,13 +348,11 @@
 
       onClick(productLayout) {
         if (!this.isTouchEventHandled) {
-          console.log('onclick')
           this.onProductSelect(productLayout)
         }
       },
 
       onTouchStart(productLayout) {
-        console.log('touch start')
         this.isTouchEventHandled = true
         this.onProductSelect(productLayout)
       },

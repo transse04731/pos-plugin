@@ -1146,7 +1146,10 @@
           "_id": "5e81d0bf85fb2d03dda9667a",
           "merge": "true"
         }
-      ]
+      ],
+      "defaultDineInTax": 19,
+      "defaultTakeAwayTax": 7,
+      "showDineInTax": false
     },
     {
       "_id": "5e7864c486e3ec0997b5e492",
@@ -1180,7 +1183,10 @@
           "ip": "192.168.1.20",
           "merge": true
         }
-      ]
+      ],
+      "defaultDineInTax": 19,
+      "defaultTakeAwayTax": 7,
+      "showDineInTax": true
     },
     {
       "_id": "5e815f3a85fb2d03dda917d2",
@@ -1201,7 +1207,10 @@
           "marginTop": 2
         }
       ],
-      "type": "invoice"
+      "type": "invoice",
+      "defaultDineInTax": 19,
+      "defaultTakeAwayTax": 7,
+      "showDineInTax": true
     },
     {
       "_id": "5e82eeebac371b748806cd7f",
@@ -1226,7 +1235,10 @@
           "groupArticles": true,
           "oneReceiptForOneArticle": true
         }
-      ]
+      ],
+      "defaultDineInTax": 19,
+      "defaultTakeAwayTax": 7,
+      "showDineInTax": true
     }
   ]
 }
