@@ -160,7 +160,6 @@
         },
         showSnackbar: false,
         notifyContent: null,
-        showDineInTax: true
       }
     },
     computed: {
@@ -204,14 +203,17 @@
           'prop-option': true,
           'prop-option--1': this.selectedProduct.isItemNote,
         }
+      },
+      showDineInTax() {
+        if (!this.selectedProduct) return
+        const { groupPrinter, groupPrinter2 } = this.selectedProduct
+        if (groupPrinter2) return groupPrinter2.showDineInTax
+        if (groupPrinter) return groupPrinter.showDineInTax
       }
     },
     watch: {
       selectedProductLayout(value) {
         this.type = value.type
-        const { groupPrinter, groupPrinter2 } = value.product
-        if (groupPrinter) this.showDineInTax = groupPrinter.showDineInTax
-        if (groupPrinter2) this.showDineInTax = groupPrinter2.showDineInTax
       }
     },
     async created() {
