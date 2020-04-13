@@ -126,6 +126,14 @@
     data: function () {
       return {
         view: 'order',
+        customer: {
+          name: '',
+          phone: '',
+          address: '',
+          zipCode: '',
+          deliveryTime: new Date(),
+          note: ''
+        },
       }
     },
     injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems,shippingFee,orderType,paymentType)'],
