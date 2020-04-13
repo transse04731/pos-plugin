@@ -76,7 +76,7 @@
       if (storeIdOrAlias) {
         const store = await cms.getModel('Store').findOne({alias: storeIdOrAlias})
         const storeGroups = _.map(store.groups, g => g._id)
-        const user = this.$getService('PosStore').user
+        const user = cms.loginUser.user
         let userManageThisStore = false
         if (user.role.name !== 'admin') {
           const userStoreGroups = _.map(user.storeGroups, g => g._id)

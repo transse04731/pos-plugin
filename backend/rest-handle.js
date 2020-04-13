@@ -9,9 +9,6 @@ module.exports = cms => {
   cms.app.use('/online-order-device', onlineOrderDeviceApi)
 
   cms.socket.on('connect', socket => {
-    //
-    socket.on('get-user-info', callback => callback(socket.request.user))
-
     // online-order
     socket.on('online-order--connect', code => socket.join(code))
     socket.on('online-order--create-order', (code, orderId) => socket.to(code).emit('create-order', orderId))
