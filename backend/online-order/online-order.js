@@ -1,5 +1,6 @@
 const orderUtil = require('../../components/logic/orderUtil')
 const  { getBookingNumber, getVDate } = require('../../components/logic/productUtils')
+const _ = require('lodash')
 
 module.exports = cms => {
   cms.socket.on('connect', socket => {
@@ -34,7 +35,8 @@ module.exports = cms => {
         vTax,
         vTaxGroups,
         vDiscount,
-        received: vSum
+        received: vSum,
+        online: true
       }
 
       await cms.getModel('Order').create(order)

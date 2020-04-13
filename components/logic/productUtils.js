@@ -6,8 +6,9 @@ const productUtil = {
   getBookingNumber(dateTime) {
     return dayjs(dateTime).format('YYMMDDHHmmssSSS')
   },
-  getVDate(dateTime) {
-    const beginHour = cms.getList('PosSetting')[0].generalSetting.beginHour || '00:00'
+  async getVDate(dateTime) {
+    const posSettings = await cms.getModel('PosSetting').findOne({})
+    const beginHour = posSettings.generalSetting.beginHour || '00:00'
     const [hour, minutes] = beginHour.split(':')
     const beginDateTime = dayjs(dateTime).clone().hour(parseInt(hour)).minute(parseInt(minutes))
 

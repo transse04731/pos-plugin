@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 const orderUtil = {
   calItemTotal(item) {
     return +(item.quantity * item.price).toFixed(2);
