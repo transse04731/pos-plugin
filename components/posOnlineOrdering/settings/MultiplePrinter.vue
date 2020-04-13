@@ -53,10 +53,10 @@
     computed: {
       multiple: {
         get() {
-          return this.store.multiplePrinters
+          return this.store.useMultiplePrinters
         },
         set(value) {
-          this.$emit('update', { multiplePrinters: value })
+          this.$emit('update', { useMultiplePrinters: value })
         }
       },
       printers() {
