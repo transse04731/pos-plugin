@@ -30,8 +30,8 @@
             @update-product="updateProduct"
             @delete-product="deleteProduct"/>
         <device v-if="view === 'setting-device'" :store="store"/>
-        <delivery-fee v-if="view === 'setting-delivery-fee'" :store="store" :update="updateStore"/>
-        <multiple-printer v-if="view === 'setting-multiple-printer'" :store="store" :update="updateStore"/>
+        <delivery-fee v-if="view === 'setting-delivery-fee'" :store="store" @update="updateStore"/>
+        <multiple-printer v-if="view === 'setting-multiple-printer'" :store="store" @update="updateStore"/>
       </div>
     </template>
   </div>
@@ -102,6 +102,7 @@
         this.$set(this, 'store', await cms.getModel('Store').findOne({_id: this.store._id}))
       },
       async updateStore(change) {
+        console.log('update store', change)
         await cms.getModel('Store').updateOne({_id: this.store._id}, change)
         await this.loadStore()
       },
