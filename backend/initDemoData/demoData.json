@@ -15,7 +15,10 @@
         "sound": true
       },
       "defaultPrepareTime": 30,
-      "onlineOrderSorting": "order"
+      "onlineOrderSorting": "order",
+      "printerGeneralSetting": {
+        "entireReceipt": 1
+      }
     }
   ],
   "Terminal": [
