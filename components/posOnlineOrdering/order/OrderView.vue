@@ -96,7 +96,7 @@
         products: null,
         dayInWeeks: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         today: dayjs().format("dddd"),
-        now: dayjs().format('HH"mm'),
+        now: dayjs().format('HH:mm'),
         dialog: {
           merchantClosed: false,
         }
@@ -118,7 +118,7 @@
       }
       this.dayInterval = setInterval(() => {
         this.today = dayjs().format('dddd')
-        this.now = dayjs().format('HH"mm')
+        this.now = dayjs().format('HH:mm')
       }, 1000)
     },
     beforeDestroy() {
