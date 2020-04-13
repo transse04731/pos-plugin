@@ -245,7 +245,7 @@
   .pos-order {
     box-sizing: border-box;
     display: flex;
-    width: 1140px;
+    width: 100vw;
     max-width: 1140px;
     margin: 0 auto;
     height: 100vh;
