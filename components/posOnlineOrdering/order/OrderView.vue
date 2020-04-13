@@ -58,7 +58,7 @@
               <g-icon>icon-menu2</g-icon>
             </div>
           </g-badge>
-          <div class="pos-order__info--total">${{totalPrice + shippingFee}}</div>
+<!--          <div class="pos-order__info&#45;&#45;total">${{totalPrice + shippingFee}}</div>-->
           <g-spacer/>
           <g-btn-bs background-color="#2979FF" rounded style="padding: 8px 16px" @click="showOrder = true">CHECK OUT</g-btn-bs>
         </div>
@@ -70,7 +70,7 @@
       </div>
   
       <g-dialog :value="!isStoreOpening" persistent>
-        <div style="width: 464px; height: 256px; background: #FFFFFF; box-shadow: 0px 0px 28px rgba(58, 56, 56, 0.15); border-radius: 4px; display: flex; flex-direction: column; align-items: center; padding: 40px; margin: 0 auto;">
+        <div style="width: 464px; height: 256px; background: #FFFFFF; box-shadow: 0px 0px 28px rgba(58, 56, 56, 0.15); border-radius: 4px; display: flex; flex-direction: column; align-items: center; padding: 30px; margin: 0 auto;">
           <div style="font-style: normal; font-weight: bold;font-size: 18px; margin-bottom: 22px;">Merchant is temporarily closed</div>
           <div style="font-style: normal; font-weight: normal; font-size: 15px; max-width: 410px; text-align: center">{{ merchantMessage }}</div>
         </div>
@@ -85,7 +85,7 @@
 
   export default {
     name: 'OrderView',
-    injectService: ['PosOnlineOrderStore:(orderItems, increaseOrAddNewItems, decreaseOrRemoveItems, shippingFee)'],
+    injectService: ['PosOnlineOrderStore:(orderItems, increaseOrAddNewItems, decreaseOrRemoveItems)'],
     components: {MenuItem, OrderTable},
     data: function () {
       return {
@@ -123,6 +123,9 @@
       clearInterval(this.dayInterval)
     },
     computed: {
+      shippingFee() {
+        return this.$refs['order-table'].shippingFee
+      },
       selectedCategory() {
         return _.find(this.categoriesViewModel, c => c._id === this.selectedCategoryId)
       },
