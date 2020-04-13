@@ -222,6 +222,7 @@
       border-radius: 15px;
       cursor: pointer;
       border: 1px dashed #B1B5BA;
+      overflow: hidden;
 
       &--upload {
         opacity: 0.8;
