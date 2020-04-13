@@ -20,6 +20,7 @@
                 <g-icon size="16">access_time</g-icon>
                 <span style="color: #424242; margin-left: 3px">{{ storeWorkingTime }}</span>
               </template>
+              <span v-else>today</span>
             </div>
           </div>
         </div>
