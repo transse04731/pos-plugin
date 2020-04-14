@@ -1,14 +1,15 @@
 {
+  "deliveryFee": {
+    "fees": []
+  },
   "groups": [
     {
-      "_id": "5e87034be58f1f5cd828feb4",
+      "_id": "5e9568d0c22cf54869fc84fd",
       "name": "KFC"
-    },
-    {
-      "_id": "5e8702d2e58f1f5cd828fe7f",
-      "name": "ResellerVN"
     }
   ],
+  "printers": [],
   "_id": "5e870358e58f1f5cd828feba",
-  "name": "KFC Duy Tan"
+  "name": "KFC Duy Tan",
+  "openHours": []
 }
