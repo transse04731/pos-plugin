@@ -146,7 +146,7 @@
           deliveryTime: new Date(),
           note: ''
         },
-        showOrderSuccess: true,
+        showOrderSuccess: false,
       }
     },
     injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems)'],
