@@ -2,7 +2,7 @@
   <div class="configuration">
     <div v-if="type === 'kitchen'" class="config">
       <g-text-field-bs :label="$t('settings.name')" v-model="editableName" append-inner-icon="icon-keyboard-red"
-                       @input="changePrinterName"/>
+                       @click="openDialog('nameInput')"/>
     </div>
     <div class="config">
       <p class="title">{{$t('settings.thermalPrinter')}}</p>
@@ -18,7 +18,7 @@
     </div>
     <g-divider inset/>
     <div v-if="selectedPrinterType && selectedPrinterType.value === 'ip'" class="config row-flex align-items-end">
-      <g-text-field-bs :label="$t('settings.ipAddress')" v-model="ipAddress" append-inner-icon="icon-keyboard"/>
+      <g-text-field-bs :label="$t('settings.ipAddress')" v-model="ipAddress" append-inner-icon="icon-keyboard" @click="openDialog('ipInput')"/>
       <g-btn-bs background-color="blue accent 3" style="padding: 6px; flex: 1">
         {{$t('settings.testPrinter')}}
       </g-btn-bs>
@@ -72,12 +72,24 @@
         </div>
       </template>
     </g-grid-select>
+
+    <dialog-form-input v-model="showDialog" @submit="updateSettings">
+      <template #input>
+        <div>
+          <g-text-field-bs label="Name" v-model="editName" ref="nameInput"/>
+          <g-text-field-bs v-if="selectedPrinterType && selectedPrinterType.value === 'ip'"
+                           label="IP Address" v-model="editIp" ref="ipInput"/>
+        </div>
+      </template>
+    </dialog-form-input>
   </div>
 </template>
 
 <script>
+  import DialogFormInput from '../pos-shared-components/dialogFormInput';
   export default {
     name: "PosPrinterSetting",
+    components: { DialogFormInput },
     props: {
       id: null,
       name: String,
@@ -95,21 +107,38 @@
           {name: 'USB', value: 'usb'}
         ],
         selectedPrinterType: null,
-        editableName: this.name,
         listReceipt: [],
         listFontSize: [1, 2, 3],
         listMarginSize: [0, 1, 2, 3, 4],
+        editName: '',
+        editIp: '',
+        showDialog: false
       }
     },
     computed: {
+      editableName: {
+        get() {
+          if (this.name) {
+            this.editName = this.name
+            return this.name
+          }
+          return ''
+        },
+        async set(val) {
+          this.editName = val
+          await this.updateGroupPrinterName(this.id, val)
+        }
+      },
       ipAddress: {
         get() {
           if (this.printer) {
+            this.editIp = this.printer.ip
             return this.printer.ip
           }
           return ''
         },
         async set(val) {
+          this.editIp = val
           if (this.printer) {
             this.$set(this.printer, 'ip', val)
           } else {
@@ -288,14 +317,25 @@
           this.selectedPrinterType = this.printerTypes.find(t => t.value === this.printer.printerType)
         }
       },
-      async changePrinterName() {
-        await this.updateGroupPrinterName(this.id, this.editableName)
+      openDialog(ref) {
+        this.showDialog = true
+        this.$nextTick(() => {
+          setTimeout(() => {
+            this.$refs[ref].onFocus()
+          }, 200)
+        })
+      },
+      updateSettings() {
+        if (!this.editName) return
+        this.editableName = this.editName
+
+        if (this.selectedPrinterType && this.selectedPrinterType.value === 'ip' && this.editIp) {
+          this.ipAddress = this.editIp
+        }
+        this.showDialog = false
       }
     },
     watch: {
-      name(val) {
-        this.editableName = val
-      },
       async id(val) {
         if (!val) {
           if (this.printer) {

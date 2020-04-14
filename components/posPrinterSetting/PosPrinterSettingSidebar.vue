@@ -154,6 +154,11 @@
     async created() {
       await this.getPrinterGeneralSetting()
       await this.genPrinterSidebar()
+
+      const settingsStore = this.$getService('SettingsStore')
+      settingsStore.$watch('selectedPrinterMenu', async val => {
+        await this.selectMenu(val)
+      })
     }
   }
 </script>

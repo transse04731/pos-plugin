@@ -17,7 +17,7 @@
       "defaultPrepareTime": 30,
       "onlineOrderSorting": "order",
       "printerGeneralSetting": {
-        "entireReceipt": 1
+        "entireReceipt": 0
       }
     }
   ],
@@ -1211,34 +1211,6 @@
         }
       ],
       "type": "invoice",
-      "defaultDineInTax": 19,
-      "defaultTakeAwayTax": 7,
-      "showDineInTax": true
-    },
-    {
-      "_id": "5e82eeebac371b748806cd7f",
-      "name": "EntireReceipt1",
-      "type": "entire",
-      "printers": [
-        {
-          "hardwares": [
-            "Terminal1",
-            "Terminal2"
-          ],
-          "includes": [],
-          "_id": "5e82ef0cac371b748806cd8e",
-          "onlyTakeAway": null,
-          "printerType": "com",
-          "sound": true,
-          "fontSize": 1,
-          "escPOS": true,
-          "ip": "1.2.3.4",
-          "merge": true,
-          "marginTop": 3,
-          "groupArticles": true,
-          "oneReceiptForOneArticle": true
-        }
-      ],
       "defaultDineInTax": 19,
       "defaultTakeAwayTax": 7,
       "showDineInTax": true
