@@ -147,12 +147,13 @@
           note: ''
         },
         showOrderSuccess: false,
+        currency: $t('common.currency')
       }
     },
     injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems)'],
     filters: {
       currency(value) {
-        return '$' + value
+        return $t('common.currency') + value
       }
     },
     computed: {

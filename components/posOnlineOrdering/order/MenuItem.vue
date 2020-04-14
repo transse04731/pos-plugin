@@ -5,14 +5,14 @@
       <div class="po-menu-item__name">{{ name }}</div>
       <div class="po-menu-item__desc">{{ desc }}</div>
       <div class="po-menu-item__prices--under">
-        <div :class="price2 && 'po-menu-item__prices--discount'"> {{ getPriceWithCurrencyUnit(price) }}</div>
+        <div :class="price2 && 'po-menu-item__prices--discount'"> {{ price | currency }}</div>
         <div v-if="price2"> {{ price2 | currency }}</div>
       </div>
     </div>
     <g-spacer/>
     <div class="po-menu-item__prices">
-      <div :class="price2 && 'po-menu-item__prices--discount'"> {{ getPriceWithCurrencyUnit(price) }}</div>
-      <div v-if="price2">{{ getPriceWithCurrencyUnit(price2) }}</div>
+      <div :class="price2 && 'po-menu-item__prices--discount'"> {{ price | currency }}</div>
+      <div v-if="price2">{{ price2 | currency }}</div>
     </div>
     <g-icon @click="addToOrder"
             size="28" color="#424242"
@@ -45,20 +45,12 @@
       quantity: Number,
       currencyUnit: String
     },
-    computed: {
-    },
-    data() {
-      return {
-      
+    filters: {
+      currency(val) {
+        return $t('common.currency') + val
       }
     },
     methods: {
-      getPriceWithCurrencyUnit(price) {
-        if (this.currencyUnit === 'VND')
-          return `${price} ${this.currencyUnit}`
-        else
-          return `${this.currencyUnit}${price}`
-      },
       addToOrder() {
         this.$emit('menu-item-selected', this._id)
       },
