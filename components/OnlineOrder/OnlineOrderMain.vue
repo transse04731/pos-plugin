@@ -23,7 +23,7 @@
               <g-icon v-if="order.type === 'pickup'">icon-pickup</g-icon>
               <span class="fs-small-2 ml-1">
                 <span class="text-indigo-accent-2">#{{order.id}}</span>
-                {{order.customer ? order.customer.name : 'No customer name'}} - {{order.customer ? order.customer.phoneNo : 'No customer phone'}}
+                {{order.customer ? order.customer.name : 'No customer name'}} - {{order.customer ? order.customer.phone : 'No customer phone'}}
               </span>
               <g-spacer/>
               <span class="fw-700 fs-small">{{order.date | formatDate}}</span>
@@ -33,7 +33,7 @@
                 <div class="col-1">
                   <g-icon color="#9E9E9E" size="20">icon-place</g-icon>
                 </div>
-                <div class="col-10">{{`${order.customer.address} ${order.customer.address}`}}</div>
+                <div class="col-10">{{`${order.customer.address} ${order.customer.zipCode}`}}</div>
               </div>
               <div v-if="order.items">
                 <div class="row-flex" v-for="item in order.items">
@@ -87,7 +87,7 @@
             <g-card-title>
               <span class="fs-small-2 ml-1">
                 <span class="text-indigo-accent-2">#{{order.id}}</span>
-                {{order.customer ? order.customer.name : 'No customer name'}} - {{order.customer ? order.customer.phoneNo : 'No customer phone'}}
+                {{order.customer ? order.customer.name : 'No customer name'}} - {{order.customer ? order.customer.phone : 'No customer phone'}}
               </span>
               <g-spacer/>
               <div class="kitchen-orders__timer" @click.stop="openDialog(order)">
@@ -101,7 +101,7 @@
                 <div class="col-1">
                   <g-icon color="#9E9E9E" size="20">icon-place</g-icon>
                 </div>
-                <div class="col-10">{{`${order.customer.address} ${order.customer.address}`}}</div>
+                <div class="col-10">{{`${order.customer.address} ${order.customer.zipCode}`}}</div>
               </div>
               <div class="row-flex" v-if="order.items">
                 <div class="col-1">

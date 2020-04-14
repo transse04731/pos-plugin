@@ -571,7 +571,12 @@
         },
         {
           "schemaType": "string",
-          "key": "phoneNo",
+          "key": "phone",
+          "type": "input"
+        },
+        {
+          "schemaType": "string",
+          "key": "zipCode",
           "type": "input"
         }
       ],
