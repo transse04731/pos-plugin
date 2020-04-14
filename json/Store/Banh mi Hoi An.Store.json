@@ -24,6 +24,10 @@
     {
       "_id": "5e955b043efd4747223fba89",
       "name": "Hoi An Food"
+    },
+    {
+      "_id": "5e95719b5026ee49a793a049",
+      "name": "Reseller"
     }
   ],
   "printers": [
@@ -64,7 +68,7 @@
     }
   ],
   "alias": "banh-mi-hoi-an",
-  "clientDomain": "http://hoian-bread.vn",
+  "clientDomain": "http://hoian-food.vn/banh-mi-hoi-an",
   "orderHeaderImageSrc": "http://localhost:8888/cms-files/files/view//images.jpeg",
   "logoImageSrc": "http://localhost:8888/cms-files/files/view//bae91a3a-4d84-11e8-9e7f-cac091044fd5.png",
   "phone": "123456789",
