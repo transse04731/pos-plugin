@@ -53,4 +53,16 @@ router.post('/register', async (req, res) => {
   }
 })
 
+router.post('/un-register', async (req, res) => {
+  const {_id} = req.body;
+  const device = await OnlineOderDeviceModel.findOne({_id});
+  if (device) {
+    await OnlineOderDeviceModel.remove({_id})
+    res.status(200).json({deviceId: device._id})
+  } else {
+    res.status(400).json({message: 'Bad request: Invalid id'})
+  }
+})
+
+
 module.exports = router
