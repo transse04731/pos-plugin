@@ -1,5 +1,6 @@
 const authenticateAPI = require('./api/authenticate')
 const onlineOrderDeviceApi = require('./api/onlineOrderDevice')
+const storeApi = require('./api/store')
 
 module.exports = cms => {
   cms.data['loginUrl'] = '/view/sign-in';
@@ -7,6 +8,7 @@ module.exports = cms => {
 
   cms.app.use('/user', authenticateAPI)
   cms.app.use('/online-order-device', onlineOrderDeviceApi)
+  cms.app.use('/store', storeApi)
 
   cms.socket.on('connect', socket => {
     // online-order

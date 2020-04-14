@@ -220,8 +220,10 @@
       closeOrderSuccess() {
         this.showOrderSuccess = false
       },
-      subscribe(email) {
-        // TODO: .....
+      async subscribe(email) {
+        const response = (await axios.post('/store/subscribe', { email, storeId: this.store._id })).data
+        alert(response.message)
+        this.closeOrderSuccess()
       },
       isMobileView() {
         return window.screen.width < 600
