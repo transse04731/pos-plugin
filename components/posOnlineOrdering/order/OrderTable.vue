@@ -211,6 +211,7 @@
           products: _.cloneDeep(this.orderItems),
           deliveryTime,
           note,
+          createdDate: new Date()
         }
 
         socket.emit('createOrder', this.store._id, orderData)
