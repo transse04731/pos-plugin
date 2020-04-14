@@ -494,6 +494,9 @@
       display: none;
     
       &--mobile {
+        position: absolute;
+        top: 0;
+        left: 0;
         display: flex;
         flex-direction: column;
         width: 100vw;
