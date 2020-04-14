@@ -19,7 +19,7 @@
     <g-divider inset/>
     <div v-if="selectedPrinterType && selectedPrinterType.value === 'ip'" class="config row-flex align-items-end">
       <g-text-field-bs :label="$t('settings.ipAddress')" v-model="ipAddress" append-inner-icon="icon-keyboard" @click="openDialog('ipInput')"/>
-      <g-btn-bs background-color="blue accent 3" style="padding: 6px; flex: 1">
+      <g-btn-bs background-color="blue accent 3" style="padding: 6px; flex: 1" @click="$emit('testPrinter', printer)">
         {{$t('settings.testPrinter')}}
       </g-btn-bs>
     </div>
@@ -112,7 +112,8 @@
         listMarginSize: [0, 1, 2, 3, 4],
         editName: '',
         editIp: '',
-        showDialog: false
+        showDialog: false,
+        printer: null
       }
     },
     computed: {

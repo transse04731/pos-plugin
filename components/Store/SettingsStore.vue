@@ -769,6 +769,9 @@
       async updateKeyboardConfig(keyboardConfig) {
         await cms.getModel('PosSetting').findOneAndUpdate({}, {keyboardConfig})
       },
+      async testPrinter(printer) {
+        await cms.socket.emit('testPrinter', printer)
+      },
 
       //online order
       async getOnlineDevice() {
