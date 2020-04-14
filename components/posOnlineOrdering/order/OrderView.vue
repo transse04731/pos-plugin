@@ -69,6 +69,8 @@
         <order-table :store="store"/>
       </div>
   
+      <dialog-order-created v-if="true"/>
+      
       <g-dialog :value="!isStoreOpening" persistent>
         <div style="width: 464px; height: 256px; background: #FFFFFF; box-shadow: 0px 0px 28px rgba(58, 56, 56, 0.15); border-radius: 4px; display: flex; flex-direction: column; align-items: center; padding: 30px; margin: 0 auto;">
           <div style="font-style: normal; font-weight: bold;font-size: 18px; margin-bottom: 22px;">Merchant is temporarily closed</div>
@@ -82,11 +84,12 @@
   import _ from 'lodash';
   import OrderTable from './OrderTable';
   import MenuItem from './MenuItem';
+  import DialogOrderCreated from './dialogOrderCreated';
 
   export default {
     name: 'OrderView',
     injectService: ['PosOnlineOrderStore:(orderItems, increaseOrAddNewItems, decreaseOrRemoveItems)'],
-    components: {MenuItem, OrderTable},
+    components: { DialogOrderCreated, MenuItem, OrderTable},
     data: function () {
       return {
         selectedCategoryId: null,
