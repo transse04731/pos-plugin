@@ -4,7 +4,7 @@
   "items": [
     {
       "choice": "view",
-      "component": "PosLogin",
+      "component": "SignInView",
       "binding": [],
       "slotScopeBinding": [],
       "url": "plugins/pos-plugin/components/posOnlineOrdering/PosLogin.vue",
