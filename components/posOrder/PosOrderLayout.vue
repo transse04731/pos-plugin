@@ -303,6 +303,8 @@
 
       onProductSelect(productLayout) {
         if (this.editable) {
+          this.selectProduct(productLayout);
+
           // Known issues:
           //    + if user do n click/tab in short time, (n-1) double tab event will be raised
           //    + if user double click on item x, then click very fast to another item y,
@@ -315,18 +317,15 @@
           setTimeout(() => {
             if (new Date().getTime() - this.lastSelectMoment < timeout) {
               this.doubleClicked = true
-              this.selectProduct(productLayout);
               this.$emit('update:productDblClicked', true)
             } else {
               if (!this.doubleClicked) {
-                this.selectProduct(productLayout);
                 this.addProductToOrder(productLayout);
                 this.$emit('update:productDblClicked', false)
               }
             }
           }, timeout)
         } else {
-          this.selectProduct(productLayout);
         }
       },
 

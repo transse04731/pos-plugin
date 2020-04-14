@@ -205,10 +205,11 @@
         }
       },
       showDineInTax() {
-        if (!this.selectedProduct) return
+        if (!this.selectedProduct) return true
         const { groupPrinter, groupPrinter2 } = this.selectedProduct
         if (groupPrinter2) return groupPrinter2.showDineInTax
         if (groupPrinter) return groupPrinter.showDineInTax
+        return true
       }
     },
     watch: {
