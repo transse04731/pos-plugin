@@ -1,0 +1,21 @@
+{
+  "events": [],
+  "_id": "5e856dbbb7b7b30cc39f25a2",
+  "items": [
+    {
+      "choice": "view",
+      "component": "SignInView",
+      "binding": [],
+      "slotScopeBinding": [],
+      "url": "plugins/pos-plugin/components/posOnlineOrdering/PosLogin.vue",
+      "path": "components/posOnlineOrdering/PosLogin.vue",
+      "pluginName": "pos-plugin"
+    }
+  ],
+  "name": "SignInView",
+  "props": {
+    "fields": []
+  },
+  "renderToRoute": "sign-in",
+  "isProduction": true
+}

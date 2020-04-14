@@ -1,0 +1,22 @@
+{
+  "events": [],
+  "_id": "5e856d72b7b7b30cc39f259a",
+  "items": [
+    {
+      "choice": "view",
+      "component": "SettingView",
+      "binding": [],
+      "slotScopeBinding": [],
+      "url": "plugins/pos-plugin/components/posOnlineOrdering/PosODSettings.vue",
+      "path": "components/posOnlineOrdering/PosODSettings.vue",
+      "pluginName": "pos-plugin"
+    }
+  ],
+  "name": "SettingView",
+  "props": {
+    "fields": []
+  },
+  "renderToRoute": "store/:storeIdOrAlias/setting",
+  "isProduction": true,
+  "renderInIframe": null
+}
