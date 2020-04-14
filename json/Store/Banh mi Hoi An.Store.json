@@ -1,0 +1,59 @@
+{
+  "deliveryFee": {
+    "fees": []
+  },
+  "groups": [
+    {
+      "_id": "5e955b043efd4747223fba89",
+      "name": "Hoi An Group"
+    }
+  ],
+  "printers": [
+    "Bar",
+    "Kitchen"
+  ],
+  "_id": "5e955b0c3efd4747223fba8c",
+  "name": "Banh mi Hoi An",
+  "address": "1 Hoi An",
+  "openHours": [
+    {
+      "dayInWeeks": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false
+      ],
+      "_id": "5e955c193efd4747223fbaca",
+      "openTime": "06:30 AM",
+      "closeTime": "09:30 PM"
+    },
+    {
+      "dayInWeeks": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true
+      ],
+      "_id": "5e955c213efd4747223fbadd",
+      "openTime": "08:45 AM",
+      "closeTime": "09:30 PM"
+    }
+  ],
+  "alias": "banh-mi-hoi-an",
+  "clientDomain": "http://hoian-bread.vn",
+  "orderHeaderImageSrc": "http://localhost:8888/cms-files/files/view//images.jpeg",
+  "logoImageSrc": "http://localhost:8888/cms-files/files/view//bae91a3a-4d84-11e8-9e7f-cac091044fd5.png",
+  "phone": "123456789",
+  "zipCode": "100000",
+  "townCity": "Da Nang",
+  "pickup": true,
+  "delivery": true,
+  "onlineOrdering": true,
+  "addedDate": "2020-04-13T17:00:00.000Z"
+}
