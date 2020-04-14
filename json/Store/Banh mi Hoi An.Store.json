@@ -1,11 +1,29 @@
 {
   "deliveryFee": {
-    "fees": []
+    "fees": [
+      {
+        "_id": "5e956ee15026ee49a7939e1a",
+        "zipCode": "AA0000",
+        "fee": 1
+      },
+      {
+        "_id": "5e956eec5026ee49a7939e27",
+        "zipCode": "BB0000",
+        "fee": 2
+      },
+      {
+        "_id": "5e956f0e5026ee49a7939e64",
+        "zipCode": "CC0000",
+        "fee": 0
+      }
+    ],
+    "acceptOrderInOtherZipCodes": true,
+    "defaultFee": 2
   },
   "groups": [
     {
       "_id": "5e955b043efd4747223fba89",
-      "name": "Hoi An Group"
+      "name": "Hoi An Food"
     }
   ],
   "printers": [
