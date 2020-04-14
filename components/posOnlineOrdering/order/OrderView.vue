@@ -69,7 +69,7 @@
         <order-table :store="store"/>
       </div>
   
-      <dialog-order-created v-if="true"/>
+      <dialog-order-created v-model="dialog.orderSuccess"/>
       
       <g-dialog :value="!isStoreOpening" persistent>
         <div style="width: 464px; height: 256px; background: #FFFFFF; box-shadow: 0px 0px 28px rgba(58, 56, 56, 0.15); border-radius: 4px; display: flex; flex-direction: column; align-items: center; padding: 30px; margin: 0 auto;">
@@ -101,6 +101,9 @@
         dayInWeeks: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         today: dayjs().format("dddd"),
         now: dayjs().format('HH:mm'),
+        dialog: {
+          orderSuccess: true
+        }
       }
     },
     async created() {
