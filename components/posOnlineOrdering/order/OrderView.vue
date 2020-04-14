@@ -64,13 +64,11 @@
         </div>
         <order-table v-if="showOrder" @back="showOrder = false" :store="store"/>
       </div>
-      
       <div class="pos-order__right">
         <order-table :store="store"/>
       </div>
-  
-      <dialog-order-created v-model="dialog.orderSuccess"/>
       
+      <!-- Merchant dialog -->
       <g-dialog :value="!isStoreOpening" persistent>
         <div style="width: 464px; height: 256px; background: #FFFFFF; box-shadow: 0px 0px 28px rgba(58, 56, 56, 0.15); border-radius: 4px; display: flex; flex-direction: column; align-items: center; padding: 30px; margin: 0 auto;">
           <div style="font-style: normal; font-weight: bold;font-size: 18px; margin-bottom: 22px;">Merchant is temporarily closed</div>
@@ -84,12 +82,11 @@
   import _ from 'lodash';
   import OrderTable from './OrderTable';
   import MenuItem from './MenuItem';
-  import DialogOrderCreated from './dialogOrderCreated';
 
   export default {
     name: 'OrderView',
     injectService: ['PosOnlineOrderStore:(orderItems, increaseOrAddNewItems, decreaseOrRemoveItems)'],
-    components: { DialogOrderCreated, MenuItem, OrderTable},
+    components: { MenuItem, OrderTable},
     data: function () {
       return {
         selectedCategoryId: null,
@@ -101,9 +98,6 @@
         dayInWeeks: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         today: dayjs().format("dddd"),
         now: dayjs().format('HH:mm'),
-        dialog: {
-          orderSuccess: true
-        }
       }
     },
     async created() {
@@ -246,8 +240,8 @@
         if (indexOfItem > -1)
           return this.orderItems[indexOfItem].quantity
         return 0
-      }
-    }
+      },
+    },
   }
 </script>
 <style scoped lang="scss">

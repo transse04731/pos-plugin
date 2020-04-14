@@ -1,125 +1,135 @@
 <template>
-  <div class="po-order-table">
-    <div class="po-order-table__header">
-      <!-- header image -->
-      <img :src="store.orderHeaderImageSrc" class="po-order-table__header__image"/>
-    </div>
-
-    <div class="po-order-table__main">
-      <!-- header text -->
-      <div class="po-order-table__header__text">
-        <g-icon class="po-order-table__header__icon--mobile" @click="changeView">arrow_back</g-icon>
-        <g-icon class="po-order-table__header__icon" v-if="confirmView" color="#424242" @click="view = 'order'" size="20">arrow_back_ios</g-icon>
-        <div class="po-order-table__header__text--main">{{ confirmView ? 'Confirm Order' : 'Order List' }}</div>
-        <div class="po-order-table__header__total" v-if="orderView">Total items: {{ totalItems }}</div>
+  <div>
+    <div class="po-order-table">
+      <div class="po-order-table__header">
+        <!-- header image -->
+        <img :src="store.orderHeaderImageSrc" class="po-order-table__header__image"/>
       </div>
-
-      <!-- content -->
-      <div class="po-order-table__content">
-        <!-- 0 items -->
-        <div v-if="orderView && noMenuItem" style="margin-top: 100px; display: flex; justify-content: center; flex-direction: column">
-          <img src="/plugins/pos-plugin/assets/empty-order.svg">
-          <div style="margin-top: 10px; font-size: 15px; text-align: center; color: #757575;">
-            You haven't ordered any food yet. Click "<span stype="color: #2979FF; font-weight: bold;">List Food</span>" to get started.
-          </div>
+      <div class="po-order-table__main">
+        <!-- header text -->
+        <div class="po-order-table__header__text">
+          <g-icon class="po-order-table__header__icon--mobile" @click="changeView">arrow_back</g-icon>
+          <g-icon class="po-order-table__header__icon" v-if="confirmView" color="#424242" @click="view = 'order'" size="20">arrow_back_ios</g-icon>
+          <div class="po-order-table__header__text--main">{{ confirmView ? 'Confirm Order' : 'Order List' }}</div>
+          <div class="po-order-table__header__total" v-if="orderView">Total items: {{ totalItems }}</div>
         </div>
-
-        <!-- > 0 items -->
-        <div v-if="orderView && hasMenuItem"
-             v-for="(item, index) in orderItems" :key="index"
-             class="po-order-table__item">
-          <div>
-            <div class="po-order-table__item__name">{{ item.name }}</div>
-            <div class="po-order-table__item__note">
-              <g-icon size="16">icon-note</g-icon>
-              {{ item.note || 'Note ...' }}
+      
+        <!-- content -->
+        <div class="po-order-table__content">
+          <!-- 0 items -->
+          <div v-if="orderView && noMenuItem" style="margin-top: 100px; display: flex; justify-content: center; flex-direction: column">
+            <img src="/plugins/pos-plugin/assets/empty-order.svg">
+            <div style="margin-top: 10px; font-size: 15px; text-align: center; color: #757575;">
+              You haven't ordered any food yet. Click "<span stype="color: #2979FF; font-weight: bold;">List Food</span>" to get started.
             </div>
           </div>
-
-          <g-spacer/>
-
-          <div class="po-order-table__item__price">{{ item.price | currency }}</div>
-
-          <div class="po-order-table__item__action">
-            <g-icon @click.stop="removeItem(item)" color="#424242" size="28">remove_circle_outline</g-icon>
-            <span>{{item.quantity}}</span>
-            <g-icon @click.stop="addItem(item)" color="#424242" size="28">add_circle</g-icon>
+        
+          <!-- > 0 items -->
+          <div v-if="orderView && hasMenuItem"
+               v-for="(item, index) in orderItems" :key="index"
+               class="po-order-table__item">
+            <div>
+              <div class="po-order-table__item__name">{{ item.name }}</div>
+              <div class="po-order-table__item__note">
+                <g-icon size="16">icon-note</g-icon>
+                {{ item.note || 'Note ...' }}
+              </div>
+            </div>
+          
+            <g-spacer/>
+          
+            <div class="po-order-table__item__price">{{ item.price | currency }}</div>
+          
+            <div class="po-order-table__item__action">
+              <g-icon @click.stop="removeItem(item)" color="#424242" size="28">remove_circle_outline</g-icon>
+              <span>{{item.quantity}}</span>
+              <g-icon @click.stop="addItem(item)" color="#424242" size="28">add_circle</g-icon>
+            </div>
           </div>
+        
+          <!-- Confirm -->
+          <template v-if="confirmView">
+            <div class="section-header">CONTACT INFORMATION</div>
+            <g-radio-group v-model="orderType" row class="radio-option">
+              <g-radio color="#1271ff" label="Pick-up" value="pick-up" :disabled="!store.pickup"/>
+              <g-radio color="#1271ff" label="Delivery" value="delivery" :disabled="!store.delivery"/>
+            </g-radio-group>
+            <div class="section-form">
+              <g-text-field v-model="customer.name" label="Name" clearable clear-icon="icon-cancel@16" prepend-icon="icon-person@16"/>
+              <g-text-field v-model="customer.phone" label="Phone" clearable clear-icon="icon-cancel@16" prepend-icon="icon-phone2@16"/>
+              <template v-if="orderType === 'delivery'">
+                <g-text-field v-model="customer.address" label="Address" clearable clear-icon="icon-cancel@16" prepend-icon="icon-place@16"/>
+                <g-text-field v-model="customer.zipCode" label="Zip code" clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
+                <g-text-field type="datetime-local" label="Delivery time" clearable clear-icon="icon-cancel@16" prepend-icon="icon-delivery-truck@16"/>
+              </template>
+              <g-textarea v-model="customer.note" placeholder="Note..." rows="3" no-resize/>
+            </div>
+          
+            <div class="section-header">PAYMENT</div>
+            <g-radio-group v-model="paymentType" row class="radio-option">
+              <g-radio color="#1271ff" label="Cash" value="cash" class="mr-5"/>
+              <g-radio color="#1271ff" label="Credit" value="credit"/>
+            </g-radio-group>
+          
+            <div class="section-header">ORDER DETAILS</div>
+            <div v-for="(item, index) in orderItems" :key="index" class="order-item-detail">
+              <div class="order-item-detail__index" >{{ index + 1 }}</div>
+              <div class="order-item-detail__name">{{ item.name }}</div>
+              <g-spacer/>
+              <div>{{ item.price * (item.quantity || 1) | currency }}</div>
+            </div>
+            <div class="order-item-summary">
+              <span>Total <b>{{ totalItems }}</b> items</span>
+              <g-spacer/>
+              <span>{{ totalPrice | currency }}</span>
+            </div>
+            <div class="order-item-summary order-item-summary--end" >
+              <span>Shipping fee:</span>
+              <g-spacer/>
+              <span>{{ shippingFee | currency }}</span>
+            </div>
+          </template>
         </div>
-
-        <!-- Confirm -->
-        <template v-if="confirmView">
-          <div class="section-header">CONTACT INFORMATION</div>
-          <g-radio-group v-model="orderType" row class="radio-option">
-            <g-radio color="#1271ff" label="Pick-up" value="pick-up" :disabled="!store.pickup"/>
-            <g-radio color="#1271ff" label="Delivery" value="delivery" :disabled="!store.delivery"/>
-          </g-radio-group>
-          <div class="section-form">
-            <g-text-field v-model="customer.name" label="Name" clearable clear-icon="icon-cancel@16" prepend-icon="icon-person@16"/>
-            <g-text-field v-model="customer.phone" label="Phone" clearable clear-icon="icon-cancel@16" prepend-icon="icon-phone2@16"/>
-            <template v-if="orderType === 'delivery'">
-              <g-text-field v-model="customer.address" label="Address" clearable clear-icon="icon-cancel@16" prepend-icon="icon-place@16"/>
-              <g-text-field v-model="customer.zipCode" label="Zip code" clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
-              <g-text-field type="datetime-local" label="Delivery time" clearable clear-icon="icon-cancel@16" prepend-icon="icon-delivery-truck@16"/>
-            </template>
-            <g-textarea v-model="customer.note" placeholder="Note..." rows="3" no-resize/>
+      </div>
+      <!-- footer -->
+      <div class="po-order-table__footer">
+        <div>Total: <span style="font-weight: 700; font-size: 18px; margin-left: 4px">{{ (totalPrice + shippingFee) | currency }}</span></div>
+        <g-spacer/>
+        <g-btn-bs v-if="orderView" large rounded background-color="#2979FF" @click="view = 'confirm'" :disabled="orderItems.length === 0">PAYMENT</g-btn-bs>
+        <g-btn-bs v-if="confirmView" large rounded background-color="#2979FF" @click="confirmPayment" elevation="5">CONFIRM</g-btn-bs>
+      </div>
+      <div class="po-order-table__footer--mobile" v-if="orderItems.length > 0">
+        <g-badge :value="true" color="#4CAF50" overlay>
+          <template v-slot:badge>
+            {{orderItems.length}}
+          </template>
+          <div style="width: 40px; height: 40px; background-color: #ff5252; border-radius: 8px; display: flex; align-items: center; justify-content: center">
+            <g-icon>icon-menu2</g-icon>
           </div>
-
-          <div class="section-header">PAYMENT</div>
-          <g-radio-group v-model="paymentType" row class="radio-option">
-            <g-radio color="#1271ff" label="Cash" value="cash" class="mr-5"/>
-            <g-radio color="#1271ff" label="Credit" value="credit"/>
-          </g-radio-group>
-
-          <div class="section-header">ORDER DETAILS</div>
-          <div v-for="(item, index) in orderItems" :key="index" class="order-item-detail">
-            <div class="order-item-detail__index" >{{ index + 1 }}</div>
-            <div class="order-item-detail__name">{{ item.name }}</div>
-            <g-spacer/>
-            <div>{{ item.price * (item.quantity || 1) | currency }}</div>
-          </div>
-          <div class="order-item-summary">
-            <span>Total <b>{{ totalItems }}</b> items</span>
-            <g-spacer/>
-            <span>{{ totalPrice | currency }}</span>
-          </div>
-          <div class="order-item-summary order-item-summary--end" >
-            <span>Shipping fee:</span>
-            <g-spacer/>
-            <span>{{ shippingFee | currency }}</span>
-          </div>
-        </template>
+        </g-badge>
+        <div class="po-order-table__footer--mobile--total">{{(totalPrice + shippingFee) | currency}}</div>
+        <g-spacer/>
+        <g-btn-bs v-if="orderView" rounded background-color="#2979FF" @click="view = 'confirm'" style="padding: 8px 16px">PAYMENT</g-btn-bs>
+        <g-btn-bs v-if="confirmView" rounded background-color="#2979FF" @click="confirmPayment" style="padding: 8px 16px" elevation="5">CONFIRM</g-btn-bs>
       </div>
     </div>
-
-    <!-- footer -->
-    <div class="po-order-table__footer">
-      <div>Total: <span style="font-weight: 700; font-size: 18px; margin-left: 4px">{{ (totalPrice + shippingFee) | currency }}</span></div>
-      <g-spacer/>
-      <g-btn-bs v-if="orderView" large rounded background-color="#2979FF" @click="view = 'confirm'" :disabled="orderItems.length === 0">PAYMENT</g-btn-bs>
-      <g-btn-bs v-if="confirmView" large rounded background-color="#2979FF" @click="confirmPayment" elevation="5">CONFIRM</g-btn-bs>
-    </div>
-    <div class="po-order-table__footer--mobile" v-if="orderItems.length > 0">
-      <g-badge :value="true" color="#4CAF50" overlay>
-        <template v-slot:badge>
-          {{orderItems.length}}
-        </template>
-        <div style="width: 40px; height: 40px; background-color: #ff5252; border-radius: 8px; display: flex; align-items: center; justify-content: center">
-          <g-icon>icon-menu2</g-icon>
-        </div>
-      </g-badge>
-      <div class="po-order-table__footer--mobile--total">{{(totalPrice + shippingFee) | currency}}</div>
-      <g-spacer/>
-      <g-btn-bs v-if="orderView" rounded background-color="#2979FF" @click="view = 'confirm'" style="padding: 8px 16px">PAYMENT</g-btn-bs>
-      <g-btn-bs v-if="confirmView" rounded background-color="#2979FF" @click="confirmPayment" style="padding: 8px 16px" elevation="5">CONFIRM</g-btn-bs>
-    </div>
+    
+    <!-- Order created -->
+    <template v-if="showOrderSuccess">
+      <order-created v-if="isMobileView()" class="order-created--mobile" @close="closeOrderSuccess" @subscribe="subscribe"/>
+      <g-dialog  v-else v-model="showOrderSuccess" class="dlg-order-created">
+        <order-created class="order-created" @close="closeOrderSuccess" @subscribe="subscribe"/>
+      </g-dialog>
+    </template>
   </div>
 </template>
 <script>
   import _ from 'lodash'
+  import OrderCreated from './OrderCreated';
 
   export default {
     name: 'OrderTable',
+    components: { OrderCreated },
     props: {
       store: Object
     },
@@ -136,6 +146,7 @@
           deliveryTime: new Date(),
           note: ''
         },
+        showOrderSuccess: true,
       }
     },
     injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems)'],
@@ -202,7 +213,18 @@
         }
 
         socket.emit('createOrder', this.store._id, orderData)
-      }
+        
+        this.showOrderSuccess = true
+      },
+      closeOrderSuccess() {
+        this.showOrderSuccess = false
+      },
+      subscribe(email) {
+        // TODO: .....
+      },
+      isMobileView() {
+        return window.screen.width < 600
+      },
     }
   }
 </script>
@@ -381,7 +403,18 @@
       }
     }
   }
-
+  .order-created {
+    width: 464px;
+    height: 363px;
+    padding: 30px;
+    border-radius: 5px;
+    margin: 0 auto;
+  
+    &--mobile {
+      display: none;
+    }
+  }
+  
   @media screen and (max-width: 600px) {
     .po-order-table {
       background: #F2F2F2;
@@ -450,6 +483,34 @@
             align-self: center;
             margin-left: 16px;
           }
+        }
+      }
+    }
+  
+    .dlg-order-created {
+      display: none;
+    }
+    .order-created {
+      display: none;
+    
+      &--mobile {
+        display: flex;
+        flex-direction: column;
+        width: 100vw;
+        height: 100vh;
+      }
+    }
+    ::v-deep {
+      .cpn-order-created {
+        &__body {
+          padding-left: 40px;
+          padding-right: 40px;
+        }
+      
+        &__actions {
+          box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+          padding: 20px;
+          border-radius: 0 25px 0 0;
         }
       }
     }
