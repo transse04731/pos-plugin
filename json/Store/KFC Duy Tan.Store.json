@@ -11,5 +11,29 @@
   "printers": [],
   "_id": "5e870358e58f1f5cd828feba",
   "name": "KFC Duy Tan",
-  "openHours": []
+  "openHours": [
+    {
+      "dayInWeeks": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "_id": "5e9571345026ee49a7939fbf",
+      "openTime": "06:30 AM",
+      "closeTime": "09:30 PM"
+    }
+  ],
+  "alias": "5e870358e58f1f5cd828feba",
+  "phone": "098686867",
+  "address": "11 Duy Tan",
+  "zipCode": "100000",
+  "townCity": "Hanoi",
+  "delivery": true,
+  "pickup": true,
+  "onlineOrdering": true,
+  "addedDate": "2020-04-12T17:00:00.000Z"
 }

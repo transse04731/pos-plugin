@@ -1,6 +1,8 @@
 {
   "deliveryFee": {
-    "fees": []
+    "fees": [],
+    "acceptOrderInOtherZipCodes": true,
+    "defaultFee": 1
   },
   "groups": [
     {
@@ -8,8 +10,36 @@
       "name": "KFC"
     }
   ],
-  "printers": [],
+  "printers": [
+    "Bar",
+    "Kitchen"
+  ],
   "_id": "5e870410e58f1f5cd828ff16",
-  "name": "KFC Tran Thai TOng",
-  "openHours": []
+  "name": "KFC Tran Thai Tong",
+  "openHours": [
+    {
+      "dayInWeeks": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "_id": "5e9570495026ee49a7939eac",
+      "openTime": "06:30 AM",
+      "closeTime": "09:00 PM"
+    }
+  ],
+  "alias": "5e870410e58f1f5cd828ff16",
+  "useMultiplePrinters": null,
+  "pickup": true,
+  "delivery": true,
+  "phone": "098686868",
+  "address": "23 Tran Thai Tong",
+  "zipCode": "100000",
+  "townCity": "Hanoi",
+  "addedDate": "2020-04-11T17:00:00.000Z",
+  "onlineOrdering": null
 }
