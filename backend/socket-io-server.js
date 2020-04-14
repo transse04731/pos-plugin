@@ -1,6 +1,8 @@
 const {p2pServerPlugin} = require('@gigasource/socket.io-p2p-plugin');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
+const ProxyServer = require('@gigasource/nodejs-proxy-server/libs/server.js');
+const {remoteControlExpressServerPort, remoteControlSocketIOServerPort} = global.APP_CONFIG;
 
 const Schema = mongoose.Schema
 const savedMessageSchema = new Schema({
@@ -37,6 +39,12 @@ function loadMessages(targetClientId) {
 module.exports = function (cms) {
   const DeviceModel = cms.getModel('OnlineOrderDevice');
 
+  const proxyServer = new ProxyServer({
+    expressServerPort: remoteControlExpressServerPort,
+    socketIOServerPort: remoteControlSocketIOServerPort,
+  });
+  // for destroy: proxyServer.destroy();
+
   const {io, socket: socketIOServer} = cms;
   const serverPlugin = p2pServerPlugin(io, {
     saveMessage, loadMessages, deleteMessage,
@@ -50,5 +58,24 @@ module.exports = function (cms) {
 
       serverPlugin.emitToPersistent(deviceId, 'createOrder', [orderData]);
     });
-  })
+
+    socket.on('startRemoteControl', async (deviceId, callback) => {
+      if (!deviceId) {
+        callback(null);
+      } else {
+        serverPlugin.emitTo(deviceId, 'startRemoteControl', async () => {
+          const proxyPort = await proxyServer.startProxy(`${deviceId}-proxy-client`);
+          callback(proxyPort);
+        })
+      }
+    });
+
+    socket.on('stopRemoteControl', async deviceId => {
+      if (!deviceId) return
+
+      serverPlugin.emitTo(deviceId, 'stopRemoteControl', () => {
+        proxyServer.stopProxy(`${deviceId}-proxy-client`);
+      })
+    });
+  });
 }

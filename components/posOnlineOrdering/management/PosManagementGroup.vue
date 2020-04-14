@@ -16,11 +16,12 @@
               <div>{{store.address}}</div>
             </div>
             <div>
-                <span :class="getStatusClass(store.status)">{{store.status}}</span>
+              <span :class="getStatusClass(store.status)">{{store.status}}</span>
             </div>
             <div>{{store.onlineOrdering && 'Yes'}}</div>
             <div>
-              <g-tooltip :open-on-hover="true" bottom speech-bubble color="#000" transition="0.3" remove-content-on-close>
+              <g-tooltip :open-on-hover="true" bottom speech-bubble color="#000" transition="0.3"
+                         remove-content-on-close>
                 <template v-slot:activator="{on}">
                   <div class="pos-management-group__content-btn ml-2"
                        @mouseenter="on.mouseenter"
@@ -35,10 +36,20 @@
           </div>
           <div v-if="showStoreSetting[store._id]" class="pos-management-group__content-action">
             <g-btn-bs small border-color="grey-darken-1" @click="openWebShopConfig(store)">WebShop Config</g-btn-bs>
-            <g-btn-bs small border-color="grey-darken-1">Remote Control</g-btn-bs>
+            <g-btn-bs small border-color="grey-darken-1" @click="startRemoteControl(store._id)"
+                      :disabled="!(storeDeviceMap[store._id] && storeDeviceMap[store._id].paired)">Remote Control
+            </g-btn-bs>
             <g-btn-bs small border-color="grey-darken-1" @click="$emit('view:settings', store)">Settings</g-btn-bs>
           </div>
         </div>
+
+        <g-dnd-dialog v-model="showIframe" :width="iframeWidth" :height="iframeHeight" lazy>
+          <template #title>
+            Remote Control
+          </template>
+
+          <iframe :src="iframeSrc" width="100%" height="100%"/>
+        </g-dnd-dialog>
       </div>
     </template>
   </div>
@@ -46,6 +57,7 @@
 
 <script>
   import _ from 'lodash'
+
   export default {
     name: "PosManagementGroup",
     props: {
@@ -55,7 +67,21 @@
     data() {
       return {
         showContent: false,
-        showStoreSetting: {}
+        showStoreSetting: {},
+        storeDeviceMap: {},
+        iframeWidth: 1000,
+        iframeHeight: 500,
+        showIframe: false,
+        iframeSrc: '',
+      }
+    },
+    watch: {
+      stores() {
+        this.stores.forEach(async store => {
+          const storeId = store._id
+          const device = await cms.getModel('OnlineOrderDevice').findOne({storeId, paired: true})
+          this.$set(this.storeDeviceMap, storeId, device || {})
+        })
       }
     },
     methods: {
@@ -70,14 +96,14 @@
         }
       },
       getStoreRowClass(index) {
-        if(index % 2 === 0)
+        if (index % 2 === 0)
           return 'pos-management-group__content--even'
         return 'pos-management-group__content--odd'
       },
       getStatusClass(status) {
-        if(status === 'online')
+        if (status === 'online')
           return 'pos-management-group__status--online'
-        if(status === 'offline')
+        if (status === 'offline')
           return 'pos-management-group__status--offline'
         return ''
       },
@@ -86,7 +112,20 @@
       },
       openWebShopConfig(store) {
         window.open(`${location.origin}/view/store/${store.alias || store._id}/setting`)
-      }
+      },
+      async startRemoteControl(storeId) {
+        const deviceId = this.storeDeviceMap[storeId]._id
+        const {socket} = window.cms
+
+        socket.emit('startRemoteControl', deviceId, proxyPort => {
+          if (proxyPort) {
+            this.iframeSrc = `http://localhost:${proxyPort}/view/pos-dashboard`
+            this.showIframe = true
+          } else {
+            // TODO: handle error
+          }
+        })
+      },
     }
   }
 </script>
