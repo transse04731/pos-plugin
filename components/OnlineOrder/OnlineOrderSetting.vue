@@ -59,7 +59,6 @@
 </template>
 
 <script>
-  import axios from 'axios';
   import ValuePicker from './ValuePicker';
   import GGridItemSelector from '../FnButton/components/GGridItemSelector';
 
@@ -121,34 +120,32 @@
     },
     methods: {
       async connect(pairingCode) {
-        const serverUrl = this.internalDevice.url
-        const pairingApiUrl = `${serverUrl}/online-order-device/register`
-        const requestBody = {pairingCode}
-        const requestResponse = await axios.post(pairingApiUrl, requestBody)
-        const {deviceId} = requestResponse.data
+        this.$emit('registerOnlineOrder', pairingCode, deviceId => {
+          if (deviceId) {
+            this.computedDevice = {
+              id: deviceId,
+              paired: true,
+              url: this.internalDevice.url,
+              sound: this.internalDevice.sound,
+            }
 
-        this.$emit('registerOnlineOrder', deviceId)
-
-        this.computedDevice = {
-          id: deviceId,
-          paired: true,
-          url: this.internalDevice.url,
-          sound: this.internalDevice.sound,
-        }
-
-        this.connected = true;
+            this.connected = true
+          } else {
+            this.connected = false
+          }
+        })
       },
       disconnect() {
-        this.$emit('unregisterOnlineOrder')
+        this.$emit('unregisterOnlineOrder', () => {
+          this.computedDevice = {
+            id: null,
+            paired: false,
+            url: this.internalDevice.url,
+            sound: this.internalDevice.sound,
+          }
 
-        this.computedDevice = {
-          id: null,
-          paired: false,
-          url: this.internalDevice.url,
-          sound: this.internalDevice.sound,
-        }
-
-        this.connected = false
+          this.connected = false
+        })
       },
     },
     mounted() {

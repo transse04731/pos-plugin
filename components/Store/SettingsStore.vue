@@ -112,7 +112,6 @@
         selectedPrinterMenu: null,
         //online order
         onlineDevice: null,
-        onlineOrderSocket: null,
         defaultPrepareTime: null,
         onlineOrderSorting: null
       }
@@ -121,7 +120,7 @@
       const cachedArticlePageSize = localStorage.getItem('viewArticlePageSize')
       if (cachedArticlePageSize) this.productPagination.limit = parseInt(cachedArticlePageSize)
       await this.getOnlineDevice()
-      if (this.onlineDevice.paired && this.onlineDevice.id && !this.onlineOrderSocket) this.registerOnlineOrder(this.onlineDevice.id)
+      if (this.onlineDevice.paired && this.onlineDevice.id) this.registerOnlineOrder()
       const posSettings = await this.getPosSetting()
       if (posSettings) {
         this.defaultPrepareTime = posSettings.defaultPrepareTime
@@ -791,12 +790,12 @@
         await cms.getModel('PosSetting').updateOne({}, {onlineDevice: device});
       },
 
-      registerOnlineOrder(deviceId) {
-        window.cms.socket.emit('registerOnlineOrderDevice', deviceId)
+      registerOnlineOrder(pairingCode, callback) {
+        window.cms.socket.emit('registerOnlineOrderDevice', pairingCode, callback)
       },
 
-      unregisterOnlineOrder() {
-        window.cms.socket.emit('unregisterOnlineOrderDevice')
+      unregisterOnlineOrder(callback) {
+        window.cms.socket.emit('unregisterOnlineOrderDevice', callback)
       },
     },
     provide() {
