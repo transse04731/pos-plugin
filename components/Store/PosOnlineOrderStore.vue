@@ -30,16 +30,17 @@
           this.orderItems[indexOfItem].quantity--;
         else
           this.orderItems.splice(indexOfItem, 1)
+      },
+      clearOrder() {
+        this.orderItems.splice(0, this.orderItems.length)
       }
     },
     provide() {
       return {
         orderItems: this.orderItems,
-        orderType: this.orderType,
-        paymentType: this.paymentType,
-        customer: this.customer,
         increaseOrAddNewItems: this.increaseOrAddNewItems,
-        decreaseOrRemoveItems: this.decreaseOrRemoveItems
+        decreaseOrRemoveItems: this.decreaseOrRemoveItems,
+        clearOrder: this.clearOrder
       }
     }
   }

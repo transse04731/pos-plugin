@@ -150,7 +150,7 @@
         currency: $t('common.currency')
       }
     },
-    injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems)'],
+    injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems,clearOrder)'],
     filters: {
       currency(value) {
         return $t('common.currency') + value
@@ -208,12 +208,14 @@
           orderType: this.orderType,
           paymentType: this.paymentType,
           customer,
-          products: this.orderItems,
+          products: _.cloneDeep(this.orderItems),
           deliveryTime,
           note,
         }
 
         socket.emit('createOrder', this.store._id, orderData)
+        
+        this.clearOrder()
         
         this.showOrderSuccess = true
       },
