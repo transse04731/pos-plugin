@@ -65,11 +65,11 @@
               <g-textarea v-model="customer.note" placeholder="Note..." rows="3" no-resize/>
             </div>
           
-            <div class="section-header">PAYMENT</div>
-            <g-radio-group v-model="paymentType" row class="radio-option">
-              <g-radio color="#1271ff" label="Cash" value="cash" class="mr-5"/>
-              <g-radio color="#1271ff" label="Credit" value="credit"/>
-            </g-radio-group>
+<!--            <div class="section-header">PAYMENT</div>-->
+<!--            <g-radio-group v-model="paymentType" row class="radio-option">-->
+<!--              <g-radio color="#1271ff" label="Cash" value="cash" class="mr-5"/>-->
+<!--              <g-radio color="#1271ff" label="Credit" value="credit"/>-->
+<!--            </g-radio-group>-->
           
             <div class="section-header">ORDER DETAILS</div>
             <div v-for="(item, index) in orderItems" :key="index" class="order-item-detail">
