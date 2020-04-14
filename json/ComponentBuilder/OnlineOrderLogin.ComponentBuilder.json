@@ -16,6 +16,6 @@
   "props": {
     "fields": []
   },
-  "renderToRoute": "login",
+  "renderToRoute": "sign-in",
   "isProduction": true
 }
