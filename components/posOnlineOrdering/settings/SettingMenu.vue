@@ -134,7 +134,7 @@
       addNewProduct(product) {
         console.log('product', product)
         this.$emit('add-new-product', product )
-        this.showAddNewProductPanel = false
+        this.showAddNewProductPanel[product.category] = false
       },
       updateProduct(productId, change) {
         this.$emit('update-product', productId, change)
