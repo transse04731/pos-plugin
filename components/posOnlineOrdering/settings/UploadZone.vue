@@ -2,10 +2,10 @@
   <div class="upload-zone" >
     <div v-if="url">
       <img :src="url" class="uploaded-image" draggable="false"/>
-      <g-btn @click="uploadImage" class="edit-image-btn" text-color="#424242" background-color="#FFF" :elevation="elevation">
+      <g-btn-bs @click="uploadImage" class="edit-image-btn" text-color="#424242" background-color="#FFF" :elevation="elevation">
         <g-icon>photo_camera</g-icon>
         <span style="margin-left: 4px">Edit Photo</span>
-      </g-btn>
+      </g-btn-bs>
     </div>
     <div v-else @click="uploadImage" style="padding: 20px;">
       <div style="display: flex; align-items: center">
@@ -31,7 +31,7 @@
       url: String,
       elevation: {
         type: Number,
-        default: 0
+        default: 2
       }
     },
     data: function () {
