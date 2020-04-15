@@ -58,8 +58,11 @@ router.post('/register', async (req, res) => {
   if (deviceInfo) {
     if (type === 'webShopTerminal')
       alias = 'WebShop Terminal'
-    else if (type === 'terminal') {
+    else if (type === 'terminal')
       alias = await getUniqueTerminalAlias(deviceInfo.storeId)
+    else {
+      res.status(400).json({message: 'Invalid device type'})
+      return
     }
     await OnlineOderDeviceModel.findOneAndUpdate({pairingCode}, { paired: true, alias, name, appName, appVersion, type })
     res.status(200).json({deviceId: deviceInfo._id})
