@@ -27,7 +27,9 @@
           <div class="title">What you like?</div>
           <div class="pos-order__tab">
             <div class="pos-order__tab--icon">
-              <g-icon>icon-fork</g-icon>
+              <div class="pos-order__tab--icon-wrapper">
+                <g-icon>icon-fork</g-icon>
+              </div>
             </div>
             <span v-for="(category, index) in categoriesViewModel"
                   :key="index"
@@ -330,12 +332,14 @@
         padding: 24px;
         display: flex;
         align-items: center;
-        height: calc(100% - 16px);
-        border-right: 1px solid #000;
-        margin: 8px 16px 8px 0;
+        height: 100%;
         position: sticky;
         left: 0;
         background-color: #F8F8F8;
+        
+        &-wrapper {
+          margin-top: 8px; margin-bottom: 8px; padding: 8px 16px; border-right: 1px solid #000;
+        }
       }
 
       &--content {
@@ -391,7 +395,7 @@
           position: sticky;
           top: 0;
           left: 0;
-          padding: 0 16px;
+          padding: 0;
           background: #F8F8F8;
 
           img {
