@@ -1,0 +1,22 @@
+{
+  "storeGroups": [],
+  "_id": "5e96bdee046a735999b167eb",
+  "password": "1",
+  "role": {
+    "_id": "5e85c828344f470a8c25f92a",
+    "collectionPermission": [
+      {
+        "hideFields": [],
+        "_id": "5e86e3828197ab54362973fd",
+        "collectionName": "Product2",
+        "permission": "write",
+        "queryCondition": {
+          "_code_": "const cms = require('cms');\nmodule.exports =  async function(user) {\n  let stores = (await cms.getModel('Store').find({groups: {\n    $elemMatch: {$in: user.storeGroups}\n  }}).select('_id').lean()).map(r => r._id);\n  \n  return {\n    find: {\n      store: {\n        $in: stores\n      }\n    }\n  }\n}",
+          "_code_type_": "commonJs"
+        }
+      }
+    ],
+    "name": "user"
+  },
+  "username": "test"
+}
