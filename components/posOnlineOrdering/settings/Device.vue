@@ -41,7 +41,7 @@
       return {
         pairedInfo: null,
         status: '',
-        url: `pos.gigasource.io/store/${this.store.alias}`,
+        url: `pos.gigasource.io/stores/${this.store.alias}`,
         pairingCode: null,
         color: 'indigo-accent-2',
         tfClass: 'bs-tf__pos',
