@@ -20,9 +20,9 @@ module.exports = cms => {
     if (!req.session.userId) {
       return res.redirect('/view/sign-in')
     }
-    if (req.session.userRole.name !== 'admin') {
-      return res.redirect('/view/management')
-    }
+    // if (req.session.userRole.name !== 'admin') {
+    //   return res.redirect('/view/management')
+    // }
     // TODO: non-user
     next()
   })
