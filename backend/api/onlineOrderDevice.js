@@ -29,6 +29,18 @@ async function getUniqueTerminalAlias(storeId) {
   return alias
 }
 
+async function addPairedDeviceToStore(deviceId, storeId) {
+  const devices = await cms.getModel('Store').find({ _id: storeId}, { devices: 1 })
+  devices.push(deviceId)
+  await cms.getModel('Store').updateOne({ _id: storeId }, { devices })
+}
+
+async function removePairedDeviceFromStore(deviceId, storeId) {
+  const devices = await cms.getModel('Store').find({ _id: storeId}, { devices: 1 })
+  const newDevices = _.xor(devices, [deviceId])
+  await cms.getModel('Store').updateOne({ _id: storeId }, { devices: newDevices })
+}
+
 router.get('/pairing-code', async (req, res) => {
   const {storeId} = req.query
 
@@ -64,7 +76,8 @@ router.post('/register', async (req, res) => {
       res.status(400).json({message: 'Invalid device type'})
       return
     }
-    await OnlineOderDeviceModel.findOneAndUpdate({pairingCode}, { paired: true, alias, name, appName, appVersion, type })
+    await OnlineOderDeviceModel.updateOne({pairingCode}, { paired: true, alias, name, appName, appVersion, type })
+    await addPairedDeviceToStore(deviceInfo._id, deviceInfo.storeId)
     res.status(200).json({deviceId: deviceInfo._id})
   } else {
     res.status(400).json({message: 'Invalid pairing code or pairing code has been used by another device'})
@@ -73,10 +86,11 @@ router.post('/register', async (req, res) => {
 
 router.post('/un-register', async (req, res) => {
   const {_id} = req.body;
-  const device = await OnlineOderDeviceModel.findOne({_id});
-  if (device) {
+  const deviceInfo = await OnlineOderDeviceModel.findOne({_id});
+  if (deviceInfo) {
     await OnlineOderDeviceModel.remove({_id})
-    res.status(200).json({deviceId: device._id})
+    await removePairedDeviceFromStore(_id, deviceInfo.storeId)
+    res.status(200).json({deviceId: deviceInfo._id})
   } else {
     res.status(400).json({message: 'Bad request: Invalid id'})
   }

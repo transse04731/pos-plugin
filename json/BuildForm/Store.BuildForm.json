@@ -183,6 +183,21 @@
       "schemaType": "boolean",
       "key": "useMultiplePrinters",
       "type": "input@switch"
+    },
+    {
+      "_id": "5e96f37555d0d9631202ab06",
+      "schemaType": "array",
+      "key": "devices",
+      "type": "array",
+      "fields": [
+        {
+          "schemaType": "objectId",
+          "key": "device",
+          "ref": "OnlineOrderDevice",
+          "type": "ref-select",
+          "labelProp": "name"
+        }
+      ]
     }
   ],
   "name": "Store",
