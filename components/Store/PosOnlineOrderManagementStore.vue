@@ -89,10 +89,7 @@
         const createdGroup = await cms.getModel('StoreGroup').create({ name })
         const storeGroups = [..._.map(cms.loginUser.user.storeGroups, sg => sg._id), createdGroup._id]
         await cms.getModel('User').findOneAndUpdate({_id: cms.loginUser.user._id}, { storeGroups })
-        // even though the session has been updated, cms.loginUser.user is still not updated
-        // to update in cms.loginUser.user, we must refresh the page
-        // a work-around way is assign returned value to cms.loginUser.user
-        cms.loginUser.user = await cms.updateUserSession()
+        await cms.updateUserSession()
         await this.loadStoreGroups()
         return { ok: true}
       },
