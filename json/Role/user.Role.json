@@ -4,10 +4,70 @@
     {
       "hideFields": [],
       "_id": "5e86e3828197ab54362973fd",
-      "collectionName": "Product2",
-      "permission": "write",
+      "collectionName": "ComponentBuilder",
+      "permission": "read",
       "queryCondition": {
         "_code_": "const cms = require('cms');\nmodule.exports =  async function(user) {\n  let stores = (await cms.getModel('Store').find({groups: {\n    $elemMatch: {$in: user.storeGroups}\n  }}).select('_id').lean()).map(r => r._id);\n  \n  return {\n    find: {\n      store: {\n        $in: stores\n      }\n    }\n  }\n}",
+        "_code_type_": "commonJs"
+      }
+    },
+    {
+      "hideFields": [],
+      "_id": "5e96bf6fbcf0ca5a39f5ffe6",
+      "collectionName": "Category",
+      "permission": "write",
+      "queryCondition": {
+        "_code_": "",
+        "_code_type_": "commonJs"
+      }
+    },
+    {
+      "hideFields": [],
+      "_id": "5e96bf6fbcf0ca5a39f5ffe7",
+      "collectionName": "Product",
+      "permission": "write",
+      "queryCondition": {
+        "_code_": "",
+        "_code_type_": "commonJs"
+      }
+    },
+    {
+      "hideFields": [],
+      "_id": "5e96bf6fbcf0ca5a39f5ffe8",
+      "collectionName": "Store",
+      "permission": "write",
+      "queryCondition": {
+        "_code_": "",
+        "_code_type_": "commonJs"
+      }
+    },
+    {
+      "hideFields": [],
+      "_id": "5e96bf6fbcf0ca5a39f5ffe9",
+      "collectionName": "StoreGroup",
+      "permission": "write",
+      "queryCondition": {
+        "_code_": "",
+        "_code_type_": "commonJs"
+      }
+    },
+    {
+      "hideFields": [],
+      "_id": "5e96bf6fbcf0ca5a39f5ffea",
+      "collectionName": "OnlineOrderDevice",
+      "permission": "write",
+      "queryCondition": {
+        "_code_": "",
+        "_code_type_": "commonJs"
+      }
+    },
+    {
+      "hideFields": [],
+      "_id": "5e96bf6fbcf0ca5a39f5ffeb",
+      "collectionName": "Subscription",
+      "permission": "write",
+      "queryCondition": {
+        "_code_": "",
         "_code_type_": "commonJs"
       }
     }
