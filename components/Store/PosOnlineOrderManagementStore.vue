@@ -110,18 +110,12 @@
         return { ok: true }
       },
       async removeStore(groupId, store) {
-        console.log('remove store')
-        console.log('group id', groupId)
-        console.log('store', store)
         const indexOfGroup = _.findIndex(store.groups, g => g._id === groupId)
         store.groups.splice(indexOfGroup, 1)
         const groups = _.map(store.groups, g => g._id)
         if (groups.length > 0) {
-          console.log('remove store', store._id, 'from group', groupId)
-          console.log('store still exist in another group')
           return await this.updateStore(store._id, { groups })
         } else {
-          console.log('remove store')
           await cms.getModel('Store').remove({_id : store._id})
           await this.loadStores()
           return { ok : true }
