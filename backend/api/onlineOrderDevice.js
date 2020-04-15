@@ -30,13 +30,15 @@ async function getUniqueTerminalAlias(storeId) {
 }
 
 async function addPairedDeviceToStore(deviceId, storeId) {
-  const devices = await cms.getModel('Store').find({ _id: storeId}, { devices: 1 })
+  const store = await cms.getModel('Store').findOne({ _id: storeId}, { devices: 1 })
+  const devices = _.map(store.devices, device => device._id)
   devices.push(deviceId)
   await cms.getModel('Store').updateOne({ _id: storeId }, { devices })
 }
 
 async function removePairedDeviceFromStore(deviceId, storeId) {
-  const devices = await cms.getModel('Store').find({ _id: storeId}, { devices: 1 })
+  const store = await cms.getModel('Store').findOne({ _id: storeId}, { devices: 1 })
+  const devices = _.map(store.devices, device => device._id)
   const newDevices = _.xor(devices, [deviceId])
   await cms.getModel('Store').updateOne({ _id: storeId }, { devices: newDevices })
 }
