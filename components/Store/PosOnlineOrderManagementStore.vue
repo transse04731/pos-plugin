@@ -79,18 +79,26 @@
       await this.loadStores()
     },
     methods: {
+      // store groups
       async loadStoreGroups() {
-        this.storeGroups.splice(0, this.storeGroups.length, ...await cms.getModel('StoreGroup').find({}))
-      },
-      async loadStores() {
-        this.stores.splice(0, this.stores.length, ...await cms.getModel('Store').find({}))
+        const storeGroupIds = _.map(cms.loginUser.user.storeGroups, sg => sg._id)
+        const storeGroups = await cms.getModel('StoreGroup').find({ _id: { $in: storeGroupIds } })
+        this.storeGroups.splice(0, this.storeGroups.length, ...storeGroups)
       },
       async addGroup(name) {
         if (_.includes(this.storeGroupNames, name))
           return { ok: false, message: 'This name is already taken!' }
-        await cms.getModel('StoreGroup').create({ name })
+        const createdGroup = await cms.getModel('StoreGroup').create({ name })
+        cms.loginUser.user.storeGroups.push(createdGroup)
         await this.loadStoreGroups()
         return { ok: true}
+      },
+
+      // stores
+      async loadStores() {
+        const storeGroupIds = _.map(cms.loginUser.user.storeGroups, sg => sg._id)
+        const stores = await cms.getModel('Store').find({ groups: { $elemMatch: { $in: storeGroupIds } } })
+        this.stores.splice(0, this.stores.length, ...stores)
       },
       async addStore({ name, groups, address }) {
         if (_.includes(this.storeNames, name))
@@ -125,6 +133,8 @@
         this.showSnackbar = true
         return { ok : true }
       },
+      
+      // devices
       async addDevice({pairingCode}) {
         
         return { ok: true }
