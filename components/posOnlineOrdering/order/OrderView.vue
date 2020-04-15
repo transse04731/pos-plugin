@@ -59,7 +59,7 @@
                 <g-icon>icon-menu2</g-icon>
               </div>
             </g-badge>
-            <!--          <div class="pos-order__info&#45;&#45;total">${{totalPrice + shippingFee}}</div>-->
+            <div class="pos-order__info--total">{{ totalPrice | currency }}</div>
             <g-spacer/>
             <g-btn-bs background-color="#2979FF" rounded style="padding: 8px 16px" @click="showOrder = true">CHECK OUT</g-btn-bs>
           </div>
@@ -100,6 +100,11 @@
         dayInWeeks: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         today: dayjs().format("dddd"),
         now: dayjs().format('HH:mm'),
+      }
+    },
+    filters: {
+      currency(val) {
+        return $t('common.currency') + val
       }
     },
     async created() {
