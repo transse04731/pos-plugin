@@ -44,9 +44,10 @@ async function removePairedDeviceFromStore(deviceId, storeId) {
 router.get('/pairing-code', async (req, res) => {
   const {storeId} = req.query
 
-  // if pairing code of specified store has been created then return this value
-  const device = await OnlineOderDeviceModel.findOne({storeId})
-  if (device) return res.status(200).json({pairingCode: device.pairingCode})
+  // try to find created pairing code but not paired
+  const device = await OnlineOderDeviceModel.findOne({storeId, paired: false})
+  if (device)
+    return res.status(200).json({pairingCode: device.pairingCode})
 
   // if not, then generate new pairing code
   const pairingCode = await generateUniqueDeviceCode()
