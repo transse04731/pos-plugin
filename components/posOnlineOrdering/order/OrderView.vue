@@ -376,12 +376,13 @@
           }
         }
       }
-
+  
       .title {
         font-size: 20px;
         margin-left: 16px;
+        margin-bottom: 11px;
       }
-
+      
       .pos-order__tab {
         border-radius: 0;
         overflow: auto;
