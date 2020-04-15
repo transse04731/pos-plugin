@@ -24,7 +24,7 @@
               <div class="menu-setting-item__btn"
                    @mouseenter="on.mouseenter"
                    @mouseleave="on.mouseleave"
-                   @click.stop.prevent="mode = 'edit'">
+                   @click.stop.prevent="switchToEditMode">
                 <g-icon color="#FFF" small>mdi-pencil-outline</g-icon>
               </div>
             </template>
@@ -56,7 +56,7 @@
           :tax="tax"
           :available-printers="availablePrinters"
           :use-multiple-printers="useMultiplePrinters"
-          @cancel="mode = 'view'"
+          @cancel="cancelEdit"
           @save="saveProduct"/>
     </template>
   </div>
@@ -88,9 +88,23 @@
       deleteItem() {
         this.$emit('delete')
       },
+      switchToEditMode() {
+        this.mode = 'edit'
+        this.emitEditing(true)
+      },
+      switchToViewMode() {
+        this.mode = 'view'
+        this.emitEditing(false)
+      },
+      cancelEdit() {
+        this.switchToViewMode()
+      },
       saveProduct(change) {
         this.$emit('save', change)
-        this.mode = 'view'
+        this.switchToViewMode()
+      },
+      emitEditing(editing) {
+        this.$emit('editing', editing)
       }
     }
   }

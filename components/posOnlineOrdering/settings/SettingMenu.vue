@@ -37,6 +37,7 @@
                     :available-printers="store.printers"
                     :use-multiple-printers="store.useMultiplePrinters"
                     :key="`item_${index}`"
+                    @editing="setEditing(product._id, $event)"
                     @save="updateProduct(product._id, $event)"
                     @delete="openDeleteProductDialog(product._id)"/>
               </template>
@@ -85,6 +86,7 @@
       return {
         showProducts: {},
         showAddNewProductPanel: {},
+        editingProducts: {},
         selectedCategoryId: null,
         selectedProductId: null,
         dialog: {
@@ -105,9 +107,20 @@
       }
     },
     methods: {
+      setEditing(productId, editing) {
+        if (editing)
+          this.$set(this.editingProducts, productId, editing)
+        else
+          this.$delete(this.editingProducts, productId)
+      },
       toggleCollapse(category) {
-        if (_.has(this.showProducts, category._id)) {
-          this.showProducts[category._id] = !this.showProducts[category._id]
+        if (this.showProducts[category._id]) {
+          const editingProduct = _.keys(this.editingProducts)
+          const productsOfCate = _.map(category.products, p => p._id)
+          const intersectProducts = _.intersection(editingProduct, productsOfCate)
+          const canCollapse = intersectProducts.length === 0
+          if (canCollapse)
+            this.$delete(this.showProducts, category._id)
         } else {
           this.$set(this.showProducts, category._id, true)
         }
