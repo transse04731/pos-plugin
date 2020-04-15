@@ -6,88 +6,16 @@ const ProxyClient = require('@gigasource/nodejs-proxy-server/libs/client.js');
 const url = require('url');
 const axios = require('axios');
 
-const {webshopUrl, backendUrl, webshopProxyServerPort} = global.APP_CONFIG;
+const {webshopUrl, port: backendPort} = global.APP_CONFIG;
 let onlineOrderSocket = null;
 let proxyClient = null;
 let activeProxies = 0;
+let deviceSockets = [];
 
-module.exports = cms => {
-  cms.socket.on('connect', socket => {
-    socket.on('registerOnlineOrderDevice', async (pairingCode, callback) => {
-      try {
-        let deviceId;
-        const posSettings = await cms.getModel('PosSetting').findOne({});
-        const {onlineDevice} = posSettings;
-
-        if (onlineDevice.id && onlineDevice.paired) {
-          deviceId = onlineDevice.id
-        } else {
-          const pairingApiUrl = `${webshopUrl}/online-order-device/register`
-          const requestBody = {pairingCode}
-          const requestResponse = await axios.post(pairingApiUrl, requestBody)
-          deviceId = requestResponse.data.deviceId
-        }
-
-        if (!onlineOrderSocket) {
-          onlineOrderSocket = io(`${webshopUrl}?clientId=${deviceId}`);
-          onlineOrderSocket.on('createOrder', async (orderData, ackFn) => {
-            await createOrder(orderData);
-            ackFn();
-          });
-
-          onlineOrderSocket.on('startRemoteControl', callback => {
-            activeProxies++;
-
-            if (!proxyClient) {
-              proxyClient = new ProxyClient({
-                clientId: `${deviceId}-proxy-client`,
-                proxyServerHost: url.parse(webshopUrl).hostname,
-                socketIOPort: webshopProxyServerPort,
-                remoteHost: url.parse(backendUrl).hostname,
-                remotePort: url.parse(backendUrl).port,
-                remoteSocketKeepAlive: true,
-                onConnect: callback,
-              });
-            } else {
-              callback();
-            }
-          });
-
-          onlineOrderSocket.on('stopRemoteControl', callback => {
-            if (activeProxies > 0) activeProxies--;
-
-            if (activeProxies === 0 && proxyClient) {
-              proxyClient.destroy();
-              proxyClient = null;
-            }
-
-            callback();
-          });
-        }
-
-        if (typeof callback === 'function') callback(deviceId);
-      } catch (e) {
-        console.error('Device pairing error');
-        callback(null);
-      }
-    });
-
-    socket.on('unregisterOnlineOrderDevice', callback => {
-      if (onlineOrderSocket) {
-        onlineOrderSocket.off('createOrder');
-        onlineOrderSocket.disconnect();
-        onlineOrderSocket = null;
-      }
-
-      if (proxyClient) {
-        proxyClient.destroy();
-        proxyClient = null;
-      }
-
-      callback();
-    });
-
-    async function createOrder(orderData) {
+function createOnlineOrderSocket(deviceId) {
+  if (!onlineOrderSocket) {
+    onlineOrderSocket = io(`${webshopUrl}?clientId=${deviceId}`);
+    onlineOrderSocket.on('createOrder', async (orderData, ackFn) => {
       if (!orderData) return
       const {orderType: type, paymentType, customer, products, deliveryTime, createdDate: dateString} = orderData
 
@@ -123,7 +51,105 @@ module.exports = cms => {
       }
 
       await cms.getModel('Order').create(order)
-      socket.emit('updateOnlineOrders')
+      deviceSockets.forEach(socket => socket.emit('updateOnlineOrders'))
+      ackFn();
+    });
+
+    onlineOrderSocket.on('startRemoteControl', (proxyServerPort, callback) => {
+      activeProxies++;
+
+      if (!proxyClient) {
+        proxyClient = new ProxyClient({
+          clientId: `${deviceId}-proxy-client`,
+          proxyServerHost: url.parse(webshopUrl).hostname,
+          socketIOPort: proxyServerPort,
+          remoteHost: 'localhost',
+          remotePort: backendPort,
+          remoteSocketKeepAlive: true,
+          onConnect: callback,
+        });
+      } else {
+        callback();
+      }
+    });
+
+    onlineOrderSocket.on('stopRemoteControl', callback => {
+      if (activeProxies > 0) activeProxies--;
+
+      if (activeProxies === 0 && proxyClient) {
+        proxyClient.destroy();
+        proxyClient = null;
+      }
+
+      callback();
+    });
+
+    onlineOrderSocket.once('disconnect', () => {
+      activeProxies = 0;
+      if (proxyClient) {
+        proxyClient.destroy();
+        proxyClient = null;
+      }
+    })
+  }
+}
+
+async function getDeviceId(pairingCode) {
+  const posSettings = await cms.getModel('PosSetting').findOne({});
+  const {onlineDevice} = posSettings;
+
+  if (onlineDevice.id && onlineDevice.paired) {
+    return onlineDevice.id
+  } else {
+    if (!pairingCode) {
+      return null
+    } else {
+      const pairingApiUrl = `${webshopUrl}/online-order-device/register`
+      const requestBody = {pairingCode}
+      try {
+        const requestResponse = await axios.post(pairingApiUrl, requestBody)
+        return requestResponse.data.deviceId
+      } catch (e) {
+        console.error(e)
+        return null
+      }
     }
+  }
+}
+
+module.exports = async cms => {
+  const deviceId = await getDeviceId()
+  if (deviceId) createOnlineOrderSocket(deviceId)
+
+  cms.socket.on('connect', socket => {
+    deviceSockets.push(socket)
+
+    socket.on('disconnect', () => deviceSockets = deviceSockets.filter(sk => sk !== socket))
+
+    socket.on('registerOnlineOrderDevice', async (pairingCode, callback) => {
+      const deviceId = await getDeviceId(pairingCode)
+
+      if (deviceId) {
+        createOnlineOrderSocket(deviceId)
+        if (typeof callback === 'function') callback(deviceId)
+      } else {
+        callback(null)
+      }
+    });
+
+    socket.on('unregisterOnlineOrderDevice', callback => {
+      if (onlineOrderSocket) {
+        onlineOrderSocket.off('createOrder');
+        onlineOrderSocket.disconnect();
+        onlineOrderSocket = null;
+      }
+
+      if (proxyClient) {
+        proxyClient.destroy();
+        proxyClient = null;
+      }
+
+      callback();
+    });
   })
 }

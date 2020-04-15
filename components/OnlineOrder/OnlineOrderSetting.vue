@@ -8,11 +8,11 @@
       </g-row>
       <g-btn-bs v-if="connected" large background-color="#E0E0E0" style="margin-top: 24px;"
                 @click.stop="dialog.disconnect = true">
-        Disconnect
+        Unpair
       </g-btn-bs>
       <g-btn-bs v-else large background-color="#E0E0E0" style="margin-top: 24px;"
                 @click.stop="dialog.connect = true">
-        Connect
+        Pair
       </g-btn-bs>
       <g-divider style="margin-top: 24px"/>
     </div>

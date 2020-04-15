@@ -120,7 +120,6 @@
       const cachedArticlePageSize = localStorage.getItem('viewArticlePageSize')
       if (cachedArticlePageSize) this.productPagination.limit = parseInt(cachedArticlePageSize)
       await this.getOnlineDevice()
-      if (this.onlineDevice.paired && this.onlineDevice.id) this.registerOnlineOrder()
       const posSettings = await this.getPosSetting()
       if (posSettings) {
         this.defaultPrepareTime = posSettings.defaultPrepareTime
