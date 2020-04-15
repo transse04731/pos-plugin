@@ -41,7 +41,8 @@ module.exports = function (cms) {
 
   const proxyServer = new ProxyServer({
     expressServerPort: remoteControlExpressServerPort,
-    socketIOServerPort: remoteControlSocketIOServerPort,
+    socketIOServerPort: remoteControlSocketIOServerPort || 8901,
+    ignoreStreamError: true,
   });
   // for destroy: proxyServer.destroy();
 
@@ -51,6 +52,8 @@ module.exports = function (cms) {
   });
 
   socketIOServer.on('connect', socket => {
+    let remoteControlDeviceId = null;
+
     socket.on('createOrder', async (storeId, orderData) => {
       storeId = ObjectId(storeId);
       const device = await DeviceModel.findOne({storeId});
@@ -63,7 +66,8 @@ module.exports = function (cms) {
       if (!deviceId) {
         callback(null);
       } else {
-        serverPlugin.emitTo(deviceId, 'startRemoteControl', async () => {
+        remoteControlDeviceId = deviceId;
+        serverPlugin.emitTo(deviceId, 'startRemoteControl', remoteControlSocketIOServerPort || 8901, async () => {
           const proxyPort = await proxyServer.startProxy(`${deviceId}-proxy-client`);
           callback(proxyPort);
         })
@@ -72,9 +76,19 @@ module.exports = function (cms) {
 
     socket.on('stopRemoteControl', async deviceId => {
       if (!deviceId) return
+      proxyServer.stopProxy(`${deviceId}-proxy-client`);
 
       serverPlugin.emitTo(deviceId, 'stopRemoteControl', () => {
-        proxyServer.stopProxy(`${deviceId}-proxy-client`);
+        remoteControlDeviceId = null;
+      })
+    });
+
+    socket.once('disconnect', () => {
+      if (!remoteControlDeviceId) return
+      proxyServer.stopProxy(`${remoteControlDeviceId}-proxy-client`);
+
+      serverPlugin.emitTo(remoteControlDeviceId, 'stopRemoteControl', () => {
+        remoteControlDeviceId = null;
       })
     });
   });

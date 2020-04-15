@@ -31,12 +31,16 @@
                   <p class="ml-3 text-indigo-accent-2" style="cursor: pointer">Update</p>
                 </div>
                 <div class="col-1">
-                  <g-tooltip :open-on-hover="true" bottom speech-bubble color="#000" transition="0.3"
-                             remove-content-on-close>
+                  <g-tooltip
+                      :open-on-hover="true" bottom speech-bubble color="#000" transition="0.3"
+                      remove-content-on-close>
                     <template v-slot:activator="{on}">
-                      <div class="pos-management-group__content-btn"
-                           @mouseenter="on.mouseenter"
-                           @mouseleave="on.mouseleave">
+                      <div
+                          v-if="storeDeviceMap[store._id] && storeDeviceMap[store._id].paired && !disableRemoteControlBtn"
+                          class="pos-management-group__content-btn"
+                          @mouseenter="on.mouseenter"
+                          @mouseleave="on.mouseleave"
+                          @click="startRemoteControl(store._id)">
                       </div>
                     </template>
                     <span>Remote Control</span>
@@ -51,12 +55,17 @@
           </div>
         </div>
 
-        <g-dnd-dialog v-model="showIframe" :width="iframeWidth" :height="iframeHeight" lazy>
+        <g-dnd-dialog v-model="showIframe" :width="iframeWidth"
+                      :height="iframeHeight" lazy @close="stopRemoteControl"
+                      @dragStart="iframeDragging = true" @dragEnd="iframeDragging = false"
+                      @resizeStart="iframeDragging = true" @resizeEnd="iframeDragging = false">
           <template #title>
             Remote Control
           </template>
 
-          <iframe :src="iframeSrc" width="100%" height="100%"/>
+          <div v-if="showIframe && iframeDragging"
+               style="height: 100%; width: 100%; position: absolute; background: transparent"/>
+          <iframe v-if="showIframe" :src="iframeSrc" width="100%" height="100%" @load="onIframeLoad" ref="iframe"/>
         </g-dnd-dialog>
       </div>
     </template>
@@ -75,13 +84,25 @@
         type: Array,
         default: () => [
           {
-            name: 'Webshop Terminal', icon: 'icon-screen_blue', device: 'Sunmi', application: 'POS-Germany.apk', version: '1.51'
+            name: 'Webshop Terminal',
+            icon: 'icon-screen_blue',
+            device: 'Sunmi',
+            application: 'POS-Germany.apk',
+            version: '1.51'
           },
           {
-            name: 'Tablet 1', icon: 'icon-screen', device: 'Kindle-Fire', application: 'POS-Tablet-Germany.apk', version: '1.51'
+            name: 'Tablet 1',
+            icon: 'icon-screen',
+            device: 'Kindle-Fire',
+            application: 'POS-Tablet-Germany.apk',
+            version: '1.51'
           },
           {
-            name: 'Tablet 2', icon: 'icon-screen', device: 'Sunmi', application: 'POS-Tablet-Germany.apk', version: '1.51'
+            name: 'Tablet 2',
+            icon: 'icon-screen',
+            device: 'Sunmi',
+            application: 'POS-Tablet-Germany.apk',
+            version: '1.51'
           },
         ]
       }
@@ -91,13 +112,17 @@
         showContent: false,
         showStoreSetting: {},
         storeDeviceMap: {},
-        iframeWidth: 1000,
-        iframeHeight: 500,
+        iframeWidth: 1500,
+        iframeHeight: 1000,
         showIframe: false,
-        iframeSrc: '',
+        iframeSrc: 'about:blank',
+        iframeDragging: false,
+        iframeRefreshInterval: null,
+        remoteControlDeviceId: null,
+        disableRemoteControlBtn: false,
         listVersion: [
           {text: '1.51', value: '1.51'}
-        ]
+        ],
       }
     },
     watch: {
@@ -138,19 +163,43 @@
       openWebShopConfig(store) {
         window.open(`${location.origin}/view/store/${store.alias || store._id}/setting`)
       },
-      async startRemoteControl(storeId) {
-        const deviceId = this.storeDeviceMap[storeId]._id
+      startRemoteControl(storeId) {
+        if (this.disableRemoteControlBtn) return
+        this.disableRemoteControlBtn = true
+
+        this.remoteControlDeviceId = this.storeDeviceMap[storeId]._id
         const {socket} = window.cms
 
-        socket.emit('startRemoteControl', deviceId, proxyPort => {
+        socket.emit('startRemoteControl', this.remoteControlDeviceId, proxyPort => {
           if (proxyPort) {
             this.iframeSrc = `http://localhost:${proxyPort}/view/pos-dashboard`
             this.showIframe = true
+
+            this.iframeRefreshInterval = setInterval(() => {
+              this.iframeSrc = ''
+              this.$nextTick(() => this.iframeSrc = `http://localhost:${proxyPort}/view/pos-dashboard`)
+            }, 10000)
           } else {
             // TODO: handle error
           }
         })
       },
+      stopRemoteControl() {
+        this.disableRemoteControlBtn = false
+
+        if (this.iframeRefreshInterval) clearInterval(this.iframeRefreshInterval)
+        if (!this.remoteControlDeviceId) return
+
+        const {socket} = window.cms
+        socket.emit('stopRemoteControl', this.remoteControlDeviceId)
+        this.remoteControlDeviceId = null
+      },
+      onIframeLoad() {
+        if (this.iframeRefreshInterval) clearInterval(this.iframeRefreshInterval)
+      },
+    },
+    beforeDestroy() {
+      this.stopRemoteControl()
     }
   }
 </script>
