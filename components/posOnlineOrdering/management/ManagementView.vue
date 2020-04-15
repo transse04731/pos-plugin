@@ -4,9 +4,6 @@
       <g-sidebar>
         <template v-slot:header>
           <div class="sidebar-header">
-            <g-avatar size="40">
-              <g-img :src="srcImg"/>
-            </g-avatar>
             <span class="username">{{username}}</span>
           </div>
         </template>
@@ -115,7 +112,6 @@
       return {
         storePlaceHolder: $t('posManagement.searchPlaceholder'),
         username: 'Admin',
-        srcImg: 'https://loremflickr.com/320/240',
         view: 'list',
         dialog: {
           newGroup: false,
