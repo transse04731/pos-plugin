@@ -1,0 +1,63 @@
+{
+  "storeGroups": [
+    {
+      "_id": "5e95719b5026ee49a793a049",
+      "name": "Reseller"
+    }
+  ],
+  "_id": "5e96ce3b7ac9d25a6f915045",
+  "password": "1",
+  "role": {
+    "_id": "5e85c828344f470a8c25f92a",
+    "collectionPermission": [
+      {
+        "hideFields": [],
+        "_id": "5e86e3828197ab54362973fd",
+        "collectionName": "ComponentBuilder",
+        "permission": "read",
+        "queryCondition": {
+          "_code_": "const cms = require('cms');\nmodule.exports =  async function(user) {\n  let stores = (await cms.getModel('Store').find({groups: {\n    $elemMatch: {$in: user.storeGroups}\n  }}).select('_id').lean()).map(r => r._id);\n  \n  return {\n    find: {\n      store: {\n        $in: stores\n      }\n    }\n  }\n}",
+          "_code_type_": "commonJs"
+        }
+      },
+      {
+        "hideFields": [],
+        "_id": "5e96bf6fbcf0ca5a39f5ffe6",
+        "collectionName": "Category",
+        "permission": "write"
+      },
+      {
+        "hideFields": [],
+        "_id": "5e96bf6fbcf0ca5a39f5ffe7",
+        "collectionName": "Product",
+        "permission": "write"
+      },
+      {
+        "hideFields": [],
+        "_id": "5e96bf6fbcf0ca5a39f5ffe8",
+        "collectionName": "Store",
+        "permission": "write"
+      },
+      {
+        "hideFields": [],
+        "_id": "5e96bf6fbcf0ca5a39f5ffe9",
+        "collectionName": "StoreGroup",
+        "permission": "write"
+      },
+      {
+        "hideFields": [],
+        "_id": "5e96bf6fbcf0ca5a39f5ffea",
+        "collectionName": "OnlineOrderDevice",
+        "permission": "write"
+      },
+      {
+        "hideFields": [],
+        "_id": "5e96bf6fbcf0ca5a39f5ffeb",
+        "collectionName": "Subscription",
+        "permission": "write"
+      }
+    ],
+    "name": "user"
+  },
+  "username": "reseller"
+}
