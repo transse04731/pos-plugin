@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="border-bottom: 1px solid #E0E0E0">
     <template v-if="mode === 'view'">
       <div class="menu-setting-item">
         <div class="ta-center">{{ index + 1 }}</div>
@@ -112,12 +112,11 @@
     grid-gap: 15px;
     background-color: #fff;
     align-items: center;
-    border-bottom: 1px solid #E0E0E0;
     height: 112px;
 
     &__image {
-      width: 80px;
-      height: 80px;
+      max-width: 80px;
+      max-height: 80px;
       border-radius: 10px;
     }
 

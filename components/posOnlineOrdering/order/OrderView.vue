@@ -6,7 +6,7 @@
           <div class="pos-order__left__header">
             <img :src="store.logoImageSrc"/>
             <div class="pos-order__left__header--info">
-              <div>
+              <div class="row-flex align-items-center justify-end">
                 <span class="phone-image">
                   <img alt src="/plugins/pos-plugin/assets/phone.svg"/>
                 </span>
@@ -25,6 +25,19 @@
             </div>
           </div>
           <div class="title">What you like?</div>
+          <div class="pos-order__info" v-if="orderItems.length > 0">
+            <g-badge :value="true" color="#4CAF50" overlay>
+              <template v-slot:badge>
+                {{orderItems.length}}
+              </template>
+              <div style="width: 40px; height: 40px; background-color: #ff5252; border-radius: 8px; display: flex; align-items: center; justify-content: center">
+                <g-icon>icon-menu2</g-icon>
+              </div>
+            </g-badge>
+            <div class="pos-order__info--total">{{ totalPrice | currency }}</div>
+            <g-spacer/>
+            <g-btn-bs background-color="#2979FF" rounded style="padding: 8px 16px" @click="showOrder = true">CHECK OUT</g-btn-bs>
+          </div>
           <div class="pos-order__tab">
             <div class="pos-order__tab--icon">
               <div class="pos-order__tab--icon-wrapper">
@@ -51,19 +64,6 @@
                     @decrease="removeItemFromOrder(item)"/>
               </div>
             </div>
-          </div>
-          <div class="pos-order__info" v-if="orderItems.length > 0">
-            <g-badge :value="true" color="#4CAF50" overlay>
-              <template v-slot:badge>
-                {{orderItems.length}}
-              </template>
-              <div style="width: 40px; height: 40px; background-color: #ff5252; border-radius: 8px; display: flex; align-items: center; justify-content: center">
-                <g-icon>icon-menu2</g-icon>
-              </div>
-            </g-badge>
-            <div class="pos-order__info--total">{{ totalPrice | currency }}</div>
-            <g-spacer/>
-            <g-btn-bs background-color="#2979FF" rounded style="padding: 8px 16px" @click="showOrder = true">CHECK OUT</g-btn-bs>
           </div>
           <order-table v-if="showOrder" @back="showOrder = false" :store="store"/>
         </div>
@@ -268,6 +268,8 @@
       flex: 1;
       padding: 24px 60px 0;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
 
       &__header {
         display: flex;
@@ -309,7 +311,7 @@
         display: none;
       }
 
-      .po-order-table {
+      ::v-deep .po-order-table {
         display: none;
       }
     }
@@ -317,7 +319,7 @@
     &__tab {
       display: flex;
       background-color: #F8F8F8;
-      height: 64px;
+      flex: 0 0 64px;
       align-items: center;
       border-top-right-radius: 24px;
       border-bottom-right-radius: 24px;
@@ -344,10 +346,16 @@
 
       &--content {
         padding-top: 30px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
 
         &-main {
-          max-height: 575px;
+          flex: 1;
+          display: flex;
+          flex-direction: column;
           overflow: hidden scroll;
+          margin-bottom: 5px;
         }
       }
     }
@@ -369,6 +377,11 @@
           .phone-image {
             width: 24px;
             height: 24px;
+
+            & > img {
+              width: 16px;
+              height: 16px;
+            }
           }
 
           .sub-title {
@@ -415,8 +428,6 @@
           }
 
           &-main {
-            max-height: 550px;
-
             &::-webkit-scrollbar {
               display: none;
             }
@@ -440,6 +451,10 @@
           align-self: center;
           margin-left: 16px;
         }
+
+        & ~ .pos-order__tab--content .pos-order__tab--content-main {
+          margin-bottom: 80px;
+        }
       }
 
       ::v-deep .po-order-table {
@@ -457,6 +472,12 @@
       ::v-deep .po-order-table {
         display: none
       }
+    }
+  }
+
+  @media screen and (max-width: 350px) {
+    .pos-order__left .pos-order__left__header .pos-order__left__header--info {
+      font-size: 12px;
     }
   }
 </style>

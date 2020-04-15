@@ -409,3 +409,24 @@ body::-webkit-scrollbar {
   background-position: center;
 }
 
+
+.icon-setting-device_white {
+  background-image: url("../assets/setting-device_white.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-setting-delivery_white {
+  background-image: url("../assets/setting-delivery_white.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-setting-multiple_white {
+  background-image: url("../assets/setting-multiple_white.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}

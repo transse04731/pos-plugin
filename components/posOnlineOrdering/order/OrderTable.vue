@@ -240,9 +240,14 @@
     width: 430px;
     height: 100vh;
     background-color: #F8F8F8;
+    display: flex;
+    flex-direction: column;
 
     &__main {
       padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
     &__header {
@@ -384,6 +389,11 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+
+        & > span {
+          min-width: 20px;
+          text-align: center;
+        }
       }
     }
 
@@ -460,6 +470,7 @@
 
       &__content {
         margin-top: 16px;
+        margin-bottom: 0;
         background-color: white;
         padding: 0 16px;
         height: calc(100% - 50px);

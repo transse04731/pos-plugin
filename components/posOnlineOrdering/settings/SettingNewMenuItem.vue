@@ -4,7 +4,7 @@
     <div class="menu-setting-new-item__main">
       <div class="ta-center">{{ index + 1 }}</div>
       <div class="menu-setting-new-item__image" @click="uploadImage">
-        <img v-if="internalImage" :src="internalImage" draggable="false" style="opacity: 0.8; width: 100%; height: 100%"/>
+        <img v-if="internalImage" :src="internalImage" draggable="false" style="opacity: 0.8; max-width: 100%; max-height: 100%"/>
         <div v-else class="menu-setting-new-item__image--upload">
           <img alt src="/plugins/pos-plugin/assets/upload.svg"/>
           <p>Upload</p>
@@ -224,6 +224,9 @@
       cursor: pointer;
       border: 1px dashed #B1B5BA;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
       &--upload {
         opacity: 0.8;

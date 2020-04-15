@@ -181,7 +181,7 @@
       flex-direction: column;
       align-items: center;
       margin-left: 50%;
-      margin-top: 50%;
+      margin-top: 25%;
       transform: translate(-50%, -50%);
 
       p {

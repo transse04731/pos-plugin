@@ -48,16 +48,16 @@
     data: function () {
       return {
         sidebarItems: [
-          {title: 'Basics', icon: 'airplay', onClick: () => this.view = 'restaurant-info'},
+          {title: 'Basics', icon: 'airplay', onClick: () => this.changeView('restaurant-info')},
           {
             title: 'Service & Open hours',
             icon: 'mdi-file-document-outline',
-            onClick: () => this.view = 'service-and-open-hours'
+            onClick: () => this.changeView('service-and-open-hours')
           },
-          {title: 'Menu', icon: 'filter_list', onClick: () => this.view = 'settings-menu'},
-          {title: 'Pair to POS', icon: 'icon-setting-device', onClick: () => this.view = 'setting-device'},
-          {title: 'Delivery Fee', icon: 'icon-setting-delivery', onClick: () => this.view = 'setting-delivery-fee'},
-          {title: 'Multiple Printer', icon: 'icon-setting-multiple', onClick: () => this.view = 'setting-multiple-printer'},
+          {title: 'Menu', icon: 'filter_list', onClick: () => this.changeView('settings-menu')},
+          {title: 'Pair to POS', icon: 'icon-setting-device', onClick: () => this.changeView('setting-device', 'Pair to POS')},
+          {title: 'Delivery Fee', icon: 'icon-setting-delivery', onClick: () => this.changeView('setting-delivery-fee', 'Delivery Fee')},
+          {title: 'Multiple Printer', icon: 'icon-setting-multiple', onClick: () => this.changeView('setting-multiple-printer', 'Multiple Printer')},
         ],
         view: 'restaurant-info',
         sidebar: '',
@@ -102,6 +102,21 @@
         console.log('update store', change)
         await cms.getModel('Store').updateOne({_id: this.store._id}, change)
         await this.loadStore()
+      },
+      changeView(view, title) {
+        if(view) {
+          this.view = view
+          //reset icon
+          for(const item of this.sidebarItems) {
+            if(item.icon.startsWith('icon-') && item.icon.endsWith('_white')) {
+              this.$set(item, 'icon', item.icon.slice(0, item.icon.length - 6))
+            }
+          }
+        }
+        if(title) {
+          const item = this.sidebarItems.find(i => i.title === title)
+          this.$set(item, 'icon', item.icon+'_white')
+        }
       },
 
       // categories
