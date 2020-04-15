@@ -133,7 +133,7 @@
     }
   }
 
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 1040px) {
     .po-menu-item {
       &__content {
         line-height: 1;
@@ -170,6 +170,12 @@
         align-self: flex-end;
         margin-bottom: 8px;
         justify-content: flex-end;
+
+        & > span {
+          min-width: 20px;
+          text-align: center;
+          line-height: 28px;
+        }
       }
     }
   }
