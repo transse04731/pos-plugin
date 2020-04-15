@@ -2,17 +2,17 @@
   <g-dialog v-model="internalValue" width="40%" eager>
     <div class="dialog">
       <div class="dialog-title">Add New Device</div>
-      <g-select text-field-component="GTextFieldBs" label="Select device types" :items="types" v-model="type"/>
+      <g-text-field-bs v-model="name" label="Device name"/>
       <p class="mt-2">Install app: <a class="i fw-600">gigasource.io/downloadxyz</a></p>
       <div class="qr-code">
         <img alt :src="qrCode"/>
       </div>
       <p class="my-3">Pairing/License code:</p>
       <div class="license-code">
-        {{licenseCode}}
+        {{ pairingCode }}
       </div>
       <div class="dialog-buttons">
-        <g-btn-bs large width="100" text-color="#424242" @click="internalValue = false">Cancel</g-btn-bs>
+        <g-btn-bs large width="100" text-color="#424242" @click="close">Cancel</g-btn-bs>
         <g-btn-bs large width="100" text-color="white" background-color="indigo-accent-2" @click="submit">OK</g-btn-bs>
       </div>
     </div>
@@ -27,12 +27,9 @@
     },
     data() {
       return {
-        types: [
-          {text: 'Terminal', value: 'Terminal'}
-        ],
-        type: '',
+        nane: null,
         qrCode: '/plugins/pos-plugin/assets/qr.svg',
-        licenseCode: '1Z3S56'
+        pairingCode: '1Z3S56'
       }
     },
     computed: {
@@ -46,13 +43,13 @@
       },
     },
     methods: {
+      close() {
+        this.$emit('input', false)
+      },
       submit() {
-        const store = {
-          name: this.name,
-          group: this.group,
-          address: this.address
-        }
-        this.$emit('submit', store)
+        const device = { name: this.name }
+        this.$emit('submit', device)
+        this.close()
       }
     }
   }
