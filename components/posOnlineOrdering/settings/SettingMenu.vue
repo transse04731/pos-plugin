@@ -94,10 +94,6 @@
         }
       }
     },
-    created() {
-      if (!this.store.printers || !this.store.printers.length)
-        alert('Navigate to "Multiple Printers" and add a printer before editing menu item')
-    },
     computed: {
       categoriesViewModel() {
         const categories = _.cloneDeep(this.categories)

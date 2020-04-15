@@ -395,3 +395,17 @@ body::-webkit-scrollbar {
   background-position: center;
 }
 
+.icon-screen {
+  background-image: url("../assets/screen.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-screen_blue {
+  background-image: url("../assets/screen_blue.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+

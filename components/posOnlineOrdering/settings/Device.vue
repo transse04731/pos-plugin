@@ -1,19 +1,33 @@
 <template>
   <div class="device">
-    <div class="device__title">Pair to POS</div>
+    <div class="device__title">Setting Menu</div>
     <div class="device__content">
-      <p><b>Status: </b>{{ status }}</p>
-      <p><b>WebShop URL: </b>{{url}}</p>
-      <g-btn-bs v-if="status === 'Paired'" large background-color="#E0E0E0" @click="unPair">Un Pair</g-btn-bs>
-      <g-btn-bs v-else large background-color="#E0E0E0" @click="showPairDialog">Pair</g-btn-bs>
+      <p><b>Status: </b>{{status ? 'Connected' : 'No connection'}}</p>
+      <p><b>Webshop URL: </b>{{url}}</p>
+      <g-btn-bs large background-color="#E0E0E0" @click="dialog.connect = true">Connect</g-btn-bs>
     </div>
     <g-dialog v-model="dialog.connect" width="40%" eager>
       <div class="dialog">
-        <div class="dialog__title">Pair Online Ordering to your POS device:</div>
-        <g-text-field-bs large :class="tfClass" :value="pairingCode" readonly/>
-        <p class="dialog__note"><b>Note: </b>Only one device can be connected to online ordering at a time.</p>
+        <div class="dialog__title">Connect a new device:</div>
+        <g-text-field-bs large :class="tfClass" label=" Enter your pairing code:" :value="pairingCode">
+          <template v-slot:append-inner>
+            <g-tooltip :open-on-hover="true" bottom speech-bubble color="#000" transition="0.3" remove-content-on-close>
+              <template v-slot:activator="{on}">
+                <g-icon @mouseenter="on.mouseenter"
+                        @mouseleave="on.mouseleave"
+                        @click.stop.prevent="resetCode"
+                        :color="color">
+                  fas fa-undo
+                </g-icon>
+              </template>
+              <span>Reset</span>
+            </g-tooltip>
+          </template>
+        </g-text-field-bs>
+        <p class="dialog__note"><b>Note: </b>Code is valid within 15 minutes after generation. Only one device can be
+          connected to online ordering at a time.</p>
         <div class="dialog__buttons">
-          <g-btn-bs width="100" text-color="#424242" @click="hidePairDialog">Cancel</g-btn-bs>
+          <g-btn-bs width="100" text-color="#424242" @click="dialog.connect = false">Cancel</g-btn-bs>
         </div>
       </div>
     </g-dialog>
@@ -21,7 +35,7 @@
       <div class="dialog">
         <div class="dialog__title">Successfully</div>
         <img alt src="/plugins/pos-plugin/assets/connected.svg"/>
-        <p class="dialog__note">Device paired successfully!</p>
+        <p class="dialog__note">Device added successfully!</p>
         <div class="dialog__buttons">
           <g-btn-bs width="100" background-color="#536DFE" text-color="white" @click="dialog.success = false">OK
           </g-btn-bs>
@@ -39,44 +53,28 @@
     },
     data() {
       return {
-        pairedInfo: null,
-        status: '',
-        url: `pos.gigasource.io/stores/${this.store.alias}`,
-        pairingCode: null,
-        color: 'indigo-accent-2',
-        tfClass: 'bs-tf__pos',
-        
+        status: false,
+        url: 'pos.gigasource.io/KFC',
         dialog: {
           connect: false,
           success: false
         },
+        pairingCode: null,
+        color: 'indigo-accent-2',
+        tfClass: 'bs-tf__pos'
       }
     },
     async created() {
-      await this.loadPairStatus()
+      this.pairingCode = (await axios.get(`/online-order-device/pairing-code?storeId=${this.store._id}`)).data.pairingCode;
     },
     methods: {
-      async loadPairStatus() {
-        this.$set(this, 'pairedInfo', (await cms.getModel('OnlineOrderDevice').findOne({ storeId: this.store._id })))
-        if (!this.pairedInfo) {
-          this.status = 'Not Paired'
-        } else if (!this.pairedInfo.paired) {
-          this.status = 'Waiting to pair'
-        } else {
-          this.status = 'Paired'
-        }
-      },
-      async unPair() {
-        await axios.post(`/online-order-device/un-register`, { _id: this.pairedInfo._id })
-        await this.loadPairStatus()
-      },
-      async showPairDialog() {
-        this.pairingCode = (await axios.get(`/online-order-device/pairing-code?storeId=${this.store._id}`)).data.pairingCode;
-        this.dialog.connect = true
-      },
-      async hidePairDialog() {
-        await this.loadPairStatus()
-        this.dialog.connect = false
+      resetCode() {
+        this.tfClass += ' bs-tf__disabled-icon'
+        this.color = 'grey-lighten-2'
+        setTimeout(() => {
+          this.tfClass = 'bs-tf__pos'
+          this.color = 'indigo-accent-2'
+        }, 300000)
       }
     }
   }

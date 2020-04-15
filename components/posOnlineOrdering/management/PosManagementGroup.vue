@@ -9,37 +9,45 @@
       <div class="pos-management-group__content">
         <div v-for="(store, i) in stores" :class="getStoreRowClass(i)">
           <div class="pos-management-group__content-info" @click="toggleStoreSetting(store)">
-            <div></div>
-            <div>{{store.id}}</div>
-            <div>{{store.name}}</div>
-            <div>
+            <div style="flex: 0 0 25%; padding-left: 16px">
+              <div class="fw-700 text-blue-accent-3">ID: {{store.id}}</div>
+              <div>{{store.name}}</div>
               <div>{{store.address}}</div>
             </div>
-            <div>
-              <span :class="getStatusClass(store.status)">{{store.status}}</span>
-            </div>
-            <div>{{store.onlineOrdering && 'Yes'}}</div>
-            <div>
-              <g-tooltip :open-on-hover="true" bottom speech-bubble color="#000" transition="0.3"
-                         remove-content-on-close>
-                <template v-slot:activator="{on}">
-                  <div class="pos-management-group__content-btn ml-2"
-                       @mouseenter="on.mouseenter"
-                       @mouseleave="on.mouseleave"
-                       @click.stop.prevent="deleteStore(store)">
-                    <g-icon color="#FFF" small>mdi-trash-can-outline</g-icon>
-                  </div>
-                </template>
-                <span>Delete</span>
-              </g-tooltip>
+            <div style="flex: 1">
+              <div class="row-flex" v-for="(device, index) in devices" :key="`device_${store.id}_${index}`">
+                <div class="row-flex col-3">
+                  <g-icon>{{device.icon}}</g-icon>
+                  <span class="ml-1">{{device.name}}</span>
+                </div>
+                <div class="col-2">
+                  {{device.device}}
+                </div>
+                <div class="col-3">
+                  {{device.application}}
+                </div>
+                <div class="row-flex col-3">
+                  <g-select class="w-50" :items="listVersion" v-model="device.version"/>
+                  <p class="ml-3 text-indigo-accent-2" style="cursor: pointer">Update</p>
+                </div>
+                <div class="col-1">
+                  <g-tooltip :open-on-hover="true" bottom speech-bubble color="#000" transition="0.3"
+                             remove-content-on-close>
+                    <template v-slot:activator="{on}">
+                      <div class="pos-management-group__content-btn"
+                           @mouseenter="on.mouseenter"
+                           @mouseleave="on.mouseleave">
+                      </div>
+                    </template>
+                    <span>Remote Control</span>
+                  </g-tooltip>
+                </div>
+              </div>
             </div>
           </div>
-          <div v-if="showStoreSetting[store._id]" class="pos-management-group__content-action">
-            <g-btn-bs small border-color="grey-darken-1" @click="openWebShopConfig(store)">WebShop Config</g-btn-bs>
-            <g-btn-bs small border-color="grey-darken-1" @click="startRemoteControl(store._id)"
-                      :disabled="!(storeDeviceMap[store._id] && storeDeviceMap[store._id].paired)">Remote Control
-            </g-btn-bs>
+          <div class="pos-management-group__content-action">
             <g-btn-bs small border-color="grey-darken-1" @click="$emit('view:settings', store)">Settings</g-btn-bs>
+            <g-btn-bs small border-color="grey-darken-1" @click="openWebShopConfig(store)">WebShop Config</g-btn-bs>
           </div>
         </div>
 
@@ -63,6 +71,20 @@
     props: {
       name: String,
       stores: Array,
+      devices: {
+        type: Array,
+        default: () => [
+          {
+            name: 'Webshop Terminal', icon: 'icon-screen_blue', device: 'Sunmi', application: 'POS-Germany.apk', version: '1.51'
+          },
+          {
+            name: 'Tablet 1', icon: 'icon-screen', device: 'Kindle-Fire', application: 'POS-Tablet-Germany.apk', version: '1.51'
+          },
+          {
+            name: 'Tablet 2', icon: 'icon-screen', device: 'Sunmi', application: 'POS-Tablet-Germany.apk', version: '1.51'
+          },
+        ]
+      }
     },
     data() {
       return {
@@ -73,6 +95,9 @@
         iframeHeight: 500,
         showIframe: false,
         iframeSrc: '',
+        listVersion: [
+          {text: '1.51', value: '1.51'}
+        ]
       }
     },
     watch: {
@@ -161,72 +186,55 @@
 
       &-info {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         font-size: 14px;
         color: #201F28;
         cursor: pointer;
 
         & > div {
-          display: flex;
           padding: 10px 0;
         }
 
-        div:nth-child(1),
-        div:nth-child(2) {
-          flex: 0 0 4.1667%
-        }
+        .g-select ::v-deep {
+          .g-tf-wrapper {
+            margin: 0;
+            background: #efefef;
+            border-radius: 2px;
 
-        div:nth-child(3) {
-          flex: 0 0 25%;
-        }
+            &:before, &:after {
+              display: none;
+            }
 
-        div:nth-child(4) {
-          flex: 0 0 33.3333%;
-          padding-right: 8px;
-          min-width: 0;
+            .input {
+              padding-left: 8px;
+            }
 
-          & > div {
-            flex: 1;
-            min-width: 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            .g-tf-input {
+              padding: 0;
+            }
           }
-        }
-
-        div:nth-child(5) {
-          flex: 0 0 16.6667%;
-          justify-content: center;
-        }
-
-        div:nth-child(6),
-        div:nth-child(7) {
-          flex: 0 0 8.3333%;
-          justify-content: center;
         }
       }
 
       &-btn {
-        background: #616161;
-        border-radius: 2px;
+        background-image: url("/plugins/pos-plugin/assets/remote_control.svg");
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
         width: 25px;
         height: 25px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         cursor: pointer;
 
         &:hover {
-          background: #536DFE;
+          background-image: url("/plugins/pos-plugin/assets/remote_control_blue.svg");
         }
       }
 
       &-action {
         display: flex;
         align-items: center;
-        margin-left: 8.3333%;
-        padding-top: 8px;
-        padding-bottom: 24px;
+        margin-left: 16px;
+        padding-bottom: 14px;
 
         .g-btn-bs {
           margin: 0 2px;
