@@ -1,83 +1,81 @@
 <template>
-  <div style="width: 100vw; height: 100vh; background-color: #F2F2F2">
-    <div class="pos-order">
-      <template  v-if="store">
-        <div class="pos-order__left">
-          <div class="pos-order__left__header">
-            <img :src="store.logoImageSrc"/>
-            <div class="pos-order__left__header--info">
-              <div>
-                <span class="phone-image">
-                  <img alt src="/plugins/pos-plugin/assets/phone.svg"/>
-                </span>
-                <span class="sub-title">{{store.phone}}</span>
-              </div>
-            
-              <div style="display: flex; align-items: center; font-weight: 300">
-                <span :style="storeOpenStatusStyle">{{ storeOpenStatus }}</span>
-                <template v-if="storeWorkingTime">
-                  <span style="margin-right: 3px;">|</span>
-                  <g-icon size="16">access_time</g-icon>
-                  <span style="color: #424242; margin-left: 3px">{{ storeWorkingTime }}</span>
-                </template>
-                <span v-else>today</span>
-              </div>
+  <div class="pos-order">
+    <template  v-if="store">
+      <div class="pos-order__left">
+        <div class="pos-order__left__header">
+          <img :src="store.logoImageSrc"/>
+          <div class="pos-order__left__header--info">
+            <div>
+              <span class="phone-image">
+                <img alt src="/plugins/pos-plugin/assets/phone.svg"/>
+              </span>
+              <span class="sub-title">{{store.phone}}</span>
             </div>
-          </div>
-          <div class="title">What you like?</div>
-          <div class="pos-order__tab">
-            <div class="pos-order__tab--icon">
-              <g-icon>icon-fork</g-icon>
-            </div>
-            <span v-for="(category, index) in categoriesViewModel"
-                  :key="index"
-                  @click="selectedCategoryId = category._id"
-                  :style="getCategoryStyle(category)">
-              {{ category.name }}
-            </span>
-          </div>
-          <div class="pos-order__tab--content">
-            <div class="sub-title">{{ selectedCategory && selectedCategory.name }}</div>
-            <div class="pos-order__tab--content-main">
-              <div v-for="(item, index) in categoryItems" :key="index">
-                <menu-item
-                    v-bind="item"
-                    :currency-unit="store.currency"
-                    :quantity="getQuantityInOrder(item)"
-                    @menu-item-selected="addItemToOrder(item)"
-                    @increase="addItemToOrder(item)"
-                    @decrease="removeItemFromOrder(item)"/>
-              </div>
-            </div>
-          </div>
-          <div class="pos-order__info" v-if="orderItems.length > 0">
-            <g-badge :value="true" color="#4CAF50" overlay>
-              <template v-slot:badge>
-                {{orderItems.length}}
+        
+            <div style="display: flex; align-items: center; font-weight: 300">
+              <span :style="storeOpenStatusStyle">{{ storeOpenStatus }}</span>
+              <template v-if="storeWorkingTime">
+                <span style="margin-right: 3px;">|</span>
+                <g-icon size="16">access_time</g-icon>
+                <span style="color: #424242; margin-left: 3px">{{ storeWorkingTime }}</span>
               </template>
-              <div style="width: 40px; height: 40px; background-color: #ff5252; border-radius: 8px; display: flex; align-items: center; justify-content: center">
-                <g-icon>icon-menu2</g-icon>
-              </div>
-            </g-badge>
-            <div class="pos-order__info--total">{{ totalPrice | currency }}</div>
-            <g-spacer/>
-            <g-btn-bs background-color="#2979FF" rounded style="padding: 8px 16px" @click="showOrder = true">CHECK OUT</g-btn-bs>
+              <span v-else>today</span>
+            </div>
           </div>
-          <order-table v-if="showOrder" @back="showOrder = false" :store="store"/>
         </div>
-        <div class="pos-order__right">
-          <order-table :store="store"/>
+        <div class="title">What you like?</div>
+        <div class="pos-order__tab">
+          <div class="pos-order__tab--icon">
+            <g-icon>icon-fork</g-icon>
+          </div>
+          <span v-for="(category, index) in categoriesViewModel"
+                :key="index"
+                @click="selectedCategoryId = category._id"
+                :style="getCategoryStyle(category)">
+            {{ category.name }}
+          </span>
         </div>
+        <div class="pos-order__tab--content">
+          <div class="sub-title">{{ selectedCategory && selectedCategory.name }}</div>
+          <div class="pos-order__tab--content-main">
+            <div v-for="(item, index) in categoryItems" :key="index">
+              <menu-item
+                  v-bind="item"
+                  :currency-unit="store.currency"
+                  :quantity="getQuantityInOrder(item)"
+                  @menu-item-selected="addItemToOrder(item)"
+                  @increase="addItemToOrder(item)"
+                  @decrease="removeItemFromOrder(item)"/>
+            </div>
+          </div>
+        </div>
+        <div class="pos-order__info" v-if="orderItems.length > 0">
+          <g-badge :value="true" color="#4CAF50" overlay>
+            <template v-slot:badge>
+              {{orderItems.length}}
+            </template>
+            <div style="width: 40px; height: 40px; background-color: #ff5252; border-radius: 8px; display: flex; align-items: center; justify-content: center">
+              <g-icon>icon-menu2</g-icon>
+            </div>
+          </g-badge>
+<!--          <div class="pos-order__info&#45;&#45;total">${{totalPrice + shippingFee}}</div>-->
+          <g-spacer/>
+          <g-btn-bs background-color="#2979FF" rounded style="padding: 8px 16px" @click="showOrder = true">CHECK OUT</g-btn-bs>
+        </div>
+        <order-table v-if="showOrder" @back="showOrder = false" :store="store"/>
+      </div>
+      <div class="pos-order__right">
+        <order-table :store="store"/>
+      </div>
       
-        <!-- Merchant dialog -->
-        <g-dialog :value="!isStoreOpening" persistent>
-          <div style="width: 464px; height: 256px; background: #FFFFFF; box-shadow: 0px 0px 28px rgba(58, 56, 56, 0.15); border-radius: 4px; display: flex; flex-direction: column; align-items: center; padding: 30px; margin: 0 auto;">
-            <div style="font-style: normal; font-weight: bold;font-size: 18px; margin-bottom: 22px;">Merchant is temporarily closed</div>
-            <div style="font-style: normal; font-weight: normal; font-size: 15px; max-width: 410px; text-align: center">{{ merchantMessage }}</div>
-          </div>
-        </g-dialog>
-      </template>
-    </div>
+      <!-- Merchant dialog -->
+      <g-dialog :value="!isStoreOpening" persistent>
+        <div style="width: 464px; height: 256px; background: #FFFFFF; box-shadow: 0px 0px 28px rgba(58, 56, 56, 0.15); border-radius: 4px; display: flex; flex-direction: column; align-items: center; padding: 30px; margin: 0 auto;">
+          <div style="font-style: normal; font-weight: bold;font-size: 18px; margin-bottom: 22px;">Merchant is temporarily closed</div>
+          <div style="font-style: normal; font-weight: normal; font-size: 15px; max-width: 410px; text-align: center">{{ merchantMessage }}</div>
+        </div>
+      </g-dialog>
+    </template>
   </div>
 </template>
 <script>
@@ -100,11 +98,6 @@
         dayInWeeks: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         today: dayjs().format("dddd"),
         now: dayjs().format('HH:mm'),
-      }
-    },
-    filters: {
-      currency(val) {
-        return $t('common.currency') + val
       }
     },
     async created() {
@@ -259,8 +252,6 @@
     max-width: 1140px;
     margin: 0 auto;
     height: 100vh;
-    background-color: #FFF;
-    box-shadow: 0 0 2px 2px #D5D5D5;
 
     &__left {
       flex: 1;

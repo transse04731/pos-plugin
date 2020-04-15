@@ -47,7 +47,7 @@
       </template>
       <template v-else>
         <div class="pos-management-setting__device-content">
-          <div class="pos-management-setting__device-content--add" @click="showAddNewDeviceDialog">
+          <div class="pos-management-setting__device-content--add">
             <g-icon color="indigo-accent-2" size="60">add</g-icon>
             <p class="text-indigo-accent-2">Add New Device</p>
           </div>
@@ -74,18 +74,14 @@
         </div>
       </template>
     </div>
-    
-    <dialog-new-device v-model="dialog.addNewDevice" @cancel="hideAddNewDeviceDialog" @submit="addNewDevice"/>
   </div>
 </template>
 
 <script>
   import _ from 'lodash'
-  import DialogNewDevice from './dialogNewDevice';
   
   export default {
     name: "PosManagementSetting",
-    components: { DialogNewDevice },
     props: {
       _id: String,
       name: String,
@@ -121,9 +117,6 @@
     },
     data() {
       return {
-        dialog: {
-          addNewDevice: false
-        }
       }
     },
     created() {
@@ -169,16 +162,7 @@
     methods: {
       update(change) {
         this.$emit('update', change)
-      },
-      showAddNewDeviceDialog() {
-        this.dialog.addNewDevice = true
-      },
-      hideAddNewDeviceDialog() {
-        this.dialog.addNewDevice = false
-      },
-      async addNewDevice(device) {
-      
-      },
+      }
     }
   }
 </script>

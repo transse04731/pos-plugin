@@ -55,7 +55,7 @@
             onClick: () => this.view = 'service-and-open-hours'
           },
           {title: 'Menu', icon: 'filter_list', onClick: () => this.view = 'settings-menu'},
-          {title: 'Pair to POS', icon: 'icon-setting-device', onClick: () => this.view = 'setting-device'},
+          {title: 'Device', icon: 'icon-setting-device', onClick: () => this.view = 'setting-device'},
           {title: 'Delivery Fee', icon: 'icon-setting-delivery', onClick: () => this.view = 'setting-delivery-fee'},
           {title: 'Multiple Printer', icon: 'icon-setting-multiple', onClick: () => this.view = 'setting-multiple-printer'},
         ],

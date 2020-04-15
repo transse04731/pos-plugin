@@ -53,16 +53,13 @@ router.post('/register', async (req, res) => {
   }
 })
 
-router.post('/un-register', async (req, res) => {
-  const {_id} = req.body;
-  const device = await OnlineOderDeviceModel.findOne({_id});
-  if (device) {
-    await OnlineOderDeviceModel.remove({_id})
-    res.status(200).json({deviceId: device._id})
-  } else {
-    res.status(400).json({message: 'Bad request: Invalid id'})
-  }
+router.get('/order', async (req, res) => {
+  const {orderId} = req.query
+  const result = await cms.getModel('Order').findOne({_id: orderId})
+  if (result)
+    res.status(200).json(result)
+  else
+    res.status(400).json({message: 'Order not found!'})
 })
-
 
 module.exports = router

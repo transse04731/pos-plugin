@@ -40,13 +40,14 @@
         </div>
         <div class="pos-management__table">
           <div class="pos-management__table-header">
-            <div style="flex: 0 0 4.1667%"></div>
-            <div style="flex: 0 0 4.1667%">ID</div>
-            <div class="col-3">Name</div>
-            <div class="col-4">Address</div>
-            <div class="col-2 ta-center">POS Status</div>
-            <div class="col-1 ta-center">Webshop</div>
-            <div class="col-1"></div>
+            <div class="col-3"></div>
+            <div class="row-flex col-9">
+              <div class="col-3">Name</div>
+              <div class="col-2">Device</div>
+              <div class="col-3">Application</div>
+              <div class="col-3">Version</div>
+              <div class="col-1">Action</div>
+            </div>
           </div>
           <div class="pos-management__table-content">
             <template v-if="groups.length === 0">
