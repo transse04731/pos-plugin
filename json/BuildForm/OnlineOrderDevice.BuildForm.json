@@ -3,24 +3,49 @@
   "extensions": [],
   "fields": [
     {
-      "_id": "5e9044fdab8e6f23eb5229e6",
+      "_id": "5e96e6ac5d6a1060111cd368",
       "schemaType": "string",
-      "key": "code",
+      "key": "name",
       "type": "input"
     },
     {
-      "_id": "5e9044fdab8e6f23eb5229e7",
+      "_id": "5e96e6ac5d6a1060111cd369",
       "schemaType": "string",
-      "key": "token",
+      "key": "device",
+      "type": "input"
+    },
+    {
+      "_id": "5e96e6ac5d6a1060111cd36a",
+      "schemaType": "string",
+      "key": "application",
+      "type": "input"
+    },
+    {
+      "_id": "5e96e6ac5d6a1060111cd36b",
+      "schemaType": "string",
+      "key": "appVersion",
+      "type": "input"
+    },
+    {
+      "_id": "5e9044fdab8e6f23eb5229e6",
+      "schemaType": "string",
+      "key": "pairingCode",
       "type": "input"
     },
     {
       "_id": "5e9044fdab8e6f23eb5229e8",
       "schemaType": "objectId",
-      "key": "store",
+      "key": "storeId",
       "ref": "Store",
       "type": "ref-select",
       "labelProp": "name"
+    },
+    {
+      "_id": "5e9566d90b178cdacaade168",
+      "schemaType": "boolean",
+      "key": "paired",
+      "default": "false",
+      "type": "input@switch"
     }
   ],
   "name": "OnlineOrderDevice",
