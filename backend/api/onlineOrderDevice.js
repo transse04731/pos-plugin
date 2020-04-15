@@ -17,6 +17,18 @@ async function generateUniqueDeviceCode() {
   return newDeviceCode
 }
 
+async function getUniqueTerminalAlias(storeId) {
+  const aliases = _.map(await OnlineOderDeviceModel.find({ storeId }, { alias: 1 }), item => item.alias)
+  let n = 0
+  let prefix = 'Terminal'
+  let alias
+  do {
+    n++
+    alias = `${prefix} ${n}`
+  } while(_.includes(aliases, alias))
+  return alias
+}
+
 router.get('/pairing-code', async (req, res) => {
   const {storeId} = req.query
 
@@ -28,28 +40,31 @@ router.get('/pairing-code', async (req, res) => {
   const pairingCode = await generateUniqueDeviceCode()
   await OnlineOderDeviceModel.create({pairingCode, storeId, paired: false})
 
-  // // after 15 minutes, if no device register to system by this pairing code, then delete it
-  // setTimeout(async() => {
-  //   const device = await OnlineOderDeviceModel.find({ code, store: storeId })
-  //   if (!device.token)
-  //     await OnlineOderDeviceModel.remove({ code, store: storeId })
-  // }, 15 * 60 * 1000) // 15 minutes
-
   res.status(200).json({pairingCode})
 })
 
 router.post('/register', async (req, res) => {
-  const {pairingCode} = req.body;
+  // name: Sunmi, Kindle-Fire, etc, ...
+  // appName: Pos-Germany.apk
+  // appVersion: 1.51
+  // type: terminal | webShopTerminal
+  let alias
+  const { pairingCode, name, appName, appVersion, type } = req.body;
 
-  if (!pairingCode) return res.status(400).json({message: 'Missing pairingCode in request body'});
+  if (!pairingCode)
+    return res.status(400).json({message: 'Missing pairingCode in request body'});
 
-  const device = await OnlineOderDeviceModel.findOne({pairingCode});
-
-  if (device) {
-    await OnlineOderDeviceModel.findOneAndUpdate({pairingCode}, {paired: true})
-    res.status(200).json({deviceId: device._id})
+  const deviceInfo = await OnlineOderDeviceModel.findOne({pairingCode, paired: false});
+  if (deviceInfo) {
+    if (type === 'webShopTerminal')
+      alias = 'WebShop Terminal'
+    else if (type === 'terminal') {
+      alias = await getUniqueTerminalAlias(deviceInfo.storeId)
+    }
+    await OnlineOderDeviceModel.findOneAndUpdate({pairingCode}, { paired: true, alias, name, appName, appVersion, type })
+    res.status(200).json({deviceId: deviceInfo._id})
   } else {
-    res.status(400).json({message: 'Invalid pairing code'})
+    res.status(400).json({message: 'Invalid pairing code or pairing code has been used by another device'})
   }
 })
 
