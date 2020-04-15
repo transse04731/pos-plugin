@@ -19,7 +19,8 @@
         <g-text-field-bs small v-model="internalName" :rules="productRules.name" placeholder="Name *"/>
           </div>
           <div class="col-3">
-            <g-select :multiple="useMultiplePrinters" small text-field-component="GTextFieldBs" v-model="internalPrinters" :items="internalAvailablePrinters"/>
+            <g-select v-if="useMultiplePrinters" small text-field-component="GTextFieldBs" v-model="internalPrinter" :items="internalAvailablePrinters"/>
+            <g-text-field-bs small v-else-if="availablePrinters.length" :value="availablePrinters[0]" readonly/>
           </div>
           <div class="col-2">
             <g-text-field-bs small v-model="internalPrice" :rules="productRules.price" type="number" placeholder="Price *"/>
@@ -72,7 +73,7 @@
       tax: Number,
       image: String,
       number: Number,
-      printers: Array,
+      printer: String,
       availablePrinters: Array,
       useMultiplePrinters: Boolean,
     },
@@ -84,7 +85,7 @@
         internalPrice: this.price,
         internalTax: this.tax || 7,
         internalImage: this.image,
-        internalPrinters: this.printers || [],
+        internalPrinter: this.printer || (this.availablePrinters.length && this.availablePrinters[0]),
         // TODO: Link database
         taxes: [{ text: '19%', value: 19 }, { text: '7%', value: 7 }],
         productRules: {
@@ -119,7 +120,7 @@
           return
         }
 
-        if (!this.internalPrinters.length) {
+        if (!this.internalPrinter.length) {
           alert('Product\'s printer is missing')
           return
         }
@@ -129,7 +130,7 @@
           image: this.internalImage,
           name: this.internalName,
           desc: this.internalDesc,
-          printers: this.internalPrinters,
+          printer: this.internalPrinter,
           price: this.internalPrice,
           tax: this.internalTax,
         })
