@@ -340,7 +340,7 @@
     }
   }
 
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 1040px) {
     .pos-order__left {
       padding: 0;
 
@@ -428,7 +428,7 @@
         }
       }
 
-      .po-order-table {
+      ::v-deep .po-order-table {
         display: block;
         width: 100%;
         z-index: 10;
@@ -440,7 +440,7 @@
     }
 
     .pos-order__right {
-      .po-order-table {
+      ::v-deep .po-order-table {
         display: none
       }
     }
