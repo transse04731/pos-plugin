@@ -36,11 +36,11 @@
                       remove-content-on-close>
                     <template v-slot:activator="{on}">
                       <div
-                          v-if="device.paired && !disableRemoteControlBtn"
+                          v-if="device.paired && device.features.includes('proxy') && !disableRemoteControlBtn"
                           class="pos-management-group__content-btn"
                           @mouseenter="on.mouseenter"
                           @mouseleave="on.mouseleave"
-                          @click="() => {startRemoteControl(store._id); on.mouseleave()}">
+                          @click="() => {startRemoteControl(device.storeId, device._id); on.mouseleave()}">
                       </div>
                     </template>
                     <span>Remote Control</span>
@@ -85,7 +85,6 @@
       return {
         showContent: false,
         showStoreSetting: {},
-        storeDeviceMap: {},
         iframeWidth: window.innerWidth * 0.6,
         iframeHeight: window.innerHeight * 0.6,
         showIframe: false,
@@ -99,15 +98,6 @@
         ],
         // contain device id which is currently online (web socket of device is connected to server)
         onlineDevices: ['5e96fb59a28f4f64aaccf778']
-      }
-    },
-    watch: {
-      stores() {
-        this.stores.forEach(async store => {
-          const storeId = store._id
-          const device = await cms.getModel('OnlineOrderDevice').findOne({storeId, paired: true})
-          this.$set(this.storeDeviceMap, storeId, device || {})
-        })
       }
     },
     methods: {
@@ -144,11 +134,11 @@
       openWebShopConfig(store) {
         window.open(`${location.origin}/view/store/${store.alias || store._id}/setting`)
       },
-      startRemoteControl(storeId) {
+      startRemoteControl(storeId, deviceId) {
         if (this.disableRemoteControlBtn) return
         this.disableRemoteControlBtn = true
 
-        this.remoteControlDeviceId = this.storeDeviceMap[storeId]._id
+        this.remoteControlDeviceId = deviceId
         const {socket} = window.cms
 
         socket.emit('startRemoteControl', this.remoteControlDeviceId, proxyPort => {

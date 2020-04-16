@@ -37,7 +37,7 @@ function loadMessages(targetClientId) {
 }
 
 module.exports = function (cms) {
-  const DeviceModel = cms.getModel('OnlineOrderDevice');
+  const DeviceModel = cms.getModel('Device');
 
   const proxyServer = new ProxyServer({
     expressServerPort: remoteControlExpressServerPort,
@@ -86,10 +86,7 @@ module.exports = function (cms) {
     socket.once('disconnect', () => {
       if (!remoteControlDeviceId) return
       proxyServer.stopProxy(`${remoteControlDeviceId}-proxy-client`);
-
-      serverPlugin.emitTo(remoteControlDeviceId, 'stopRemoteControl', () => {
-        remoteControlDeviceId = null;
-      })
+      remoteControlDeviceId = null;
     });
   });
 }
