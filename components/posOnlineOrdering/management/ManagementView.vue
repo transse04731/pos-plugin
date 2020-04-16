@@ -1,14 +1,6 @@
 <template>
   <div class="pos-management">
-    <div class="pos-management__sidebar">
-      <g-sidebar>
-        <template v-slot:header>
-          <div class="sidebar-header">
-            <span class="username">{{username}}</span>
-          </div>
-        </template>
-      </g-sidebar>
-    </div>
+    <pos-dashboard-sidebar default-path="item.0" :items="sidebarItems" @node-selected="onNodeSelected"/>
     <div class="pos-management__main">
       <template v-if="view === 'list'">
         <div class="pos-management__title">POS Management</div>
@@ -95,18 +87,23 @@
             @open:dialogDevice="dialog.newDevice = $event"
             @open:dialogDelete="dialog.deleteDevice = $event"/>
       </template>
+      <template v-else-if="view === 'version'">
+        <version-control />
+      </template>
     </div>
     <dialog-new-group v-model="dialog.newGroup" @submit="addGroup($event)" :groups="groups"/>
     <dialog-new-store v-model="dialog.newStore" @submit="addStore($event)" :groups="groups"/>
     <dialog-new-device v-model="dialog.newDevice"/>
-    <dialog-delete-item v-model="dialog.deleteDevice"/>
+    <dialog-delete-item v-model="dialog.deleteDevice" type="device"/>
   </div>
 </template>
 <script>
   import _ from 'lodash'
+  import VersionControl from "./VersionControl";
   
   export default {
     name: 'ManagementView',
+    components: {VersionControl},
     props: {},
     data: function () {
       return {
@@ -120,7 +117,11 @@
           deleteDevice: false,
         },
         showFilterMenu: false,
-        selectedStoreId: null
+        selectedStoreId: null,
+        sidebarItems: [
+          { title: 'Restaurant Management', icon: 'icon-management_white', onClick: () => this.changeView('list', 'Restaurant Management') },
+          { title: 'Version Control', icon: 'icon-version_control', onClick: () => this.changeView('version', 'Version Control') },
+        ]
       }
     },
     injectService: ['PosOnlineOrderManagementStore:(loadStoreGroups,loadStores,addGroup,addStore,removeStore,updateStore,addDevice,removeDevice,updateDevice,storeGroups,stores,posManagementModel,searchText,orderBy)'],
@@ -140,7 +141,25 @@
       viewStoreSetting(store) {
         this.selectedStoreId = store._id
         this.view = 'settings'
-      }
+      },
+      onNodeSelected(node) {
+        node.onClick && node.onClick.bind(this)();
+      },
+      changeView(view, title) {
+        if(view) {
+          this.view = view
+          //reset icon
+          for(const item of this.sidebarItems) {
+            if(item.icon.startsWith('icon-') && item.icon.endsWith('_white')) {
+              this.$set(item, 'icon', item.icon.slice(0, item.icon.length - 6))
+            }
+          }
+        }
+        if(title) {
+          const item = this.sidebarItems.find(i => i.title === title)
+          this.$set(item, 'icon', item.icon+'_white')
+        }
+      },
     }
   }
 </script>
@@ -152,34 +171,10 @@
     height: 100vh;
     font-size: 15px;
 
-    &__sidebar {
-      .g-sidebar {
-        .sidebar-header {
-          padding: 12px;
-          display: flex;
-          align-items: center;
-          font-size: 14px;
-          line-height: 18px;
-          font-weight: 600;
-          color: #1d1d26;
-
-          .username {
-            word-break: break-all;
-            -webkit-line-clamp: 2;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            font-weight: 600;
-            padding-left: 8px;
-          }
-        }
-      }
-    }
-
     &__main {
       flex: 1;
       background-color: #F4F7FB;
-      padding: 50px 50px 20px;
+      padding: 50px 50px 20px 80px;
     }
 
     &__title {
