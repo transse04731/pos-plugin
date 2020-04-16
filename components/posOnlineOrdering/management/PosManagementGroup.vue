@@ -18,10 +18,10 @@
               <div class="row-flex" v-for="(device, index) in store.devices" :key="`device_${store.id}_${index}`">
                 <div class="row-flex col-3">
                   <g-icon>{{getDeviceIcon(device)}}</g-icon>
-                  <span class="ml-1">{{device.alias}}</span>
+                  <span class="ml-1">{{device.name}}</span>
                 </div>
                 <div class="col-2">
-                  {{device.name}}
+                  {{device.hardware}}
                 </div>
                 <div class="col-3">
                   {{device.appName}}
