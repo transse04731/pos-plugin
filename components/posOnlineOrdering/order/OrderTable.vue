@@ -208,7 +208,7 @@
           return {
             ..._.omit(orderItem, ['desc', 'image', 'category', 'groupPrinters']),
             groupPrinter: orderItem.groupPrinter[0],
-            groupPrinter2: orderItem.groupPrinter.length >= 2 && orderItem.groupPrinter[1],
+            groupPrinter2: store.useMultiplePrinters && orderItem.groupPrinter.length >= 2 && orderItem.groupPrinter[1],
             takeAway: true,
             category: orderItem.categories.name,
           }

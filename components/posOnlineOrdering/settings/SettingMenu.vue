@@ -1,73 +1,75 @@
 <template>
   <div class="menu-setting">
-    <div class="menu-setting__title mb-3">Settings Menu</div>
-    <div v-if="!categories || !categories.length" class="menu-setting--empty">
-      <img src="/plugins/pos-plugin/assets/folk_knife.svg">
-      <p>Menu is currently empty.</p>
-      <p><span style="color: #536DFE">"Add new category"</span> to get started.</p>
-      <div class="btn-add" @click="dialog.addNewCategory = true">+ Add New Category</div>
-    </div>
-    <div class="menu-setting__main" v-else>
-      <div class="row-flex justify-end mb-2">
-        <g-btn-bs background-color="#2979FF" icon="add_circle"
-          @click="dialog.addNewCategory = true">
-          Add new category
-        </g-btn-bs>
+    <template v-if="renderPage">
+      <div class="menu-setting__title mb-3">Settings Menu</div>
+      <div v-if="!categories || !categories.length" class="menu-setting--empty">
+        <img src="/plugins/pos-plugin/assets/folk_knife.svg">
+        <p>Menu is currently empty.</p>
+        <p><span style="color: #536DFE">"Add new category"</span> to get started.</p>
+        <div class="btn-add" @click="dialog.addNewCategory = true">+ Add New Category</div>
       </div>
-      <div class="menu-setting__category">
-        <div v-for="(cate, index) in categoriesViewModel" :key="index" class="mb-1">
-          <div @click="toggleCollapse(cate)" class="menu-setting__category__header">
-            <g-edit-view-input
-                @click.native.stop.prevent="() => {}"
-                :value="cate.name"
-                class="menu-setting__title"
-                @input="(name, cb) => changeCategoryName(cate._id, name, cb)"/>
-            <g-spacer/>
-            <g-icon @click.prevent.stop="openDeleteCategoryDialog(cate)" class="mr-2">mdi-trash-can-outline</g-icon>
-            <g-icon v-if="showProducts[cate._id]">fas fa-chevron-up</g-icon>
-            <g-icon v-else>fas fa-chevron-down</g-icon>
+      <div class="menu-setting__main" v-else>
+        <div class="row-flex justify-end mb-2">
+          <g-btn-bs background-color="#2979FF" icon="add_circle"
+                    @click="dialog.addNewCategory = true">
+            Add new category
+          </g-btn-bs>
+        </div>
+        <div class="menu-setting__category">
+          <div v-for="(cate, index) in categoriesViewModel" :key="index" class="mb-1">
+            <div @click="toggleCollapse(cate)" class="menu-setting__category__header">
+              <g-edit-view-input
+                  @click.native.stop.prevent="() => {}"
+                  :value="cate.name"
+                  class="menu-setting__title"
+                  @input="(name, cb) => changeCategoryName(cate._id, name, cb)"/>
+              <g-spacer/>
+              <g-icon @click.prevent.stop="openDeleteCategoryDialog(cate)" class="mr-2">mdi-trash-can-outline</g-icon>
+              <g-icon v-if="showProducts[cate._id]">fas fa-chevron-up</g-icon>
+              <g-icon v-else>fas fa-chevron-down</g-icon>
+            </div>
+            <template v-if="showProducts[cate._id]">
+              <div style="border-bottom: 1px solid #E0E0E0">
+                <template v-if="cate.products && cate.products.length > 0">
+                  <setting-menu-item
+                      v-for="(product, index) in cate.products"
+                      v-bind="product"
+                      :index="index"
+                      :available-printers="store.printers"
+                      :use-multiple-printers="store.useMultiplePrinters"
+                      :key="`item_${index}`"
+                      @editing="setEditing(product._id, $event)"
+                      @save="updateProduct(product._id, $event)"
+                      @delete="openDeleteProductDialog(product._id)"/>
+                </template>
+                <div v-else-if="!showAddNewProductPanel[cate._id]" style="height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #fff;">
+                  <img src="/plugins/pos-plugin/assets/no-items.svg" class="mb-2"/>
+                  <div class="text-grey">No item in this group.</div>
+                </div>
+                <div v-if="showAddNewProductPanel[cate._id]">
+                  <setting-new-menu-item
+                      :index="cate.products.length"
+                      :available-printers="store.printers"
+                      :use-multiple-printers="store.useMultiplePrinters"
+                      @cancel="hideAddNewProductPanelForCategory(cate)"
+                      @save="addNewProduct({...$event, category: cate._id})"/>
+                </div>
+              </div>
+              <div style="height: 40px; background-color: #fff; display: flex; align-items: center; justify-content: center;">
+                <g-btn-bs text-color="#2979FF"
+                          @click="showAddNewProductPanelForCategory(cate)"
+                          :disabled="showAddNewProductPanel[cate._id]">
+                  + Add New Item
+                </g-btn-bs>
+              </div>
+            </template>
           </div>
-          <template v-if="showProducts[cate._id]">
-            <div style="border-bottom: 1px solid #E0E0E0">
-              <template v-if="cate.products && cate.products.length > 0">
-                <setting-menu-item
-                    v-for="(product, index) in cate.products"
-                    v-bind="product"
-                    :index="index"
-                    :available-printers="store.printers"
-                    :use-multiple-printers="store.useMultiplePrinters"
-                    :key="`item_${index}`"
-                    @editing="setEditing(product._id, $event)"
-                    @save="updateProduct(product._id, $event)"
-                    @delete="openDeleteProductDialog(product._id)"/>
-              </template>
-              <div v-else-if="!showAddNewProductPanel[cate._id]" style="height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #fff;">
-                <img src="/plugins/pos-plugin/assets/no-items.svg" class="mb-2"/>
-                <div class="text-grey">No item in this group.</div>
-              </div>
-              <div v-if="showAddNewProductPanel[cate._id]">
-                <setting-new-menu-item
-                    :index="cate.products.length"
-                    :available-printers="store.printers"
-                    :use-multiple-printers="store.useMultiplePrinters"
-                    @cancel="hideAddNewProductPanelForCategory(cate)"
-                    @save="addNewProduct({...$event, category: cate._id})"/>
-              </div>
-            </div>
-            <div style="height: 40px; background-color: #fff; display: flex; align-items: center; justify-content: center;">
-              <g-btn-bs text-color="#2979FF"
-                     @click="showAddNewProductPanelForCategory(cate)"
-                     :disabled="showAddNewProductPanel[cate._id]">
-                + Add New Item
-              </g-btn-bs>
-            </div>
-          </template>
         </div>
       </div>
-    </div>
-    <dialog-new-category v-model="dialog.addNewCategory" @submit="addNewCategory"/>
-    <dialog-delete-category v-model="dialog.deleteCategory" @confirm="deleteCategory"/>
-    <dialog-delete-item v-model="dialog.deleteProduct" @confirm="deleteProduct"/>
+      <dialog-new-category v-model="dialog.addNewCategory" @submit="addNewCategory"/>
+      <dialog-delete-category v-model="dialog.deleteCategory" @confirm="deleteCategory"/>
+      <dialog-delete-item v-model="dialog.deleteProduct" @confirm="deleteProduct"/>
+    </template>
   </div>
 </template>
 <script>
@@ -89,6 +91,7 @@
         editingProducts: {},
         selectedCategoryId: null,
         selectedProductId: null,
+        renderPage: true,
         dialog: {
           addNewCategory: false,
           deleteCategory: false,
@@ -97,8 +100,10 @@
       }
     },
     created() {
-      if (!this.store.printers || !this.store.printers.length)
+      if (!this.store.printers || !this.store.printers.length) {
         alert('Navigate to "Multiple Printers" and add a printer before editing menu item')
+        this.renderPage = false
+      }
     },
     computed: {
       categoriesViewModel() {
