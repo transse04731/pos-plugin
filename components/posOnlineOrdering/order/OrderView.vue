@@ -73,9 +73,10 @@
       
         <!-- Merchant dialog -->
         <g-dialog :value="!isStoreOpening" persistent>
-          <div style="width: 464px; height: 256px; background: #FFFFFF; box-shadow: 0px 0px 28px rgba(58, 56, 56, 0.15); border-radius: 4px; display: flex; flex-direction: column; align-items: center; padding: 30px; margin: 0 auto;">
-            <div style="font-style: normal; font-weight: bold;font-size: 18px; margin-bottom: 22px;">Merchant is temporarily closed</div>
-            <div style="font-style: normal; font-weight: normal; font-size: 15px; max-width: 410px; text-align: center">{{ merchantMessage }}</div>
+          <div class="dialog-closed">
+            <div class="dialog-closed__title">Merchant is temporarily closed</div>
+            <div class="dialog-closed__message">{{ merchantMessage }}</div>
+            <g-btn-bs text-color="indigo accent-2">OK</g-btn-bs>
           </div>
         </g-dialog>
       </template>
@@ -325,20 +326,20 @@
       border-bottom-right-radius: 24px;
       overflow: auto;
       position: relative;
+      border-right: 16px solid #F8F8F8;
 
       &::-webkit-scrollbar {
         display: none;
       }
 
       &--icon {
-        padding: 24px;
         display: flex;
         align-items: center;
         height: 100%;
         position: sticky;
         left: 0;
         background-color: #F8F8F8;
-        
+
         &-wrapper {
           margin-top: 8px; margin-bottom: 8px; padding: 8px 16px; border-right: 1px solid #000;
         }
@@ -478,6 +479,30 @@
   @media screen and (max-width: 350px) {
     .pos-order__left .pos-order__left__header .pos-order__left__header--info {
       font-size: 12px;
+    }
+  }
+
+  .dialog-closed {
+    width: 464px;
+    background: #FFFFFF;
+    box-shadow: 0 0 28px rgba(58, 56, 56, 0.15);
+    border-radius: 4px;
+    padding: 30px 16px 8px;
+    margin: 0 auto;
+    text-align: center;
+
+    &__title {
+      font-style: normal;
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+
+    &__message {
+      font-size: 15px;
+      color: #424242;
+      padding-bottom: 36px;
+      border-bottom: 1px solid #EFEFEF;
     }
   }
 </style>

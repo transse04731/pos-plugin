@@ -74,8 +74,8 @@
     &__thumbnail {
       border-radius: 15px;
       margin-right: 18px;
-      max-width: 60px;
-      max-height: 60px;
+      width: 60px;
+      height: 60px;
     }
     
     &__name {
@@ -138,11 +138,6 @@
     .po-menu-item {
       &__content {
         line-height: 1;
-      }
-
-      &__thumbnail {
-        width: 60px;
-        height: 60px;
       }
 
       &__name {
