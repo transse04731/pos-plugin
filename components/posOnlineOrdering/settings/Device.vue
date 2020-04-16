@@ -71,7 +71,7 @@
         await this.loadPairStatus()
       },
       async showPairDialog() {
-        this.pairingCode = (await axios.get(`/device/pairing-code?storeId=${this.store._id}?name=${this.name}`)).data.pairingCode;
+        this.pairingCode = (await axios.get(`/device/pairing-code?storeId=${this.store._id}&name=${this.name}`)).data.pairingCode;
         this.dialog.connect = true
       },
       async hidePairDialog() {
