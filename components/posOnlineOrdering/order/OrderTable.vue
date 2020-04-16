@@ -206,10 +206,13 @@
 
         const products = _.map(this.orderItems, orderItem => {
           return {
-            ..._.omit(orderItem, ['desc', 'image']),
+            ..._.omit(orderItem, ['desc', 'image', 'category']),
             groupPrinter: orderItem.printer,
+            takeAway: true,
+            category: orderItem.categories.name,
           }
         })
+        
         const orderData = {
           orderType: this.orderType,
           paymentType: this.paymentType,
