@@ -193,7 +193,7 @@
         {
           "schemaType": "objectId",
           "key": "device",
-          "ref": "OnlineOrderDevice",
+          "ref": "Device",
           "type": "ref-select",
           "labelProp": "name",
           "autopopulate": true

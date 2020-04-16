@@ -5,32 +5,37 @@
     {
       "_id": "5e96e6ac5d6a1060111cd368",
       "schemaType": "string",
-      "key": "alias",
-      "type": "input"
+      "key": "name",
+      "type": "input",
+      "flex": "md4"
     },
     {
       "_id": "5e96e6ac5d6a1060111cd369",
       "schemaType": "string",
-      "key": "name",
-      "type": "input"
+      "key": "hardware",
+      "type": "input",
+      "flex": "md4"
     },
     {
       "_id": "5e96e6ac5d6a1060111cd36a",
       "schemaType": "string",
       "key": "appName",
-      "type": "input"
+      "type": "input",
+      "flex": "md4"
     },
     {
       "_id": "5e96e6ac5d6a1060111cd36b",
       "schemaType": "string",
       "key": "appVersion",
-      "type": "input"
+      "type": "input",
+      "flex": "md4"
     },
     {
       "_id": "5e9044fdab8e6f23eb5229e6",
       "schemaType": "string",
       "key": "pairingCode",
-      "type": "input"
+      "type": "input",
+      "flex": "md4"
     },
     {
       "_id": "5e9044fdab8e6f23eb5229e8",
@@ -38,17 +43,37 @@
       "key": "storeId",
       "ref": "Store",
       "type": "ref-select",
-      "labelProp": "name"
+      "labelProp": "name",
+      "flex": "md4"
     },
     {
       "_id": "5e9566d90b178cdacaade168",
       "schemaType": "boolean",
       "key": "paired",
       "default": "false",
-      "type": "input@switch"
+      "type": "input@switch",
+      "flex": "md4"
+    },
+    {
+      "_id": "5e97d3eac94f346ab6d7fa7b",
+      "schemaType": "array",
+      "key": "features",
+      "type": "input@multiSelect",
+      "optionsType": "onlyValue",
+      "options": [
+        "onlineOrder",
+        "remoteControl",
+        "updatable",
+        "proxy"
+      ],
+      "fields": [
+        {
+          "schemaType": "string"
+        }
+      ]
     }
   ],
-  "name": "OnlineOrderDevice",
+  "name": "Device",
   "tabs": [],
   "type": "Collection"
 }

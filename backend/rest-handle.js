@@ -1,14 +1,14 @@
 const authenticateAPI = require('./api/authenticate')
-const onlineOrderDeviceApi = require('./api/onlineOrderDevice')
-const storeApi = require('./api/store')
+const deviceAPI = require('./api/device')
+const storeAPI = require('./api/store')
 
 module.exports = cms => {
   cms.data['loginUrl'] = '/view/sign-in';
   cms.data['nonAuthenticateUrls'] = ['/login', '/admin', '/stores']
 
   cms.app.use('/user', authenticateAPI)
-  cms.app.use('/online-order-device', onlineOrderDeviceApi)
-  cms.app.use('/store', storeApi)
+  cms.app.use('/device', deviceAPI)
+  cms.app.use('/store', storeAPI)
 
   cms.socket.on('connect', socket => {
     // online-order
