@@ -2,15 +2,17 @@ const _ = require('lodash')
 const randomstring = require('randomstring')
 const express = require('express')
 const router = express.Router()
+const mongoose = require('mongoose')
+const ObjectId = mongoose.Types.ObjectId
 
-const OnlineOderDeviceModel = cms.getModel('Device');
+const DeviceModel = cms.getModel('Device');
 
 function generateDeviceCode() {
   return randomstring.generate({length: 6})
 }
 
 async function generateUniqueDeviceCode() {
-  const deviceCodes = _.map(await OnlineOderDeviceModel.find({}, {deviceCode: 1}), device => device.deviceCode)
+  const deviceCodes = _.map(await DeviceModel.find({}, {deviceCode: 1}), device => device.deviceCode)
   let newDeviceCode = generateDeviceCode()
   while (_.includes(deviceCodes, newDeviceCode))
     newDeviceCode = generateDeviceCode()
@@ -18,41 +20,45 @@ async function generateUniqueDeviceCode() {
 }
 
 async function getUniqueDeviceName(storeId, prefix) {
-  const aliases = _.map(await OnlineOderDeviceModel.find({ storeId }, { alias: 1 }), item => item.alias)
+  const aliases = _.map(await DeviceModel.find({storeId}, {alias: 1}), item => item.alias)
   let n = 0
   let alias
   do {
     n++
     alias = `${prefix} ${n}`
-  } while(_.includes(aliases, alias))
+  } while (_.includes(aliases, alias))
   return alias
 }
 
 async function addPairedDeviceToStore(deviceId, storeId) {
-  const store = await cms.getModel('Store').findOne({ _id: storeId}, { devices: 1 })
-  const devices = _.map(store.devices, device => device._id)
-  devices.push(deviceId)
-  await cms.getModel('Store').updateOne({ _id: storeId }, { devices })
+  const store = await cms.getModel('Store').findOne({_id: storeId}, {devices: 1});
+  const deviceIds = store.devices.map(e => e._id.toString());
+  if (!deviceIds.includes(deviceId)) store.devices.push(ObjectId(deviceId))
+  await cms.getModel('Store').updateOne({_id: storeId}, {devices: store.devices});
 }
 
 async function removePairedDeviceFromStore(deviceId, storeId) {
-  const store = await cms.getModel('Store').findOne({ _id: storeId}, { devices: 1 })
-  const devices = _.map(store.devices, device => device._id)
-  const newDevices = _.xor(devices, [deviceId])
-  await cms.getModel('Store').updateOne({ _id: storeId }, { devices: newDevices })
+  const store = await cms.getModel('Store').findOne({_id: storeId}, {devices: 1});
+  store.devices.filter(_id => deviceId !== _id.toString());
+  await cms.getModel('Store').updateOne({_id: storeId}, {devices: store.devices});
 }
 
 router.get('/pairing-code', async (req, res) => {
   const {storeId, name} = req.query
 
-  // try to find created pairing code but not paired
-  const device = await OnlineOderDeviceModel.findOne({storeId, paired: false, name})
-  if (device)
-    return res.status(200).json({pairingCode: device.pairingCode})
+  // Only 1 store can have "onlineOrder" feature
+  const device = await DeviceModel.findOne({storeId, paired: false, features: 'onlineOrder', name})
+  if (device) return res.status(200).json({pairingCode: device.pairingCode})
 
-  // if not, then generate new pairing code
+  // Create new device if none exists
   const pairingCode = await generateUniqueDeviceCode()
-  await OnlineOderDeviceModel.create({pairingCode, name, storeId, paired: false})
+  await DeviceModel.create({
+    features: ['onlineOrder', 'proxy'],
+    pairingCode,
+    name,
+    storeId: ObjectId(storeId),
+    paired: false
+  })
 
   res.status(200).json({pairingCode})
 })
@@ -62,15 +68,14 @@ router.post('/register', async (req, res) => {
   // appName: Pos-Germany.apk
   // appVersion: 1.51
   // feature: onlineOrder | remoteControl | updatable | proxy
+  // const {pairingCode, hardware, appName, appVersion, features} = req.body;
+  const {pairingCode} = req.body;
 
-  const { pairingCode, hardware, appName, appVersion, features } = req.body;
+  if (!pairingCode) return res.status(400).json({message: 'Missing pairingCode in request body'});
 
-  if (!pairingCode)
-    return res.status(400).json({message: 'Missing pairingCode in request body'});
-
-  const deviceInfo = await OnlineOderDeviceModel.findOne({pairingCode, paired: false});
+  const deviceInfo = await DeviceModel.findOne({pairingCode, paired: false});
   if (deviceInfo) {
-    await OnlineOderDeviceModel.updateOne({pairingCode}, { paired: true, hardware, appName, appVersion, features })
+    await DeviceModel.updateOne({pairingCode}, {paired: true})
     await addPairedDeviceToStore(deviceInfo._id, deviceInfo.storeId)
     res.status(200).json({deviceId: deviceInfo._id})
   } else {
@@ -78,11 +83,11 @@ router.post('/register', async (req, res) => {
   }
 })
 
-router.post('/un-register', async (req, res) => {
+router.post('/unregister', async (req, res) => {
   const {_id} = req.body;
-  const deviceInfo = await OnlineOderDeviceModel.findOne({_id});
+  const deviceInfo = await DeviceModel.findOne({_id});
   if (deviceInfo) {
-    await OnlineOderDeviceModel.remove({_id})
+    await DeviceModel.deleteOne({_id})
     await removePairedDeviceFromStore(_id, deviceInfo.storeId)
     res.status(200).json({deviceId: deviceInfo._id})
   } else {
