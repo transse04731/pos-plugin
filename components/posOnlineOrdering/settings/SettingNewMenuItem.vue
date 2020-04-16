@@ -77,6 +77,14 @@
       useMultiplePrinters: Boolean,
     },
     data: function () {
+      let internalPrinter
+      if (this.groupPrinters && this.groupPrinters.length) {
+        internalPrinter = this.useMultiplePrinters ? this.groupPrinters : [this.groupPrinters[0]]
+      } else {
+        // availablePrinters is not an empty array
+        internalPrinter = this.useMultiplePrinters ? this.availablePrinters : [this.availablePrinters[0]]
+      }
+      
       return {
         internalId: this.id || '',
         internalName: this.name,
@@ -84,7 +92,7 @@
         internalPrice: this.price,
         internalTax: this.tax || 7,
         internalImage: this.image,
-        internalPrinter: this.groupPrinters || (this.availablePrinters.length && [this.availablePrinters[0]]) || [],
+        internalPrinter: internalPrinter,
         // TODO: Link database
         taxes: [{ text: '19%', value: 19 }, { text: '7%', value: 7 }],
         productRules: {
