@@ -200,9 +200,22 @@
           .bs-tf-inner-input-group {
             height: 30px;
             font-size: 14px;
+            max-width: 100%;
+            padding-right: 6px;
 
             .bs-tf-input {
               height: 28px;
+            }
+
+            .input {
+              height: 28px;
+              display: flex;
+              overflow: scroll hidden;
+              max-width: calc(100% - 24px);
+
+              &::-webkit-scrollbar {
+                display: none;
+              }
             }
           }
         }
