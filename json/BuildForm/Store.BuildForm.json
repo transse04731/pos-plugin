@@ -195,7 +195,8 @@
           "key": "device",
           "ref": "OnlineOrderDevice",
           "type": "ref-select",
-          "labelProp": "name"
+          "labelProp": "name",
+          "autopopulate": true
         }
       ]
     }
