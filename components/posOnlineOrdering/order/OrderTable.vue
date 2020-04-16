@@ -73,7 +73,7 @@
           
             <div class="section-header">ORDER DETAILS</div>
             <div v-for="(item, index) in orderItems" :key="index" class="order-item-detail">
-              <div class="order-item-detail__index" >{{ index + 1 }}</div>
+              <div class="order-item-detail__index" >{{ item.quantity || 1}}</div>
               <div class="order-item-detail__name">{{ item.name }}</div>
               <g-spacer/>
               <div>{{ item.price * (item.quantity || 1) | currency }}</div>
@@ -153,7 +153,7 @@
     injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems,clearOrder)'],
     filters: {
       currency(value) {
-        return $t('common.currency') + value
+        return $t('common.currency') + value.toFixed(2)
       }
     },
     computed: {
