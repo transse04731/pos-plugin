@@ -128,7 +128,7 @@
       },
       computedGroup: {
         get() {
-          return this.group
+          return this.group.map(g => g._id)
         },
         set(val) {
           this.updateDebounce({ groups: val })
