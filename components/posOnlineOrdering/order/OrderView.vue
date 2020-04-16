@@ -367,7 +367,7 @@
 
       .pos-order__left__header {
         & > img {
-          width: 110px;
+          width: 145px;
         }
 
         &--info {
