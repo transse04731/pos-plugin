@@ -204,16 +204,21 @@
 
         const {note, deliveryTime, ...customer} = this.customer;
 
+        const products = _.map(this.orderItems, orderItem => {
+          return {
+            ..._.omit(orderItem, ['desc', 'image']),
+            groupPrinter: orderItem.printer,
+          }
+        })
         const orderData = {
           orderType: this.orderType,
           paymentType: this.paymentType,
           customer,
-          products: _.cloneDeep(this.orderItems),
+          products,
           deliveryTime,
           note,
           createdDate: new Date()
         }
-
         socket.emit('createOrder', this.store._id, orderData)
         
         this.clearOrder()
