@@ -47,7 +47,7 @@
     },
     filters: {
       currency(val) {
-        return $t('common.currency') + val
+        return $t('common.currency') + val.toFixed(2)
       }
     },
     methods: {
@@ -66,15 +66,16 @@
 <style scoped lang="scss">
   .po-menu-item {
     display: flex;
-    align-items: center;
-    height: 95px;
+    align-items: flex-start;
+    padding-top: 8px;
+    height: 80px;
     border-bottom: 1px solid rgba(204, 204, 204, 0.4);
     
     &__thumbnail {
       border-radius: 15px;
       margin-right: 18px;
-      max-width: 66px;
-      max-height: 66px;
+      max-width: 60px;
+      max-height: 60px;
     }
     
     &__name {
@@ -91,7 +92,7 @@
       font-size: 14px;
       color: #757575;
       max-width: 350px;
-      word-break: break-all;
+      word-break: break-word;
       -webkit-line-clamp: 2;
       display: -webkit-box;
       -webkit-box-orient: vertical;
