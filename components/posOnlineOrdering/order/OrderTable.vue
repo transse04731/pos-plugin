@@ -209,7 +209,7 @@
             ..._.omit(orderItem, ['_id', 'desc', 'image', 'category', 'groupPrinters']),
             groupPrinter: orderItem.groupPrinters[0],
             groupPrinter2: this.store.useMultiplePrinters && orderItem.groupPrinters.length >= 2 && orderItem.groupPrinters[1],
-            takeAway: true,
+            takeout: true,
             category: orderItem.category.name,
           }
         })
@@ -221,8 +221,10 @@
           products,
           deliveryTime,
           note,
-          createdDate: new Date()
+          createdDate: new Date(),
+          shippingFee: this.shippingFee
         }
+
         socket.emit('createOrder', this.store._id, orderData)
         
         this.clearOrder()
