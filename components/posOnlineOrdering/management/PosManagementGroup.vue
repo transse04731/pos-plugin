@@ -36,11 +36,11 @@
                       remove-content-on-close>
                     <template v-slot:activator="{on}">
                       <div
-                          v-if="device.paired && onlineDevices[device._id] && !disableRemoteControlBtn"
+                          v-if="device.paired && !disableRemoteControlBtn"
                           class="pos-management-group__content-btn"
                           @mouseenter="on.mouseenter"
                           @mouseleave="on.mouseleave"
-                          @click="startRemoteControl(store._id)">
+                          @click="() => {startRemoteControl(store._id); on.mouseleave()}">
                       </div>
                     </template>
                     <span>Remote Control</span>
@@ -98,7 +98,7 @@
           {text: '1.51', value: '1.51'}
         ],
         // contain device id which is currently online (web socket of device is connected to server)
-        onlineDevices: [ '5e96fb59a28f4f64aaccf778' ]
+        onlineDevices: ['5e96fb59a28f4f64aaccf778']
       }
     },
     watch: {
