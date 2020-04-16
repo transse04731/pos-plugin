@@ -15,19 +15,19 @@
               <div>{{store.address}}</div>
             </div>
             <div style="flex: 1">
-              <div class="row-flex" v-for="(device, index) in devices" :key="`device_${store.id}_${index}`">
+              <div class="row-flex" v-for="(device, index) in store.devices" :key="`device_${store.id}_${index}`">
                 <div class="row-flex col-3">
-                  <g-icon>{{device.icon}}</g-icon>
-                  <span class="ml-1">{{device.name}}</span>
+                  <g-icon>{{getDeviceIcon(device)}}</g-icon>
+                  <span class="ml-1">{{device.alias}}</span>
                 </div>
                 <div class="col-2">
-                  {{device.device}}
+                  {{device.name}}
                 </div>
                 <div class="col-3">
-                  {{device.application}}
+                  {{device.appName}}
                 </div>
                 <div class="row-flex col-3">
-                  <g-select class="w-50" :items="listVersion" v-model="device.version"/>
+                  <g-select class="w-50" :items="listVersion" v-model="device.appVersion"/>
                   <p class="ml-3 text-indigo-accent-2" style="cursor: pointer">Update</p>
                 </div>
                 <div class="col-1">
@@ -36,7 +36,7 @@
                       remove-content-on-close>
                     <template v-slot:activator="{on}">
                       <div
-                          v-if="storeDeviceMap[store._id] && storeDeviceMap[store._id].paired && !disableRemoteControlBtn"
+                          v-if="device.paired && onlineDevices[device._id] && !disableRemoteControlBtn"
                           class="pos-management-group__content-btn"
                           @mouseenter="on.mouseenter"
                           @mouseleave="on.mouseleave"
@@ -80,32 +80,6 @@
     props: {
       name: String,
       stores: Array,
-      devices: {
-        type: Array,
-        default: () => [
-          {
-            name: 'Webshop Terminal',
-            icon: 'icon-screen_blue',
-            device: 'Sunmi',
-            application: 'POS-Germany.apk',
-            version: '1.51'
-          },
-          {
-            name: 'Tablet 1',
-            icon: 'icon-screen',
-            device: 'Kindle-Fire',
-            application: 'POS-Tablet-Germany.apk',
-            version: '1.51'
-          },
-          {
-            name: 'Tablet 2',
-            icon: 'icon-screen',
-            device: 'Sunmi',
-            application: 'POS-Tablet-Germany.apk',
-            version: '1.51'
-          },
-        ]
-      }
     },
     data() {
       return {
@@ -123,6 +97,8 @@
         listVersion: [
           {text: '1.51', value: '1.51'}
         ],
+        // contain device id which is currently online (web socket of device is connected to server)
+        onlineDevices: [ '5e96fb59a28f4f64aaccf778' ]
       }
     },
     watch: {
@@ -135,6 +111,11 @@
       }
     },
     methods: {
+      getDeviceIcon(device) {
+        if (_.includes(this.onlineDevices, device._id))
+          return 'icon-screen_blue'
+        return 'icon-screen'
+      },
       toggleContent() {
         this.showContent = !this.showContent
       },

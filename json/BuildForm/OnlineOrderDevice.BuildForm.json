@@ -5,19 +5,19 @@
     {
       "_id": "5e96e6ac5d6a1060111cd368",
       "schemaType": "string",
-      "key": "name",
+      "key": "alias",
       "type": "input"
     },
     {
       "_id": "5e96e6ac5d6a1060111cd369",
       "schemaType": "string",
-      "key": "device",
+      "key": "name",
       "type": "input"
     },
     {
       "_id": "5e96e6ac5d6a1060111cd36a",
       "schemaType": "string",
-      "key": "application",
+      "key": "appName",
       "type": "input"
     },
     {
