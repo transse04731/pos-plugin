@@ -7,8 +7,8 @@
         <div class="menu-setting-item__content px-2">
           <div class="menu-setting-item__name row-flex">
             <span class="col-1">{{id}}.</span>
-            <span class="col-7">{{name}}</span>
-            <span class="col-6">{{printer}}</span>
+            <span :class="useMultiplePrinters?'col-7':'col-11'">{{name}}</span>
+            <span class="col-6" v-if="useMultiplePrinters">{{printer}}</span>
           </div>
           <div class="menu-setting-item__desc">
             {{desc}}

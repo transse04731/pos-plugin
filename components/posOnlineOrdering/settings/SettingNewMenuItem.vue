@@ -15,12 +15,11 @@
           <div class="col-1">
             <g-text-field-bs small v-model="internalId" type="number" placeholder="No."/>
           </div>
-          <div class="col-6">
-        <g-text-field-bs small v-model="internalName" :rules="productRules.name" placeholder="Name *"/>
+          <div :class="useMultiplePrinters? 'col-6': 'col-9'">
+            <g-text-field-bs small v-model="internalName" :rules="productRules.name" placeholder="Name *"/>
           </div>
-          <div class="col-3">
-            <g-select v-if="useMultiplePrinters" small text-field-component="GTextFieldBs" v-model="internalPrinter" :items="internalAvailablePrinters"/>
-            <g-text-field-bs small v-else-if="availablePrinters.length" :value="availablePrinters[0]" readonly/>
+          <div class="col-3" v-if="useMultiplePrinters">
+            <g-select small text-field-component="GTextFieldBs" v-model="internalPrinter" :items="internalAvailablePrinters"/>
           </div>
           <div class="col-2">
             <g-text-field-bs small v-model="internalPrice" :rules="productRules.price" type="number" placeholder="Price *"/>
