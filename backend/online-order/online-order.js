@@ -104,7 +104,7 @@ async function getDeviceId(pairingCode) {
     if (!pairingCode) {
       return null
     } else {
-      const pairingApiUrl = `${webshopUrl}/online-order-device/register`
+      const pairingApiUrl = `${webshopUrl}/device/register`
       const requestBody = {pairingCode}
       try {
         const requestResponse = await axios.post(pairingApiUrl, requestBody)
@@ -137,7 +137,24 @@ module.exports = async cms => {
       }
     });
 
-    socket.on('unregisterOnlineOrderDevice', callback => {
+    socket.on('unregisterOnlineOrderDevice', async callback => {
+      const posSettings = await cms.getModel('PosSetting').findOne({});
+      const {onlineDevice} = posSettings;
+
+      const unregisterApiUrl = `${webshopUrl}/device/unregister`;
+      const requestBody = {_id: onlineDevice.id};
+
+      try {
+        await axios.post(unregisterApiUrl, requestBody);
+      } catch (e) {
+        if (e.response.status === 400) {
+          // throw error is not necessary because device does not exist on server
+          console.error('Unpair error: device ID doest not exist on server');
+        } else {
+          throw e;
+        }
+      }
+
       if (onlineOrderSocket) {
         onlineOrderSocket.off('createOrder');
         onlineOrderSocket.disconnect();
