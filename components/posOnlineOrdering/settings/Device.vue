@@ -41,11 +41,11 @@
       return {
         pairedInfo: null,
         status: '',
+        name: 'WebShop',
         url: `pos.gigasource.io/stores/${this.store.alias}`,
         pairingCode: null,
         color: 'indigo-accent-2',
         tfClass: 'bs-tf__pos',
-        
         dialog: {
           connect: false,
           success: false
@@ -57,7 +57,7 @@
     },
     methods: {
       async loadPairStatus() {
-        this.$set(this, 'pairedInfo', (await cms.getModel('OnlineOrderDevice').findOne({ storeId: this.store._id })))
+        this.$set(this, 'pairedInfo', (await cms.getModel('Device').findOne({ storeId: this.store._id, name: this.name })))
         if (!this.pairedInfo) {
           this.status = 'Not Paired'
         } else if (!this.pairedInfo.paired) {
@@ -67,11 +67,11 @@
         }
       },
       async unPair() {
-        await axios.post(`/online-order-device/un-register`, { _id: this.pairedInfo._id })
+        await axios.post(`/device/un-register`, { _id: this.pairedInfo._id })
         await this.loadPairStatus()
       },
       async showPairDialog() {
-        this.pairingCode = (await axios.get(`/online-order-device/pairing-code?storeId=${this.store._id}`)).data.pairingCode;
+        this.pairingCode = (await axios.get(`/device/pairing-code?storeId=${this.store._id}?name=${this.name}`)).data.pairingCode;
         this.dialog.connect = true
       },
       async hidePairDialog() {

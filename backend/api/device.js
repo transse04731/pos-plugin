@@ -46,7 +46,7 @@ router.get('/pairing-code', async (req, res) => {
   const {storeId, name} = req.query
 
   // try to find created pairing code but not paired
-  const device = await OnlineOderDeviceModel.findOne({storeId, paired: false})
+  const device = await OnlineOderDeviceModel.findOne({storeId, paired: false, name})
   if (device)
     return res.status(200).json({pairingCode: device.pairingCode})
 
