@@ -8,7 +8,7 @@
           <div class="menu-setting-item__name row-flex">
             <span class="col-1">{{id}}.</span>
             <span :class="useMultiplePrinters?'col-7':'col-11'">{{name}}</span>
-            <span class="col-6" v-if="useMultiplePrinters">{{printer}}</span>
+            <span class="col-6" v-if="useMultiplePrinters">{{groupPrinterStr}}</span>
           </div>
           <div class="menu-setting-item__desc">
             {{desc}}
@@ -52,7 +52,7 @@
           :name="name"
           :desc="desc"
           :price="price"
-          :printer="printer"
+          :group-printers="groupPrinters"
           :tax="tax"
           :available-printers="availablePrinters"
           :use-multiple-printers="useMultiplePrinters"
@@ -68,7 +68,7 @@
   export default {
     name: 'SettingMenuItem',
     components: { SettingNewMenuItem },
-    props: [ '_id', 'index', 'id', 'image', 'name', 'desc', 'price', 'printer', 'tax', 'availablePrinters', 'useMultiplePrinters'],
+    props: [ '_id', 'index', 'id', 'image', 'name', 'desc', 'price', 'groupPrinters', 'tax', 'availablePrinters', 'useMultiplePrinters'],
     data: function () {
       return {
         mode: 'view'
@@ -77,6 +77,11 @@
     filters: {
       currency(value) {
         return $t('common.currency') + value
+      }
+    },
+    computed: {
+      groupPrinterStr() {
+        return _.join(this.groupPrinters, ',')
       }
     },
     methods: {

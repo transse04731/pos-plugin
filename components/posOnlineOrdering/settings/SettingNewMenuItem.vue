@@ -19,7 +19,7 @@
             <g-text-field-bs small v-model="internalName" :rules="productRules.name" placeholder="Name *"/>
           </div>
           <div class="col-3" v-if="useMultiplePrinters">
-            <g-select small text-field-component="GTextFieldBs" v-model="internalPrinter" :items="internalAvailablePrinters"/>
+            <g-select multiple small text-field-component="GTextFieldBs" v-model="internalPrinter" :items="internalAvailablePrinters"/>
           </div>
           <div class="col-2">
             <g-text-field-bs small v-model="internalPrice" :rules="productRules.price" type="number" placeholder="Price *"/>
@@ -72,7 +72,7 @@
       tax: Number,
       image: String,
       number: Number,
-      printer: String,
+      groupPrinters: Array,
       availablePrinters: Array,
       useMultiplePrinters: Boolean,
     },
@@ -84,7 +84,7 @@
         internalPrice: this.price,
         internalTax: this.tax || 7,
         internalImage: this.image,
-        internalPrinter: this.printer || (this.availablePrinters.length && this.availablePrinters[0]),
+        internalPrinter: this.groupPrinters || (this.availablePrinters.length && [this.availablePrinters[0]]) || [],
         // TODO: Link database
         taxes: [{ text: '19%', value: 19 }, { text: '7%', value: 7 }],
         productRules: {
@@ -129,7 +129,7 @@
           image: this.internalImage,
           name: this.internalName,
           desc: this.internalDesc,
-          printer: this.internalPrinter,
+          groupPrinters: this.internalPrinter,
           price: this.internalPrice,
           tax: this.internalTax,
         })

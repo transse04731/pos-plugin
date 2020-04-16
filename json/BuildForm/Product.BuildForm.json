@@ -94,12 +94,6 @@
       "flex": "md4"
     },
     {
-      "_id": "5e9675f275dc7d519ef6ccc9",
-      "schemaType": "string",
-      "key": "printer",
-      "type": "input"
-    },
-    {
       "_id": "5dddfbd26387aac1c8e1d050",
       "schemaType": "objectId",
       "key": "category",
@@ -116,6 +110,19 @@
       "ref": "Store",
       "type": "ref-select",
       "labelProp": "name"
+    },
+    {
+      "_id": "5e980c749442e713524d1b74",
+      "schemaType": "array",
+      "key": "groupPrinters",
+      "fields": [
+        {
+          "schemaType": "string",
+          "key": "groupPrinter",
+          "type": "input"
+        }
+      ],
+      "type": "array"
     }
   ],
   "id": "5c46e1c05889c52fe001ab7b",
