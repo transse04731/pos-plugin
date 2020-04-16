@@ -50,16 +50,6 @@
       "type": "input"
     },
     {
-      "_id": "5dddfbd26387aac1c8e1d050",
-      "schemaType": "objectId",
-      "key": "category",
-      "ref": "Category",
-      "autopopulate": true,
-      "type": "ref-select",
-      "labelProp": "name",
-      "editable": true
-    },
-    {
       "_id": "5c5eda4514922b1ee01777a3",
       "schemaType": "number",
       "type": "input@select:number",
@@ -104,32 +94,10 @@
       "flex": "md4"
     },
     {
-      "_id": "5ddce0a012b6deb726104504",
-      "schemaType": "number",
-      "key": "drinkPart",
-      "type": "input@number",
-      "flex": "md4",
-      "addable": true
-    },
-    {
-      "_id": "5ddce0a012b6deb726104503",
+      "_id": "5e9675f275dc7d519ef6ccc9",
       "schemaType": "string",
-      "key": "barcode",
-      "type": "input",
-      "flex": "md4"
-    },
-    {
-      "_id": "5ddce0a012b6deb726104502",
-      "schemaType": "string",
-      "key": "unit",
-      "type": "input@select",
-      "flex": "md4",
-      "optionsType": "onlyValue",
-      "options": [
-        "box",
-        "pack",
-        "piece"
-      ]
+      "key": "printer",
+      "type": "input"
     },
     {
       "_id": "5ddce0a012b6deb726104501",
@@ -157,99 +125,21 @@
       ]
     },
     {
-      "_id": "5dddf14659eb3cc0fb5c0d64",
-      "schemaType": "objectId",
-      "key": "groupPrinter",
-      "ref": "GroupPrinter",
-      "autopopulate": true,
-      "type": "ref-select",
-      "flex": null,
-      "labelProp": "_id",
-      "addable": false,
-      "editable": true
-    },
-    {
-      "_id": "5dde399503adeaca5263a27d",
-      "schemaType": "array",
-      "key": "layouts",
-      "type": "array",
-      "fields": [
-        {
-          "schemaType": "string",
-          "key": "color",
-          "type": "input"
-        },
-        {
-          "schemaType": "number",
-          "key": "order",
-          "type": "input@number"
-        },
-        {
-          "schemaType": "boolean",
-          "key": "favourite",
-          "type": "input@checkbox"
-        },
-        {
-          "schemaType": "string",
-          "key": "device",
-          "default": "pos",
-          "type": "input@select",
-          "optionsType": "onlyValue",
-          "options": [
-            "pos",
-            "mobile"
-          ]
-        }
-      ],
-      "flex": "md12"
-    },
-    {
-      "_id": "5df1b99ffdeb6602ac49d3d6",
-      "schemaType": "object",
-      "key": "option",
-      "fields": [
-        {
-          "schemaType": "boolean",
-          "key": "favorite",
-          "type": "input@switch"
-        },
-        {
-          "schemaType": "boolean",
-          "key": "nonRefundable",
-          "type": "input@switch"
-        },
-        {
-          "schemaType": "boolean",
-          "key": "active",
-          "type": "input@switch"
-        },
-        {
-          "schemaType": "boolean",
-          "key": "showOnOrderScreen",
-          "default": "",
-          "type": "input@switch"
-        },
-        {
-          "schemaType": "boolean",
-          "key": "manualPrice",
-          "type": "input@switch"
-        }
-      ],
-      "type": "object"
-    },
-    {
-      "_id": "5dfaf12eac2798029d736ccf",
-      "schemaType": "number",
-      "key": "refundPrice",
-      "type": "input@number",
-      "addable": true
-    },
-    {
       "_id": "5e674d01ac204918b3c6e154",
       "schemaType": "date",
       "clickable": true,
       "key": "dateAdded",
       "type": "input@date"
+    },
+    {
+      "_id": "5dddfbd26387aac1c8e1d050",
+      "schemaType": "objectId",
+      "key": "category",
+      "ref": "Category",
+      "autopopulate": true,
+      "type": "ref-select",
+      "labelProp": "name",
+      "editable": true
     },
     {
       "_id": "5e8d88a159bfa6380c6e7879",
@@ -258,12 +148,6 @@
       "ref": "Store",
       "type": "ref-select",
       "labelProp": "name"
-    },
-    {
-      "_id": "5e9675f275dc7d519ef6ccc9",
-      "schemaType": "string",
-      "key": "printer",
-      "type": "input"
     }
   ],
   "id": "5c46e1c05889c52fe001ab7b",
