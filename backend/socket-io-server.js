@@ -86,10 +86,7 @@ module.exports = function (cms) {
     socket.once('disconnect', () => {
       if (!remoteControlDeviceId) return
       proxyServer.stopProxy(`${remoteControlDeviceId}-proxy-client`);
-
-      serverPlugin.emitTo(remoteControlDeviceId, 'stopRemoteControl', () => {
-        remoteControlDeviceId = null;
-      })
+      remoteControlDeviceId = null;
     });
   });
 }
