@@ -1,9 +1,9 @@
 <template>
-  <g-dialog v-model="internalValue" width="40%" eager>
+  <g-dialog v-model="internalValue" width="580" eager>
     <div class="dialog">
-      <div class="dialog-title">Delete item</div>
+      <div class="dialog-title">Delete {{type}}</div>
       <img alt src="/plugins/pos-plugin/assets/trash_bin.svg"/>
-      <div class="dialog-message">Are you sure you want to delete this item?</div>
+      <div class="dialog-message">Are you sure you want to delete this {{type}}?</div>
       <div class="dialog-action">
         <g-btn-bs large text-color="#424242" @click="internalValue = false">Cancel</g-btn-bs>
         <g-btn-bs large background-color="#FF5252" text-color="white" @click="confirm">Delete</g-btn-bs>
@@ -16,7 +16,11 @@
   export default {
     name: "dialogDeleteItem",
     props: {
-      value: null
+      value: null,
+      type: {
+        type: String,
+        default: 'item'
+      }
     },
     computed: {
       internalValue: {
