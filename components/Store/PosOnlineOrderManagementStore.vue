@@ -81,7 +81,14 @@
     methods: {
       // store groups
       async loadStoreGroups() {
-        this.storeGroups.splice(0, this.storeGroups.length, ...cms.loginUser.user.storeGroups)
+        let storeGroups
+        if (cms.loginUser.user.role.name === 'admin') {
+          storeGroups = await cms.getModel('StoreGroup').find({})
+        } else {
+          storeGroups = cms.loginUser.user.storeGroups
+        }
+        
+        this.storeGroups.splice(0, this.storeGroups.length, ...storeGroups)
       },
       async addGroup(name) {
         if (_.includes(this.storeGroupNames, name))
@@ -96,7 +103,7 @@
 
       // stores
       async loadStores() {
-        const storeGroupIds = _.map(cms.loginUser.user.storeGroups, sg => sg._id)
+        const storeGroupIds = _.map(this.storeGroups, sg => sg._id)
         const stores = await cms.getModel('Store').find({ groups: { $elemMatch: { $in: storeGroupIds } } })
         this.stores.splice(0, this.stores.length, ...stores)
       },
