@@ -100,38 +100,6 @@
       "type": "input"
     },
     {
-      "_id": "5ddce0a012b6deb726104501",
-      "schemaType": "array",
-      "key": "attributes",
-      "type": "tableArray",
-      "addable": true,
-      "fields": [
-        {
-          "schemaType": "string",
-          "key": "key",
-          "type": "input@select",
-          "optionsType": "onlyValue",
-          "options": [
-            "color",
-            "age"
-          ]
-        },
-        {
-          "schemaType": "string",
-          "key": "value",
-          "type": "input",
-          "flex": null
-        }
-      ]
-    },
-    {
-      "_id": "5e674d01ac204918b3c6e154",
-      "schemaType": "date",
-      "clickable": true,
-      "key": "dateAdded",
-      "type": "input@date"
-    },
-    {
       "_id": "5dddfbd26387aac1c8e1d050",
       "schemaType": "objectId",
       "key": "category",
