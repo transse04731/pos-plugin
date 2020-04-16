@@ -29,7 +29,7 @@
       return {
         name: null,
         qrCode: '/plugins/pos-plugin/assets/qr.svg',
-        pairingCode: '1Z3S56'
+        pairingCode: null
       }
     },
     computed: {
