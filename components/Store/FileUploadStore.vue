@@ -51,16 +51,20 @@
         })
       },
       async prepareUploadAppFolder(file, version) {
-        console.log(`creating /update/${file.name} folder`)
-        await this.createFolder('/update', file.name)
+        const baseName = this.getBaseName(file.name)
+        console.log(`creating /update/${baseName} folder`)
+        await this.createFolder('/update', baseName)
 
-        console.log(`creating /update/${file.name}/${version} folder`)
-        await this.createFolder(`/update/${file.name}`, version)
+        console.log(`creating /update/${baseName}/${version} folder`)
+        await this.createFolder(`/update/${baseName}`, version)
+      },
+      getBaseName(fileName) {
+        return fileName.substr(0, _.lastIndexOf(fileName, '.'))
       },
       uploadApp(file, version) {
         return new Promise(async (resolve ,reject) => {
           this.showFileUploadProgressDialog = true
-          this.uploadingItems.push(this.gridFsHandler.uploadFile(file, `/update/${file.name}/${version}`, response => {
+          this.uploadingItems.push(this.gridFsHandler.uploadFile(file, `/update/${this.getBaseName(file.name)}/${version}`, response => {
             if (response.data[0].uploadSuccess) {
               resolve(`${location.origin}/cms-files/files/view/${response.data[0].createdFile.folderPath}${response.data[0].createdFile.fileName}`)
             } else {
