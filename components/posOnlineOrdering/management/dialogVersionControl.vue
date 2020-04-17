@@ -4,21 +4,21 @@
       <div class="dialog__title">{{edit ? 'Edit' : 'Add New'}} Version</div>
       <div class="dialog__content">
         <div class="row-flex align-items-end">
-          <g-text-field-bs readonly :disabled="edit" label="File" large v-model="_name"/>
+          <g-text-field-bs readonly :disabled="edit" label="File" large v-model="internalName"/>
           <g-btn-bs :disabled="edit" width="120" large background-color="#EFEFEF" border-color="#9E9E9E" text-color="#424242" @click="selectFile">Select file</g-btn-bs>
         </div>
         <div class="row-flex">
           <div class="col-6">
-            <g-text-field-bs large label="Version" v-model="_version"/>
+            <g-text-field-bs large label="Version" v-model="internalVersion"/>
           </div>
           <div class="col-6">
-            <g-select text-field-component="GTextFieldBs" :items="listType" label="Type" v-model="_type"/>
+            <g-select text-field-component="GTextFieldBs" :items="listType" label="Type" v-model="internalType"/>
           </div>
         </div>
-        <g-select text-field-component="GTextFieldBs" :items="listStatus" label="Status" v-model="_status"/>
+        <g-select text-field-component="GTextFieldBs" :items="listStatus" label="Status" v-model="internalStatus"/>
         <div>
           <p>Changelog</p>
-          <g-textarea outlined no-resize :rows="3" v-model="_changeLog"/>
+          <g-textarea outlined no-resize :rows="3" v-model="internalChangeLog"/>
         </div>
       </div>
       <div class="dialog__action">
@@ -51,11 +51,11 @@
           {text: 'Private', value: 'private'},
           {text: 'Public', value: 'public'}
         ],
-        _name: this.name || '',
-        _version: this.version || '',
-        _type: this.type || 'POS Android',
-        _status: this.status || 'public',
-        _changeLog: this.changeLog || '',
+        internalName: this.name || '',
+        internalVersion: this.version || '',
+        internalType: this.type || 'POS Android',
+        internalStatus: this.status || 'public',
+        internalChangeLog: this.changeLog || '',
         file: null
       }
     },
@@ -76,7 +76,7 @@
         input.multiple = false;
         input.addEventListener('change', e => {
           document.body.removeChild(input);
-          this._name = e.target.files['0'].name
+          this.internalName = e.target.files['0'].name
         });
         document.body.appendChild(input);
         input.style.display = 'none';
@@ -85,10 +85,10 @@
       upload() {
         if (this.edit) {
           this.$emit('edit', {
-            version: this._version,
-            type: this._type,
-            status: this._status,
-            changeLog: this._changeLog
+            version: this.internalVersion,
+            type: this.internalType,
+            status: this.internalStatus,
+            changeLog: this.internalChangeLog
           })
         } else {
           if (!this.file) {
@@ -99,10 +99,10 @@
           this.$emit('add', {
             file: this.file,
             name: this.file.name,
-            version: this._version,
-            type: this._type,
-            status: this._status,
-            changeLog: this._changeLog
+            version: this.internalVersion,
+            type: this.internalType,
+            status: this.internalStatus,
+            changeLog: this.internalChangeLog
           })
         }
         this.internalValue = false
