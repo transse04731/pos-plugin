@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const ProxyServer = require('@gigasource/nodejs-proxy-server/libs/server.js');
 const {remoteControlExpressServerPort, remoteControlSocketIOServerPort} = global.APP_CONFIG;
+const deviceStatusSubscribers = {};
 
 const Schema = mongoose.Schema
 const savedMessageSchema = new Schema({
@@ -46,20 +47,53 @@ module.exports = function (cms) {
   });
   // for destroy: proxyServer.destroy();
 
-  const {io, socket: socketIOServer} = cms;
-  const serverPlugin = p2pServerPlugin(io, {
+  const {io, socket: internalSocketIOServer} = cms;
+  const externalSocketIOServer = p2pServerPlugin(io, {
     saveMessage, loadMessages, deleteMessage,
   });
 
-  socketIOServer.on('connect', socket => {
+  function notifyFrontend(online, clientId) {
+    const DeviceModel = cms.getModel('Device');
+    DeviceModel.updateOne({_id: clientId}, {online}, err => {
+      if (err) console.error(err);
+
+      Object.keys(deviceStatusSubscribers).forEach(socketId => {
+        const deviceWatchList = deviceStatusSubscribers[socketId]
+
+        if (deviceWatchList && deviceWatchList.includes(clientId)) {
+          internalSocketIOServer.connected[socketId].emit('updateDeviceStatus');
+        }
+      });
+    })
+  }
+
+  // externalSocketIOServer is Socket.io namespace for store/restaurant app to connect (use default namespace)
+  externalSocketIOServer.on('connect', socket => {
+    if (socket.request._query && socket.request._query.clientId) {
+      const clientId = socket.request._query.clientId;
+      notifyFrontend(true, clientId);
+      socket.once('disconnect', () => notifyFrontend(false, clientId));
+    }
+  });
+
+  // internalSocketIOServer is another Socket.io namespace for frontend to connect (use /app namespace)
+  internalSocketIOServer.on('connect', socket => {
     let remoteControlDeviceId = null;
+
+    socket.on('watchDeviceStatus', clientIdList => {
+      deviceStatusSubscribers[socket.id] = (deviceStatusSubscribers[socket.id] || []).concat(clientIdList);
+    });
+
+    socket.on('unwatchDeviceStatus', clientIdList => {
+      deviceStatusSubscribers[socket.id] = (deviceStatusSubscribers[socket.id] || []).filter(id => !clientIdList.includes(id));
+    });
 
     socket.on('createOrder', async (storeId, orderData) => {
       storeId = ObjectId(storeId);
       const device = await DeviceModel.findOne({storeId});
       const deviceId = device._id.toString();
 
-      serverPlugin.emitToPersistent(deviceId, 'createOrder', [orderData]);
+      externalSocketIOServer.emitToPersistent(deviceId, 'createOrder', [orderData]);
     });
 
     socket.on('startRemoteControl', async (deviceId, callback) => {
@@ -67,7 +101,7 @@ module.exports = function (cms) {
         callback(null);
       } else {
         remoteControlDeviceId = deviceId;
-        serverPlugin.emitTo(deviceId, 'startRemoteControl', remoteControlSocketIOServerPort || 8901, async () => {
+        externalSocketIOServer.emitTo(deviceId, 'startRemoteControl', remoteControlSocketIOServerPort || 8901, async () => {
           const proxyPort = await proxyServer.startProxy(`${deviceId}-proxy-client`);
           callback(proxyPort);
         })
@@ -78,12 +112,14 @@ module.exports = function (cms) {
       if (!deviceId) return
       proxyServer.stopProxy(`${deviceId}-proxy-client`);
 
-      serverPlugin.emitTo(deviceId, 'stopRemoteControl', () => {
+      externalSocketIOServer.emitTo(deviceId, 'stopRemoteControl', () => {
         remoteControlDeviceId = null;
       })
     });
 
     socket.once('disconnect', () => {
+      delete deviceStatusSubscribers[socket.id]
+
       if (!remoteControlDeviceId) return
       proxyServer.stopProxy(`${remoteControlDeviceId}-proxy-client`);
       remoteControlDeviceId = null;
