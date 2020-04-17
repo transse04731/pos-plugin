@@ -1,8 +1,11 @@
 <template>
   <div class="configuration">
     <div v-if="type === 'kitchen'" class="config">
-      <g-text-field-bs :label="$t('settings.name')" v-model="editableName" append-inner-icon="icon-keyboard-red"
-                       @click="openDialog('nameInput')"/>
+      <g-text-field-bs :label="$t('settings.name')" v-model="editableName">
+        <template #append-inner>
+          <g-icon style="cursor: pointer" @click="openDialog('nameInput')">icon-keyboard</g-icon>
+        </template>
+      </g-text-field-bs>
     </div>
     <div class="config">
       <p class="title">{{$t('settings.thermalPrinter')}}</p>
@@ -18,7 +21,11 @@
     </div>
     <g-divider inset/>
     <div v-if="selectedPrinterType && selectedPrinterType.value === 'ip'" class="config row-flex align-items-end">
-      <g-text-field-bs :label="$t('settings.ipAddress')" v-model="ipAddress" append-inner-icon="icon-keyboard" @click="openDialog('ipInput')"/>
+      <g-text-field-bs :label="$t('settings.ipAddress')" v-model="ipAddress">
+        <template #append-inner>
+          <g-icon style="cursor: pointer" @click="openDialog('ipInput')">icon-keyboard</g-icon>
+        </template>
+      </g-text-field-bs>
       <g-btn-bs background-color="blue accent 3" style="padding: 6px; flex: 1" @click="$emit('testPrinter', printer)">
         {{$t('settings.testPrinter')}}
       </g-btn-bs>

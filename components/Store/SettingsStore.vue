@@ -54,24 +54,15 @@
               { title: sidebar.functionLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-fn-button', appendIcon: 'open_in_new' },
             ]
           },*/
-          /*{
-            title: sidebar.hardware, icon: 'icon-hardware', svgIcon: true,
+          {
+            title: sidebar.advancedSettings, icon: 'icon-switch', svgIcon: true,/* badge: '3', badgeColor: '#FF4081',*/
             items: [
-              { title: sidebar.thermalPrinter, isView: true, icon: 'radio_button_unchecked', iconType: 'small' },
-              /!*{ title: 'POS', icon: ' ' },
-              { title: 'Customer Display', icon: ' ' },
-              { title: 'A4 Printer', icon: ' ' },*!/
-            ]
-          },*/
-          /*{
-            title: sidebar.advancedSettings, icon: 'icon-switch', svgIcon: true,/!* badge: '3', badgeColor: '#FF4081',*!/
-            items: [
-              { title: sidebar.companyInfo, icon: 'radio_button_unchecked', iconType: 'small', isView: true /!*href: '/settings/company'*!/ },
-              { title: sidebar.payment, icon: 'radio_button_unchecked', iconType: 'small', isView: true /!*href: '/settings/payment'*!/ },
+              { title: sidebar.companyInfo, icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/company'*/ },
+              { title: sidebar.payment, icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/payment'*/ },
               { title: sidebar.tax, icon: 'radio_button_unchecked', iconType: 'small', isView: true },
-              /!*{ title: 'License', icon: 'radio_button_unchecked', iconType: 'small' },*!/
+              /*{ title: 'License', icon: 'radio_button_unchecked', iconType: 'small' },*/
             ]
-          },*/
+          },
           {title: 'Online Ordering', icon: 'icon-general_setting', isView: true}
         ],
         //category view

@@ -2,32 +2,32 @@
   <fragment>
     <div class="main">
       <div class="main__item">
-        <pos-text-field :label="$t('settings.companyName')" v-model="name" @click="dialogCompanyName = true">
-          <template v-slot:append>
-            <g-icon svg>icon-keyboard</g-icon>
+        <g-text-field-bs :label="$t('settings.companyName')" v-model="name">
+          <template v-slot:append-inner>
+            <g-icon style="cursor: pointer" @click="dialogCompanyName = true">icon-keyboard</g-icon>
           </template>
-        </pos-text-field>
+        </g-text-field-bs>
       </div>
       <div class="main__item">
-        <pos-text-field :label="$t('settings.address')" v-model="address" @click="dialogCompanyAddress = true">
-          <template v-slot:append>
-            <g-icon svg>icon-keyboard</g-icon>
+        <g-text-field-bs :label="$t('settings.address')" v-model="address">
+          <template v-slot:append-inner>
+            <g-icon style="cursor: pointer" @click="dialogCompanyAddress = true">icon-keyboard</g-icon>
           </template>
-        </pos-text-field>
+        </g-text-field-bs>
       </div>
       <div class="main__item">
-        <pos-text-field :label="$t('settings.tel')" v-model="telephone" @click="dialogCompanyTelephone = true">
-          <template v-slot:append>
-            <g-icon svg>icon-keyboard</g-icon>
+        <g-text-field-bs :label="$t('settings.tel')" v-model="telephone">
+          <template v-slot:append-inner>
+            <g-icon style="cursor: pointer" @click="dialogCompanyTelephone = true">icon-keyboard</g-icon>
           </template>
-        </pos-text-field>
+        </g-text-field-bs>
       </div>
       <div class="main__item">
-        <pos-text-field :label="$t('settings.taxNo')" v-model="taxNumber" @click="dialogCompanyTaxNumber = true">
-          <template v-slot:append>
-            <g-icon svg>icon-keyboard</g-icon>
+        <g-text-field-bs :label="$t('settings.taxNo')" v-model="taxNumber">
+          <template v-slot:append-inner>
+            <g-icon style="cursor: pointer" @click="dialogCompanyTaxNumber = true">icon-keyboard</g-icon>
           </template>
-        </pos-text-field>
+        </g-text-field-bs>
       </div>
       <div class="main__item">
         <p class="item-label">{{$t('settings.logo')}}</p>

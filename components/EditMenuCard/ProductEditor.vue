@@ -8,13 +8,25 @@
       </template>
       <template v-if="isProductLayout">
         <div>{{$t('article.id')}} </div>
-        <g-text-field-bs :value="selectedProduct.id" @click="openDialogInfo('id')"/>
+        <g-text-field-bs :value="selectedProduct.id" @input="$set(selectedProduct, 'id', $event)">
+          <template #append-inner>
+            <g-icon style="cursor: pointer" @click="openDialogInfo('id')">icon-keyboard</g-icon>
+          </template>
+        </g-text-field-bs>
 
         <div>{{$t('article.name')}} <span style="color: #FF4452">*</span></div>
-        <g-text-field-bs :value="selectedProduct.name" @click="openDialogInfo('name')"/>
+        <g-text-field-bs :value="selectedProduct.name" @input="$set(selectedProduct, 'name', $event)">
+          <template #append-inner>
+            <g-icon style="cursor: pointer" @click="openDialogInfo('name')">icon-keyboard</g-icon>
+          </template>
+        </g-text-field-bs>
 
         <div>{{$t('article.price')}}</div>
-        <g-text-field-bs :value="selectedProduct.price" @click="openDialogInfo('price')"/>
+        <g-text-field-bs :value="selectedProduct.price" @input="$set(selectedProduct, 'price', $event)">
+          <template #append-inner>
+            <g-icon style="cursor: pointer" @click="openDialogInfo('price')">icon-keyboard</g-icon>
+          </template>
+        </g-text-field-bs>
 
         <g-switch v-model="selectedProduct.isModifier" @change="updateProduct({ isModifier: $event })" />
         <div style="font-size: 13px">{{$t('article.isModifier')}}</div>

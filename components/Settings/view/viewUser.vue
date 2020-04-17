@@ -20,11 +20,11 @@
           {{$t('settings.editUser')}}
         </div>
         <div class="edit__item">
-          <pos-text-field @click="editUsername" :label="$t('settings.name')" v-model="selectedUser.name">
-            <template v-slot:append>
-              <g-icon svg>icon-keyboard</g-icon>
+          <g-text-field-bs :label="$t('settings.name')" v-model="selectedUser.name">
+            <template v-slot:append-inner>
+              <g-icon style="cursor: pointer" @click="editUsername">icon-keyboard</g-icon>
             </template>
-          </pos-text-field>
+          </g-text-field-bs>
         </div>
         <div class="edit__item" v-if="!isAdmin">
           <p class="mb-2">{{$t('settings.userAvatar')}}</p>
@@ -64,11 +64,11 @@
 <!--          <pos-switch @change="save" dense label="Allow Item Cancellation after reactivate paid Table" style="max-width: 200px" v-model="selectedUser.itemCancellationReactivePaidTable"/>-->
 <!--        </div>-->
         <div class="edit__item">
-          <pos-text-field @click="editPasscode" :label="$t('settings.passcode')" v-model="selectedUser.passcode">
-            <template v-slot:append>
-              <g-icon svg>icon-keyboard</g-icon>
+          <g-text-field-bs :label="$t('settings.passcode')" v-model="selectedUser.passcode">
+            <template v-slot:append-inner>
+              <g-icon style="cursor: pointer" @click="editPasscode">icon-keyboard</g-icon>
             </template>
-          </pos-text-field>
+          </g-text-field-bs>
         </div>
 <!--        <div class="edit__item" v-if="!isAdmin">-->
 <!--          <pos-switch @change="save" dense label="Allow Move Item" v-model="selectedUser.allowMoveItem"/>-->
