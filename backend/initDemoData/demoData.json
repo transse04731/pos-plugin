@@ -9,8 +9,8 @@
         "taxNumber": "9999 9999 9999"
       },
       "onlineDevice": {
-        "id": "5e91740035f42398b53fe3c7",
-        "paired": true,
+        "id": null,
+        "paired": false,
         "url": "http://127.0.0.1:8888",
         "sound": true
       },
