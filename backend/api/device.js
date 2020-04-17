@@ -57,7 +57,8 @@ router.get('/pairing-code', async (req, res) => {
     pairingCode,
     name,
     storeId: ObjectId(storeId),
-    paired: false
+    paired: false,
+    online: false,
   })
 
   res.status(200).json({pairingCode})
@@ -75,7 +76,7 @@ router.post('/register', async (req, res) => {
 
   const deviceInfo = await DeviceModel.findOne({pairingCode, paired: false});
   if (deviceInfo) {
-    await DeviceModel.updateOne({pairingCode}, {paired: true})
+    await DeviceModel.updateOne({pairingCode}, {paired: true, online: true});
     await addPairedDeviceToStore(deviceInfo._id, deviceInfo.storeId)
     res.status(200).json({deviceId: deviceInfo._id})
   } else {

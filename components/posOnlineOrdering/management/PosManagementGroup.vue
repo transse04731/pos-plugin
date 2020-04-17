@@ -34,11 +34,11 @@
                   <g-tooltip
                       :open-on-hover="true" top speech-bubble color="#000" transition="0.3">
                     <template v-slot:activator="{on}">
-                      <div :class="device.paired && device.features.includes('proxy') && !disableRemoteControlBtn
+                      <div :class="device.online && device.paired && device.features.includes('proxy') && !disableRemoteControlBtn
                                   ? 'pos-management-group__content-btn' : 'pos-management-group__content-btn--disabled'"
-                          @mouseenter="on.mouseenter"
-                          @mouseleave="on.mouseleave"
-                          @click="() => {startRemoteControl(device.storeId, device._id); on.mouseleave()}">
+                           @mouseenter="on.mouseenter"
+                           @mouseleave="on.mouseleave"
+                           @click="() => {startRemoteControl(device.storeId, device._id); on.mouseleave()}">
                       </div>
                     </template>
                     <span>Remote Control</span>
@@ -94,14 +94,13 @@
         listVersion: [
           {text: '1.51', value: '1.51'}
         ],
-        // contain device id which is currently online (web socket of device is connected to server)
-        onlineDevices: ['5e96fb59a28f4f64aaccf778']
+        watchingClientStatus: false,
       }
     },
     methods: {
       getDeviceIcon(device) {
-        if (_.includes(this.onlineDevices, device._id))
-          return 'icon-screen_blue'
+        if (device.online) return 'icon-screen_blue'
+
         return 'icon-screen'
       },
       toggleContent() {
@@ -166,8 +165,31 @@
       onIframeLoad() {
         if (this.iframeRefreshInterval) clearInterval(this.iframeRefreshInterval)
       },
+      trackClientStatus(startWatching) {
+        if (startWatching && this.watchingClientStatus) return
+
+        this.watchingClientStatus = startWatching
+        const {socket} = window.cms
+        const deviceIdList = [];
+
+        this.stores.forEach(store => store.devices.forEach(device => deviceIdList.push(device._id)));
+
+        if (startWatching) {
+          socket.emit('watchDeviceStatus', deviceIdList)
+          socket.on('updateDeviceStatus', () => this.$emit('updateStores'))
+        } else {
+          socket.emit('unwatchDeviceStatus', deviceIdList)
+          socket.off('updateDeviceStatus')
+        }
+      }
+    },
+    watch: {
+      stores(val) {
+        if (val) this.trackClientStatus(true)
+      },
     },
     beforeDestroy() {
+      this.trackClientStatus(false)
       this.stopRemoteControl()
     }
   }

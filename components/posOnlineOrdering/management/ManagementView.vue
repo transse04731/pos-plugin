@@ -62,6 +62,7 @@
                   v-bind="group"
                   :key="`group_${i}`"
                   @delete="removeStore(group._id, $event)"
+                  @updateStores="loadStores()"
                   @view:settings="viewStoreSetting($event)"/>
             </template>
           </div>
@@ -100,7 +101,7 @@
 <script>
   import _ from 'lodash'
   import VersionControl from "./VersionControl";
-  
+
   export default {
     name: 'ManagementView',
     components: {VersionControl},
@@ -269,7 +270,7 @@
       &--selected {
         background-color: #EFEFEF;
       }
-      
+
       &:hover {
         background-color: #EFEFEF;
       }
