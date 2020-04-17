@@ -1,0 +1,60 @@
+{
+  "_id": "5e993895855aaf04cf1272ae",
+  "extensions": [],
+  "fields": [
+    {
+      "_id": "5e9939de855aaf04cf1272b0",
+      "schemaType": "string",
+      "key": "name",
+      "type": "input"
+    },
+    {
+      "_id": "5e9939de855aaf04cf1272b1",
+      "schemaType": "string",
+      "key": "version",
+      "type": "input"
+    },
+    {
+      "_id": "5e9939de855aaf04cf1272b2",
+      "schemaType": "string",
+      "key": "type",
+      "type": "input@select",
+      "optionsType": "textValue",
+      "options": [
+        {
+          "value": "POS Android",
+          "text": "POS Android"
+        },
+        {
+          "value": "POS PC",
+          "text": "POS PC"
+        }
+      ]
+    },
+    {
+      "_id": "5e9939de855aaf04cf1272b3",
+      "schemaType": "date",
+      "key": "uploadDate"
+    },
+    {
+      "_id": "5e9939de855aaf04cf1272b4",
+      "schemaType": "boolean",
+      "key": "private",
+      "type": "input@switch"
+    },
+    {
+      "_id": "5e9939de855aaf04cf1272b5",
+      "schemaType": "string",
+      "key": "changeLog",
+      "type": "input"
+    },
+    {
+      "_id": "5e9939de855aaf04cf1272b6",
+      "schemaType": "string",
+      "key": "uploadPath"
+    }
+  ],
+  "name": "App",
+  "tabs": [],
+  "type": "Collection"
+}
