@@ -51,7 +51,10 @@
         })
       },
       async prepareUploadAppFolder(file, version) {
+        console.log(`creating /update/${file.name} folder`)
         await this.createFolder('/update', file.name)
+
+        console.log(`creating /update/${file.name}/${version} folder`)
         await this.createFolder(`/update/${file.name}`, version)
       },
       uploadApp(file, version) {
@@ -77,11 +80,15 @@
           return false
         }
       },
-      async createFolder(folderPath, parentPath) {
+      async createFolder(parentPath, folderPath) {
         const separator = _.endsWith(parentPath, '/') ? '' : '/'
         const folderExist = await this.isFolderExist(`${parentPath}${separator}${folderPath}`)
-        if (!folderExist)
+        if (!folderExist) {
+          console.log('folder is not exist, create new')
           await this.gridFsHandler.createNewFolder(parentPath, folderPath)
+        } else {
+          console.log('folder existed. skip')
+        }
       }
     },
     provide() {
@@ -89,8 +96,7 @@
         openAndUploadImage: this.openAndUploadImage,
         prepareUploadAppFolder: this.prepareUploadAppFolder,
         uploadApp: this.uploadApp,
-        removeFile: this.removeFile,
-        createFolder: this.createFolder
+        removeFile: this.removeFile
       }
     }
   }
