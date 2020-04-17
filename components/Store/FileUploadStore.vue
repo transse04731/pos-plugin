@@ -28,6 +28,7 @@
       return {
         uploadingItems: [],
         showFileUploadProgressDialog: false,
+        fileApi: `${location.origin}/cms-files/files/view/`
       }
     },
     computed: {},
@@ -66,7 +67,7 @@
           this.showFileUploadProgressDialog = true
           this.uploadingItems.push(this.gridFsHandler.uploadFile(file, `/upload/${this.getBaseName(file.name)}/${version}`, response => {
             if (response.data[0].uploadSuccess) {
-              resolve(`${location.origin}/cms-files/files/view/${response.data[0].createdFile.folderPath}${response.data[0].createdFile.fileName}`)
+              resolve(`${this.fileApi}${response.data[0].createdFile.folderPath}${response.data[0].createdFile.fileName}`)
             } else {
               reject(response)
             }

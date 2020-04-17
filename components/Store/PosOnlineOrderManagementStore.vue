@@ -138,13 +138,15 @@
       
       // devices
       async addDevice({pairingCode}) {
-        
+        // TODO: addDevice
         return { ok: true }
       },
       async removeDevice(_id) {
+        // TODO: removeDevice
         return { ok: true }
       },
       async updateDevice(_id, change) {
+        // TODO: updateDevice
         return { ok: true }
       },
       
