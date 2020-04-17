@@ -130,7 +130,7 @@
         this.$emit('delete', store)
       },
       openWebShopConfig(store) {
-        window.open(`${location.origin}/store/${store.alias || store._id}/setting`)
+        window.open(`${location.origin}/setting/${store.alias || store._id}`)
       },
       startRemoteControl(storeId, deviceId) {
         if (this.disableRemoteControlBtn) return

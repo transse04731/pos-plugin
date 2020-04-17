@@ -17,5 +17,5 @@
   "props": {
     "fields": []
   },
-  "renderToRoute": "stores/:storeIdOrAlias"
+  "renderToRoute": "store/:storeIdOrAlias"
 }
