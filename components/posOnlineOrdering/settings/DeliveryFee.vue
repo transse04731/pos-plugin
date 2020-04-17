@@ -12,10 +12,10 @@
             <input type="text" v-model="item.zipCode" @input="e => updateZipCodeDebounce(item, e)"/>
           </div>
           <div class="item-fee col-2">
-            <input type="numer" v-model="item.fee" placeholder="€" @input="e => updateFeeDebounce(item, e)"/>
+            <input type="number" v-model="item.fee" placeholder="€" @input="e => updateFeeDebounce(item, e)"/>
           </div>
           <div class="item-btn--delete col-1">
-            <g-icon size="16" color="#424242">icon-close</g-icon>
+            <g-icon size="16" color="#424242" @click="removeFee(item)">icon-close</g-icon>
           </div>
         </div>
         <div class="item-btn--add" @click="addNewFee">
@@ -25,7 +25,7 @@
       <g-switch v-model="acceptOrderInOtherZipCodes" label="Accept orders with other zip codes" @change="updateAcceptOrderInOtherZipCode"/>
       <div class="row-flex align-items-center">
         <span class="fw-700 mr-2 nowrap">Shipping fee for other zip codes</span>
-        <g-text-field-bs class="bs-tf__pos col-2" v-model="defaultFee" @input="setDefaultFeeDebounce"/>
+        <g-text-field-bs type="number" class="bs-tf__pos col-2" v-model="defaultFee"/>
       </div>
     </div>
   </div>
@@ -55,8 +55,13 @@
       acceptOrderInOtherZipCodes() {
         return this.store.deliveryFee.acceptOrderInOtherZipCodes
       },
-      defaultFee() {
-        return this.store.deliveryFee.defaultFee
+      defaultFee: {
+        get() {
+          return this.store.deliveryFee.defaultFee
+        },
+        set(val) {
+          this.setDefaultFeeDebounce(val)
+        }
       }
     },
     methods: {
@@ -92,6 +97,11 @@
         const deliveryFee = {...this.store.deliveryFee, ...change}
         this.$emit('update', { deliveryFee })
       },
+      removeFee(item) {
+        const index = this.store.deliveryFee.fees.findIndex(f => f.zipCode === item.zipCode)
+        this.store.deliveryFee.fees.splice(index, 1)
+        this.updateFees()
+      }
     }
   }
 </script>
@@ -120,18 +130,16 @@
 
       &-item {
         border-radius: 4px;
-        border: 1px solid #EFEFEF;
         margin-bottom: 8px;
         display: flex;
         background: #EFEFEF;
-
 
         .item-code,
         .item-fee {
           padding: 12px 16px;
           font-weight: 700;
           background: #FAFAFA;
-          border-right: 1px solid #EFEFEF;
+          border: 1px solid #EFEFEF;
           display: flex;
 
           input {
@@ -149,6 +157,7 @@
 
         .item-fee {
           border-radius: 0 4px 4px 0;
+          border-left: none;
         }
 
         .item-btn--delete {
@@ -158,6 +167,17 @@
           justify-content: center;
           cursor: pointer;
         }
+
+        &:focus-within {
+          .item-code, .item-fee {
+            border: 1px solid #526dfe;
+          }
+
+          .item-fee {
+            border-left: none;
+          }
+        }
+
       }
 
       .item-btn--add {
@@ -174,6 +194,10 @@
 
     .g-switch ::v-deep .g-switch-label {
       font-size: 14px;
+    }
+
+    ::v-deep input {
+      outline: none
     }
   }
 </style>

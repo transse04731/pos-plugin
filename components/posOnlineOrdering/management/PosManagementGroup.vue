@@ -32,12 +32,10 @@
                 </div>
                 <div class="col-1">
                   <g-tooltip
-                      :open-on-hover="true" bottom speech-bubble color="#000" transition="0.3"
-                      remove-content-on-close>
+                      :open-on-hover="true" top speech-bubble color="#000" transition="0.3">
                     <template v-slot:activator="{on}">
-                      <div
-                          v-if="device.paired && device.features.includes('proxy') && !disableRemoteControlBtn"
-                          class="pos-management-group__content-btn"
+                      <div :class="device.paired && device.features.includes('proxy') && !disableRemoteControlBtn
+                                  ? 'pos-management-group__content-btn' : 'pos-management-group__content-btn--disabled'"
                           @mouseenter="on.mouseenter"
                           @mouseleave="on.mouseleave"
                           @click="() => {startRemoteControl(device.storeId, device._id); on.mouseleave()}">
@@ -143,12 +141,12 @@
 
         socket.emit('startRemoteControl', this.remoteControlDeviceId, proxyPort => {
           if (proxyPort) {
-            this.iframeSrc = `http://localhost:${proxyPort}/view/pos-dashboard`
+            this.iframeSrc = `${location.protocol}//${location.hostname}:${proxyPort}/view/pos-dashboard`
             this.showIframe = true
 
             this.iframeRefreshInterval = setInterval(() => {
               this.iframeSrc = ''
-              this.$nextTick(() => this.iframeSrc = `http://localhost:${proxyPort}/view/pos-dashboard`)
+              this.$nextTick(() => this.iframeSrc = `${location.protocol}//${location.hostname}:${proxyPort}/view/pos-dashboard`)
             }, 10000)
           } else {
             // TODO: handle error
@@ -248,7 +246,18 @@
         &:hover {
           background-image: url("/plugins/pos-plugin/assets/remote_control_blue.svg");
         }
+
+        &--disabled {
+          background-image: url("/plugins/pos-plugin/assets/remote_control.svg");
+          background-repeat: no-repeat;
+          background-size: contain;
+          background-position: center;
+          width: 25px;
+          height: 25px;
+          opacity: 0.2;
+        }
       }
+
 
       &-action {
         display: flex;
