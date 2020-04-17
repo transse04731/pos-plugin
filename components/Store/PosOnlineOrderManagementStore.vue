@@ -150,7 +150,6 @@
       
       // apps
       async loadApps() {
-        // TODO: add role
         const apps = await cms.getModel('App').find({})
         this.apps.splice(0, this.apps.length, ...apps)
       },
@@ -158,12 +157,18 @@
         await this.$getService('FileUploadStore').prepareUploadAppFolder(file, version)
         const uploadPath = await this.$getService('FileUploadStore').uploadApp(file, version)
         await cms.getModel('App').create({ name: file.name, version, type, status, changeLog, uploadPath, uploadDate: new Date() })
+        await this.loadApps()
       },
-      async editApp() {
-      
+      async editApp(_id, change) {
+        await cms.getModel('App').updateOne({_id}, change)
+        await this.loadApps()
       },
-      async removeApp() {
-      
+      async removeApp(_id) {
+        // delete file
+        // TODO: remove file in grid fs, metadata collection
+        // delete app document
+        await cms.getModel('App').remove({_id})
+        await this.loadApps()
       }
     },
     provide() {

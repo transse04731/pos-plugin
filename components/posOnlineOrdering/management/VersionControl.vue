@@ -42,13 +42,9 @@
             <div class="col-3 pl-3">{{file.name}}</div>
             <div class="flex-equal pl-1">{{file.version}}</div>
             <div class="flex-equal pl-1">{{file.type}}</div>
-            <div class="flex-equal pl-1">{{file.uploadTime}}</div>
-            <div class="col-1 ta-center">
-              <span :class="getStatusClass(file.status)">{{file.status}}</span>
-            </div>
-            <div class="col-3 changelog">
-              {{file.changelog}}
-            </div>
+            <div class="flex-equal pl-1">{{file.uploadDate}}</div>
+            <div class="col-1 ta-center"><span :class="getStatusClass(file.status)">{{file.status}}</span></div>
+            <div class="col-3 changelog">{{file.changeLog}}</div>
             <div class="col-1 row-flex pl-2">
               <g-tooltip :open-on-hover="true" bottom speech-bubble color="#000" transition="0.3" remove-content-on-close>
                 <template v-slot:activator="{on}">
@@ -77,26 +73,20 @@
         </template>
       </div>
     </div>
-    <dialog-delete-item v-model="dialog.delete" type="version" @confirm="deleteVersion"/>
-    <dialog-version-control v-model="dialog.version" :edit="dialog.edit" :file="selectedFile" @upload="uploadVersion"/>
+    <dialog-delete-item v-model="dialog.delete" type="version" @confirm="deleteFile"/>
+    <dialog-version-control v-model="dialog.version" :edit="dialog.edit" v-bind="selectedFile" @edit="editFile" @add="addFile"/>
   </div>
 </template>
 
 <script>
+  import _ from 'lodash'
+  
   export default {
     name: "VersionControl",
-    props: {
-
-    },
+    props: { },
+    injectService: ['PosOnlineOrderManagementStore:(loadApps,uploadApp,editApp,removeApp,apps)'],
     data() {
       return {
-        listVersion: [
-          {id: 1, name: 'POS restaurant beta.apk', version: '1.61 beta', type: 'POS Android', uploadTime: '17/01/2020', status: 'private', changelog: 'Bug fixes & stability improvement'},
-          {id: 2, name: 'POS restaurant beta.apk', version: '1.6 beta', type: 'POS Android', uploadTime: '15/01/2020', status: 'public', changelog: 'Bug fixes & stability improvement'},
-          {id: 3, name: 'POS restaurant.apk', version: '1.5 stable', type: 'POS Android', uploadTime: '01/01/2020', status: 'public', changelog: 'Bug fixes & stability improvement'},
-          {id: 4, name: 'POS restaurant.apk', version: '1.4 stable', type: 'POS Android', uploadTime: '01/11/2019', status: 'public', changelog: 'Bug fixes & stability improvement'},
-          {id: 5, name: 'POS PC.exe', version: '1.5 stable', type: 'POS PC', uploadTime: '01/01/2020', status: 'public', changelog: 'Bug fixes & stability improvement'},
-        ],
         sort: {},
         selectedFile: null,
         dialog: {
@@ -106,17 +96,15 @@
         }
       }
     },
+    async created() {
+      await this.loadApps()
+    },
     computed: {
       listVersionControl() {
-        return _.orderBy(this.listVersion, this.sort.type, this.sort.order)
+        return _.orderBy(this.apps, this.sort.type, this.sort.order)
       }
     },
     methods: {
-      openVersionDialog(edit = false, file = null) {
-        this.selectedFile = file
-        this.dialog.edit = edit
-        this.dialog.version = true
-      },
       getRowClass(index) {
         const defaultClass = 'version-control__table-row '
         if (index % 2 === 0)
@@ -132,25 +120,23 @@
         }
         return ''
       },
+      openVersionDialog(edit = false, file = null) {
+        this.selectedFile = file
+        this.dialog.edit = edit
+        this.dialog.version = true
+      },
       openDialogDeleteVersion(file) {
         this.selectedFile = file
         this.dialog.delete = true
       },
-      deleteVersion() {
-        const index = this.listVersion.findIndex(f => f.id === this.selectedFile.id)
-        this.listVersion.splice(index, 1)
-        this.selectedFile = null
+      async deleteFile() {
+        await this.removeApp(this.selectedFile._id)
       },
-      uploadVersion(file) {
-        if(file.id) {
-          const existFile = this.listVersion.find(f => f.id === file.id)
-          Object.assign(existFile, file)
-        } else {
-          file.id = Math.max(...this.listVersion.map(f => f.id)) + 1
-          file.uploadTime = dayjs().format('DD/MM/YYYY')
-          this.listVersion.push(file)
-        }
-        this.selectedFile = null
+      async editFile(change) {
+        await this.editApp(this.selectedFile._id, change)
+      },
+      async addFile(app) {
+        await this.uploadApp(app)
       },
       _sort(type) {
         if(this.sort.type && this.sort.type === type) {

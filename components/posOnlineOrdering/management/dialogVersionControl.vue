@@ -4,21 +4,21 @@
       <div class="dialog__title">{{edit ? 'Edit' : 'Add New'}} Version</div>
       <div class="dialog__content">
         <div class="row-flex align-items-end">
-          <g-text-field-bs readonly :disabled="edit" label="File" large v-model="name"/>
+          <g-text-field-bs readonly :disabled="edit" label="File" large v-model="_name"/>
           <g-btn-bs :disabled="edit" width="120" large background-color="#EFEFEF" border-color="#9E9E9E" text-color="#424242" @click="selectFile">Select file</g-btn-bs>
         </div>
         <div class="row-flex">
           <div class="col-6">
-            <g-text-field-bs large label="Version" v-model="version"/>
+            <g-text-field-bs large label="Version" v-model="_version"/>
           </div>
           <div class="col-6">
-            <g-select text-field-component="GTextFieldBs" :items="listType" label="Type" v-model="type"/>
+            <g-select text-field-component="GTextFieldBs" :items="listType" label="Type" v-model="_type"/>
           </div>
         </div>
-        <g-select text-field-component="GTextFieldBs" :items="listStatus" label="Status" v-model="status"/>
+        <g-select text-field-component="GTextFieldBs" :items="listStatus" label="Status" v-model="_status"/>
         <div>
           <p>Changelog</p>
-          <g-textarea outlined no-resize :rows="3" v-model="changelog"/>
+          <g-textarea outlined no-resize :rows="3" v-model="_changeLog"/>
         </div>
       </div>
       <div class="dialog__action">
@@ -33,17 +33,16 @@
   export default {
     name: "dialogVersionControl",
     props: {
-      value: null,
+      value: Boolean,
       edit: Boolean,
-      file: Object
+      name: String,
+      version: String,
+      type: String,
+      status: String,
+      changeLog: String,
     },
     data() {
       return {
-        name: '',
-        version: '',
-        type: '',
-        status: '',
-        changelog: '',
         listType: [
           {text: 'POS Android', value: 'POS Android'},
           {text: 'POS PC', value: 'POS PC'}
@@ -51,7 +50,13 @@
         listStatus: [
           {text: 'Private', value: 'private'},
           {text: 'Public', value: 'public'}
-        ]
+        ],
+        _name: this.name || '',
+        _version: this.version || '',
+        _type: this.type || 'POS Android',
+        _status: this.status || 'public',
+        _changeLog: this.changeLog || '',
+        file: null
       }
     },
     computed: {
@@ -64,23 +69,6 @@
         }
       }
     },
-    watch: {
-      internalValue(val) {
-        if(val && this.edit && this.file) {
-          this.name = this.file.name
-          this.version = this.file.version
-          this.type = this.file.type
-          this.status = this.file.status
-          this.changelog = this.file.changelog
-        } else {
-          this.name = ''
-          this.version = ''
-          this.type = ''
-          this.status = ''
-          this.changelog = ''
-        }
-      }
-    },
     methods: {
       selectFile() {
         const input = document.createElement('input');
@@ -88,22 +76,35 @@
         input.multiple = false;
         input.addEventListener('change', e => {
           document.body.removeChild(input);
-          this.name = e.target.files['0'].name
+          this._name = e.target.files['0'].name
         });
         document.body.appendChild(input);
         input.style.display = 'none';
         input.click()
       },
       upload() {
-        const file = {
-          id: this.file && this.file.id,
-          name: this.name,
-          version: this.version,
-          type: this.type,
-          status: this.status,
-          changelog: this.changelog
+        if (this.edit) {
+          this.$emit('edit', {
+            version: this._version,
+            type: this._type,
+            status: this._status,
+            changeLog: this._changeLog
+          })
+        } else {
+          if (!this.file) {
+            alert('No file selected')
+            return
+          }
+          
+          this.$emit('add', {
+            file: this.file,
+            name: this.file.name,
+            version: this._version,
+            type: this._type,
+            status: this._status,
+            changeLog: this._changeLog
+          })
         }
-        this.$emit('upload', file)
         this.internalValue = false
       }
     }
