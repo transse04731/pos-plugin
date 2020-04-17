@@ -74,8 +74,9 @@
           }))
         })
       },
-      removeFile(fileMetaData) {
-        this.gridFsHandler.deleteFile({ _id: fileMetaData._id })
+      async removeFile(fileSource) {
+        const filePath = fileSource.replace(this.fileApi, '')
+        await this.gridFsHandler.deleteFile({ _id: filePath })
       },
       async isFolderExist(folderPath) {
         try {

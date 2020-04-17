@@ -166,8 +166,10 @@
         await this.loadApps()
       },
       async removeApp(_id) {
+        const appInfo = await cms.getModel('App').findOne({_id})
         // delete file
-        // TODO: remove file in grid fs, metadata collection
+        debugger
+        await this.$getService('FileUploadStore').removeFile(appInfo.uploadPath)
         // delete app document
         await cms.getModel('App').remove({_id})
         await this.loadApps()
