@@ -76,7 +76,8 @@
         input.multiple = false;
         input.addEventListener('change', e => {
           document.body.removeChild(input);
-          this.internalName = e.target.files['0'].name
+          this.file = e.target.files[0]
+          this.internalName = e.target.files[0].name
         });
         document.body.appendChild(input);
         input.style.display = 'none';
