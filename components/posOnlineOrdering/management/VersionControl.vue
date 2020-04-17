@@ -74,7 +74,7 @@
       </div>
     </div>
     <dialog-delete-item v-model="dialog.delete" type="version" @confirm="deleteFile"/>
-    <dialog-version-control v-model="dialog.version" :edit="dialog.edit" v-bind="selectedFile" @edit="editFile" @add="addFile"/>
+    <dialog-version-control v-if="dialog.version" v-model="dialog.version" :edit="dialog.edit" v-bind="selectedFile" @edit="editFile" @add="addFile"/>
   </div>
 </template>
 
@@ -138,6 +138,7 @@
         await this.removeApp(this.selectedFile._id)
       },
       async editFile(change) {
+        // TODO: change folder
         await this.editApp(this.selectedFile._id, change)
       },
       async addFile(app) {
