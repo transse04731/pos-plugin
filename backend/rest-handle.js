@@ -4,7 +4,7 @@ const storeAPI = require('./api/store')
 
 module.exports = cms => {
   cms.data['loginUrl'] = '/view/sign-in';
-  cms.data['nonAuthenticateUrls'] = ['/login', '/admin', '/stores']
+  cms.data['nonAuthenticateUrls'] = ['/login', '/admin', '/store']
 
   cms.app.use('/user', authenticateAPI)
   cms.app.use('/device', deviceAPI)
