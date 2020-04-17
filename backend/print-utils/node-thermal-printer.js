@@ -521,7 +521,7 @@ module.exports = class EscPrinter {
 
           iface = device.interface(0);
 
-          if (/^linux/.test(process.platform)) {
+          if (/^linux/.test(process.platform) || /^android/.test(process.platform)) {
             console.log('Linux!!!');
 
             if (iface.isKernelDriverActive()) {
