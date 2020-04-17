@@ -10,12 +10,6 @@ module.exports = cms => {
   cms.app.use('/device', deviceAPI)
   cms.app.use('/store', storeAPI)
 
-  cms.socket.on('connect', socket => {
-    // online-order
-    socket.on('online-order--connect', code => socket.join(code))
-    socket.on('online-order--create-order', (code, orderId) => socket.to(code).emit('create-order', orderId))
-  })
-
   cms.app.use(/^\/$/, async (req, res, next) => {
     if (!req.session.userId) {
       return res.redirect('/view/sign-in')
