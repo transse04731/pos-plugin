@@ -21,8 +21,8 @@
              :style="[getAreaStyle(productLayout), getProductItemStyle(productLayout)]"
              v-on="getProductListeners(productLayout)">
           <g-icon class="mr-1" v-if="productLayout.icon">{{productLayout.icon}}</g-icon>
-          <span style="transform: skewX(-15deg)" v-if="productLayout.product && productLayout.product.isModifier">{{ getProductName(productLayout) }}</span>
-          <template v-else>{{ getProductName(productLayout) }}</template>
+          <div style="transform: skewX(-15deg)" v-if="productLayout.product && productLayout.product.isModifier">{{ getProductName(productLayout) }}</div>
+          <div v-else>{{ getProductName(productLayout) }}</div>
         </div>
         <pos-order-keyboard v-if="showCalculator" :keyboard-config="keyboardConfig" :mode="editable ? 'edit' : 'active'" @edit:keyboard="opendDialogEdit($event)"/>
       </div>
@@ -252,7 +252,7 @@
         return style;
       },
       getGridTemplateFromNumber(num) {
-        return _.join(_.map(_.range(0, num), c => '1fr'), ' ')
+        return _.join(_.map(_.range(0, num), c => `calc(${100/num}% - ${5 * (num - 1) / num}px)`), ' ')
       },
       getCategoryName(item) {
         if (item)
@@ -403,6 +403,11 @@
       color: #1d1d26;
       padding: 0 8px;
       word-break: break-word;
+      overflow: hidden;
+
+      & > div {
+        max-height: 100%;
+      }
     }
   }
 </style>
