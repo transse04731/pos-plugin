@@ -14,11 +14,21 @@
     name: 'FileUploadStore',
     domain: 'FileUploadStore',
     components: {FileUploadProgressDialog},
-    created() {
+    async created() {
       this.gridFsHandler = createGridFsHandlers({
         // namespace: this.$getService('PosStore').accountId,
         apiBaseUrl: 'http://localhost:8888/cms-files'
       })
+      
+      // folder store store's images
+      console.log('creating "images" folder')
+      await this.gridFsHandler.createNewFolder('/', 'images')
+      console.log('"images" folder created')
+      
+      // init few folder
+      console.log('creating "update" folder')
+      await this.gridFsHandler.createNewFolder('/', 'update')
+      console.log('"update" folder created')
     },
     data() {
       return {
@@ -28,12 +38,12 @@
     },
     computed: {},
     methods: {
-      uploadFile() {
+      openAndUploadImage() {
         return new Promise((resolve, reject) => {
           try {
             openUploadFileDialog({ multiple: false, mimeType: 'image/*' }, files => {
               this.showFileUploadProgressDialog = true
-              this.uploadingItems.push(this.gridFsHandler.uploadFile(files[0], '/', response => {
+              this.uploadingItems.push(this.gridFsHandler.uploadFile(files[0], '/images', response => {
                 if (response.data[0].uploadSuccess) {
                   resolve(`${location.origin}/cms-files/files/view/${response.data[0].createdFile.folderPath}${response.data[0].createdFile.fileName}`)
                 } else {
@@ -46,14 +56,27 @@
           }
         })
       },
+      uploadApp(file) {
+        return new Promise((resolve ,reject) => {
+          this.showFileUploadProgressDialog = true
+          this.uploadingItems.push(this.gridFsHandler.uploadFile(file, '/update', response => {
+            if (response.data[0].uploadSuccess) {
+              resolve(`${location.origin}/cms-files/files/view/${response.data[0].createdFile.folderPath}${response.data[0].createdFile.fileName}`)
+            } else {
+              reject(response)
+            }
+          }))
+        })
+      },
       removeFile(fileMetaData) {
         this.gridFsHandler.deleteFile({ _id: fileMetaData._id })
-      }
+      },
     },
     provide() {
       return {
-        uploadFile: this.uploadFile,
-        removeFile: this.removeFile
+        openAndUploadImage: this.openAndUploadImage,
+        uploadApp: this.uploadApp,
+        removeFile: this.removeFile,
       }
     }
   }

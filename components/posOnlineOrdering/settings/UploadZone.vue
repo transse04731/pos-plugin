@@ -40,7 +40,7 @@
     computed: {},
     methods: {
       async uploadImage() {
-        this.$emit('url', await this.$getService('FileUploadStore').uploadFile())
+        this.$emit('url', await this.$getService('FileUploadStore').openAndUploadImage())
       }
     }
   }
