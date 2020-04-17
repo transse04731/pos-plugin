@@ -788,10 +788,6 @@
         await cms.getModel('PosSetting').updateOne({}, {onlineOrderSorting: value});
       },
 
-      async updateDevice(device) {
-        await cms.getModel('PosSetting').updateOne({}, {onlineDevice: device});
-      },
-
       registerOnlineOrder(pairingCode, callback) {
         window.cms.socket.emit('registerOnlineOrderDevice', pairingCode, callback)
       },

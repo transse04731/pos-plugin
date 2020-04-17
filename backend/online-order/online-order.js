@@ -117,6 +117,16 @@ async function getDeviceId(pairingCode) {
   }
 }
 
+async function updateDeviceStatus(paired, deviceId = null) {
+  const SettingModel = cms.getModel('PosSetting');
+  const {onlineDevice: deviceInfo} = (await SettingModel.findOne({}));
+
+  deviceInfo.paired = paired;
+  deviceInfo.id = deviceId;
+
+  await cms.getModel('PosSetting').updateOne({}, {onlineDevice: deviceInfo});
+}
+
 module.exports = async cms => {
   const deviceId = await getDeviceId()
   if (deviceId) createOnlineOrderSocket(deviceId)
@@ -131,6 +141,7 @@ module.exports = async cms => {
 
       if (deviceId) {
         createOnlineOrderSocket(deviceId)
+        await updateDeviceStatus(true, deviceId);
         if (typeof callback === 'function') callback(deviceId)
       } else {
         callback(null)
@@ -166,6 +177,7 @@ module.exports = async cms => {
         proxyClient = null;
       }
 
+      await updateDeviceStatus(false);
       callback();
     });
   })

@@ -90,9 +90,6 @@
         get() {
           return this.internalDevice
         },
-        set(val) {
-          this.$emit('updateDevice', val)
-        }
       },
       computedDefaultPrepareTime: {
         get() {
