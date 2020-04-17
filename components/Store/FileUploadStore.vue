@@ -71,12 +71,16 @@
       removeFile(fileMetaData) {
         this.gridFsHandler.deleteFile({ _id: fileMetaData._id })
       },
+      async createFolder(folderPath, parentPath) {
+        await this.gridFsHandler.createNewFolder(parentPath, folderPath)
+      }
     },
     provide() {
       return {
         openAndUploadImage: this.openAndUploadImage,
         uploadApp: this.uploadApp,
         removeFile: this.removeFile,
+        createFolder: this.createFolder
       }
     }
   }
