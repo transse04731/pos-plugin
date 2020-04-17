@@ -6,6 +6,7 @@
   />
 </template>
 <script>
+  import _ from 'lodash'
   import createGridFsHandlers from 'vue-file-explorer/api-handlers/grid-fs'
   import openUploadFileDialog from 'vue-file-explorer/api-handlers/openUploadFileDialog'
   import FileUploadProgressDialog from 'vue-file-explorer/components/FileExplorerPanel/dialogs/FileUploadProgressDialog.vue'
@@ -20,15 +21,8 @@
         apiBaseUrl: 'http://localhost:8888/cms-files'
       })
       
-      // folder store store's images
-      console.log('creating "images" folder')
-      await this.gridFsHandler.createNewFolder('/', 'images')
-      console.log('"images" folder created')
-      
-      // init few folder
-      console.log('creating "update" folder')
-      await this.gridFsHandler.createNewFolder('/', 'update')
-      console.log('"update" folder created')
+      await this.createFolder('/', 'images')
+      await this.createFolder('/', 'upload')
     },
     data() {
       return {
@@ -75,8 +69,19 @@
       removeFile(fileMetaData) {
         this.gridFsHandler.deleteFile({ _id: fileMetaData._id })
       },
+      async isFolderExist(folderPath) {
+        try {
+          await this.gridFsHandler.getFilesInPath(folderPath)
+          return true
+        } catch (e) {
+          return false
+        }
+      },
       async createFolder(folderPath, parentPath) {
-        await this.gridFsHandler.createNewFolder(parentPath, folderPath)
+        const separator = _.endsWith(parentPath, '/') ? '' : '/'
+        const folderExist = await this.isFolderExist(`${parentPath}${separator}${folderPath}`)
+        if (!folderExist)
+          await this.gridFsHandler.createNewFolder(parentPath, folderPath)
       }
     },
     provide() {
