@@ -39,7 +39,7 @@
     {
       "_id": "5e9939de855aaf04cf1272b4",
       "schemaType": "boolean",
-      "key": "private",
+      "key": "isPrivate",
       "type": "input@switch"
     },
     {
