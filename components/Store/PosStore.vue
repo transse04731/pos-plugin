@@ -15,7 +15,6 @@
     data() {
       return {
         systemDate: new Date(),
-        loginUrl: '/view/sign-in',
         //payment screen variables
         paymentAmountTendered: '',
         paymentTip: 0,
@@ -28,13 +27,13 @@
     domain: 'PosStore',
     methods: {
       async login(username, password, errCb) {
-        cms.login(username, password, '/view/management').catch(err => errCb && errCb(err.response.data.message))
+        cms.login(username, password, '/management').catch(err => errCb && errCb(err.response.data.message))
         this.incorrectPasscode = true
       },
       logout() {
         cms.logout()
         document.cookie = ''
-        this.$router.push(this.loginUrl || '/view/pos-login')
+        this.$router.push('/sign-in')
         this.user = null
       }
     },

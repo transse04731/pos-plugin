@@ -107,6 +107,10 @@
     components: {VersionControl},
     props: {},
     data: function () {
+      const sidebarItems = [ { title: 'Restaurant Management', icon: 'icon-management_white', onClick: () => this.changeView('list', 'Restaurant Management') }]
+      if (cms.loginUser.user.role.name === 'admin')
+        sidebarItems.push({ title: 'Version Control', icon: 'icon-version_control', onClick: () => this.changeView('version', 'Version Control') })
+      
       return {
         storePlaceHolder: $t('posManagement.searchPlaceholder'),
         username: 'Admin',
@@ -119,10 +123,7 @@
         },
         showFilterMenu: false,
         selectedStoreId: null,
-        sidebarItems: [
-          { title: 'Restaurant Management', icon: 'icon-management_white', onClick: () => this.changeView('list', 'Restaurant Management') },
-          { title: 'Version Control', icon: 'icon-version_control', onClick: () => this.changeView('version', 'Version Control') },
-        ]
+        sidebarItems
       }
     },
     injectService: ['PosOnlineOrderManagementStore:(loadStoreGroups,loadStores,addGroup,addStore,removeStore,updateStore,addDevice,removeDevice,updateDevice,storeGroups,stores,posManagementModel,searchText,orderBy)'],

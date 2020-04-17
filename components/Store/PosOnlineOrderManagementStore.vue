@@ -12,7 +12,8 @@
         storeGroups: [],
         stores: [],
         searchText: null,
-        orderBy: null
+        orderBy: null,
+        apps: [],
       }
     },
     computed: {
@@ -81,7 +82,14 @@
     methods: {
       // store groups
       async loadStoreGroups() {
-        this.storeGroups.splice(0, this.storeGroups.length, ...cms.loginUser.user.storeGroups)
+        let storeGroups
+        if (cms.loginUser.user.role.name === 'admin') {
+          storeGroups = await cms.getModel('StoreGroup').find({})
+        } else {
+          storeGroups = cms.loginUser.user.storeGroups
+        }
+        
+        this.storeGroups.splice(0, this.storeGroups.length, ...storeGroups)
       },
       async addGroup(name) {
         if (_.includes(this.storeGroupNames, name))
@@ -96,7 +104,7 @@
 
       // stores
       async loadStores() {
-        const storeGroupIds = _.map(cms.loginUser.user.storeGroups, sg => sg._id)
+        const storeGroupIds = _.map(this.storeGroups, sg => sg._id)
         const stores = await cms.getModel('Store').find({ groups: { $elemMatch: { $in: storeGroupIds } } })
         this.stores.splice(0, this.stores.length, ...stores)
       },
@@ -138,6 +146,29 @@
       },
       async updateDevice(_id, change) {
         return { ok: true }
+      },
+      
+      // apps
+      async loadApps() {
+        const apps = await cms.getModel('App').find({})
+        this.apps.splice(0, this.apps.length, ...apps)
+      },
+      async uploadApp({file, version, type, status, changeLog}) {
+        await this.$getService('FileUploadStore').prepareUploadAppFolder(file, version)
+        const uploadPath = await this.$getService('FileUploadStore').uploadApp(file, version)
+        await cms.getModel('App').create({ name: file.name, version, type, status, changeLog, uploadPath, uploadDate: new Date() })
+        await this.loadApps()
+      },
+      async editApp(_id, change) {
+        await cms.getModel('App').updateOne({_id}, change)
+        await this.loadApps()
+      },
+      async removeApp(_id) {
+        // delete file
+        // TODO: remove file in grid fs, metadata collection
+        // delete app document
+        await cms.getModel('App').remove({_id})
+        await this.loadApps()
       }
     },
     provide() {
@@ -155,7 +186,12 @@
         stores: this.stores,
         posManagementModel: this.posManagementModel,
         searchText: this.searchText,
-        orderBy: this.orderBy
+        orderBy: this.orderBy,
+        loadApps: this.loadApps,
+        uploadApp: this.uploadApp,
+        editApp: this.editApp,
+        removeApp: this.removeApp,
+        apps: this.apps
       }
     }
   }

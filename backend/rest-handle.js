@@ -4,17 +4,11 @@ const storeAPI = require('./api/store')
 
 module.exports = cms => {
   cms.data['loginUrl'] = '/view/sign-in';
-  cms.data['nonAuthenticateUrls'] = ['/login', '/admin', '/stores']
+  cms.data['nonAuthenticateUrls'] = ['/login', '/admin', '/store']
 
   cms.app.use('/user', authenticateAPI)
   cms.app.use('/device', deviceAPI)
   cms.app.use('/store', storeAPI)
-
-  cms.socket.on('connect', socket => {
-    // online-order
-    socket.on('online-order--connect', code => socket.join(code))
-    socket.on('online-order--create-order', (code, orderId) => socket.to(code).emit('create-order', orderId))
-  })
 
   cms.app.use(/^\/$/, async (req, res, next) => {
     if (!req.session.userId) {

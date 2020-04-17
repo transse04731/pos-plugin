@@ -133,6 +133,14 @@
       "type": "array"
     },
     {
+      "_id": "5e859b5eb7b7b30cc39f2637",
+      "schemaType": "objectId",
+      "key": "user",
+      "ref": "User",
+      "type": "ref-select",
+      "labelProp": "username"
+    },
+    {
       "_id": "5e903b1154adb522214f571d",
       "schemaType": "object",
       "key": "deliveryFee",
@@ -185,20 +193,20 @@
       "type": "input@switch"
     },
     {
-      "_id": "5e96f37555d0d9631202ab06",
+      "_id": "5e9823e543f64d169b559432",
       "schemaType": "array",
       "key": "devices",
-      "type": "array",
       "fields": [
         {
           "schemaType": "objectId",
           "key": "device",
           "ref": "Device",
+          "autopopulate": true,
           "type": "ref-select",
-          "labelProp": "name",
-          "autopopulate": true
+          "labelProp": "\u001dname"
         }
-      ]
+      ],
+      "type": "array"
     }
   ],
   "name": "Store",

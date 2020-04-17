@@ -42,7 +42,7 @@
         pairedInfo: null,
         status: '',
         name: 'WebShop',
-        url: `pos.gigasource.io/stores/${this.store.alias}`,
+        url: `${location.origin}/store/${this.store.alias}`,
         pairingCode: null,
         color: 'indigo-accent-2',
         tfClass: 'bs-tf__pos',

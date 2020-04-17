@@ -16,7 +16,7 @@
   "props": {
     "fields": []
   },
-  "renderToRoute": "store/:storeIdOrAlias/setting",
+  "renderToRoute": "setting/:storeIdOrAlias",
   "isProduction": true,
   "renderInIframe": null
 }

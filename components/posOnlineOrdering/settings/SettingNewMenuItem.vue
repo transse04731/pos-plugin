@@ -109,7 +109,7 @@
     },
     methods: {
       async uploadImage() {
-        this.internalImage = await this.$getService('FileUploadStore').uploadFile()
+        this.internalImage = await this.$getService('FileUploadStore').openAndUploadImage()
       },
       saveMenuItem() {
         if (!this.internalName) {

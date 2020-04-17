@@ -222,7 +222,8 @@
           deliveryTime,
           note,
           createdDate: new Date(),
-          shippingFee: this.shippingFee
+          shippingFee: this.shippingFee,
+          totalPrice: this.totalPrice
         }
 
         socket.emit('createOrder', this.store._id, orderData)
