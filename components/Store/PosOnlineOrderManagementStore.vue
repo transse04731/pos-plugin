@@ -12,7 +12,8 @@
         storeGroups: [],
         stores: [],
         searchText: null,
-        orderBy: null
+        orderBy: null,
+        apps: [],
       }
     },
     computed: {
@@ -145,6 +146,20 @@
       },
       async updateDevice(_id, change) {
         return { ok: true }
+      },
+      
+      // apps
+      async loadApps() {
+      
+      },
+      async uploadApp() {
+      
+      },
+      async editApp() {
+      
+      },
+      async removeApp() {
+      
       }
     },
     provide() {
@@ -162,7 +177,12 @@
         stores: this.stores,
         posManagementModel: this.posManagementModel,
         searchText: this.searchText,
-        orderBy: this.orderBy
+        orderBy: this.orderBy,
+        loadApps: this.loadApps,
+        uploadApp: this.uploadApp,
+        editApp: this.editApp,
+        removeApp: this.removeApp,
+        apps: this.apps
       }
     }
   }
