@@ -150,10 +150,14 @@
       
       // apps
       async loadApps() {
-      
+        // TODO: add role
+        const apps = await cms.getModel('App').find({})
+        this.apps.splice(0, this.apps.length, ...apps)
       },
-      async uploadApp() {
-      
+      async uploadApp({file, version, type, isPrivate, changeLog}) {
+        await this.$getService('FileUploadStore').prepareUploadAppFolder(file, version)
+        const uploadPath = await this.$getService('FileUploadStore').uploadApp(file, version)
+        await cms.getModel('App').create({ name: file.name, version, type, isPrivate, changeLog, uploadPath, uploadDate: new Date() })
       },
       async editApp() {
       

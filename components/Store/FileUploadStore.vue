@@ -56,10 +56,14 @@
           }
         })
       },
-      uploadApp(file) {
-        return new Promise((resolve ,reject) => {
+      async prepareUploadAppFolder(file, version) {
+        await this.createFolder('/update', file.name)
+        await this.createFolder(`/update/${file.name}`, version)
+      },
+      uploadApp(file, version) {
+        return new Promise(async (resolve ,reject) => {
           this.showFileUploadProgressDialog = true
-          this.uploadingItems.push(this.gridFsHandler.uploadFile(file, '/update', response => {
+          this.uploadingItems.push(this.gridFsHandler.uploadFile(file, `/update/${file.name}/${version}`, response => {
             if (response.data[0].uploadSuccess) {
               resolve(`${location.origin}/cms-files/files/view/${response.data[0].createdFile.folderPath}${response.data[0].createdFile.fileName}`)
             } else {
@@ -78,6 +82,7 @@
     provide() {
       return {
         openAndUploadImage: this.openAndUploadImage,
+        prepareUploadAppFolder: this.prepareUploadAppFolder,
         uploadApp: this.uploadApp,
         removeFile: this.removeFile,
         createFolder: this.createFolder
