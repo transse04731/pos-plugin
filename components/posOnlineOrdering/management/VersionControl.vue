@@ -42,7 +42,7 @@
             <div class="col-3 pl-3">{{file.name}}</div>
             <div class="flex-equal pl-1">{{file.version}}</div>
             <div class="flex-equal pl-1">{{file.type}}</div>
-            <div class="flex-equal pl-1">{{file.uploadDate}}</div>
+            <div class="flex-equal pl-1">{{file.uploadDate | formatDate }}</div>
             <div class="col-1 ta-center"><span :class="getStatusClass(file.status)">{{file.status}}</span></div>
             <div class="col-3 changelog">{{file.changeLog}}</div>
             <div class="col-1 row-flex pl-2">
@@ -98,6 +98,11 @@
     },
     async created() {
       await this.loadApps()
+    },
+    filters: {
+      formatDate(date) {
+        return dayjs(date).format('DD/MM/YYYY')
+      }
     },
     computed: {
       listVersionControl() {
