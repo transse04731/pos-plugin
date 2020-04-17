@@ -74,6 +74,7 @@ module.exports = {
       numberRulesErr: 'Please enter a number!!',
       promotion: 'Promotion',
       name: 'Name',
+      choose: 'Choose',
     },
 
     dialogs: {
@@ -325,7 +326,8 @@ module.exports = {
         keyboardLeft: 'Keyboard Left',
         keyboardWidth: 'Keyboard Width',
         keyboardHeight: 'Keyboard Height',
-        expansionColumn: 'Expansion Column'
+        expansionColumn: 'Expansion Column',
+        chooseKeyboardPosition: 'Choose Keyboard Position',
       },
 
       product: {
