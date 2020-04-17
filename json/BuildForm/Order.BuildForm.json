@@ -1117,6 +1117,12 @@
       "key": "prepareTime",
       "type": "input@number",
       "addable": true
+    },
+    {
+      "_id": "5e991227b7578862f72d84d3",
+      "schemaType": "number",
+      "key": "shippingFee",
+      "type": "input@number"
     }
   ],
   "id": "5c42fb05c016df1bbe8cc7ae",

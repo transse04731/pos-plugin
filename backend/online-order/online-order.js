@@ -17,12 +17,11 @@ function createOnlineOrderSocket(deviceId) {
     onlineOrderSocket = io(`${webshopUrl}?clientId=${deviceId}`);
     onlineOrderSocket.on('createOrder', async (orderData, ackFn) => {
       if (!orderData) return
-      const {orderType: type, paymentType, customer, products, deliveryTime, createdDate: dateString} = orderData
+      const {orderType: type, paymentType, customer, products: items, deliveryTime, createdDate: dateString, shippingFee} = orderData
 
       const date = new Date(dateString)
-      const items = orderUtil.getComputedOrderItems(products, date)
       const vDiscount = orderUtil.calOrderDiscount(items).toFixed(2)
-      const vSum = (orderUtil.calOrderTotal(items) + orderUtil.calOrderModifier(items)).toFixed(2)
+      const vSum = (orderUtil.calOrderTotal(items) + orderUtil.calOrderModifier(items) + shippingFee).toFixed(2)
       const vTax = orderUtil.calOrderTax(items).toFixed(2)
       const taxGroups = _.groupBy(items, 'tax')
       const vTaxGroups = _.map(taxGroups, (val, key) => ({
@@ -42,6 +41,7 @@ function createOnlineOrderSocket(deviceId) {
         date,
         vDate: await getVDate(date),
         bookingNumber: getBookingNumber(date),
+        shippingFee,
         vSum,
         vTax,
         vTaxGroups,

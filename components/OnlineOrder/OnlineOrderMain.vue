@@ -47,6 +47,10 @@
                   <div class="col-3 fs-small-2 ta-right">€{{item.price.toFixed(2)}}</div>
                 </div>
               </div>
+              <div class="row-flex">
+                <div class="col-9 fw-700">Shipping Fee</div>
+                <div class="col-3 fs-small-2 ta-right">€{{order.shippingFee || 0}}</div>
+              </div>
             </g-card-text>
             <g-card-actions v-if="order.declineStep2">
               <g-text-field-bs label="Reason to decline (optional)" v-model="order.declineReason"/>
