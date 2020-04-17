@@ -1,17 +1,24 @@
 <template>
-  <g-dialog v-model="internalValue" width="40%" eager>
-    <div class="dialog">
-      <div class="dialog-title">Connect this device to your webshop</div>
-      <g-text-field-bs large class="bs-tf__pos" label=" Enter your pairing code:" v-model="code"/>
-      <div class="dialog-note">
-        <b>Note: </b>Pairing code can be found by opening your online ordering settings on your browser.
+  <div>
+    <g-dialog v-model="internalValue" width="40%" eager>
+      <div class="dialog">
+        <div class="dialog-title">Connect this device to your webshop</div>
+        <g-text-field-bs large class="bs-tf__pos" label=" Enter your pairing code:" v-model="code">
+          <template v-slot:append-inner>
+            <g-icon style="cursor: pointer" @click="dialogInput = true">icon-keyboard</g-icon>
+          </template>
+        </g-text-field-bs>
+        <div class="dialog-note">
+          <b>Note: </b>Pairing code can be found by opening your online ordering settings on your browser.
+        </div>
+        <div class="dialog-buttons">
+          <g-btn-bs width="100" text-color="#424242" @click="internalValue = false">Cancel</g-btn-bs>
+          <g-btn-bs width="100" background-color="#536DFE" text-color="white" @click="connect">Confirm</g-btn-bs>
+        </div>
       </div>
-      <div class="dialog-buttons">
-        <g-btn-bs width="100" text-color="#424242" @click="internalValue = false">Cancel</g-btn-bs>
-        <g-btn-bs width="100" background-color="#536DFE" text-color="white" @click="connect">Confirm</g-btn-bs>
-      </div>
-    </div>
-  </g-dialog>
+    </g-dialog>
+    <dialog-text-filter v-model="dialogInput" label="Code" :defaul-value="code" @submit="changeCode"/>
+  </div>
 </template>
 
 <script>
@@ -22,7 +29,8 @@
     },
     data() {
       return {
-        code: ''
+        code: '',
+        dialogInput: false
       }
     },
     computed: {
@@ -40,6 +48,9 @@
       connect() {
         this.$emit('confirm', this.code)
         this.internalValue = false
+      },
+      changeCode(code) {
+        this.code = code
       }
     }
   }
@@ -77,6 +88,7 @@
           font-weight: 700;
           color: #000000;
           text-align: center;
+          width: 100%;
         }
       }
     }
