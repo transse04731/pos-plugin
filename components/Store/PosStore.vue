@@ -33,7 +33,7 @@
       logout() {
         cms.logout()
         document.cookie = ''
-        this.$route.push('/sign-in')
+        this.$router.push('/sign-in')
         this.user = null
       }
     },
