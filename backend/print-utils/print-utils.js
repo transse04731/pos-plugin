@@ -9,6 +9,17 @@ module.exports = {
     template: fs.readFileSync(`${__dirname}/print-template.html`, 'utf-8')
   }),
 
+  async getGroupPrinterInfo(cms, device, type) {
+    const groupPrinter = await cms.getModel('GroupPrinter').aggregate([
+      {$unwind: {path: '$printers'}},
+      {$match: {'printers.hardwares': device, type}},
+    ]);
+
+    if (!groupPrinter) return null;
+
+    return groupPrinter;
+  },
+
   async print(html, groupPrinter) {
     try {
       const png = await phantomUtil.render(html)
@@ -25,7 +36,7 @@ module.exports = {
     let resultArr = [];
     items.forEach(product => {
       const existingItem = resultArr.find(r =>
-        _.isEqual(_.omit(r, 'quantity'), _.omit(product, 'quantity'))
+          _.isEqual(_.omit(r, 'quantity'), _.omit(product, 'quantity'))
       );
       if (existingItem) {
         existingItem.quantity = existingItem.quantity + product.quantity
@@ -36,5 +47,7 @@ module.exports = {
     return resultArr
   },
 
-
+  getPrinter(groupPrinter) {
+    return new EscPrinter(groupPrinter)
+  }
 }
