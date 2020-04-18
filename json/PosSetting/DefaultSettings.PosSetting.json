@@ -880,5 +880,12 @@
       "role": "admin",
       "viewOwnReport": null
     }
-  ]
+  ],
+  "onlineDevice": {
+    "paired": false,
+    "url": "http://127.0.0.1",
+    "sound": false
+  },
+  "defaultPrepareTime": 30,
+  "onlineOrderSorting": "order"
 }
