@@ -84,7 +84,7 @@
         this.$emit('setPendingOrder', order)
         this.dialog = false
       },
-      completeOrder() {
+      completeOrder(order) {
         this.$emit('completeOrder', order)
         this.dialog = false
       }
