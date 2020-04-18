@@ -243,7 +243,7 @@
             ? [...this.currentOrder.user, { name: this.user.name, date: orderDateTime }]
             : [{ name: this.user.name, date: orderDateTime }],
           date: orderDateTime,
-          vDate: getVDate(orderDateTime),
+          vDate: await getVDate(orderDateTime),
           bookingNumber: getBookingNumber(orderDateTime),
           payment: [paymentMethod || { ...this.currentOrder.payment, value: this.paymentTotal }],
           vSum: this.paymentTotal.toFixed(2),
