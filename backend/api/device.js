@@ -19,17 +19,6 @@ async function generateUniqueDeviceCode() {
   return newDeviceCode
 }
 
-async function getUniqueDeviceName(storeId, prefix) {
-  const aliases = _.map(await DeviceModel.find({storeId}, {alias: 1}), item => item.alias)
-  let n = 0
-  let alias
-  do {
-    n++
-    alias = `${prefix} ${n}`
-  } while (_.includes(aliases, alias))
-  return alias
-}
-
 async function addPairedDeviceToStore(deviceId, storeId) {
   const store = await cms.getModel('Store').findOne({_id: storeId}, {devices: 1});
   const deviceIds = store.devices.map(e => e._id.toString());
@@ -70,13 +59,13 @@ router.post('/register', async (req, res) => {
   // appVersion: 1.51
   // feature: onlineOrder | remoteControl | updatable | proxy
   // const {pairingCode, hardware, appName, appVersion, features} = req.body;
-  const {pairingCode} = req.body;
+  const {pairingCode, hardware, appName, appVersion, features } = req.body;
 
   if (!pairingCode) return res.status(400).json({message: 'Missing pairingCode in request body'});
 
   const deviceInfo = await DeviceModel.findOne({pairingCode, paired: false});
   if (deviceInfo) {
-    await DeviceModel.updateOne({pairingCode}, {paired: true, online: true});
+    await DeviceModel.updateOne({pairingCode}, {paired: true, online: true, hardware, appName, appVersion, features });
     await addPairedDeviceToStore(deviceInfo._id, deviceInfo.storeId)
     res.status(200).json({deviceId: deviceInfo._id})
   } else {
