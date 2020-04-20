@@ -33,7 +33,11 @@
       </template>
       <template v-else>
         <div>{{$t('article.name')}} <span style="color: #ff4552">*</span></div>
-        <g-text-field v-model="selectedProductLayout.text" @click="dialog.showTextKbd = true"/>
+        <g-text-field v-model="selectedProductLayout.text">
+          <template #append-inner>
+            <g-icon style="cursor: pointer" @click="dialog.showTextKbd = true">icon-keyboard</g-icon>
+          </template>
+        </g-text-field>
       </template>
     </div>
 

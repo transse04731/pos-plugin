@@ -23,10 +23,9 @@
         <!-- Room info -->
         <div v-if="room && !roomObj" class="card-info">
           <pos-text-field v-model="room.name" label="Room name *:"
-                          @input="changeRoomName"
-                          @click="dialog.showRoomNameKbd = true">
-            <template v-slot:append>
-              <g-icon svg color="#F00">icon-keyboard-red</g-icon>
+                          @input="changeRoomName">
+            <template v-slot:append-inner>
+              <g-icon style="cursor: pointer" @click="dialog.showRoomNameKbd = true">icon-keyboard</g-icon>
             </template>
           </pos-text-field>
           <div style="display: flex; margin-left: 5px; margin-right: 5px">

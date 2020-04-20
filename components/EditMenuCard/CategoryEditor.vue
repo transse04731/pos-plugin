@@ -7,7 +7,11 @@
         @input="changeOrderLayoutColumn"/>
 
     <div class="category-editor__label">{{$t('ui.name')}}</div>
-    <g-text-field-bs border-color="#979797" :value="selectedCategoryLayout.name" @click="dialog.showCategoryNameKbd = true"/>
+    <g-text-field-bs border-color="#979797" :value="selectedCategoryLayout.name">
+      <template v-slot:append-inner>
+        <g-icon style="cursor: pointer" @click="dialog.showCategoryNameKbd = true">icon-keyboard</g-icon>
+      </template>
+    </g-text-field-bs>
 
     <div class="category-editor__label">{{$t('ui.color')}}</div>
     <color-selector
