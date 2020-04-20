@@ -83,12 +83,13 @@
           {text: 'Order Number', value: 'order'},
           {text: 'Time to Complete', value: 'time'},
         ],
+        webshopUrl: '',
       }
     },
     computed: {
       computedDevice: {
         get() {
-          return this.internalDevice
+          return Object.assign(this.internalDevice, {url: this.webshopUrl})
         },
       },
       computedDefaultPrepareTime: {
@@ -122,7 +123,7 @@
             this.computedDevice = {
               id: deviceId,
               paired: true,
-              url: this.internalDevice.url,
+              url: this.webshopUrl,
               sound: this.internalDevice.sound,
             }
 
@@ -137,7 +138,7 @@
           this.computedDevice = {
             id: null,
             paired: false,
-            url: this.internalDevice.url,
+            url: this.webshopUrl,
             sound: this.internalDevice.sound,
           }
 
@@ -146,6 +147,8 @@
       },
     },
     mounted() {
+      window.cms.socket.emit('getWebshopUrl', webshopUrl => this.webshopUrl = webshopUrl);
+
       this.$nextTick(() => {
         this.$emit('getOnlineDevice')
       })

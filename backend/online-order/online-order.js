@@ -134,7 +134,9 @@ module.exports = async cms => {
   cms.socket.on('connect', socket => {
     deviceSockets.push(socket)
 
-    socket.on('disconnect', () => deviceSockets = deviceSockets.filter(sk => sk !== socket))
+    socket.on('disconnect', () => deviceSockets = deviceSockets.filter(sk => sk !== socket));
+
+    socket.on('getWebshopUrl', callback => callback(webshopUrl));
 
     socket.on('registerOnlineOrderDevice', async (pairingCode, callback) => {
       const deviceId = await getDeviceId(pairingCode)
