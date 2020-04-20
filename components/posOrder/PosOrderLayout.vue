@@ -4,7 +4,7 @@
     <div style="padding: 4px; background-color: #E0E0E0">
       <div :style="categoryContainerStyle">
         <div v-for="(category, index) in categories"
-             class="pol__cate"
+             class="pol__cate darken-effect"
              :key="index"
              :style="[getCategoryStyle(category), getAreaStyle(category)]"
              @click="selectCategory(category)">
@@ -16,7 +16,7 @@
     <div style="padding: 4px; background-color: #FFF; flex: 1" v-if="selectedCategoryLayout">
       <div :style="productContainerStyle">
         <div v-for="(productLayout, index) in products"
-             class="pol__prod"
+             class="pol__prod darken-effect"
              :key="index"
              :style="[getAreaStyle(productLayout), getProductItemStyle(productLayout)]"
              v-on="getProductListeners(productLayout)">
@@ -390,6 +390,8 @@
       padding: 8px;
       font-size: 13px;
       font-weight: 700;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
     }
 
     &__prod {
@@ -404,6 +406,8 @@
       padding: 0 8px;
       word-break: break-word;
       overflow: hidden;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
 
       & > div {
         max-height: 100%;
