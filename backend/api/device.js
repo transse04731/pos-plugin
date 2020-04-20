@@ -36,13 +36,12 @@ router.get('/pairing-code', async (req, res) => {
   const {storeId, name} = req.query
 
   // Only 1 store can have "onlineOrder" feature
-  const device = await DeviceModel.findOne({storeId, paired: false, features: 'onlineOrder', name})
+  const device = await DeviceModel.findOne({storeId, paired: false, name})
   if (device) return res.status(200).json({pairingCode: device.pairingCode})
 
   // Create new device if none exists
   const pairingCode = await generateUniqueDeviceCode()
   await DeviceModel.create({
-    features: ['onlineOrder', 'proxy'],
     pairingCode,
     name,
     storeId: ObjectId(storeId),
