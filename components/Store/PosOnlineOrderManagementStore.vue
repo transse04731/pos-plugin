@@ -44,7 +44,7 @@
           const stores = []
           // search
           if (this.searchText) {
-            _.each(storeGroup.stores, store => _.includes(store.name, this.searchText) && stores.push(store))
+            _.each(storeGroup.stores, store => _.includes(_.lowerCase(store.name), _.lowerCase(this.searchText)) && stores.push(store))
           } else {
             stores.push(...storeGroup.stores)
           }
