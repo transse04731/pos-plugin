@@ -22,7 +22,7 @@
       })
       
       await this.createFolder('/', 'images')
-      await this.createFolder('/', 'upload')
+      await this.createFolder('/', 'update')
     },
     data() {
       return {
@@ -65,7 +65,7 @@
       uploadApp(file, version) {
         return new Promise(async (resolve ,reject) => {
           this.showFileUploadProgressDialog = true
-          this.uploadingItems.push(this.gridFsHandler.uploadFile(file, `/upload/${this.getBaseName(file.name)}/${version}`, response => {
+          this.uploadingItems.push(this.gridFsHandler.uploadFile(file, `/update/${this.getBaseName(file.name)}/${version}`, response => {
             if (response.data[0].uploadSuccess) {
               resolve(`${this.fileApi}${response.data[0].createdFile.folderPath}${response.data[0].createdFile.fileName}`)
             } else {
