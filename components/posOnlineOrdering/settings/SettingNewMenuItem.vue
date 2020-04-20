@@ -205,6 +205,7 @@
 
             .bs-tf-input {
               height: 28px;
+              flex: 0 0 0;
             }
 
             .input {
@@ -212,6 +213,7 @@
               display: flex;
               overflow: scroll hidden;
               max-width: calc(100% - 24px);
+              scrollbar-width: none; // firefox
 
               &::-webkit-scrollbar {
                 display: none;

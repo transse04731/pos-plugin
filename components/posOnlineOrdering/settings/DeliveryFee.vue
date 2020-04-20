@@ -140,11 +140,9 @@
           font-weight: 700;
           background: #FAFAFA;
           border: 1px solid #EFEFEF;
-          display: flex;
 
           input {
-            width: 0;
-            flex: 1;
+            width: 100%;
             outline: none;
             font-size: 14px;
             background: transparent;
@@ -196,8 +194,16 @@
       font-size: 14px;
     }
 
-    ::v-deep input {
-      outline: none
+    input[type=number] {
+      -moz-appearance: textfield;
+      outline: none;
     }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
   }
 </style>

@@ -207,7 +207,12 @@
 
     &__category {
       height: calc(100% - 36px - 8px);
-      overflow: hidden scroll;
+      overflow: hidden auto;
+      scrollbar-width: none; // firefox
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
 
       &__header {
         display: flex;
