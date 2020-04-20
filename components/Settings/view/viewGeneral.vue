@@ -10,21 +10,11 @@
 				<g-switch v-model="favoriteArticle" @change="changeSetting"/>
 			</div>
 			<div class="row-flex align-items-center justify-between">
-				<span>{{$t('settings.virtualKb')}}</span>
-				<g-switch v-model="virtualKeyboard" @change="changeSetting"/>
-			</div>
-			<div class="row-flex align-items-center justify-between">
 				<span>{{$t('settings.autoCashdrawer')}}</span>
 				<g-switch v-model="automaticCashdrawer" @change="changeSetting"/>
 			</div>
 		</div>
 		<div class="col-5 offset-1">
-			<div class="row-flex align-items-center mb-3">
-				<span class="mr-4">{{$t('settings.quickFnRows')}}</span>
-				<div :class="['btn-fn-row', quickFnRows === (i-1) && 'selected']" v-for="i in 3" :key="i" @click="updateFnRows(i-1)">
-					{{i-1}}
-				</div>
-			</div>
 			<div class="row-flex align-items-center justify-center">
 				<pos-time-picker :label="$t('settings.beginHour')" :value="beginHour" @input="beginHour = $event; changeSetting()">
 					<template v-slot:append>

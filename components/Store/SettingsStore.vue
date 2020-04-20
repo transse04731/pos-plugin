@@ -27,7 +27,7 @@
   export default {
     name: 'SettingsStore',
     domain: 'SettingsStore',
-    injectService: ['PosStore:user'],
+    injectService: ['PosStore:(user, device)'],
     data() {
       const i18n = this.$i18n;
       const {sidebar} = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
@@ -44,16 +44,17 @@
           },*/
           /*{ title: 'Reporting', icon: 'icon-bar_chart', svgIcon: true },*/
           {title: sidebar.user, icon: 'person', isView: true /*href: '/setting/user'*/},
-          /*{
-            title: sidebar.settings, icon: 'icon-cog', svgIcon: true, /!*badge: '3', badgeColor: '#9C24AC',*!/
-            items: [
-              { title: sidebar.general, icon: 'radio_button_unchecked', iconType: 'small', isView: true /!*href: '/settings/general'*!/ },
-              /!*{ title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small' },
-              { title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small' },*!/
-              { title: sidebar.paymentLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-payment-config', appendIcon: 'open_in_new' },
-              { title: sidebar.functionLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-fn-button', appendIcon: 'open_in_new' },
-            ]
-          },*/
+          { title: sidebar.general, icon: 'radio_button_unchecked', iconType: 'small', isView: true},
+      /*{
+        title: sidebar.settings, icon: 'icon-cog', svgIcon: true, /!*badge: '3', badgeColor: '#9C24AC',*!/
+        items: [
+          { title: sidebar.general, icon: 'radio_button_unchecked', iconType: 'small', isView: true /!*href: '/settings/general'*!/ },
+          /!*{ title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small' },
+          { title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small' },*!/
+          { title: sidebar.paymentLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-payment-config', appendIcon: 'open_in_new' },
+          { title: sidebar.functionLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-fn-button', appendIcon: 'open_in_new' },
+        ]
+      },*/
           {
             title: sidebar.advancedSettings, icon: 'icon-switch', svgIcon: true,/* badge: '3', badgeColor: '#FF4081',*/
             items: [
@@ -115,6 +116,13 @@
       if (posSettings) {
         this.defaultPrepareTime = posSettings.defaultPrepareTime
         this.onlineOrderSorting = posSettings.onlineOrderSorting
+
+        let hardwares = posSettings.hardwares
+        if (hardwares && hardwares instanceof Array) {
+          if (!hardwares.find(i => i.name === this.device)) hardwares = [...hardwares, {name: this.device}]
+        } else hardwares = [{name: this.device}]
+
+        await this.updatePosSetting('hardwares', hardwares)
       }
     },
     watch: {

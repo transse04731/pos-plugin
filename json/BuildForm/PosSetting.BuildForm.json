@@ -912,7 +912,8 @@
     },
     {
       "fields": [
-        "generalSetting"
+        "generalSetting",
+        "showDineInTax"
       ],
       "_id": "5de8d754cdff2284f2ce4a2b",
       "name": "General"
