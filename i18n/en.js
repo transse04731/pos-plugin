@@ -268,7 +268,8 @@ module.exports = {
       paymentName: 'Name',
       paymentIcon: 'Icon',
       //tax:
-      noteLetter: 'Invoice Note Letter'
+      noteLetter: 'Invoice Note Letter',
+      createTax: 'Create New Tax'
     },
 
     //dates

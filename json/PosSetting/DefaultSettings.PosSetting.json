@@ -887,5 +887,6 @@
     "sound": false
   },
   "defaultPrepareTime": 30,
-  "onlineOrderSorting": "order"
+  "onlineOrderSorting": "order",
+  "hardwares": []
 }

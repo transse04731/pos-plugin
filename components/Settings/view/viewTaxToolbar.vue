@@ -13,7 +13,7 @@
       {{$t('ui.delete')}}
     </g-btn>
     <g-btn :uppercase="false" background-color="#4CAF50" text-color="#FFFFFF" @click="openDialogNewTaxCategory">
-      + {{$t('settings.createCategory')}}
+      + {{$t('settings.createTax')}}
     </g-btn>
     <dialog-confirm-delete type="tax category" :label="selectedTaxCategory ? selectedTaxCategory.value + '%' : ''" v-model="dialogConfirmDelete" @submit="deleteTaxCategory"/>
   </fragment>
