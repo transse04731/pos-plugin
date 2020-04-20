@@ -67,7 +67,7 @@
           const rows = this.keyboardConfig.layout[i].rows
           if (maxColumns < rows.length) maxColumns = rows.length
           for (let j = 0; j < rows.length; j++) {
-            if(rows[j] === ' ') {
+            if(rows[j].trim() === '') {
               if(this.mode === 'edit') {
                 keys.push({top: i+1, left: j+1, bottom: i+2, right: j+2, type: 'edit'})
               }

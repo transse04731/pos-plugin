@@ -1,16 +1,7 @@
 <template>
   <div class="keyboard-editor">
-    <div class="keyboard-editor__title">{{$t('restaurant.menuEdit.keyboardTop')}}</div>
-    <div class="row-flex">
-      <input-number width="148" v-model="top"/>
-      <g-btn-bs elevation="2" @click="dialog = true" icon="select_all">{{$t('ui.choose')}}</g-btn-bs>
-    </div>
-    <div class="keyboard-editor__title">{{$t('restaurant.menuEdit.keyboardLeft')}}</div>
-    <input-number width="148" v-model="left"/>
-    <div class="keyboard-editor__title">{{$t('restaurant.menuEdit.keyboardWidth')}}</div>
-    <input-number width="148" v-model="width"/>
-    <div class="keyboard-editor__title">{{$t('restaurant.menuEdit.keyboardHeight')}}</div>
-    <input-number width="148" v-model="height"/>
+    <div class="keyboard-editor__title">{{$t('restaurant.menuEdit.keyboardPosition')}}</div>
+    <g-btn-bs elevation="2" style="margin: 0 0 12px" @click="dialog = true" icon="select_all">{{$t('ui.choose')}}</g-btn-bs>
     <div class="keyboard-editor__title">{{$t('restaurant.menuEdit.expansionColumn')}}</div>
     <div class="row-flex">
       <input-number width="148" :value="extraColumns" @input="changeExtraColumns"/>
@@ -21,7 +12,7 @@
     <g-checkbox v-model="x" label="Show 'x' Button"/>
     <g-dialog v-model="dialog" width="90%" height="90%" eager>
       <div class="dialog">
-        <div class="dialog-title">{{$t('restaurant.menuEdit.chooseKeyboardPosition')}}</div>
+        <div class="dialog-title">{{$t('restaurant.menuEdit.keyboardPosition')}}</div>
         <div class="dialog-content" :style="getDialogStyles()">
           <template v-for="row in selectedCategoryLayout.rows">
             <template v-for="column in selectedCategoryLayout.columns">
@@ -40,7 +31,7 @@
           <div :style="selectingCells"></div>
         </div>
         <div class="dialog-action">
-          <g-btn-bs text-color="#424242" @click="dialog = false">Cancel</g-btn-bs>
+          <g-btn-bs text-color="#424242" @click="closeDialog">Cancel</g-btn-bs>
           <g-btn-bs width="120" background-color="#2979FF" @click="changeLayout">OK</g-btn-bs>
         </div>
       </div>
@@ -73,50 +64,6 @@
       }
     },
     computed: {
-      top: {
-        get() {
-          if(this.keyboardConfig) {
-            return this.keyboardConfig.top
-          }
-          return 1
-        },
-        set(val) {
-          this._updateKeyboardConfig({top: val})
-        }
-      },
-      left: {
-        get() {
-          if(this.keyboardConfig) {
-            return this.keyboardConfig.left
-          }
-          return 1
-        },
-        set(val) {
-          this._updateKeyboardConfig({left: val})
-        }
-      },
-      width: {
-        get() {
-          if(this.keyboardConfig) {
-            return this.keyboardConfig.width
-          }
-          return 1
-        },
-        set(val) {
-          this._updateKeyboardConfig({width: val})
-        }
-      },
-      height: {
-        get() {
-          if(this.keyboardConfig) {
-            return this.keyboardConfig.height
-          }
-          return 1
-        },
-        set(val) {
-          this._updateKeyboardConfig({height: val})
-        }
-      },
       active: {
         get() {
           if(this.keyboardConfig) {
@@ -183,7 +130,7 @@
       async changeExtraColumns(val) {
         const config = Object.assign({}, this.keyboardConfig)
         const layout = config.layout
-        if(val > this.columns) { //add column
+        if(val > this.extraColumns) { //add column
           if(layout.length === 0) {
             while(layout.length < 4) {
               layout.push({rows: []})
@@ -267,6 +214,11 @@
           }
         }
       },
+      closeDialog() {
+        this.mouseCurrentCell = {x: 0, y: 0}
+        this.mouseDownCell = {x: 0, y: 0}
+        this.dialog = false
+      }
     },
   }
 </script>
