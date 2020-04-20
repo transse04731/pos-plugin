@@ -9,7 +9,7 @@
         </div>
         <div class="row-flex">
           <div class="col-6">
-            <g-text-field-bs large label="Version" v-model="internalVersion"/>
+            <g-text-field-bs :disabled="edit" large label="Version" v-model="internalVersion"/>
           </div>
           <div class="col-6">
             <g-select text-field-component="GTextFieldBs" :items="listType" label="Type" v-model="internalType"/>
