@@ -355,8 +355,12 @@
           flex: 1;
           display: flex;
           flex-direction: column;
-          overflow: hidden scroll;
+          overflow: hidden auto;
           margin-bottom: 5px;
+
+          &::-webkit-scrollbar {
+            display: none;
+          }
         }
       }
     }

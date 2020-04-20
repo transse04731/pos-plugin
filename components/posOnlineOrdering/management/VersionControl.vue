@@ -204,7 +204,11 @@
 
       &-content {
         height: calc(100% - 38px);
-        overflow: hidden scroll;
+        overflow: hidden auto;
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
 
         &--empty {
           display: flex;

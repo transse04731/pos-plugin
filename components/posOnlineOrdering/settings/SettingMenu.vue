@@ -207,7 +207,11 @@
 
     &__category {
       height: calc(100% - 36px - 8px);
-      overflow: hidden scroll;
+      overflow: hidden auto;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
 
       &__header {
         display: flex;

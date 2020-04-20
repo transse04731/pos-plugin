@@ -296,7 +296,11 @@
       flex: 1;
       margin-bottom: 100px;
       overflow-x: hidden;
-      overflow-y: scroll;
+      overflow-y: auto;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
 
       .radio-option {
         padding-top: 20px;
