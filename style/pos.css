@@ -487,3 +487,10 @@ body::-webkit-scrollbar {
   background-size: contain;
   background-position: center;
 }
+
+.icon-no-connection {
+  background-image: url("../assets/no-connection.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
