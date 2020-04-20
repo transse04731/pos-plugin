@@ -90,29 +90,7 @@
       onlineOrdering: Boolean,
       alias: String,
       clientDomain: String,
-      devices: {
-        type: Array,
-        default: () => [
-          {
-            name: 'Device 1',
-            type: 'Other',
-            os: 'Android',
-            status: 'active'
-          },
-          {
-            name: 'Device 2',
-            type: 'Other',
-            os: 'Window',
-            status: 'active'
-          },
-          {
-            name: 'Device 3',
-            type: 'Other',
-            os: 'Android',
-            status: 'active'
-          },
-        ]
-      },
+      devices: Array,
       groups: Array,
     },
     data() {
