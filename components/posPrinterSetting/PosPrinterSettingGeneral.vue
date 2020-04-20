@@ -7,6 +7,8 @@
                   v-model="useMultiPrinterForInvoicePrinter" @change="changeSetting"/>
       <g-checkbox color="#1271FF" :label="$t('settings.multipleEntirePrinter')"
                   v-model="useMultiPrinterForEntirePrinter" @change="changeSetting"/>
+      <g-checkbox color="#1271FF" :label="$t('settings.showDineInTax')"
+                  v-model="showDineInTax"/>
     </div>
     <div class="setting-title">{{$t('settings.entireReceiptNo')}}</div>
     <div class="row-flex flex-wrap">
@@ -26,7 +28,7 @@
     props: {
 
     },
-    injectService: ['SettingsStore:(getPrinterGeneralSetting, printerGeneralSetting, updatePrinterGeneralSetting, addEntirePrinter, removeEntirePrinter)'],
+    injectService: ['SettingsStore:(getPrinterGeneralSetting, printerGeneralSetting, updatePrinterGeneralSetting, addEntirePrinter, removeEntirePrinter, getPosSetting, updatePosSetting)'],
     data() {
       return {
         listNoEntireReceipt: [0, 1, 2, 3, 4],
@@ -36,7 +38,8 @@
           upper: 0,
           lower: 0,
         },
-        entireReceipt: null
+        entireReceipt: null,
+        showDineInTax: false
       }
     },
     computed: {
@@ -105,6 +108,13 @@
     async created() {
       await this.getPrinterGeneralSetting()
       this.entireReceipt = this.printerGeneralSetting.entireReceipt
+      const posSettings = await this.getPosSetting()
+      this.showDineInTax = posSettings.showDineInTax
+    },
+    watch: {
+      async showDineInTax(val) {
+        await this.updatePosSetting('showDineInTax', val)
+      }
     }
   }
 </script>

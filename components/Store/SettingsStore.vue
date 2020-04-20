@@ -255,6 +255,7 @@
       },
       async getAllTaxCategory() {
         const settings = await cms.getModel('PosSetting').findOne();
+        this.listTaxCategories = settings.taxCategory
         return settings.taxCategory;
       },
 
@@ -786,6 +787,24 @@
       unregisterOnlineOrder(callback) {
         window.cms.socket.emit('unregisterOnlineOrderDevice', callback)
       },
+
+      //generic
+      async updateGroupPrinter(_id, key, value) {
+        try {
+          const model = cms.getModel('GroupPrinter')
+          await model.updateOne({ _id }, { $set: { [key]: value } })
+        } catch (e) {
+          console.warn(e)
+        }
+      },
+      async updatePosSetting(key, value) {
+        try {
+          const model = cms.getModel('PosSetting')
+          await model.updateOne({}, { $set: { [key]: value } })
+        } catch (e) {
+          console.warn(e)
+        }
+      }
     },
     provide() {
       return {

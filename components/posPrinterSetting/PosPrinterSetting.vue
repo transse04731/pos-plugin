@@ -79,6 +79,39 @@
         </div>
       </template>
     </g-grid-select>
+    <g-divider inset style="margin: 12px 0;"/>
+    <div class="title" style="margin-left: 12px">Default tax</div>
+    <div class="row-flex" style="margin-left: 12px">
+      <div class="col-2">{{$t('restaurant.product.dineInTax')}}</div>
+      <g-grid-select mandatory return-object item-cols="auto" :items="listTaxCategories" v-model="dineInTax" style="margin-left: 12px">
+        <template v-slot:default="{ toggleSelect, item }">
+          <div class="option" @click="toggleSelect(item)">
+            {{item.value}}%
+          </div>
+        </template>
+        <template v-slot:selected="{ item }">
+          <div class="option option--selected">
+            {{item.value}}%
+          </div>
+        </template>
+      </g-grid-select>
+    </div>
+
+    <div class="row-flex" style="margin-left: 12px; margin-top: 8px;">
+      <div class="col-2">{{$t('restaurant.product.takeAwayTax')}}</div>
+      <g-grid-select mandatory return-object item-cols="auto" :items="listTaxCategories" v-model="takeAwayTax" style="margin-left: 12px">
+        <template v-slot:default="{ toggleSelect, item }">
+          <div class="option" @click="toggleSelect(item)">
+            {{item.value}}%
+          </div>
+        </template>
+        <template v-slot:selected="{ item }">
+          <div class="option option--selected">
+            {{item.value}}%
+          </div>
+        </template>
+      </g-grid-select>
+    </div>
 
     <dialog-form-input v-model="showDialog" @submit="updateSettings">
       <template #input>
@@ -104,7 +137,7 @@
       index: Number
     },
     injectService: [
-      'SettingsStore:(printer, getPrinterById, updateGroupPrinterName, updatePrinter, getGroupPrintersByType)',
+      'SettingsStore:(printer, getPrinterById, updateGroupPrinterName, updatePrinter, getGroupPrintersByType, getAllTaxCategory, getGroupPrinterById, updateGroupPrinter)',
     ],
     data() {
       return {
@@ -120,7 +153,9 @@
         editName: '',
         editIp: '',
         showDialog: false,
-        printer: null
+        printer: null,
+        listTaxCategories: [],
+        groupPrinter: null
       }
     },
     computed: {
@@ -295,6 +330,30 @@
           await this.updatePrinter(this.printer._id, this.printer, this.id, this.index)
         }
       },
+      dineInTax: {
+        get() {
+          if (!this.groupPrinter || !this.listTaxCategories || !this.listTaxCategories.length) return
+          if (this.groupPrinter && this.groupPrinter.defaultDineInTax) {
+            return this.listTaxCategories.find(i => i.value === this.groupPrinter.defaultDineInTax)
+          }
+        },
+        async set(taxCategory) {
+          await this.updateGroupPrinter(this.id, 'defaultDineInTax', taxCategory.value)
+          this.groupPrinter = await this.getGroupPrinterById(this.id)
+        }
+      },
+      takeAwayTax: {
+        get() {
+          if (!this.groupPrinter || !this.listTaxCategories || !this.listTaxCategories.length) return
+          if (this.groupPrinter && this.groupPrinter.defaultTakeAwayTax) {
+            return this.listTaxCategories.find(i => i.value === this.groupPrinter.defaultTakeAwayTax)
+          }
+        },
+        async set(taxCategory) {
+          await this.updateGroupPrinter(this.id, 'defaultTakeAwayTax', taxCategory.value)
+          this.groupPrinter = await this.getGroupPrinterById(this.id)
+        }
+      }
     },
     methods: {
       async select(type) {
@@ -368,6 +427,8 @@
       await this.setupPrinter()
       const receipts = await this.getGroupPrintersByType('kitchen')
       this.listReceipt = receipts.map(r => r.name)
+      this.listTaxCategories = await this.getAllTaxCategory()
+      this.groupPrinter = await this.getGroupPrinterById(this.id)
     },
   }
 </script>

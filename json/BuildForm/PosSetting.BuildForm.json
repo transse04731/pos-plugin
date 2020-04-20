@@ -864,6 +864,12 @@
         "time",
         "order"
       ]
+    },
+    {
+      "_id": "5e9e1eb027f0c59664ad1173",
+      "schemaType": "boolean",
+      "key": "showDineInTax",
+      "type": "input@checkbox"
     }
   ],
   "id": "5ddb985ff26bb37e5ccc5c43",
