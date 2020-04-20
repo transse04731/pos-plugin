@@ -51,8 +51,8 @@
           }
         })
       },
-      async prepareUploadAppFolder(file, version) {
-        const baseName = this.getBaseName(file.name)
+      async prepareUploadAppFolder(fileName, version) {
+        const baseName = this.getBaseName(fileName)
         console.log(`creating /upload/${baseName} folder`)
         await this.createFolder('/upload', baseName)
 
@@ -74,9 +74,12 @@
           }))
         })
       },
+      async moveApp(uploadPath, newVersion) {
+        // TODO
+      },
       async removeFile(fileSource) {
         const filePath = fileSource.replace(this.fileApi, '')
-        await this.gridFsHandler.deleteFile({ _id: filePath })
+        await this.gridFsHandler.deleteFileByPath({ _id: filePath })
       },
       async isFolderExist(folderPath) {
         try {
