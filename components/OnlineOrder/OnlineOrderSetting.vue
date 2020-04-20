@@ -2,15 +2,22 @@
   <div class="online-order-setting">
     <div class="online-order-setting__title">Online Order Settings</div>
     <div class="online-order-setting__content">
-      <g-row v-if="computedDevice">
-        <g-text-field-bs label="Status" :value="connected ? 'Connected' : 'No connection'" readonly/>
-        <g-text-field-bs label="Webshop URL" :value="computedDevice.url" readonly/>
-      </g-row>
-      <g-btn-bs v-if="connected" large background-color="#E0E0E0" style="margin-top: 24px;"
+      <div class="row-flex" v-if="computedDevice">
+        <div class="col-6">
+          <div>Status</div>
+          <div style="font-style: italic">{{connected ? 'Connected' : 'Not paired'}}</div>
+        </div>
+
+        <div class="col-6">
+          <div>Webshop URL</div>
+          <div style="font-style: italic; color: #536DFE">{{computedDevice.url}}</div>
+        </div>
+      </div>
+      <g-btn-bs v-if="connected" large background-color="#424242" text-color="#FFF" style="margin-top: 24px;"
                 @click.stop="dialog.disconnect = true">
         Unpair
       </g-btn-bs>
-      <g-btn-bs v-else large background-color="#E0E0E0" style="margin-top: 24px;"
+      <g-btn-bs v-else large background-color="#424242" text-color="#FFF" style="margin-top: 24px;"
                 @click.stop="dialog.connect = true">
         Pair
       </g-btn-bs>
@@ -89,6 +96,7 @@
     computed: {
       computedDevice: {
         get() {
+          if (!this.internalDevice) return {url: this.webshopUrl}
           return Object.assign(this.internalDevice, {url: this.webshopUrl})
         },
       },

@@ -44,7 +44,7 @@
                       <span class="i text-grey">(<span v-for="modifier in item.modifiers">{{modifier}}</span>)</span>
                     </template>
                   </div>
-                  <div class="col-3 fs-small-2 ta-right">€{{item.price.toFixed(2)}}</div>
+                  <div class="col-3 fs-small-2 ta-right">€{{item.price | formatMoney(decimals)}}</div>
                 </div>
               </div>
               <div class="row-flex">
@@ -148,9 +148,15 @@
       defaultPrepareTime: Number,
       onlineOrderSorting: String
     },
+    data: {
+      decimals: 2
+    },
     filters: {
       formatDate(date) {
         return dayjs(date).format('HH:mm')
+      },
+      formatMoney(value, decimals = 2) {
+        return !isNaN(value) ? value.toFixed(decimals) : value
       }
     },
     data() {
@@ -183,7 +189,8 @@
     },
     methods: {
       getPaymentTexts(payments) {
-        return payments.map(i => `${i.type} - ${i.value}`).join(', ')
+        const currency = this.$t('common.currency')
+        return payments.map(i => `${i.type} - ${currency}${!i.value ? 0 : i.value.toFixed(this.decimals)}`).join(', ')
       },
       declineOrder(order) {
         this.$emit('declineOrder', order)
@@ -213,6 +220,7 @@
       }
     },
     mounted() {
+      this.decimals = this.$t('common.currencyDecimal')
       this.$nextTick(() => {
         this.$emit('updateOnlineOrders')
       })
