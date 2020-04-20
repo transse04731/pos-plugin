@@ -9,7 +9,7 @@
       <div class="delivery-fee__content-main">
         <div class="delivery-fee__content-item" v-for="(item, i) in items" :key="i">
           <div class="item-code col-9">
-            <input type="number" v-model="item.zipCode" @input="e => updateZipCodeDebounce(item, e)"/>
+            <input type="number" step="1" v-model="item.zipCode" @input="e => updateZipCodeDebounce(item, e)"/>
           </div>
           <div class="item-fee col-2">
             <input type="number" v-model="item.fee" placeholder="€" @input="e => updateFeeDebounce(item, e)"/>
