@@ -63,7 +63,7 @@
     },
     computed: {},
     created() {
-      this.updateDebounce = _.debounce(this.update, 500)
+      this.updateDebounce = _.debounce(this.update, 1000)
     },
     methods: {
       async update(change) {
