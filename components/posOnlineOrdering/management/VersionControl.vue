@@ -205,6 +205,7 @@
       &-content {
         height: calc(100% - 38px);
         overflow: hidden auto;
+        scrollbar-width: none; // firefox
 
         &::-webkit-scrollbar {
           display: none;

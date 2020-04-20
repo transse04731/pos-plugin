@@ -208,6 +208,7 @@
     &__category {
       height: calc(100% - 36px - 8px);
       overflow: hidden auto;
+      scrollbar-width: none; // firefox
 
       &::-webkit-scrollbar {
         display: none;

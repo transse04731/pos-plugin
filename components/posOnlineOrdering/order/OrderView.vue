@@ -324,9 +324,10 @@
       align-items: center;
       border-top-right-radius: 24px;
       border-bottom-right-radius: 24px;
-      overflow: auto;
+      overflow: auto hidden;
       position: relative;
       border-right: 16px solid #F8F8F8;
+      scrollbar-width: none; // firefox
 
       &::-webkit-scrollbar {
         display: none;
@@ -357,6 +358,7 @@
           flex-direction: column;
           overflow: hidden auto;
           margin-bottom: 5px;
+          scrollbar-width: none; // firefox
 
           &::-webkit-scrollbar {
             display: none;
@@ -430,12 +432,6 @@
 
           .sub-title {
             font-size: 18px;
-          }
-
-          &-main {
-            &::-webkit-scrollbar {
-              display: none;
-            }
           }
         }
       }

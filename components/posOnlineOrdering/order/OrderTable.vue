@@ -297,6 +297,7 @@
       margin-bottom: 100px;
       overflow-x: hidden;
       overflow-y: auto;
+      scrollbar-width: none; // firefox
 
       &::-webkit-scrollbar {
         display: none;

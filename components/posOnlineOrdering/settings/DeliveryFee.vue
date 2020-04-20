@@ -9,7 +9,7 @@
       <div class="delivery-fee__content-main">
         <div class="delivery-fee__content-item" v-for="(item, i) in items" :key="i">
           <div class="item-code col-9">
-            <input type="text" v-model="item.zipCode" @input="e => updateZipCodeDebounce(item, e)"/>
+            <input type="number" v-model="item.zipCode" @input="e => updateZipCodeDebounce(item, e)"/>
           </div>
           <div class="item-fee col-2">
             <input type="number" v-model="item.fee" placeholder="€" @input="e => updateFeeDebounce(item, e)"/>
@@ -140,11 +140,9 @@
           font-weight: 700;
           background: #FAFAFA;
           border: 1px solid #EFEFEF;
-          display: flex;
 
           input {
-            width: 0;
-            flex: 1;
+            width: 100%;
             outline: none;
             font-size: 14px;
             background: transparent;
@@ -196,8 +194,16 @@
       font-size: 14px;
     }
 
-    ::v-deep input {
-      outline: none
+    input[type=number] {
+      -moz-appearance: textfield;
+      outline: none;
     }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
   }
 </style>
