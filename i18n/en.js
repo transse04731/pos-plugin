@@ -132,6 +132,7 @@ module.exports = {
       sales: 'Sales',
       total: 'Total',
       currency: '€',
+      currencyDecimal: '2',
       discount: 'Discount',
       tax: 'Tax',
       subtotal: 'Subtotal',
@@ -264,6 +265,7 @@ module.exports = {
       multipleKitchenPrinter: 'Use Multiple Printer For Kitchen Printer',
       multipleInvoicePrinter: 'Use Multiple Printer For Invoice Printer',
       multipleEntirePrinter: 'Use Multiple Printer For Entire Printer',
+      showDineInTax: 'Show Dine-in Tax',
       //payment
       paymentName: 'Name',
       paymentIcon: 'Icon',
