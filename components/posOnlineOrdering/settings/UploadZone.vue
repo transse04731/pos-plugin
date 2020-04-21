@@ -174,7 +174,7 @@
         this.cropper.getCroppedCanvas(options).toBlob(async (blob) => {
           if (this.tab === 'url') {
             await this.uploadImage(new File([blob], this.photoUrl.substr(this.photoUrl.lastIndexOf('/') + 1)), { type: 'image/*' })
-            this.removeTemporaryFile()
+            this.removeTemporaryFileIfExist()
           } else {
             await this.uploadImage(new File([blob], this.file.name, { type: this.file.type }))
           }
