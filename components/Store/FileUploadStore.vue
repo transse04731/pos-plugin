@@ -64,7 +64,9 @@
           this.showFileUploadProgressDialog = true
           this.uploadingItems.push(this.gridFsHandler.uploadFile(file, `/update/${this.getBaseName(file.name)}/${version}`, response => {
             if (response.data[0].uploadSuccess) {
-              resolve(this.gridFsHandler.insertDownloadUrl([response.data[0].createdFile])[0].downloadUrl)
+              const files = [response.data[0].createdFile]
+              const downloadUrl = this.gridFsHandler.insertDownloadUrl(files)[0].downloadUrl
+              resolve(downloadUrl)
             } else {
               reject(response)
             }

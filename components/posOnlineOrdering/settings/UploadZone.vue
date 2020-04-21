@@ -105,14 +105,14 @@
       fileName() {
         return this.file ? this.file.name : 'No file chosen'
       },
+      isExternalFile() {
+        // external file is file which starts with http
+        // internal file is file which hosted by grid fs and starts with /cmsfiles
+        return this.photoUrl.startsWith('http')
+      },
       imageSrc() {
         if (this.tab === 'url') {
-          // open for edit
-          if (this.photoUrl.includes(location.origin))
-            return this.photoUrl
-          
-          // external file
-          return `/store/upload-zone/prepare?url=${this.photoUrl}`
+          return this.isExternalFile ? `/store/upload-zone/prepare?url=${this.photoUrl}` : this.photoUrl
         } else {
           // upload from file
           return URL.createObjectURL(this.file)
@@ -181,7 +181,7 @@
         })
       },
       removeTemporaryFileIfExist() {
-        if (this.photoUrl && !this.photoUrl.includes(location.origin))
+        if (this.photoUrl && this.isExternalFile)
           axios.post(`/store/upload-zone/clean?url=${this.photoUrl}`)
       }
     }
