@@ -41,7 +41,7 @@
           this.showFileUploadProgressDialog = true
           this.uploadingItems.push(this.gridFsHandler.uploadFile(file, '/images', response => {
             if (response.data[0].uploadSuccess) {
-              resolve(`/cms-files/files/view/${response.data[0].createdFile.folderPath}${response.data[0].createdFile.fileName}`)
+              resolve(`${response.data[0].createdFile.folderPath}${response.data[0].createdFile.fileName}`)
             } else {
               reject(response)
             }
@@ -64,18 +64,14 @@
           this.showFileUploadProgressDialog = true
           this.uploadingItems.push(this.gridFsHandler.uploadFile(file, `/update/${this.getBaseName(file.name)}/${version}`, response => {
             if (response.data[0].uploadSuccess) {
-              resolve(`${this.fileApi}${response.data[0].createdFile.folderPath}${response.data[0].createdFile.fileName}`)
+              resolve(`${response.data[0].createdFile.folderPath}${response.data[0].createdFile.fileName}`)
             } else {
               reject(response)
             }
           }))
         })
       },
-      async moveApp(uploadPath, newVersion) {
-        // TODO
-      },
-      async removeFile(fileSource) {
-        const filePath = fileSource.replace(this.fileApi, '')
+      async removeFile(filePath) {
         await this.gridFsHandler.deleteFileByPath(filePath)
       },
       async isFolderExist(folderPath) {
