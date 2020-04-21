@@ -97,7 +97,7 @@
     },
     computed: {
       appVersions() {
-        return _.map(this.apps, app => ({ text: app.version, value: app._id }))
+        return _.map(this.apps, app => ({ text: app.version, value: app.version }))
       }
     },
     methods: {
@@ -188,7 +188,9 @@
       async updateAppVersion(device) {
         const name = device.appName
         const version = device.appVersion
+        debugger
         const app = await cms.getModel('App').findOne({ version})
+        debugger
         if (app) {
           const {socket} = window.cms
           socket.emit('updateApp', device._id, `${location.origin}${app.uploadPath}` )
