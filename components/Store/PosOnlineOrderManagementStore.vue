@@ -23,6 +23,9 @@
       storeNames() {
         return _.map(this.stores, s => s.name)
       },
+      storeAlias() {
+        return _.map(this.stores, s => s.alias)
+      },
       intermediatePosManagementModel() {
         const groups = []
         _.each(this.storeGroups, storeGroup => {
@@ -111,11 +114,20 @@
       async addStore({ name, groups, address }) {
         if (_.includes(this.storeNames, name))
           return { ok: false, message: 'This name is already taken!' }
-        const result = await cms.getModel('Store').create({ name, groups, address, addedDate: dayjs(), pickup: true })
-        // assign alias as an id by default
-        await cms.getModel('Store').updateOne({_id: result._id}, { alias: result._id })
+        // get unique alias
+        const alias = this.getUniqueAlias(_.toLower(name))
+        await cms.getModel('Store').create({ name, alias, groups, address, addedDate: dayjs(), pickup: true })
         await this.loadStores()
         return { ok: true }
+      },
+      getUniqueAlias(alias) {
+        let ctr = 0
+        let newAlias
+        do {
+          ctr++
+          newAlias = alias + ctr
+        } while(_.includes(this.storeAlias, newAlias))
+        return newAlias
       },
       async removeStore(groupId, store) {
         const indexOfGroup = _.findIndex(store.groups, g => g._id === groupId)
@@ -130,6 +142,12 @@
         }
       },
       async updateStore(_id, change) {
+        if (change.alias) {
+          const store = _.find(this.stores, store => store.alias = change.alias)
+          if (store && store._id !== _id)
+            return { ok: false, message: 'Alias has been taken' }
+        }
+        
         await cms.getModel('Store').findOneAndUpdate({_id}, {...change})
         await this.loadStores()
         this.showSnackbar = true
