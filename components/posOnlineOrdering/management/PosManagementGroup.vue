@@ -34,7 +34,7 @@
                   <g-tooltip
                       :open-on-hover="true" top speech-bubble color="#000" transition="0.3">
                     <template v-slot:activator="{on}">
-                      <div :class="device.online && device.paired && device.features.includes('proxy') && !disableRemoteControlBtn
+                      <div :class="device.online && device.paired && device.features && device.features.includes('proxy') && !disableRemoteControlBtn
                                   ? 'pos-management-group__content-btn' : 'pos-management-group__content-btn--disabled'"
                            @mouseenter="on.mouseenter"
                            @mouseleave="on.mouseleave"
