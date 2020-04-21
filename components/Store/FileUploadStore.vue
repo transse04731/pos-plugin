@@ -50,11 +50,11 @@
       },
       async prepareUploadAppFolder(fileName, version) {
         const baseName = this.getBaseName(fileName)
-        console.log(`creating /upload/${baseName} folder`)
-        await this.createFolder('/upload', baseName)
+        console.log(`creating /update/${baseName} folder`)
+        await this.createFolder('/update', baseName)
 
-        console.log(`creating /upload/${baseName}/${version} folder`)
-        await this.createFolder(`/upload/${baseName}`, version)
+        console.log(`creating /update/${baseName}/${version} folder`)
+        await this.createFolder(`/update/${baseName}`, version)
       },
       getBaseName(fileName) {
         return fileName.substr(0, _.lastIndexOf(fileName, '.'))
