@@ -41,7 +41,7 @@
           this.showFileUploadProgressDialog = true
           this.uploadingItems.push(this.gridFsHandler.uploadFile(file, '/images', response => {
             if (response.data[0].uploadSuccess) {
-              resolve(`${response.data[0].createdFile.folderPath}${response.data[0].createdFile.fileName}`)
+              resolve(this.gridFsHandler.insertViewUrl([response.data[0].createdFile])[0].viewUrl)
             } else {
               reject(response)
             }
@@ -64,7 +64,7 @@
           this.showFileUploadProgressDialog = true
           this.uploadingItems.push(this.gridFsHandler.uploadFile(file, `/update/${this.getBaseName(file.name)}/${version}`, response => {
             if (response.data[0].uploadSuccess) {
-              resolve(`${response.data[0].createdFile.folderPath}${response.data[0].createdFile.fileName}`)
+              resolve(this.gridFsHandler.insertDownloadUrl([response.data[0].createdFile])[0].downloadUrl)
             } else {
               reject(response)
             }
