@@ -189,11 +189,16 @@
         const name = device.appName
         const version = device.appVersion
         const app = await cms.getModel('App').findOne({ version})
+        console.log('found', app)
         if (app) {
+          console.log('update app for device', device)
           const {socket} = window.cms
-          socket.emit('updateApp', device._id, `${location.origin}${app.uploadPath}` )
-          // TODO: update device -> refresh GUI, etc
+          const downloadPath = `${location.origin}${app.uploadPath}`
+          console.log('download path', downloadPath)
+          socket.emit('updateApp', device._id, downloadPath)
           await cms.getModel('Device').updateOne({_id: device._id}, { version})
+        } else {
+          console.log('Found no app with version', version)
         }
       }
     },
