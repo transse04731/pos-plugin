@@ -10,7 +10,7 @@
   import createGridFsHandlers from 'vue-file-explorer/api-handlers/grid-fs'
   import openUploadFileDialog from 'vue-file-explorer/api-handlers/openUploadFileDialog'
   import FileUploadProgressDialog from 'vue-file-explorer/components/FileExplorerPanel/dialogs/FileUploadProgressDialog.vue'
-  
+
   export default {
     name: 'FileUploadStore',
     domain: 'FileUploadStore',
@@ -20,7 +20,7 @@
         // namespace: this.$getService('PosStore').accountId,
         apiBaseUrl: '/cms-files'
       })
-      
+
       await this.createFolder('/', 'images')
       await this.createFolder('/', 'update')
     },
@@ -76,7 +76,7 @@
       },
       async removeFile(fileSource) {
         const filePath = fileSource.replace(this.fileApi, '')
-        await this.gridFsHandler.deleteFileByPath({ _id: filePath })
+        await this.gridFsHandler.deleteFileByPath(filePath)
       },
       async isFolderExist(folderPath) {
         try {
