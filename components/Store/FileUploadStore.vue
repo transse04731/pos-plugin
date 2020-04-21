@@ -36,22 +36,16 @@
       openUploadFileDialog(callback) {
         openUploadFileDialog({ multiple: false, mimeType: 'image/*' }, files => callback(files[0]))
       },
-      openAndUploadImage() {
+      uploadImage(file) {
         return new Promise((resolve, reject) => {
-          try {
-            openUploadFileDialog({ multiple: false, mimeType: 'image/*' }, files => {
-              this.showFileUploadProgressDialog = true
-              this.uploadingItems.push(this.gridFsHandler.uploadFile(files[0], '/images', response => {
-                if (response.data[0].uploadSuccess) {
-                  resolve(`${location.origin}/cms-files/files/view/${response.data[0].createdFile.folderPath}${response.data[0].createdFile.fileName}`)
-                } else {
-                  reject(response)
-                }
-              }))
-            })
-          } catch(e) {
-            reject(e)
-          }
+          this.showFileUploadProgressDialog = true
+          this.uploadingItems.push(this.gridFsHandler.uploadFile(file, '/images', response => {
+            if (response.data[0].uploadSuccess) {
+              resolve(`/cms-files/files/view/${response.data[0].createdFile.folderPath}${response.data[0].createdFile.fileName}`)
+            } else {
+              reject(response)
+            }
+          }))
         })
       },
       async prepareUploadAppFolder(fileName, version) {
@@ -108,6 +102,7 @@
         openUploadFileDialog: this.openUploadFileDialog,
         openAndUploadImage: this.openAndUploadImage,
         prepareUploadAppFolder: this.prepareUploadAppFolder,
+        uploadImage: this.uploadImage,
         uploadApp: this.uploadApp,
         removeFile: this.removeFile
       }

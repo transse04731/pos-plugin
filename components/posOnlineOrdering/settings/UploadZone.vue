@@ -43,28 +43,20 @@
             </template>
             <div style="display: flex; justify-content: flex-end; margin-top: 34px;">
               <g-btn-bs height="44" @click="closeDialog">Cancel</g-btn-bs>
-              <g-btn-bs @click="view = 'crop'" background-color="#536DFE" width="98" height="44" text-color="#FFF">Next</g-btn-bs>
+              <g-btn-bs @click="moveToCropView" background-color="#536DFE" width="98" height="44" text-color="#FFF">Next</g-btn-bs>
             </div>
           </div>
         </template>
         <!-- crop -->
         <template v-else>
           <div style="text-align: center; background: #EFEFEF; ">
-            <div style="display: inline-block; position: relative;">
-              <img :src="imageSrc" style="height: 281px" ref="previewImage">
-              <div :style="overlayStyle"></div>
-            </div>
+            <div v-if="loadingImage">Loading image...</div>
+            <div v-if="initializingCropper">Preparing cropper...</div>
+            <img :src="imageSrc" style="height: 281px" ref="previewImage" @load="loadingImage = false">
           </div>
-          <div style="display: flex; align-items: center; height: 55px; border-bottom: 1px solid #BDBDBD; margin-bottom: 50px">
-            <g-spacer/>
-            <g-icon small>fas fa-minus</g-icon>
-            <g-slider style="flex: 3" v-model="scaleRatio"/>
-            <g-icon small>fas fa-plus</g-icon>
-            <g-spacer/>
-          </div>
-          <div style="display: flex; justify-content: flex-end; padding-bottom: 35px; padding-right: 35px;">
+          <div style="display: flex; justify-content: flex-end; padding: 35px;">
             <g-btn-bs height="44" @click="view = 'src'">Back</g-btn-bs>
-            <g-btn-bs background-color="#536DFE" text-color="#FFF" width="98" height="44" @click="uploadImage">Save</g-btn-bs>
+            <g-btn-bs :disabled="initializingCropper" background-color="#536DFE" text-color="#FFF" width="98" height="44" @click="_uploadImage">Save</g-btn-bs>
           </div>
         </template>
       </div>
@@ -72,10 +64,10 @@
   </div>
 </template>
 <script>
-  import TableExpansionRow from '../../Order/components/TableExpansionRow';
+  const Cropper = () => import('cropperjs')
+  
   export default {
     name: 'UploadZone',
-    components: { TableExpansionRow },
     props: {
       url: String,
       elevation: {
@@ -87,48 +79,44 @@
       return {
         view: 'src', // src | crop
         tab: 'url', // url | upload
-        photoUrl: `/cms-files/files/view//images/Smoked_Salmon_Pate_0.jpg`,
+        
+        // via link
+        loadingImage: false,
+        
+        // via file
         file: null,
-        scaleRatio: 100,
-        overlayStyle: null,
+        
+        // cropper
+        cropper: null,
+        initializingCropper: false,
+        
+        //
         dialog: {
           upload: false,
-        }
+        },
       }
     },
-    injectService: ['FileUploadStore:(openUploadFileDialog,uploadFile)'],
+    injectService: ['FileUploadStore:(openUploadFileDialog,uploadImage)'],
     computed: {
       fileName() {
         return this.file ? this.file.name : 'No file chosen'
       },
       imageSrc() {
-        return this.tab === 'url' ? this.photoUrl : URL.createObjectURL(this.file)
-      }
+        return this.tab === 'url' ? `/store/upload-zone/prepare?url=${this.photoUrl}` : URL.createObjectURL(this.file)
+      },
     },
     watch: {
-      scaleRatio(val) {
-        console.log('overlay style', this.$refs)
-        if (!this.$refs.previewImage)
-          return
-
-        const { width, height } = this.$refs.previewImage.getBoundingClientRect()
-        const hPadding = (width * (100 - this.scaleRatio)/100) / 2 + 'px'
-        const vPadding = (height * (100 -this.scaleRatio)/100) / 2 + 'px'
-
-        this.$set(this, 'overlayStyle', {
-          position: 'absolute',
-          top: 0,
-          left:0,
-          width: '100%',
-          height: '100%',
-          opacity: 0.5,
-          borderColor: '#FFF',
-          borderStyle: 'solid',
-          'border-top-width': hPadding,
-          'border-right-width': vPadding,
-          'border-bottom-width': hPadding,
-          'border-left-width': vPadding,
-        })
+      view() {
+        if (this.view === 'crop') {
+          this.$nextTick(async () => {
+            const image = this.$refs.previewImage
+            if (!image) return
+            const cropperCtor = (await Cropper()).default
+            const cropper = new cropperCtor(image, {});
+            this.$set(this, 'cropper', cropper)
+            this.initializingCropper = false
+          })
+        }
       }
     },
     methods: {
@@ -148,15 +136,27 @@
       showUploadDialog() {
         this.dialog.upload = true
       },
+      moveToCropView() {
+        this.view = 'crop'
+        this.loadingImage = true
+        this.initializingCropper = true
+      },
       closeDialog() {
         this.dialog.upload = false
       },
       choosePhoto() {
         this.openUploadFileDialog(file => this.file = file)
       },
-      async uploadImage() {
-        
-        // this.$emit('url', await this.$getService('FileUploadStore').openAndUploadImage())
+      async _uploadImage() {
+        const options = { imageSmoothingEnabled: true, imageSmoothingQuality: 'high' }
+        this.cropper.getCroppedCanvas(options).toBlob(async (blob) => {
+          if (this.tab === 'url') {
+            await this.uploadImage(new File([blob], this.photoUrl.substr(this.photoUrl.lastIndexOf('/') + 1)), { type: 'image/*' })
+            axios.post(`/store/upload-zone/clean?url=${this.photoUrl}`)
+          } else {
+            await this.uploadImage(new File([blob], this.file.name, { type: this.file.type }))
+          }
+        })
       }
     }
   }
@@ -198,4 +198,7 @@
       font-weight: 900;
     }
   }
+</style>
+<style lang="scss">
+  @import "~cropperjs/src/index.scss";
 </style>
