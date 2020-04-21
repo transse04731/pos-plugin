@@ -9,10 +9,10 @@
       <div class="delivery-fee__content-main">
         <div class="delivery-fee__content-item" v-for="(item, i) in items" :key="i">
           <div class="item-code col-9">
-            <input type="number" step="1" v-model="item.zipCode" @input="e => updateZipCodeDebounce(item, e)"/>
+            <input type="number" step="1" :value="item.zipCode" @input="e => updateZipCodeDebounce(item, e)"/>
           </div>
           <div class="item-fee col-2">
-            <input type="number" v-model="item.fee" placeholder="€" @input="e => updateFeeDebounce(item, e)"/>
+            <input type="number" :value="item.fee" placeholder="€" @input="e => updateFeeDebounce(item, e)"/>
           </div>
           <div class="item-btn--delete col-1">
             <g-icon size="16" color="#424242" @click="removeFee(item)">icon-close</g-icon>
@@ -33,7 +33,7 @@
 
 <script>
   import _ from 'lodash'
-  
+
   export default {
     name: "DeliveryFee",
     props: {
@@ -70,6 +70,7 @@
         this.updateFees()
       },
       updateZipCode(item, e) {
+        if(!e.target.value || isNaN(e.target.value)) return
         _.each(this.store.deliveryFee.fees, fee => {
           if (fee === item)
             fee.zipCode = e.target.value
@@ -77,6 +78,7 @@
         this.updateFees()
       },
       updateFee(item, e) {
+        if(!e.target.value || isNaN(e.target.value)) return
         _.each(this.store.deliveryFee.fees, fee => {
           if (fee === item) {
             fee.fee = e.target.value
@@ -85,17 +87,18 @@
         this.updateFees()
       },
       updateFees() {
-        this.updateDeliveryFee({ fees: this.store.deliveryFee.fees })
+        this.updateDeliveryFee({fees: this.store.deliveryFee.fees})
       },
       updateAcceptOrderInOtherZipCode(value) {
-        this.updateDeliveryFee({ acceptOrderInOtherZipCodes: value })
+        this.updateDeliveryFee({acceptOrderInOtherZipCodes: value})
       },
       setDefaultFee(value) {
-        this.updateDeliveryFee({ defaultFee: value })
+        if(!value || isNaN(value)) return
+        this.updateDeliveryFee({defaultFee: value})
       },
       updateDeliveryFee(change) {
         const deliveryFee = {...this.store.deliveryFee, ...change}
-        this.$emit('update', { deliveryFee })
+        this.$emit('update', {deliveryFee})
       },
       removeFee(item) {
         const index = this.store.deliveryFee.fees.findIndex(f => f.zipCode === item.zipCode)
@@ -194,16 +197,26 @@
       font-size: 14px;
     }
 
-    input[type=number] {
+    ::v-deep input[type=number] {
       -moz-appearance: textfield;
       outline: none;
+      user-select: text;
     }
 
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
+    ::v-deep input::-webkit-outer-spin-button,
+    ::v-deep input::-webkit-inner-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
 
+    .bs-tf-wrapper ::v-deep {
+      .bs-tf-inner-input-group {
+        padding: 0;
+
+        .bs-tf-input {
+          padding: 6px 12px;
+        }
+      }
+    }
   }
 </style>

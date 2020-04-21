@@ -206,6 +206,7 @@
     }
 
     &__category {
+      position: relative;
       height: calc(100% - 36px - 8px);
       overflow: hidden auto;
       scrollbar-width: none; // firefox
@@ -215,6 +216,8 @@
       }
 
       &__header {
+        position: sticky;
+        top: 0;
         display: flex;
         height: 48px;
         align-items: center;
