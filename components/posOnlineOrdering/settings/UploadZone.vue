@@ -7,6 +7,7 @@
         <span style="margin-left: 4px">Edit Photo</span>
       </g-btn-bs>
     </div>
+    
     <div v-else @click="showUploadDialog" style="padding: 20px;">
       <div style="display: flex; align-items: center">
         <img src="/plugins/pos-plugin/assets/img.svg" class="mr-2">
@@ -22,6 +23,8 @@
         <div class="upload-zone__subtext text-grey">(430x200 or larger recommended, up to 10MB each)</div>
       </div>
     </div>
+    
+    <!-- -->
     <g-dialog v-model="dialog.upload" persistent>
       <div style="width: 580px; background-color: #FFF; border-radius: 5px; margin: 0 auto;">
         <!-- src -->
@@ -161,6 +164,7 @@
       },
       closeDialog() {
         this.dialog.upload = false
+        this.removeTemporaryFileIfExist()
       },
       choosePhoto() {
         this.openUploadFileDialog(file => this.file = file)
@@ -170,11 +174,15 @@
         this.cropper.getCroppedCanvas(options).toBlob(async (blob) => {
           if (this.tab === 'url') {
             await this.uploadImage(new File([blob], this.photoUrl.substr(this.photoUrl.lastIndexOf('/') + 1)), { type: 'image/*' })
-            axios.post(`/store/upload-zone/clean?url=${this.photoUrl}`)
+            this.removeTemporaryFile()
           } else {
             await this.uploadImage(new File([blob], this.file.name, { type: this.file.type }))
           }
         })
+      },
+      removeTemporaryFileIfExist() {
+        if (this.photoUrl && !this.photoUrl.includes(location.origin))
+          axios.post(`/store/upload-zone/clean?url=${this.photoUrl}`)
       }
     }
   }
