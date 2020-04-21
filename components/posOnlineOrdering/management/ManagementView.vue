@@ -61,6 +61,7 @@
                   v-for="(group, i) in searchResult"
                   v-bind="group"
                   :key="`group_${i}`"
+                  :apps="apps"
                   @delete="removeStore(group._id, $event)"
                   @updateStores="loadStores()"
                   @view:settings="viewStoreSetting($event)"/>
@@ -130,7 +131,7 @@
         sidebarItems
       }
     },
-    injectService: ['PosOnlineOrderManagementStore:(loadStoreGroups,loadStores,addGroup,addStore,removeStore,updateStore,addDevice,removeDevice,updateDevice,storeGroups,stores,posManagementModel,searchText,orderBy)'],
+    injectService: ['PosOnlineOrderManagementStore:(loadStoreGroups,loadStores,addGroup,addStore,removeStore,updateStore,addDevice,removeDevice,updateDevice,storeGroups,stores,posManagementModel,searchText,orderBy,apps)'],
     computed: {
       searchResult() {
         return this.posManagementModel

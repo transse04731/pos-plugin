@@ -81,6 +81,7 @@
     async created() {
       await this.loadStoreGroups()
       await this.loadStores()
+      await this.loadApps()
     },
     methods: {
       // store groups

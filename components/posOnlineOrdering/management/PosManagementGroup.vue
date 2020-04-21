@@ -27,7 +27,7 @@
                   {{device.appName}}
                 </div>
                 <div class="row-flex col-3">
-                  <g-select class="w-50" :items="listVersion" v-model="device.appVersion"/>
+                  <g-select class="w-50" :items="appVersions" v-model="device.appVersion"/>
                   <p class="ml-3 text-indigo-accent-2" style="cursor: pointer" @click="updateAppVersion(device)">Update</p>
                 </div>
                 <div class="col-1">
@@ -78,6 +78,7 @@
     props: {
       name: String,
       stores: Array,
+      apps: Array,
     },
     data() {
       return {
@@ -91,10 +92,12 @@
         iframeRefreshInterval: null,
         remoteControlDeviceId: null,
         disableRemoteControlBtn: false,
-        listVersion: [
-          {text: '1.51', value: '1.51'}
-        ],
         watchingClientStatus: false,
+      }
+    },
+    computed: {
+      appVersions() {
+        return _.map(this.apps, app => ({ text: app.version, value: app._id }))
       }
     },
     methods: {
@@ -189,6 +192,8 @@
         if (app) {
           const {socket} = window.cms
           socket.emit('updateApp', device._id, `${location.origin}${app.uploadPath}` )
+          // TODO: update device -> refresh GUI, etc
+          await cms.getModel('Device').updateOne({_id: device._id}, { version})
         }
       }
     },
