@@ -1,6 +1,7 @@
 <template>
   <div class="po-menu-item">
-    <img draggable="false" :src="image" class="po-menu-item__thumbnail"/>
+    <img v-if="image" alt draggable="false" :src="image" class="po-menu-item__thumbnail"/>
+    <img v-else alt draggable="false" src="/plugins/pos-plugin/assets/empty_dish.svg" class="po-menu-item__thumbnail"/>
     <div class="po-menu-item__content">
       <div class="po-menu-item__name">{{ name }}</div>
       <div class="po-menu-item__desc">{{ desc }}</div>
