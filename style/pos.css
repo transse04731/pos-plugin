@@ -459,4 +459,16 @@ body::-webkit-scrollbar {
   background-position: center;
 }
 
+.icon-account-management {
+  background-image: url("../assets/account-management.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
 
+.icon-account-management_white {
+  background-image: url("../assets/account-management_white.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}

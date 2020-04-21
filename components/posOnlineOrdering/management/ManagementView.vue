@@ -91,6 +91,9 @@
       <template v-else-if="view === 'version'">
         <version-control />
       </template>
+      <template v-else-if="view === 'account'">
+        <account/>
+      </template>
     </div>
     <dialog-new-group v-model="dialog.newGroup" @submit="addGroup($event)" :groups="groups"/>
     <dialog-new-store v-model="dialog.newStore" @submit="addStore($event)" :groups="groups"/>
@@ -101,16 +104,17 @@
 <script>
   import _ from 'lodash'
   import VersionControl from "./VersionControl";
+  import Account from "./Account";
 
   export default {
     name: 'ManagementView',
-    components: {VersionControl},
+    components: {Account, VersionControl},
     props: {},
     data: function () {
       const sidebarItems = [ { title: 'Restaurant Management', icon: 'icon-management_white', onClick: () => this.changeView('list', 'Restaurant Management') }]
       if (cms.loginUser.user.role.name === 'admin')
         sidebarItems.push({ title: 'Version Control', icon: 'icon-version_control', onClick: () => this.changeView('version', 'Version Control') })
-      
+      sidebarItems.push({ title: 'Account Management', icon: 'icon-account-management', onClick: () => this.changeView('account', 'Account Management') })
       return {
         storePlaceHolder: $t('posManagement.searchPlaceholder'),
         username: 'Admin',
@@ -177,6 +181,7 @@
       flex: 1;
       background-color: #F4F7FB;
       padding: 50px 50px 20px 80px;
+      overflow: hidden;
     }
 
     &__title {
