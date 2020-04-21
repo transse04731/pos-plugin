@@ -3,8 +3,8 @@
     <g-dialog persistent v-model="dialog.pairing" width="580">
       <div class="dialog" style="padding: 24px">
         <div class="dialog-title">Welcome to Gigasource POS</div>
-        <div class="dialog-title--sub">Paring Code</div>
-        <g-text-field-bs large class="bs-tf__pos" v-model="code">
+        <div class="dialog-title--sub">Pairing Code</div>
+        <g-text-field-bs large class="bs-tf__pos" v-model="code" style="margin-bottom: 12px;">
           <template v-slot:append-inner>
             <g-icon style="cursor: pointer" @click="dialog.input = true">icon-keyboard</g-icon>
           </template>
@@ -13,8 +13,14 @@
           <g-icon>icon-no-connection</g-icon>
           <span class="ml-2 fs-small">No internet connection</span>
         </div>
-        <div class="dialog-message--note">
-          <b>Note: </b>Please contact your local provide start using the program. Internet connection is required.
+        <div class="row-flex" style="margin-top: 24px;">
+          <div class="dialog-message--note">
+            <b>Note: </b>Please contact your local provide start using the program. Internet connection is required.
+          </div>
+          <div>
+            <g-btn-bs background-color="#2979FF" text-color="white" width="7.5em"
+                      @click="connect">Connect</g-btn-bs>
+          </div>
         </div>
       </div>
     </g-dialog>
@@ -28,13 +34,16 @@
         <g-btn-bs style="margin: 16px" width="120" background-color="#2979FF" @click="start">Start</g-btn-bs>
       </div>
     </g-dialog>
-    <dialog-text-filter v-model="dialogInput" label="Code" :defaul-value="code" @submit="changeCode"/>
+    <dialog-text-filter v-model="dialog.input" label="Code" :defaul-value="code" @submit="changeCode"/>
   </div>
 </template>
 
 <script>
   export default {
     name: "FirstTimeSetUp",
+    props: {
+      isFirstTimeSetup: Boolean
+    },
     data() {
       return {
         dialog: {
@@ -46,12 +55,15 @@
         error: true
       }
     },
-    watch: {
-      code(val) {
-        if (val === '123456') {
-          this.dialog.success = true
-        }
-      }
+    created() {
+      this.error = !navigator.onLine
+      window.addEventListener('online', () => {
+        this.error = false
+      });
+
+      window.addEventListener('offline', () => {
+        this.error = true
+      });
     },
     methods: {
       changeCode(code) {
@@ -59,6 +71,20 @@
       },
       start() {
         this.$router.push({path: '/view/pos-login'})
+      },
+      connect() {
+        this.$emit('registerOnlineOrder', this.code, deviceId => {
+          this.success = !!deviceId
+          this.success && this.$emit('completeSetup')
+        })
+      }
+    },
+    watch: {
+      isFirstTimeSetup: {
+        handler(val) {
+          if (!val) this.$router.push('/view/pos-login')
+        },
+        immediate: true
       }
     }
   }
@@ -66,7 +92,10 @@
 
 <style scoped lang="scss">
   .background {
-    background-image: url("/plugins/pos-plugin/assets/login-bg.png");
+    height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-image: url("/plugins/pos-plugin/assets/background-blur.png");
   }
 
   .dialog {
@@ -99,10 +128,10 @@
     &--error {
       color: #f44336;
       font-style: italic;
-      margin: 12px 0 24px;
     }
 
     &--note {
+      text-align: left;
       font-size: 12px;
       font-style: italic;
       margin-bottom: 8px;

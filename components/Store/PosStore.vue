@@ -25,7 +25,8 @@
         timeFormat: this.$t('dates.timeFormat'),
         dateFormat: this.$t('dates.dateFormat'),
         locale: 'en',
-        device: 'Terminal1'
+        device: 'Terminal1',
+        isFirstTimeSetup: true,
       }
     },
     domain: 'PosStore',
@@ -48,8 +49,11 @@
           this.incorrectPasscode = false
         }
       },
+      completeSetup() {
+        this.isFirstTimeSetup = false
+        localStorage.setItem('isFirstTimeSetup', 'false')
+      }
       //<!--</editor-fold>-->
-      //Layout config views
     },
     async created() {
       this.user = cms.getList('PosSetting')[0].user[0]
@@ -66,6 +70,8 @@
           this.device = currentRoute.query.device
         }
       }
+
+      this.isFirstTimeSetup = JSON.parse(localStorage.getItem('isFirstTimeSetup'))
     },
     beforeDestroy() {
       this.setDateInterval && clearInterval(this.setDateInterval)
