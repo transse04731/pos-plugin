@@ -123,6 +123,10 @@
           .g-tf-append__inner {
             display: none;
           }
+
+          textarea {
+            user-select: text !important;
+          }
         }
       }
 
