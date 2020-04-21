@@ -18,7 +18,7 @@
     async created() {
       this.gridFsHandler = createGridFsHandlers({
         // namespace: this.$getService('PosStore').accountId,
-        apiBaseUrl: 'http://localhost:8888/cms-files'
+        apiBaseUrl: '/cms-files'
       })
       
       await this.createFolder('/', 'images')
