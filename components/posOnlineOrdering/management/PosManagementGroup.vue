@@ -28,7 +28,7 @@
                 </div>
                 <div class="row-flex col-3">
                   <g-select class="w-50" :items="listVersion" v-model="device.appVersion"/>
-                  <p class="ml-3 text-indigo-accent-2" style="cursor: pointer" @click="updateApp(device)">Update</p>
+                  <p class="ml-3 text-indigo-accent-2" style="cursor: pointer" @click="updateAppVersion(device)">Update</p>
                 </div>
                 <div class="col-1">
                   <g-tooltip
@@ -182,9 +182,14 @@
           socket.off('updateDeviceStatus')
         }
       },
-      updateApp(device) {
-        const {socket} = window.cms
-        socket.emit('updateApp',  device._id, "http://localhost:8888/cms-files/files/download//patch_signed_7zip.apk")
+      async updateAppVersion(device) {
+        const name = device.appName
+        const version = device.appVersion
+        const app = await cms.getModel('App').findOne({ version})
+        if (app) {
+          const {socket} = window.cms
+          socket.emit('updateApp', device._id, `${location.origin}${app.uploadPath}` )
+        }
       }
     },
     watch: {
