@@ -117,7 +117,7 @@
       sidebarItems.push({ title: 'Account Management', icon: 'icon-account-management', onClick: () => this.changeView('account', 'Account Management') })
       return {
         storePlaceHolder: $t('posManagement.searchPlaceholder'),
-        username: 'Admin',
+        username: cms.loginUser.user.username,
         view: 'list',
         dialog: {
           newGroup: false,
