@@ -92,18 +92,18 @@
         } else {
           storeGroups = cms.loginUser.user.storeGroups
         }
-        
         this.storeGroups.splice(0, this.storeGroups.length, ...storeGroups)
       },
       async addGroup(name) {
-        if (_.includes(this.storeGroupNames, name))
-          return { ok: false, message: 'This name is already taken!' }
+        if (_.includes(this.storeGroupNames, name)) {
+          alert('This name is already taken!')
+          return
+        }
         const createdGroup = await cms.getModel('StoreGroup').create({ name })
         const storeGroups = [..._.map(cms.loginUser.user.storeGroups, sg => sg._id), createdGroup._id]
         await cms.getModel('User').findOneAndUpdate({_id: cms.loginUser.user._id}, { storeGroups })
         await cms.updateUserSession()
         await this.loadStoreGroups()
-        return { ok: true}
       },
 
       // stores
@@ -113,13 +113,15 @@
         this.stores.splice(0, this.stores.length, ...stores)
       },
       async addStore({ name, groups, address }) {
-        if (_.includes(this.storeNames, name))
-          return { ok: false, message: 'This name is already taken!' }
+        if (_.includes(this.storeNames, name)) {
+          alert('This name is already taken!')
+          return
+        }
+        
         // get unique alias
         const alias = this.getUniqueAlias(_.toLower(name))
         await cms.getModel('Store').create({ name, alias, groups, address, addedDate: dayjs(), pickup: true })
         await this.loadStores()
-        return { ok: true }
       },
       getUniqueAlias(alias) {
         let ctr = 0
@@ -139,34 +141,34 @@
         } else {
           await cms.getModel('Store').remove({_id : store._id})
           await this.loadStores()
-          return { ok : true }
         }
       },
       async updateStore(_id, change) {
         if (change.alias) {
-          const store = _.find(this.stores, store => store.alias = change.alias)
-          if (store && store._id !== _id)
-            return { ok: false, message: 'Alias has been taken' }
+          const store = _.find(this.stores, store => store.alias === change.alias)
+          if (store) {
+            console.log('alias', change.alias, store)
+            console.log('store id', store._id)
+            console.log('current id', _id)
+            if (store._id !== _id) {
+              alert('WebShop identity has been taken')
+              return
+            }
+          }
         }
-        
         await cms.getModel('Store').findOneAndUpdate({_id}, {...change})
         await this.loadStores()
-        this.showSnackbar = true
-        return { ok : true }
       },
       
       // devices
       async addDevice({pairingCode}) {
         // TODO: addDevice
-        return { ok: true }
       },
       async removeDevice(_id) {
         // TODO: removeDevice
-        return { ok: true }
       },
       async updateDevice(_id, change) {
         // TODO: updateDevice
-        return { ok: true }
       },
       
       // apps

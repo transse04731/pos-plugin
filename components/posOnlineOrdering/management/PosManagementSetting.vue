@@ -1,5 +1,6 @@
 <template>
   <div class="pos-management-setting">
+    <!-- BASIC INFO -->
     <div class="pos-management-setting__info">
       <div class="pos-management-setting__title">Basic Information</div>
       <g-select large deletable-chips multiple text-field-component="GTextFieldBs" label="Group"
@@ -10,6 +11,8 @@
       <g-text-field-bs large label="Name" v-model="computedName"/>
       <g-text-field-bs large label="Address" v-model="computedAddress"/>
     </div>
+    
+    <!-- ONLINE ORDER STORE -->
     <div class="pos-management-setting__order">
       <div class="pos-management-setting__title">Online Ordering</div>
       <div>
@@ -24,7 +27,7 @@
         <div class="pos-management-setting__order--url">
           <span class="i text-indigo-accent-2">{{ webShopUrlPrefix }}</span>
           <div style="flex: 1; margin-left: 8px">
-            <g-text-field-bs large :placeholder="_id" v-model="alias" @input="updateDebounce({ alias: $event })"/>
+            <g-text-field-bs large :placeholder="_id" :value="alias" @input="updateAlias"/>
           </div>
         </div>
       </div>
@@ -33,6 +36,8 @@
         <g-text-field-bs large v-model="clientDomain" @input="updateDebounce({ clientDomain: $event })"/>
       </div>
     </div>
+    
+    <!-- DEVICES -->
     <div class="pos-management-setting__device">
       <div class="pos-management-setting__title">Device status</div>
       <template v-if="devices.length === 0">
@@ -92,6 +97,7 @@
       clientDomain: String,
       devices: Array,
       groups: Array,
+      aliases: Array,
     },
     data() {
       return {
@@ -138,6 +144,13 @@
       }
     },
     methods: {
+      updateAlias(value) {
+        if (_.trim(value) === '') {
+          alert('Webshop url must not empty')
+          return
+        }
+        this.updateDebounce({ alias: value })
+      },
       update(change) {
         this.$emit('update', change)
       }
