@@ -42,7 +42,9 @@
           </template>
         </g-grid-select>
       </g-row>
-      <g-switch label="Incoming order notification sound"></g-switch>
+      <g-switch label="Incoming order notification sound" :input-value="computedDevice.sound"
+                @change="updateSound"
+      />
       <p><b>Order sorting option: </b></p>
       <g-grid-select :grid="false" :items="orderSorting" v-model="computedOnlineOrderSorting" mandatory>
         <template #default="{item, toggleSelect}">
@@ -99,6 +101,9 @@
           if (!this.internalDevice) return {url: this.webshopUrl}
           return Object.assign(this.internalDevice, {url: this.webshopUrl})
         },
+        set(value) {
+          this.$emit('updateOnlineDevice', value)
+        }
       },
       computedDefaultPrepareTime: {
         get() {
@@ -153,6 +158,9 @@
           this.connected = false
         })
       },
+      updateSound(value) {
+        this.computedDevice = Object.assign({}, this.computedDevice, { sound: value })
+      }
     },
     mounted() {
       window.cms.socket.emit('getWebshopUrl', webshopUrl => this.webshopUrl = webshopUrl);

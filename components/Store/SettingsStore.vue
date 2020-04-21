@@ -780,6 +780,20 @@
         }
       },
 
+      async updateOnlineDevice(device) {
+        try {
+          await this.updatePosSetting('onlineDevice', device)
+
+          const posSettings = await this.getPosSetting()
+          if (posSettings) {
+            this.onlineDevice = posSettings.onlineDevice
+          }
+          return this.onlineDevice
+        } catch (e) {
+          console.warn(e)
+        }
+      },
+
       async updateDefaultPrepareTime(value) {
         await cms.getModel('PosSetting').updateOne({}, {defaultPrepareTime: value});
       },
