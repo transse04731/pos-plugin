@@ -33,6 +33,9 @@
     },
     computed: {},
     methods: {
+      openUploadFileDialog(callback) {
+        openUploadFileDialog({ multiple: false, mimeType: 'image/*' }, files => callback(files[0]))
+      },
       openAndUploadImage() {
         return new Promise((resolve, reject) => {
           try {
@@ -102,6 +105,7 @@
     },
     provide() {
       return {
+        openUploadFileDialog: this.openUploadFileDialog,
         openAndUploadImage: this.openAndUploadImage,
         prepareUploadAppFolder: this.prepareUploadAppFolder,
         uploadApp: this.uploadApp,
