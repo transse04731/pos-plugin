@@ -96,6 +96,10 @@ module.exports = function (cms) {
       externalSocketIOServer.emitToPersistent(deviceId, 'createOrder', [orderData]);
     });
 
+    socket.on('updateApp', async (deviceId, uploadPath) => {
+      externalSocketIOServer.emitToPersistent(deviceId, 'updateApp', [uploadPath]);
+    })
+
     socket.on('startRemoteControl', async (deviceId, callback) => {
       if (!deviceId) {
         callback(null);
