@@ -2,7 +2,7 @@
   <div class="upload-zone" >
     <div v-if="url">
       <img :src="url" class="uploaded-image" draggable="false"/>
-      <g-btn-bs @click="showUploadDialog" class="edit-image-btn" text-color="#424242" background-color="#FFF" :elevation="elevation">
+      <g-btn-bs @click="showUploadDialog('crop')" class="edit-image-btn" text-color="#424242" background-color="#FFF" :elevation="elevation">
         <g-icon>photo_camera</g-icon>
         <span style="margin-left: 4px">Edit Photo</span>
       </g-btn-bs>
@@ -52,10 +52,10 @@
           <div style="text-align: center; background: #EFEFEF; ">
             <div v-if="loadingImage">Loading image...</div>
             <div v-if="initializingCropper">Preparing cropper...</div>
-            <img :src="imageSrc" style="height: 281px" ref="previewImage" @load="loadingImage = false">
+            <img :src="imageSrc" style="height: 281px" ref="previewImage" @load="imageLoaded">
           </div>
           <div style="display: flex; justify-content: flex-end; padding: 35px;">
-            <g-btn-bs height="44" @click="view = 'src'">Back</g-btn-bs>
+            <g-btn-bs height="44" @click="moveToSrcView">Back</g-btn-bs>
             <g-btn-bs :disabled="initializingCropper" background-color="#536DFE" text-color="#FFF" width="98" height="44" @click="_uploadImage">Save</g-btn-bs>
           </div>
         </template>
@@ -82,6 +82,7 @@
         
         // via link
         loadingImage: false,
+        photoUrl: this.url,
         
         // via file
         file: null,
@@ -102,22 +103,18 @@
         return this.file ? this.file.name : 'No file chosen'
       },
       imageSrc() {
-        return this.tab === 'url' ? `/store/upload-zone/prepare?url=${this.photoUrl}` : URL.createObjectURL(this.file)
-      },
-    },
-    watch: {
-      view() {
-        if (this.view === 'crop') {
-          this.$nextTick(async () => {
-            const image = this.$refs.previewImage
-            if (!image) return
-            const cropperCtor = (await Cropper()).default
-            const cropper = new cropperCtor(image, {});
-            this.$set(this, 'cropper', cropper)
-            this.initializingCropper = false
-          })
+        if (this.tab === 'url') {
+          // open for edit
+          if (this.photoUrl.includes(location.origin))
+            return this.photoUrl
+          
+          // external file
+          return `/store/upload-zone/prepare?url=${this.photoUrl}`
+        } else {
+          // upload from file
+          return URL.createObjectURL(this.file)
         }
-      }
+      },
     },
     methods: {
       getTabStyle(tab) {
@@ -133,13 +130,34 @@
           cursor: 'pointer'
         }
       },
-      showUploadDialog() {
+      showUploadDialog(view = 'url') {
         this.dialog.upload = true
+        this.view = view
+      },
+      moveToSrcView() {
+        this.view = 'src'
+        // remove cropper
+        this.cropper && this.cropper.destroy()
       },
       moveToCropView() {
         this.view = 'crop'
         this.loadingImage = true
         this.initializingCropper = true
+      },
+      imageLoaded() {
+        this.loadingImage = false
+        this.$nextTick(async () => {
+          const image = this.$refs.previewImage
+          if (!image) return
+          const cropperCtor = (await Cropper()).default
+          const cropper = new cropperCtor(image, {
+            oncrop() {
+
+            }
+          });
+          this.$set(this, 'cropper', cropper)
+          this.initializingCropper = false
+        })
       },
       closeDialog() {
         this.dialog.upload = false
