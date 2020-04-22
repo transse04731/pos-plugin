@@ -85,7 +85,7 @@
         
         // via link
         loadingImage: false,
-        photoUrl: this.url,
+        photoUrl: this.url || '',
         
         // via file
         file: null,
