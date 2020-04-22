@@ -91,7 +91,7 @@
           console.log('folder is not exist, create new')
           await this.gridFsHandler.createNewFolder(parentPath, folderPath)
         } else {
-          console.log('folder existed. skip')
+          console.log(`folder ${folderPath} existed. skip`)
         }
       }
     },
