@@ -90,7 +90,7 @@
         node.onClick && node.onClick.bind(this)();
       },
       logout() {
-        this.$router.push('/view/pos-login')
+        this.$router.push('/pos-login')
         this.user = null
       }
     }

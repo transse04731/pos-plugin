@@ -148,7 +148,7 @@
         this.$getService('dialogConfirmDeletePrinterCategory:setActive')(true)
       },
       back() {
-        this.$router.push({path: '/view/pos-dashboard'});
+        this.$router.push({path: '/pos-dashboard'});
       },
     },
     async created() {

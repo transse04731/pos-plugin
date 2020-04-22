@@ -13,7 +13,7 @@
     name: 'PosFunctionToolbar',
     methods: {
       back() {
-        this.$router.push({ path: '/view/pos-settings' })
+        this.$router.push({ path: '/pos-settings' })
       }
     }
   }

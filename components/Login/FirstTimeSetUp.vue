@@ -70,7 +70,7 @@
         this.code = code
       },
       start() {
-        this.$router.push({path: '/view/pos-login'})
+        this.$router.push({path: '/pos-login'})
       },
       connect() {
         this.$emit('registerOnlineOrder', this.code, deviceId => {
@@ -82,7 +82,7 @@
     watch: {
       isFirstTimeSetup: {
         handler(val) {
-          if (!val) this.$router.push('/view/pos-login')
+          if (!val) this.$router.push('/pos-login')
         },
         immediate: true
       }

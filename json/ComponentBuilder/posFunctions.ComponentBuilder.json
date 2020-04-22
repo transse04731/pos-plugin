@@ -488,7 +488,7 @@
             },
             "events": {
               "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: `/view/pos-order-2`})\n}",
+                "_code_": "module.exports = function () {\n  this.$router.push({path: `/pos-order-2`})\n}",
                 "_code_type_": "commonJs"
               }
             }
@@ -559,7 +559,7 @@
             },
             "events": {
               "click": {
-                "_code_": "module.exports = function () {\n  // this.$router.push({path: `/view/pos-delivery`})\n}",
+                "_code_": "module.exports = function () {\n  // this.$router.push({path: `/pos-delivery`})\n}",
                 "_code_type_": "commonJs"
               }
             }
@@ -631,7 +631,7 @@
             },
             "events": {
               "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: '/view/pos-staff-report'})\n}",
+                "_code_": "module.exports = function () {\n  this.$router.push({path: '/pos-staff-report'})\n}",
                 "_code_type_": "commonJs"
               }
             }
@@ -703,7 +703,7 @@
             },
             "events": {
               "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: '/view/pos-settings'})\n}",
+                "_code_": "module.exports = function () {\n  this.$router.push({path: '/pos-settings'})\n}",
                 "_code_type_": "commonJs"
               }
             }
@@ -775,7 +775,7 @@
             },
             "events": {
               "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: `/view/pos-eod-report`})\n}",
+                "_code_": "module.exports = function () {\n  this.$router.push({path: `/pos-eod-report`})\n}",
                 "_code_type_": "commonJs"
               }
             }
@@ -848,7 +848,7 @@
             },
             "events": {
               "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: `/view/pos-order-history`})\n}",
+                "_code_": "module.exports = function () {\n  this.$router.push({path: `/pos-order-history`})\n}",
                 "_code_type_": "commonJs"
               }
             }
@@ -921,7 +921,7 @@
             },
             "events": {
               "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: `/view/pos-month-report`})\n}",
+                "_code_": "module.exports = function () {\n  this.$router.push({path: `/pos-month-report`})\n}",
                 "_code_type_": "commonJs"
               }
             }
@@ -1046,7 +1046,7 @@
             },
             "events": {
               "click": {
-                "_code_": "module.exports = function () {\n  //this.$router.push({path: `/view/pos-support`})\n}",
+                "_code_": "module.exports = function () {\n  //this.$router.push({path: `/pos-support`})\n}",
                 "_code_type_": "commonJs"
               }
             }
@@ -1114,7 +1114,7 @@
             },
             "events": {
               "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: `/view/pos-edit-table-plan`})\n}",
+                "_code_": "module.exports = function () {\n  this.$router.push({path: `/pos-edit-table-plan`})\n}",
                 "_code_type_": "commonJs"
               }
             }
@@ -1182,7 +1182,7 @@
             },
             "events": {
               "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: `/view/pos-edit-menu-card`})\n}",
+                "_code_": "module.exports = function () {\n  this.$router.push({path: `/pos-edit-menu-card`})\n}",
                 "_code_type_": "commonJs"
               }
             }
@@ -1250,7 +1250,7 @@
             },
             "events": {
               "click": {
-                "_code_": "module.exports = function () {\n  this.$router.push({path: `/view/pos-printer-setting`})\n}",
+                "_code_": "module.exports = function () {\n  this.$router.push({path: `/pos-printer-setting`})\n}",
                 "_code_type_": "commonJs"
               }
             }

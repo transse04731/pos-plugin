@@ -61,7 +61,7 @@
         await this.deleteSelectedProducts();
       },
       back() {
-        this.$router.push({ path: '/view/pos-dashboard' });
+        this.$router.push({ path: '/pos-dashboard' });
       },
       async sort(option) {
         this.productSortCondition = option

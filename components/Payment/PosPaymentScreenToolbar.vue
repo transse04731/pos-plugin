@@ -28,7 +28,7 @@
           })))
           this.$set(this.currentOrder, 'isDiscountInTotal', false);
         }
-        this.$router.push({path: '/view/pos-order'})
+        this.$router.push({path: '/pos-order'})
       }
     }
   }

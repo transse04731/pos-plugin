@@ -35,7 +35,7 @@
       },
       back() {
         this.$getService('OrderStore:resetOrderData')()
-        this.$router.push({path: '/view/pos-dashboard'})
+        this.$router.push({path: '/pos-dashboard'})
       }
     },
     async mounted() {

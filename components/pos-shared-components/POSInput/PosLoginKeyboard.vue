@@ -40,9 +40,9 @@
     },
     methods: {
       keyboardLogin() {
-        if(!this.value) return '';
+        if (!this.value) return '';
         this.$emit('login', this.internalValue);
-        return ''
+        return this.internalValue
       },
       clear() {
         this.$emit('clear');

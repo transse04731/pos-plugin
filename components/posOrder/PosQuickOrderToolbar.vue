@@ -47,10 +47,10 @@
     methods: {
       back() {
         this.$emit('resetOrderData')
-        this.$router.push({path: '/view/pos-dashboard'})
+        this.$router.push({path: '/pos-dashboard'})
       },
       pay() {
-        this.$router.push({path: '/view/pos-payment'})
+        this.$router.push({path: '/pos-payment'})
       },
       quickCash(isTakeout = false) {
         this.currentOrder.takeOut = isTakeout

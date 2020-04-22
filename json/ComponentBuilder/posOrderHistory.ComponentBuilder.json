@@ -164,7 +164,7 @@
                 },
                 "events": {
                   "click": {
-                    "_code_": "module.exports = function() {\n  this.$router.push({path: '/view/pos-dashboard'})\n}",
+                    "_code_": "module.exports = function() {\n  this.$router.push({path: '/pos-dashboard'})\n}",
                     "_code_type_": "commonJs"
                   }
                 }

@@ -34,7 +34,7 @@
       pay() {
         const backToDashboard = !!this.currentOrder.table
         this.$emit('pay')
-        if (backToDashboard) this.$router.push({path: '/view/pos-dashboard'})
+        if (backToDashboard) this.$router.push({path: '/pos-dashboard'})
         else this.$router.go(-1)
       },
       promotion() {

@@ -39,7 +39,7 @@
             items: [
               { title: sidebar.articles, icon: 'radio_button_unchecked', iconType: 'small', isView: true },
               { title: sidebar.category, icon: 'radio_button_unchecked', iconType: 'small', isView: true /!*href: '/settings/category' *!/ },
-              { title: sidebar.productLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-article', appendIcon: 'open_in_new' },
+              { title: sidebar.productLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/pos-article', appendIcon: 'open_in_new' },
             ]
           },*/
           /*{ title: 'Reporting', icon: 'icon-bar_chart', svgIcon: true },*/
@@ -51,8 +51,8 @@
           { title: sidebar.general, icon: 'radio_button_unchecked', iconType: 'small', isView: true /!*href: '/settings/general'*!/ },
           /!*{ title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small' },
           { title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small' },*!/
-          { title: sidebar.paymentLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-payment-config', appendIcon: 'open_in_new' },
-          { title: sidebar.functionLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/view/pos-fn-button', appendIcon: 'open_in_new' },
+          { title: sidebar.paymentLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/pos-payment-config', appendIcon: 'open_in_new' },
+          { title: sidebar.functionLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/pos-fn-button', appendIcon: 'open_in_new' },
         ]
       },*/
           {

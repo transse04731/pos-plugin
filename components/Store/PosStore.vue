@@ -3,7 +3,6 @@
 </template>
 
 <script>
-  import _ from 'lodash'
   import customParseFormat from 'dayjs/plugin/customParseFormat'
   import { getProvided } from '../logic/commonUtils';
 
@@ -32,12 +31,14 @@
     domain: 'PosStore',
     methods: {
       //<!--<editor-fold desc="Login screen">-->
-      login() {
+      async login() {
         try {
-          this.user = _.find(cms.getList('PosSetting')[0].user, user => user.passcode === this.loginPassword)
+          const posSetting = await cms.getModel('PosSetting').findOne();
+          this.user = posSetting.user.find(user => user.passcode === this.loginPassword)
+
           if (this.user) {
             this.loginPassword = ''
-            return this.$router.push({ path: `/view/pos-dashboard` })
+            return this.$router.push({ path: `/pos-dashboard` })
           }
         } catch (e) {
           console.error(e)
@@ -56,7 +57,6 @@
       //<!--</editor-fold>-->
     },
     async created() {
-      this.user = cms.getList('PosSetting')[0].user[0]
       this.setDateInterval = setInterval(() => this.systemDate = new Date(), 10000)
 
       const i18nConfig = cms.getList('SystemConfig').find(i => i.type === 'I18n')
@@ -66,7 +66,7 @@
 
       if (this.$router && this.$router.currentRoute) {
         const {currentRoute} = this.$router
-        if (currentRoute.path === '/view/pos-login' && currentRoute.query.device) {
+        if (currentRoute.path === '/pos-login' && currentRoute.query.device) {
           this.device = currentRoute.query.device
         }
       }

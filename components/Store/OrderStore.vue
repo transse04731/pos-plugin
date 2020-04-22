@@ -417,7 +417,7 @@
         await this.savePaidOrder({ type: 'cash', value: this.paymentTotal });
       },
       pay() {
-        this.$router.push({ path: `/view/pos-payment` })
+        this.$router.push({ path: `/pos-payment` })
       },
       //<!--</editor-fold>-->
 

@@ -64,7 +64,7 @@
     },
     methods: {
       back() {
-        this.$router.push({ path: '/view/pos-dashboard' })
+        this.$router.push({ path: '/pos-dashboard' })
       },
       async runEndOfDay() {
         const oldestPendingReport = await this.$getService('ReportsStore:getOldestPendingReport')()

@@ -78,7 +78,7 @@
           this[btn.buttonFunction](btn.buttonFunctionValue);
       },
       async pay() {
-        await this.$router.push({ path: '/view/pos-order' })
+        await this.$router.push({ path: '/pos-order' })
         await this.savePaidOrder()
         this.selectedPayment = null
       },

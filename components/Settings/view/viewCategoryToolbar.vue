@@ -64,7 +64,7 @@
         this.$getService('dialogNewCategory:open')()
       },
 			back() {
-				this.$router.push({ path: '/view/pos-dashboard' })
+				this.$router.push({ path: '/pos-dashboard' })
 			},
 			isMoveBtnDisabled(category, moveUp = false) {
 				if (!category) return true

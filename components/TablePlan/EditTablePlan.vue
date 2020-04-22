@@ -348,7 +348,7 @@
 
       async back() {
         await this.$getService('RoomStore').reloadRooms()
-        this.$router.push('/view/pos-dashboard')
+        this.$router.push('/pos-dashboard')
       }
     },
     async created() {

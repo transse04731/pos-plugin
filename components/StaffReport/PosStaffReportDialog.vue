@@ -116,7 +116,7 @@
     },
     methods: {
       back() {
-        this.$router.push({ path: '/view/pos-dashboard' })
+        this.$router.push({ path: '/pos-dashboard' })
       },
       async print() {
         if (!this.orderSalesByStaff) {

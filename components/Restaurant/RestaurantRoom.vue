@@ -86,7 +86,7 @@
       selectRoomObj(roomObj) {
         if (!this.isTableBusy(roomObj)) {
           this.roomObj = roomObj;
-          this.$router.push(`/view/pos-order-2/${roomObj.name}`)
+          this.$router.push(`/pos-order-2/${roomObj.name}`)
         }
       },
     }
