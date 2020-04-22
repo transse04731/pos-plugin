@@ -3,13 +3,15 @@
     <!-- Product info -->
     <div class="menu-setting-new-item__main">
       <div class="ta-center">{{ index + 1 }}</div>
-      <div class="menu-setting-new-item__image" @click="uploadImage">
-        <img v-if="internalImage" :src="internalImage" draggable="false" style="opacity: 0.8; max-width: 100%; max-height: 100%"/>
-        <div v-else class="menu-setting-new-item__image--upload">
-          <img alt src="/plugins/pos-plugin/assets/upload.svg"/>
-          <p>Upload</p>
-        </div>
-      </div>
+      <upload-zone class="menu-setting-new-item__image" :url="internalImage" @url="getImage">
+        <template v-slot:default="{showUploadDialog}">
+          <img @click="showUploadDialog('crop')" v-if="internalImage" :src="internalImage" draggable="false" style="opacity: 0.8; width: 100%; height: 100%"/>
+          <div @click="showUploadDialog('src')" v-else class="menu-setting-new-item__image--upload">
+            <img alt src="/plugins/pos-plugin/assets/upload.svg"/>
+            <p>Upload</p>
+          </div>
+        </template>
+      </upload-zone>
       <div class="menu-setting-new-item__content">
         <div class="menu-setting-new-item__content--upper">
           <div class="col-1">
@@ -60,9 +62,11 @@
 </template>
 <script>
   import _ from 'lodash'
+  import UploadZone from "./UploadZone";
   
   export default {
     name: 'NewMenuItem',
+    components: {UploadZone},
     props: {
       id: String,
       index: Number,
@@ -108,8 +112,8 @@
       }
     },
     methods: {
-      async uploadImage() {
-        this.internalImage = await this.$getService('FileUploadStore').openAndUploadImage()
+      getImage(url) {
+        this.internalImage = url
       },
       saveMenuItem() {
         if (!this.internalName) {
