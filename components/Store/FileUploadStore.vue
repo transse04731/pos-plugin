@@ -73,8 +73,10 @@
           }))
         })
       },
-      async removeFile(filePath) {
-        await this.gridFsHandler.deleteFileByPath(filePath)
+      
+      async removeFile(filePath /*view path or download path*/) {
+        const path = filePath.substr(filePath.indexOf('//') + 1)
+        await this.gridFsHandler.deleteFileByPath(path)
       },
       async isFolderExist(folderPath) {
         try {
