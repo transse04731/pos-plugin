@@ -13,7 +13,7 @@
       <div class="menu-setting-new-item__content">
         <div class="menu-setting-new-item__content--upper">
           <div class="col-1">
-            <g-text-field-bs small v-model="internalId" type="number" placeholder="No."/>
+            <g-text-field-bs small v-model="internalId" type="text" placeholder="No."/>
           </div>
           <div :class="useMultiplePrinters? 'col-6': 'col-9'">
             <g-text-field-bs small v-model="internalName" :rules="productRules.name" placeholder="Name *"/>
