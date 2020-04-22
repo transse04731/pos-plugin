@@ -16,7 +16,7 @@
     <div style="padding: 4px; background-color: #FFF; flex: 1" v-if="selectedCategoryLayout">
       <div :style="productContainerStyle">
         <div v-for="(productLayout, index) in products"
-             class="pol__prod darken-effect"
+             :class="['pol__prod', !editable && 'darken-effect']"
              :key="index"
              :style="[getAreaStyle(productLayout), getProductItemStyle(productLayout)]"
              v-on="getProductListeners(productLayout)">
@@ -380,6 +380,7 @@
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
 
     &__cate {
       border-radius: 4px;

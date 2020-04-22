@@ -280,6 +280,11 @@
                   "type": ".sync",
                   "root": "data.keyboardConfig",
                   "local": "keyboardConfig"
+                },
+                {
+                  "type": ".sync",
+                  "root": "data.selectedCategoryLayout",
+                  "local": "selectedCategoryLayout"
                 }
               ],
               "slotScopeBinding": [],
@@ -287,7 +292,11 @@
               "isScopedSlot": true,
               "url": "plugins/pos-plugin/components/EditMenuCard/KeyboardEditor.vue",
               "path": "components/EditMenuCard/KeyboardEditor.vue",
-              "pluginName": "pos-plugin"
+              "pluginName": "pos-plugin",
+              "content": {
+                "props": {},
+                "events": {}
+              }
             }
           ],
           "url": "plugins/pos-plugin/components/common/ContentRender.vue",
