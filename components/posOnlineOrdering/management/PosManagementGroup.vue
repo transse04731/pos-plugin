@@ -193,9 +193,7 @@
         if (app) {
           console.log('update app for device', device)
           const {socket} = window.cms
-          const downloadPath = `${location.origin}${app.uploadPath}`
-          console.log('download path', downloadPath)
-          socket.emit('updateApp', device._id, downloadPath)
+          socket.emit('updateApp', device._id, app.uploadPath)
           await cms.getModel('Device').updateOne({_id: device._id}, { version})
         } else {
           console.log('Found no app with version', version)
