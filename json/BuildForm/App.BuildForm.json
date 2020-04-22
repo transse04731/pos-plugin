@@ -15,6 +15,12 @@
       "type": "input"
     },
     {
+      "_id": "5ea01b70d7c9cc44f5012da9",
+      "schemaType": "string",
+      "key": "baseVersion",
+      "type": "input"
+    },
+    {
       "_id": "5e9939de855aaf04cf1272b2",
       "schemaType": "string",
       "key": "type",
@@ -22,12 +28,12 @@
       "optionsType": "textValue",
       "options": [
         {
-          "value": "POS Android",
-          "text": "POS Android"
+          "value": "APK",
+          "text": "APK"
         },
         {
-          "value": "POS PC",
-          "text": "POS PC"
+          "value": "Patch",
+          "text": "Patch"
         }
       ]
     },
@@ -45,7 +51,8 @@
     {
       "_id": "5e9939de855aaf04cf1272b6",
       "schemaType": "string",
-      "key": "uploadPath"
+      "key": "uploadPath",
+      "type": "input"
     },
     {
       "_id": "5e99669f855aaf04cf127304",
@@ -63,6 +70,14 @@
           "text": "public"
         }
       ]
+    },
+    {
+      "_id": "5ea0167dd7c9cc44f5012cc9",
+      "schemaType": "string",
+      "key": "group",
+      "type": "ref-select-static",
+      "ref": "AppGroup",
+      "labelProp": "name"
     }
   ],
   "name": "App",
