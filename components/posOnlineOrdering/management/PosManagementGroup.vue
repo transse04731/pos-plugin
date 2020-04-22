@@ -189,7 +189,6 @@
         const name = device.appName
         const version = device.appVersion
         const app = await cms.getModel('App').findOne({ version})
-        console.log('found', app)
         if (app) {
           console.log('update app for device', device)
           const {socket} = window.cms
