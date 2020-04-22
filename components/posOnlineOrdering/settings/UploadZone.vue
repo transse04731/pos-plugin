@@ -8,7 +8,7 @@
       </g-btn-bs>
     </div>
     
-    <div v-else @click="showUploadDialog" style="padding: 20px;">
+    <div v-else @click="showUploadDialog('src')" style="padding: 20px;">
       <div style="display: flex; align-items: center">
         <img src="/plugins/pos-plugin/assets/img.svg" class="mr-2">
         <div>
