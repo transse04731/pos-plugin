@@ -1,7 +1,7 @@
 <template>
   <div class="upload-zone">
     <slot v-bind:showUploadDialog="showUploadDialog">
-      <div v-if="url" style="height: 244px">
+      <div v-if="url" style="height: 244px; display: flex; align-items: center; justify-content: center">
         <img :src="url" class="uploaded-image" draggable="false"/>
         <g-btn-bs @click="showUploadDialog('crop')" class="edit-image-btn" text-color="#424242" background-color="#FFF" :elevation="elevation">
           <g-icon>photo_camera</g-icon>
@@ -60,7 +60,7 @@
           </div>
           <div style="display: flex; justify-content: flex-end; padding: 35px;">
             <g-btn-bs height="44" @click="moveToSrcView">Back</g-btn-bs>
-            <g-btn-bs :disabled="initializingCropper" background-color="#536DFE" text-color="#FFF" width="98" height="44" @click="_uploadImage">Save</g-btn-bs>
+            <g-btn-bs :disabled="initializingCropper || dialog.uploading" background-color="#536DFE" text-color="#FFF" width="98" height="44" @click="_uploadImage">Save</g-btn-bs>
           </div>
         </template>
       </div>
@@ -98,6 +98,7 @@
         //
         dialog: {
           upload: false,
+          uploading: false,
         },
       }
     },
@@ -171,6 +172,7 @@
         this.openUploadFileDialog(file => this.file = file)
       },
       async _uploadImage() {
+        this.dialog.uploading = true
         const options = { imageSmoothingEnabled: true, imageSmoothingQuality: 'high' }
         this.cropper.getCroppedCanvas(options).toBlob(async (blob) => {
           let uploadedUrl
@@ -181,7 +183,9 @@
             uploadedUrl = await this.uploadImage(new File([blob], this.file.name, { type: this.file.type }))
           }
           this.$emit('url', uploadedUrl)
+          this.photoUrl = uploadedUrl
           this.dialog.upload = false
+          this.dialog.uploading = false
         })
       },
       removeTemporaryFileIfExist() {
@@ -208,7 +212,8 @@
       display: block;
       margin-left: auto;
       margin-right: auto;
-      width: 100%;
+      max-width: 100%;
+      max-height: 100%;
     }
     
     .edit-image-btn {

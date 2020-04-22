@@ -278,7 +278,8 @@
         justify-content: space-between;
 
         & > img {
-          width: 250px;
+          max-width: 250px;
+          max-height: 100px;
         }
 
         &--info {
@@ -374,7 +375,10 @@
 
       .pos-order__left__header {
         & > img {
-          width: 145px;
+          max-width: 145px;
+          max-height: 65px;
+          margin-left: 8px;
+          margin-top: 8px;
         }
 
         &--info {
@@ -399,8 +403,7 @@
   
       .title {
         font-size: 20px;
-        margin-left: 16px;
-        margin-bottom: 11px;
+        margin: 4px 8px 8px;
       }
       
       .pos-order__tab {
