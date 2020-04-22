@@ -15,7 +15,7 @@
               <div>{{store.address}}</div>
             </div>
             <div style="flex: 1">
-              <div class="row-flex" v-for="(device, index) in store.devices" :key="`device_${store.id}_${index}`">
+              <div class="row-flex mb-1" v-for="(device, index) in store.devices" :key="`device_${store.id}_${index}`">
                 <div class="row-flex col-3">
                   <g-icon>{{getDeviceIcon(device)}}</g-icon>
                   <span class="ml-1">{{device.name}}</span>

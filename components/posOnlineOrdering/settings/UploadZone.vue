@@ -1,46 +1,47 @@
 <template>
-  <div class="upload-zone" >
-    <div v-if="url">
-      <img :src="url" class="uploaded-image" draggable="false"/>
-      <g-btn-bs @click="showUploadDialog('crop')" class="edit-image-btn" text-color="#424242" background-color="#FFF" :elevation="elevation">
-        <g-icon>photo_camera</g-icon>
-        <span style="margin-left: 4px">Edit Photo</span>
-      </g-btn-bs>
-    </div>
-    
-    <div v-else @click="showUploadDialog('src')" style="padding: 20px;">
-      <div style="display: flex; align-items: center">
-        <img src="/plugins/pos-plugin/assets/img.svg" class="mr-2">
-        <div>
-          <div class="upload-zone__subtext fw-700">One high resolution image</div>
-          <div class="upload-zone__subtext text-grey">PNG, JPG</div>
+  <div class="upload-zone">
+    <slot v-bind:showUploadDialog="showUploadDialog">
+      <div v-if="url" style="height: 244px">
+        <img :src="url" class="uploaded-image" draggable="false"/>
+        <g-btn-bs @click="showUploadDialog('crop')" class="edit-image-btn" text-color="#424242" background-color="#FFF" :elevation="elevation">
+          <g-icon>photo_camera</g-icon>
+          <span style="margin-left: 4px">Edit Photo</span>
+        </g-btn-bs>
+      </div>
+
+      <div v-else @click="showUploadDialog('src')" style="padding: 20px; height: 244px">
+        <div style="display: flex; align-items: center">
+          <img src="/plugins/pos-plugin/assets/img.svg" class="mr-2">
+          <div>
+            <div class="upload-zone__subtext fw-700">One high resolution image</div>
+            <div class="upload-zone__subtext text-grey">PNG, JPG</div>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; padding-top: 30px;">
+          <img src="/plugins/pos-plugin/assets/upload.svg" class="mb-2">
+          <div class="upload-zone__title">Drag and drop an image</div>
+          <div>or <span style="color: #2873f2">browse</span> to choose file</div>
+          <div class="upload-zone__subtext text-grey">(430x200 or larger recommended, up to 10MB each)</div>
         </div>
       </div>
-      <div style="display: flex; flex-direction: column; align-items: center; padding-top: 30px;">
-        <img src="/plugins/pos-plugin/assets/upload.svg" class="mb-2">
-        <div class="upload-zone__title">Drag and drop an image</div>
-        <div>or <span style="color: #2873f2">browse</span> to choose file</div>
-        <div class="upload-zone__subtext text-grey">(430x200 or larger recommended, up to 10MB each)</div>
-      </div>
-    </div>
-    
+    </slot>
     <!-- -->
     <g-dialog v-model="dialog.upload" persistent>
       <div style="width: 580px; background-color: #FFF; border-radius: 5px; margin: 0 auto;">
         <!-- src -->
-        <div style="font-family: Muli; font-weight: 600;font-size: 24px;color: #212121; padding: 35px 0 28px 35px" >Upload Restaurant Photo</div>
+        <div style="font-weight: 600;font-size: 24px;color: #212121; padding: 35px 0 28px 35px">Upload Restaurant Photo</div>
         <template v-if="view === 'src'">
           <div style="margin-bottom: -1px;">
             <span @click="tab = 'url'" :style=" {...getTabStyle('url'), marginLeft: '35px' }">Paste Photo Url</span>
             <span @click="tab= 'upload'" :style="getTabStyle('upload')">Upload a photo</span>
           </div>
-          <div style="border: 1px solid #9E9E9E; background-color: #E4E6EB; padding: 36px;">
+          <div style="border: 1px solid #9E9E9E; background-color: #EFEFEF; padding: 36px;">
             <template v-if="tab === 'url'">
               <g-text-field-bs v-model="photoUrl" label="Photo URL"/>
             </template>
             <template v-else>
               <div style="height: 70px; display: flex; align-items: center">
-                <g-btn-bs @click="choosePhoto" background-color="#FFF">Choose Photo</g-btn-bs>
+                <g-btn-bs @click="choosePhoto" background-color="#FFF" border-color="#C4C4C4" text-color="#424242" width="150">Choose Photo</g-btn-bs>
                 <span>{{ fileName }}</span>
               </div>
             </template>
@@ -67,7 +68,7 @@
   </div>
 </template>
 <script>
-  const Cropper = () => import('cropperjs')
+  const Cropper = () => import('cropperjs');
   
   export default {
     name: 'UploadZone',
@@ -129,11 +130,11 @@
           'padding': '8px 10px',
           'border': `1px solid ${ tab === this.tab? '#9E9E9E' : 'transparent' }`,
           'border-bottom': `1px solid ${ tab === this.tab? 'transparent' : '#9E9E9E' }`,
-          background: tab === this.tab ? '#E4E6EB' : 'transparent',
+          background: tab === this.tab ? '#EFEFEF' : 'transparent',
           cursor: 'pointer'
         }
       },
-      showUploadDialog(view = 'url') {
+      showUploadDialog(view = 'src') {
         this.dialog.upload = true
         this.view = view
       },
@@ -195,7 +196,6 @@
   .upload-zone {
     border: 1px dashed #9E9E9E;
     border-radius: 2px;
-    height: 244px;
     cursor: pointer;
     overflow: hidden;
     position: relative;
@@ -226,6 +226,10 @@
       font-size: 18px;
       font-weight: 900;
     }
+  }
+
+  .bs-tf-wrapper ::v-deep .bs-tf-inner-input-group {
+    background: white;
   }
 </style>
 <style lang="scss">

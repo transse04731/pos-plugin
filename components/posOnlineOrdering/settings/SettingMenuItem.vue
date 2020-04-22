@@ -121,8 +121,8 @@
     height: 112px;
 
     &__image {
-      max-width: 80px;
-      max-height: 80px;
+      width: 80px;
+      height: 80px;
       border-radius: 10px;
     }
 
