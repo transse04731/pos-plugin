@@ -3,22 +3,30 @@
     <div class="dialog">
       <div class="dialog__title">{{edit ? 'Edit' : 'Add New'}} Version</div>
       <div class="dialog__content">
-        <div class="row-flex align-items-end">
-          <g-text-field-bs readonly :disabled="edit" label="File" large v-model="internalName"/>
-          <g-btn-bs :disabled="edit" width="120" large background-color="#EFEFEF" border-color="#9E9E9E" text-color="#424242" @click="selectFile">Select file</g-btn-bs>
+        <div class="row-flex align-items-end" v-if="!edit">
+          <g-text-field-bs readonly label="File" large v-model="internalName"/>
+          <g-btn-bs width="120" large background-color="#EFEFEF" border-color="#9E9E9E" text-color="#424242" @click="selectFile">Select file</g-btn-bs>
         </div>
         <div class="row-flex">
           <div class="col-6">
-            <g-text-field-bs :disabled="edit" large label="Version" v-model="internalVersion"/>
+            <g-select text-field-component="GTextFieldBs" :items="listGroup" label="Type" v-model="internalGroup"/>
           </div>
+          <div class="col-6">
+            <g-text-field-bs large label="Version" v-model="internalVersion"/>
+          </div>
+        </div>
+        <div class="row-flex">
           <div class="col-6">
             <g-select text-field-component="GTextFieldBs" :items="listType" label="Type" v-model="internalType"/>
           </div>
+          <div class="col-6">
+            <g-select text-field-component="GTextFieldBs" :items="listBaseVersion" label="Base Version" v-model="internalBase"/>
+          </div>
         </div>
-        <g-select text-field-component="GTextFieldBs" :items="listStatus" label="Status" v-model="internalStatus"/>
+        <g-select text-field-component="GTextFieldBs" :items="listRelease" label="Release" v-model="internalRelease"/>
         <div>
-          <p>Changelog</p>
-          <g-textarea outlined no-resize :rows="3" v-model="internalChangeLog"/>
+          <p>Note</p>
+          <g-textarea outlined no-resize :rows="3" v-model="internalNote"/>
         </div>
       </div>
       <div class="dialog__action">
@@ -37,25 +45,39 @@
       edit: Boolean,
       name: String,
       version: String,
+      group: String,
       type: String,
-      status: String,
-      changeLog: String,
+      base: String,
+      release: String,
+      note: String,
     },
     data() {
       return {
-        listType: [
-          {text: 'POS Android', value: 'POS Android'},
-          {text: 'POS PC', value: 'POS PC'}
+        listGroup: [
+          {text: 'POS_Android', value: 'POS_Android'},
+          {text: 'POS_Windows', value: 'POS_Windows'}
         ],
-        listStatus: [
-          {text: 'Private', value: 'private'},
-          {text: 'Public', value: 'public'}
+        listType: [
+          {text: 'APK', value: 'APK'},
+          {text: 'Patch', value: 'Patch'}
+        ],
+        listBaseVersion: [
+          {text: 'N/A', value: ''},
+          {text: '1.00', value: '1.00'},
+          {text: '0.80', value: '0.80'}
+        ],
+        listRelease: [
+          {text: 'Beta', value: 'Beta'},
+          {text: 'Stable', value: 'Stable'},
+          {text: 'Archived', value: 'Archived'},
         ],
         internalName: this.name || '',
+        internalGroup: this.group || 'POS_Android',
         internalVersion: this.version || '',
-        internalType: this.type || 'POS Android',
-        internalStatus: this.status || 'public',
-        internalChangeLog: this.changeLog || '',
+        internalType: this.type || 'APK',
+        internalBase: this.base || '',
+        internalRelease: this.release || 'beta',
+        internalNote: this.note || '',
         file: null
       }
     },
@@ -86,10 +108,12 @@
       upload() {
         if (this.edit) {
           this.$emit('edit', {
+            group: this.internalGroup,
             version: this.internalVersion,
             type: this.internalType,
-            status: this.internalStatus,
-            changeLog: this.internalChangeLog
+            base: this.internalBase,
+            release: this.internalRelease,
+            note: this.internalNote
           })
         } else {
           if (!this.file) {
@@ -100,10 +124,12 @@
           this.$emit('add', {
             file: this.file,
             name: this.file.name,
+            group: this.internalGroup,
             version: this.internalVersion,
             type: this.internalType,
-            status: this.internalStatus,
-            changeLog: this.internalChangeLog
+            base: this.internalBase,
+            release: this.internalRelease,
+            note: this.internalNote
           })
         }
         this.internalValue = false

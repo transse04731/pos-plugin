@@ -172,7 +172,7 @@
       },
       
       // apps
-      async loadApps() {
+      async loadAppItems() {
         const apps = await cms.getModel('AppItem').find({})
         this.apps.splice(0, this.apps.length, ...apps)
       },
@@ -180,7 +180,7 @@
         await this.$getService('FileUploadStore').prepareUploadAppFolder(file.name, version)
         const uploadPath = await this.$getService('FileUploadStore').uploadApp(file, version)
         await cms.getModel('AppItem').create({ name: file.name, version, type, status, changeLog, uploadPath, uploadDate: new Date() })
-        await this.loadApps()
+        await this.loadAppItems()
       },
       async editApp(_id, change) {
         const appInfo = await cms.getModel('AppItem').findOne({_id})
@@ -191,7 +191,7 @@
           await this.$getService('FileUploadStore').moveApp(appInfo.uploadPath, change.version)
         }
         await cms.getModel('AppItem').updateOne({_id}, change)
-        await this.loadApps()
+        await this.loadAppItems()
       },
       async removeApp(_id) {
         const appInfo = await cms.getModel('AppItem').findOne({_id})
@@ -199,7 +199,7 @@
         await this.$getService('FileUploadStore').removeFile(appInfo.uploadPath)
         // delete app document
         await cms.getModel('AppItem').remove({_id})
-        await this.loadApps()
+        await this.loadAppItems()
       }
     },
     provide() {
@@ -218,7 +218,7 @@
         posManagementModel: this.posManagementModel,
         searchText: this.searchText,
         orderBy: this.orderBy,
-        loadApps: this.loadApps,
+        loadAppItems: this.loadAppItems,
         uploadApp: this.uploadApp,
         editApp: this.editApp,
         removeApp: this.removeApp,
