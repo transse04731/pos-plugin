@@ -1122,31 +1122,11 @@
       "type": "kitchen",
       "printers": [
         {
-          "hardwares": [
-            "Terminal1",
-            "Terminal2"
-          ],
+          "hardwares": [],
           "includes": [],
           "_id": "5e81774685fb2d03dda95cd0",
           "printerType": "ip",
           "ip": "192.168.10.60",
-          "merge": "true"
-        },
-        {
-          "hardwares": [
-            "Tablet1",
-            "Tablet2"
-          ],
-          "includes": [],
-          "_id": "5e81781e85fb2d03dda95d28",
-          "printerType": "ip",
-          "ip": "10.2.96.2",
-          "merge": "true"
-        },
-        {
-          "hardwares": [],
-          "includes": [],
-          "_id": "5e81d0bf85fb2d03dda9667a",
           "merge": "true"
         }
       ],
@@ -1161,12 +1141,7 @@
       "type": "kitchen",
       "printers": [
         {
-          "hardwares": [
-            "Tablet1",
-            "Tablet2",
-            "Terminal1",
-            "Terminal2"
-          ],
+          "hardwares": [],
           "includes": [],
           "_id": "5e81631d85fb2d03dda918c1",
           "printerType": "com",
@@ -1174,17 +1149,6 @@
           "merge": true,
           "fontSize": 1,
           "marginTop": 0
-        },
-        {
-          "hardwares": [
-            "Tablet1",
-            "Tablet2"
-          ],
-          "includes": [],
-          "_id": "5e8171be85fb2d03dda91925",
-          "printerType": "ip",
-          "ip": "192.168.1.20",
-          "merge": true
         }
       ],
       "defaultDineInTax": 19,
@@ -1196,9 +1160,7 @@
       "name": "Invoice",
       "printers": [
         {
-          "hardwares": [
-            "Terminal1"
-          ],
+          "hardwares": [],
           "includes": [],
           "_id": "5e81614c85fb2d03dda91809",
           "printerType": "com",

@@ -826,6 +826,30 @@
         } catch (e) {
           console.warn(e)
         }
+      },
+      setSinglePrinter(type) {
+        try {
+          if (!type) return
+          let groups = cms.getList('GroupPrinter').filter(item => item.type === type)
+
+          if (groups) {
+            groups = groups.map(groupPrinter => {
+              if (!groupPrinter.printers.length) return groupPrinter
+              groupPrinter.printers = [Object.assign(groupPrinter.printers[0], {
+                ...groupPrinter.printers[0],
+                hardwares: []
+              })]
+              return groupPrinter
+            })
+
+            groups.forEach(async group => {
+              await cms.getModel('GroupPrinter').updateOne({ _id: group._id },
+                { $set: { printers: group.printers } })
+            })
+          }
+        } catch (e) {
+          console.warn(e)
+        }
       }
     },
     provide() {

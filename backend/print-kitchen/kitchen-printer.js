@@ -5,6 +5,8 @@ const {renderer, print, getPrinter, getGroupPrinterInfo} = require('../print-uti
 module.exports = async function (cms) {
   cms.socket.on('connect', socket => {
     socket.on('printKitchen', async ({order, device}, callback) => {
+      let results = []
+
       try {
         const groupPrinters = await getGroupPrinterInfo(cms, device, 'kitchen');
         const printerInfos = groupPrinters.map(e => {
@@ -12,17 +14,16 @@ module.exports = async function (cms) {
         })
         const receipts = getReceiptsFromOrder(order);
 
-        for (const pritnerInfo of printerInfos) {
-          const {escPOS} = pritnerInfo
-          const receiptsForPrinter = await getReceiptsForPrinter(receipts, pritnerInfo);
-          const printData = await getPrintData(receiptsForPrinter, order, pritnerInfo);
-          let results;
+        for (const printerInfo of printerInfos) {
+          const {escPOS} = printerInfo
+          const receiptsForPrinter = await getReceiptsForPrinter(receipts, printerInfo);
+          const printData = await getPrintData(receiptsForPrinter, order, printerInfo);
 
-          if (escPOS) results = await printEscPos(printData, pritnerInfo);
-          else results = await printSsr(printData, pritnerInfo);
-
-          callback({success: true, results});
+          if (escPOS) results.push(await printEscPos(printData, printerInfo));
+          else results.push(await printSsr(printData, printerInfo));
         }
+
+        callback({success: true, results});
       } catch (e) {
         console.error(e);
         callbackWithError(callback, e);

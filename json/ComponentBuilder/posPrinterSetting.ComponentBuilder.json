@@ -198,7 +198,14 @@
               "slot": "general",
               "url": "plugins/pos-plugin/components/posPrinterSetting/PosPrinterSettingGeneral.vue",
               "path": "components/posPrinterSetting/PosPrinterSettingGeneral.vue",
-              "pluginName": "pos-plugin"
+              "pluginName": "pos-plugin",
+              "inject": [
+                {
+                  "service": "SettingsStore:setSinglePrinter",
+                  "local": "setSinglePrinter",
+                  "type": "event"
+                }
+              ]
             }
           ]
         }

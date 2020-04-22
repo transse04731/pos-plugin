@@ -10,14 +10,26 @@ module.exports = {
   }),
 
   async getGroupPrinterInfo(cms, device, type) {
-    const groupPrinter = await cms.getModel('GroupPrinter').aggregate([
-      {$unwind: {path: '$printers'}},
-      {$match: {'printers.hardwares': device, type}},
-    ]);
+    const {printerGeneralSetting: { useMultiPrinterForEntirePrinter, useMultiPrinterForInvoicePrinter, useMultiPrinterForKitchenPrinter } } = await cms.getModel('PosSetting').findOne()
+    let printMultiple = false
 
-    if (!groupPrinter) return null;
+    if (type === 'kitchen') printMultiple = useMultiPrinterForKitchenPrinter
+    if (type === 'entire') printMultiple = useMultiPrinterForEntirePrinter
+    if (type === 'invoice') printMultiple = useMultiPrinterForInvoicePrinter
 
-    return groupPrinter;
+    const groupPrinters = printMultiple
+      ? await cms.getModel('GroupPrinter').aggregate([
+        { $unwind: { path: '$printers' } },
+        { $match: { 'printers.hardwares': device, type } }
+      ])
+      : await cms.getModel('GroupPrinter').aggregate([
+        { $unwind: { path: '$printers' } },
+        { $match: { type } }
+      ])
+
+    if (!groupPrinters) return null;
+
+    return groupPrinters;
   },
 
   async print(html, groupPrinter) {

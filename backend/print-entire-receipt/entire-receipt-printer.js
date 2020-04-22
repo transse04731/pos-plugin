@@ -16,10 +16,16 @@ module.exports = async function (cms) {
 
   async function printHandler(order, device) {
     // get device printers
-    const groupPrinters = await cms.getModel('GroupPrinter').aggregate([
-      {$unwind: {path: '$printers'}},
-      {$match: {'printers.hardwares': device, 'type': 'entire'}},
-    ])
+    const {printerGeneralSetting } = await cms.getModel('PosSetting').findOne()
+    const groupPrinters = printerGeneralSetting.useMultiPrinterForEntirePrinter
+      ? await cms.getModel('GroupPrinter').aggregate([
+        { $unwind: { path: '$printers' } },
+        { $match: { 'printers.hardwares': device, 'type': 'entire' } }
+      ])
+      : await cms.getModel('GroupPrinter').aggregate([
+        { $unwind: { path: '$printers' } },
+        { $match: { type: 'entire' } }
+      ])
 
     const _groupPrinters = _.reduce(groupPrinters, (acc, printer) => {
       const {includes, groupArticles: _groupArticles, oneReceiptForOneArticle} = printer.printers

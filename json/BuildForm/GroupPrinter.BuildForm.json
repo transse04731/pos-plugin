@@ -213,12 +213,6 @@
       "schemaType": "number",
       "key": "defaultTakeAwayTax",
       "type": "input@number"
-    },
-    {
-      "_id": "5e943cb78ba20323f4c1a659",
-      "schemaType": "boolean",
-      "key": "showDineInTax",
-      "type": "input@checkbox"
     }
   ],
   "id": "5c5ee40bc1c8891f00507c68",

@@ -45,32 +45,35 @@
     computed: {
       useMultiPrinterForKitchenPrinter: {
         get() {
-          if(this.printerGeneralSetting) {
+          if (this.printerGeneralSetting) {
             return this.printerGeneralSetting.useMultiPrinterForKitchenPrinter
           }
         },
         set(val) {
           this.$set(this.printerGeneralSetting, 'useMultiPrinterForKitchenPrinter', val)
+          if (!val) this.$emit('setSinglePrinter', 'kitchen')
         }
       },
       useMultiPrinterForInvoicePrinter: {
         get() {
-          if(this.printerGeneralSetting) {
+          if (this.printerGeneralSetting) {
             return this.printerGeneralSetting.useMultiPrinterForInvoicePrinter
           }
         },
         set(val) {
           this.$set(this.printerGeneralSetting, 'useMultiPrinterForInvoicePrinter', val)
+          if (!val) this.$emit('setSinglePrinter', 'invoice')
         }
       },
       useMultiPrinterForEntirePrinter: {
         get() {
-          if(this.printerGeneralSetting) {
+          if (this.printerGeneralSetting) {
             return this.printerGeneralSetting.useMultiPrinterForEntirePrinter
           }
         },
         set(val) {
           this.$set(this.printerGeneralSetting, 'useMultiPrinterForEntirePrinter', val)
+          if (!val) this.$emit('setSinglePrinter', 'entire')
         }
       },
     },
