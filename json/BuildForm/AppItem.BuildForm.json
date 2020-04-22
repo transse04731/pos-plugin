@@ -1,0 +1,87 @@
+{
+  "_id": "5e993895855aaf04cf1272ae",
+  "extensions": [],
+  "fields": [
+    {
+      "_id": "5e9939de855aaf04cf1272b0",
+      "schemaType": "string",
+      "key": "name",
+      "type": "input"
+    },
+    {
+      "_id": "5e9939de855aaf04cf1272b1",
+      "schemaType": "string",
+      "key": "version",
+      "type": "input"
+    },
+    {
+      "_id": "5ea01b70d7c9cc44f5012da9",
+      "schemaType": "string",
+      "key": "baseVersion",
+      "type": "input"
+    },
+    {
+      "_id": "5e9939de855aaf04cf1272b2",
+      "schemaType": "string",
+      "key": "type",
+      "type": "input@select",
+      "optionsType": "textValue",
+      "options": [
+        {
+          "value": "APK",
+          "text": "APK"
+        },
+        {
+          "value": "Patch",
+          "text": "Patch"
+        }
+      ]
+    },
+    {
+      "_id": "5e9939de855aaf04cf1272b3",
+      "schemaType": "date",
+      "key": "uploadDate"
+    },
+    {
+      "_id": "5e9939de855aaf04cf1272b5",
+      "schemaType": "string",
+      "key": "changeLog",
+      "type": "input"
+    },
+    {
+      "_id": "5e9939de855aaf04cf1272b6",
+      "schemaType": "string",
+      "key": "uploadPath",
+      "type": "input"
+    },
+    {
+      "_id": "5e99669f855aaf04cf127304",
+      "schemaType": "string",
+      "key": "status",
+      "type": "input@select",
+      "optionsType": "textValue",
+      "options": [
+        {
+          "value": "private",
+          "text": "private"
+        },
+        {
+          "value": "public",
+          "text": "public"
+        }
+      ]
+    },
+    {
+      "_id": "5ea027d0d7c9cc44f5012ff3",
+      "schemaType": "objectId",
+      "key": "app",
+      "ref": "App",
+      "autopopulate": null,
+      "type": "ref-select",
+      "labelProp": "name"
+    }
+  ],
+  "name": "AppItem",
+  "tabs": [],
+  "type": "Collection"
+}

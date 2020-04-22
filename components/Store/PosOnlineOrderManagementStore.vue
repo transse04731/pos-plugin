@@ -173,32 +173,32 @@
       
       // apps
       async loadApps() {
-        const apps = await cms.getModel('App').find({})
+        const apps = await cms.getModel('AppItem').find({})
         this.apps.splice(0, this.apps.length, ...apps)
       },
       async uploadApp({file, version, type, status, changeLog}) {
         await this.$getService('FileUploadStore').prepareUploadAppFolder(file.name, version)
         const uploadPath = await this.$getService('FileUploadStore').uploadApp(file, version)
-        await cms.getModel('App').create({ name: file.name, version, type, status, changeLog, uploadPath, uploadDate: new Date() })
+        await cms.getModel('AppItem').create({ name: file.name, version, type, status, changeLog, uploadPath, uploadDate: new Date() })
         await this.loadApps()
       },
       async editApp(_id, change) {
-        const appInfo = await cms.getModel('App').findOne({_id})
+        const appInfo = await cms.getModel('AppItem').findOne({_id})
         if (!appInfo)
           return
         if (appInfo.version !== change.version) {
           await this.$getService('FileUploadStore').prepareUploadAppFolder(appInfo.name, change.version)
           await this.$getService('FileUploadStore').moveApp(appInfo.uploadPath, change.version)
         }
-        await cms.getModel('App').updateOne({_id}, change)
+        await cms.getModel('AppItem').updateOne({_id}, change)
         await this.loadApps()
       },
       async removeApp(_id) {
-        const appInfo = await cms.getModel('App').findOne({_id})
+        const appInfo = await cms.getModel('AppItem').findOne({_id})
         // delete file
         await this.$getService('FileUploadStore').removeFile(appInfo.uploadPath)
         // delete app document
-        await cms.getModel('App').remove({_id})
+        await cms.getModel('AppItem').remove({_id})
         await this.loadApps()
       }
     },
