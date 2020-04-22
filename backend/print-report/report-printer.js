@@ -7,24 +7,32 @@ module.exports = async function (cms) {
   cms.socket.on('connect', socket => {
     socket.on('printReport', async (reportType, args, device, callback) => {
       try {
-        const groupPrinters = await getGroupPrinterInfo(cms, device, 'invoice');
+        if (reportType === 'OrderReport') {
+          const groupPrinters = await getGroupPrinterInfo(cms, device, 'invoice');
 
-        for (const groupPrinter of groupPrinters) {
-          const {escPOS} = groupPrinter.printers
+          for (const groupPrinter of groupPrinters) {
+            const {escPOS} = groupPrinter.printers
 
-          if (escPOS) {
-            const printData = await getPrintData(reportType, args, escPOS)
-            const printer = await getPrinter(groupPrinter.printers);
-            await printEscPos(printer, printData, reportType);
-            callback({success: true});
-          } else {
-            const printData = await getPrintData(reportType, args);
-            renderer.renderToString(printData, {}, async (err, html) => {
-              if (err) throw err;
-              await print(html, groupPrinter.printers);
-              callback({success: true});
-            });
+            if (escPOS) {
+              const printData = await getOrderReportData(args);
+              const printer = await getPrinter(groupPrinter.printers);
+              await printEscPos(printer, printData, reportType);
+            } else {
+              const printComponent = await getOrderReportComponent(args);
+              renderer.renderToString(printComponent, {}, async (err, html) => {
+                if (err) throw err;
+                await print(html, groupPrinter.printers);
+              });
+            }
           }
+
+          callback({success: true});
+        } else {
+          // TODO: support ESC mode for the other reports
+          const reportComponent = await reportHandler(reportType, args)
+          if (!reportComponent) return
+          await printReport(reportComponent, device)
+          callback({ success: true })
         }
       } catch (e) {
         console.error(e);
@@ -111,13 +119,13 @@ module.exports = async function (cms) {
       printer.drawLine();
 
       printer.bold(true);
-      printer.leftRight('Total', convertMoney(orderSum));
+      printer.leftRight('Total', `$${convertMoney(orderSum)}`);
       printer.bold(false);
-      printer.leftRight('Cash tend', convertMoney(orderCashReceived));
+      printer.leftRight('Cash tend', `$${convertMoney(orderCashReceived)}`);
       printer.drawLine();
 
       printer.bold(true);
-      printer.leftRight('Change due', convertMoney(orderCashback));
+      printer.leftRight('Change due', `$${convertMoney(orderCashback)}`);
       printer.alignLeft();
       printer.bold(false);
       printer.println(`Payment method: ${orderPaymentType.charAt(0).toUpperCase() + orderPaymentType.slice(1)}`);
@@ -133,11 +141,8 @@ module.exports = async function (cms) {
     }
   }
 
-  async function getPrintData(reportType, args, escPos) {
-    if (reportType === 'OrderReport') {
-      if (escPos) return await getOrderReportData(args);
-      else return await orderReportHandler(args);
-    } else if (reportType === 'ZReport') {
+  async function reportHandler(reportType, args) {
+    if (reportType === 'ZReport') {
       return await zReportHandler(args)
     } else if (reportType === 'MonthlyReport') {
       return await monthlyReportHandler(args)
@@ -191,7 +196,7 @@ module.exports = async function (cms) {
     }
   }
 
-  async function orderReportHandler({orderId}) {
+  async function getOrderReportComponent({orderId}) {
     const props = await getOrderReportData({orderId});
 
     const OrderReport = require('../../dist/OrderReport.vue')
@@ -327,6 +332,22 @@ module.exports = async function (cms) {
       components: {XReport},
       render(h) {
         return h('XReport', {props})
+      }
+    })
+  }
+
+  function printReport(component, device) {
+    renderer.renderToString(component, {}, async (err, html) => {
+      if (err) throw err
+      // get ip
+      const groupPrinters = await cms.getModel('GroupPrinter').aggregate([
+        { $unwind: { path: '$printers' } },
+        { $match: { 'printers.hardwares': device, 'type': 'invoice' } },
+      ])
+      if (!groupPrinters) return
+
+      for (const groupPrinter of groupPrinters) {
+        await print(html, groupPrinter.printers)
       }
     })
   }
