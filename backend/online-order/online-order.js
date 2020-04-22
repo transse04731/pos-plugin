@@ -84,6 +84,19 @@ function createOnlineOrderSocket(deviceId) {
       callback();
     });
 
+    onlineOrderSocket.on('updateApp', async (uploadPath, ackFn) => {
+      uploadPath = `${global.APP_CONFIG.webshopUrl}:${uploadPath}`
+      console.log(`Updating ${uploadPath}`);
+      ackFn();
+      try {
+        await axios.post('http://localhost:5000/update', {
+          downlink: uploadPath
+        })
+      } catch (e) {
+        console.error('Update app error or this is not an android device');
+      }
+    })
+
     onlineOrderSocket.once('disconnect', () => {
       activeProxies = 0;
       if (proxyClient) {
