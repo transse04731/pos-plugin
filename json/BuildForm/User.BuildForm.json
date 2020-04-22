@@ -3,6 +3,12 @@
   "__v": 0,
   "fields": [
     {
+      "_id": "5e9ffcb35bd44e437e6473f7",
+      "schemaType": "string",
+      "key": "name",
+      "type": "input"
+    },
+    {
       "_id": "5c8883961591d506a250b29c",
       "schemaType": "string",
       "key": "username",
@@ -39,7 +45,66 @@
             "name"
           ]
         }
+      ],
+      "optionsType": null
+    },
+    {
+      "_id": "5e9ffbbb5bd44e437e6473dd",
+      "schemaType": "array",
+      "key": "permissions",
+      "type": "input@multiSelect",
+      "fields": [
+        {
+          "schemaType": "string",
+          "key": "permission",
+          "type": "input@select",
+          "optionsType": "textValue",
+          "options": [
+            {
+              "value": "manageGroup",
+              "text": "Manage Group"
+            },
+            {
+              "value": "manageStore",
+              "text": "Manage Store"
+            },
+            {
+              "value": "remoteControl",
+              "text": "Remote Control"
+            },
+            {
+              "value": "configOnlineOrdering",
+              "text": "Config Online Ordering"
+            },
+            {
+              "value": "settings",
+              "text": "Settings"
+            },
+            {
+              "value": "updateApp",
+              "text": "Update App"
+            },
+            {
+              "value": "manageAccount",
+              "text": "manageAccount"
+            }
+          ]
+        }
       ]
+    },
+    {
+      "_id": "5e9ffdf65bd44e437e64741b",
+      "schemaType": "objectId",
+      "key": "createdBy",
+      "ref": "User",
+      "type": "ref-select",
+      "labelProp": "username"
+    },
+    {
+      "_id": "5e9ffe065bd44e437e647424",
+      "schemaType": "boolean",
+      "key": "active",
+      "type": "input@switch"
     }
   ],
   "name": "User",
