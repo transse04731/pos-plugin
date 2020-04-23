@@ -111,16 +111,16 @@
                 <div class="col-1">
                   <g-icon color="#9E9E9E" size="20">icon-food</g-icon>
                 </div>
-                <div class="row-flex">
-                  <template v-for="item in order.items">
-                    <div class="fw-700 mr-1">{{item.quantity}}x</div>
-                    <div class="mr-3">
+                <div class="row-flex flex-wrap">
+                  <p v-for="item in order.items">
+                    <span class="fw-700 mr-1">{{item.quantity}}x</span>
+                    <span class="mr-3" style="white-space: nowrap">
                       {{item.id}}. {{item.name}}
                       <template v-if="item.modifiers.length > 0">
                         <span class="i text-grey">(<span v-for="modifier in item.modifiers">{{modifier}}</span>)</span>
                       </template>
-                    </div>
-                  </template>
+                    </span>
+                  </p>
                 </div>
               </div>
             </g-card-text>

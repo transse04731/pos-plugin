@@ -1,43 +1,51 @@
 <template>
-  <g-dialog v-if="order" v-model="dialog" width="50%">
-    <g-card>
-      <g-card-title>Order Details</g-card-title>
-      <g-card-text>
-        <g-icon v-if="order.type === 'delivery'">icon-delivery-man</g-icon>
-        <g-icon v-if="order.type === 'pickup'">icon-pickup</g-icon>
-        <span class="fs-small-2 ml-1">
-          <span class="text-indigo-accent-2">#{{order.id}}</span>
-          {{order.customer ? order.customer.name : 'No customer name'}} - {{order.customer ? order.customer.phone : 'No customer phone'}}
-        </span>
-        <g-spacer/>
-        <span class="fw-700 fs-small">{{order.date}}</span>
+  <g-dialog v-if="order" v-model="dialog" width="580px">
+    <g-card class="px-3 pb-2">
+      <g-card-title style="font-size: 20px">Order Details</g-card-title>
+      <g-card-text class="fs-small">
+        <div class="row-flex mb-2">
+          <div style="flex: 0 0 30px">
+            <g-icon v-if="order.type === 'delivery'">icon-delivery-man</g-icon>
+            <g-icon v-if="order.type === 'pickup'">icon-pickup</g-icon>
+          </div>
+          <p>
+            <span class="text-indigo-accent-2 fw-600">#{{order.id}}</span>
+            {{order.customer ? order.customer.name : 'No customer name'}} - {{order.customer ? order.customer.phone : 'No customer phone'}}
+          </p>
+          <g-spacer/>
+          <span class="fw-700 fs-large">{{order.date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}}</span>
+        </div>
 
-        <div class="row-flex" v-if="order.customer">
-          <div class="col-1">
+        <div class="row-flex mb-2" v-if="order.customer">
+          <div style="flex: 0 0 30px">
             <g-icon color="#9E9E9E" size="20">icon-place</g-icon>
           </div>
           <div class="col-10">{{`${order.customer.address} ${order.customer.zipCode}`}}</div>
         </div>
 
-        <div v-if="order.items">
+        <div v-if="order.items" class="mb-2">
           <div class="row-flex" v-for="item in order.items">
-            <div class="col-1 fw-700">{{item.quantity}}x</div>
-            <div class="col-8 fs-small-2">
+            <div class="fw-700" style="flex: 0 0 30px">{{item.quantity}}x</div>
+            <div class="flex-equal">
               {{item.name}}
               <template v-if="item.modifiers.length > 0">
                 <span class="i text-grey">(<span v-for="modifier in item.modifiers">{{modifier}}</span>)</span>
               </template>
             </div>
-            <div class="col-3 fs-small-2 ta-right">€{{item.price.toFixed(2)}}</div>
+            <div class="col-2 fs-small-2 ta-right">€ {{item.price.toFixed(2)}}</div>
           </div>
         </div>
 
-        <g-divider dashed/>
-        <div class="row-flex">
-          <div>Total</div>
-          <g-spacer/>
-          <div>{{order.vSum}}</div>
+        <div class="dashed-gradient"/>
+        <div class="row-flex justify-between mt-2">
+          <div>Total <b>{{orderQuantity}}</b> item(s)</div>
+          <div class="ta-right">€ {{order.vSum}}</div>
         </div>
+        <div class="row-flex justify-between mb-2">
+          <div>Shipping fee:</div>
+          <div class="ta-right">€ {{order.shippingFee || 0}}</div>
+        </div>
+        <div class="dashed-gradient"/>
       </g-card-text>
       <g-card-actions>
         <g-btn-bs background-color="#E57373" text-color="white" @click.stop="declineOrder(order)">Cancel & move to declined orders</g-btn-bs>
@@ -67,6 +75,9 @@
         set(val) {
           this.$emit('input', val)
         }
+      },
+      orderQuantity() {
+        return this.order.items.reduce((acc, val) => acc + val.quantity, 0)
       }
     },
     methods: {
@@ -93,5 +104,10 @@
 </script>
 
 <style scoped>
-
+  .dashed-gradient {
+    height: 1px;
+    width: 100%;
+    background-image: linear-gradient(to right, #9E9E9E 50%, transparent 50%);
+    background-size: 20px 1px;
+  }
 </style>
