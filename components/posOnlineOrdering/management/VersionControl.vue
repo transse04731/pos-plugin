@@ -4,6 +4,7 @@
     <div class="version-control__action-bar">
       <g-btn-bs border-color="indigo accent-2" icon="add@20" @click="dialog.newApp = true">Add New App</g-btn-bs>
       <g-btn-bs background-color="indigo accent-2" text-color="white" icon="add@20"
+                :disabled="noApp"
                 style="margin-right: 0; font-size: 15px" @click="openVersionDialog()">Add New Version
       </g-btn-bs>
     </div>
@@ -17,7 +18,7 @@
           Type
           <g-icon v-if="sort.type === 'type'" size="16">{{sort.order === 'asc' ? 'fas fa-long-arrow-alt-up' : 'fas fa-long-arrow-alt-down'}}</g-icon>
         </div>
-        <div class="col-1 pl-1" @click="_sort('base')">
+        <div class="col-1 pl-1">
           From
           <g-icon v-if="sort.type === 'base'" size="16">{{sort.order === 'asc' ? 'fas fa-long-arrow-alt-up' : 'fas fa-long-arrow-alt-down'}}</g-icon>
         </div>
@@ -25,7 +26,7 @@
           Release
           <g-icon v-if="sort.type === 'release'" size="16">{{sort.order === 'asc' ? 'fas fa-long-arrow-alt-up' : 'fas fa-long-arrow-alt-down'}}</g-icon>
         </div>
-        <div class="col-2 pl-1" @click="_sort('uploadTime')">
+        <div class="col-2 pl-1" @click="_sort('uploadDate')">
           Upload date
           <g-icon v-if="sort.type === 'uploadTime'" size="16">{{sort.order === 'asc' ? 'fas fa-long-arrow-alt-up' : 'fas fa-long-arrow-alt-down'}}</g-icon>
         </div>
@@ -81,32 +82,43 @@
         </template>
       </div>
     </div>
-    <dialog-delete-item v-model="dialog.delete" type="version" @confirm="deleteFile"/>
-    <dialog-version-control v-if="dialog.version" v-model="dialog.version" :edit="dialog.edit" :group="dialog.group" v-bind="selectedFile"
-                            @edit="editFile" @add="addFile"/>
-    <g-dialog v-model="dialog.newApp" width="580" eager>
-      <div class="dialog">
-        <div class="dialog-title">Add New App</div>
-        <g-text-field-bs label="App Name" v-model="name"/>
-        <div class="dialog-action">
-          <g-btn-bs large text-color="#424242" @click="dialog.newApp = false">Cancel</g-btn-bs>
-          <g-btn-bs large :disabled="!name" width="100" background-color="indigo accent-2" text-color="white" @click="addNewApp">Save</g-btn-bs>
-        </div>
-      </div>
-    </g-dialog>
+    
+    <dialog-delete-item
+        v-model="dialog.delete"
+        type="version"
+        @confirm="deleteFile"/>
+    
+    <dialog-new-app-item
+        v-model="dialog.version"
+        v-bind="{...selectedFile, ...newAppItemDialogViewModel}"
+        :edit="dialog.edit"
+        :group="dialog.group"
+        @edit="editFile" @add="addFile"/>
+    
+    <dialog-new-app
+        v-model="dialog.newApp"
+        @submit="addApp"/>
   </div>
 </template>
 
 <script>
   import _ from 'lodash'
+  import DialogNewApp from './dialogNewApp';
+  import DialogNewAppItem from './dialogNewAppItem';
 
   export default {
     name: "VersionControl",
-    props: {},
-    injectService: ['PosOnlineOrderManagementStore:(loadAppItems,uploadApp,editApp,removeApp,apps)'],
+    components: { DialogNewApp, DialogNewAppItem },
+    injectService: [
+        // apps
+        'PosOnlineOrderManagementStore:(addApp,changeAppName)',
+        // app items
+        'PosOnlineOrderManagementStore:(uploadAppItem,editAppItem,removeAppItem)',
+        // view model
+        'PosOnlineOrderManagementStore:(versionControlViewModel,newAppItemDialogViewModel,versionControlOrderBy,toggleHideShowApp)'
+    ],
     data() {
       return {
-        sort: {},
         selectedFile: null,
         dialog: {
           version: false,
@@ -115,56 +127,7 @@
           group: null,
           newApp: false
         },
-        listVersions: [
-          {
-            group: 'POS_Android',
-            files: [
-              {
-                version: '1.02',
-                type: 'Patch',
-                base: '1.00',
-                release: 'Beta',
-                uploadDate: new Date('01/17/2020'),
-                note: 'Bug fixes & stability improvement',
-                menu: false,
-              },
-              {
-                version: '1.01',
-                type: 'Patch',
-                base: '1.00',
-                release: 'Stable',
-                uploadDate: new Date('01/15/2020'),
-                note: 'Bug fixes & stability improvement',
-                menu: false,
-              },
-              {
-                version: '1.00',
-                type: 'APK',
-                release: 'Stable',
-                uploadDate: new Date ('01/01/2020'),
-                note: 'Bug fixes & stability improvement',
-                menu: false,
-              },
-              {
-                version: '0.80',
-                type: 'APK',
-                release: 'Archived',
-                uploadDate: new Date('01/01/2019'),
-                note: 'Bug fixes & stability improvement',
-                menu: false,
-              },
-            ],
-            show: false,
-          },
-          {
-            group: 'POS_Windows', files: [], show: false
-          }
-        ],
-        name: ''
       }
-    },
-    async created() {
-      await this.loadAppItems()
     },
     filters: {
       formatDate(date) {
@@ -173,28 +136,30 @@
     },
     computed: {
       listVersionControl() {
-        return _.map(this.listVersions, item => ({
-          group: item.group,
-          files: _.orderBy(item.files, this.sort.type, this.sort.order),
-          show: item.show
-        }))
+        return this.versionControlViewModel
+      },
+      sort() {
+        return this.versionControlOrderBy
+      },
+      noApp() {
+        return this.versionControlViewModel.length === 0
       }
     },
     methods: {
+      // app
+      changeGroupName(group, name, cb) {
+        this.changeAppName(group._id, name, res => cb(res.ok))
+      },
+      toggleGroup(group) {
+        this.toggleHideShowApp(group._id)
+      },
+      
+      // app items
       getRowClass(index) {
         const defaultClass = 'version-control__table-row '
         if (index % 2 === 0)
           return defaultClass + 'version-control__table-row--even'
         return defaultClass + 'version-control__table-row--odd'
-      },
-      getStatusClass(status) {
-        if (status.toLowerCase() === 'private') {
-          return 'status status--private'
-        }
-        if (status.toLowerCase() === 'public') {
-          return 'status status--public'
-        }
-        return ''
       },
       openVersionDialog(edit = false, file = null, group = null) {
         this.selectedFile = file
@@ -206,50 +171,17 @@
         this.selectedFile = file
         this.dialog.delete = true
       },
+      async addFile(app) {
+        await this.uploadAppItem(app)
+      },
       async deleteFile() {
-        await this.removeApp(this.selectedFile._id)
+        await this.removeAppItem(this.selectedFile._id)
       },
       async editFile(change) {
-        // TODO: change folder
-        await this.editApp(this.selectedFile._id, change)
-      },
-      async addFile(app) {
-        await this.uploadApp(app)
-      },
-      _sort(type) {
-        if (this.sort.type && this.sort.type === type) {
-          if (this.sort.order === 'asc') {
-            this.$set(this.sort, 'order', 'desc')
-          } else {
-            this.$set(this.sort, 'type', null)
-          }
-        } else {
-          this.sort = {
-            type: type,
-            order: 'asc',
-          }
-        }
-      },
-      toggleGroup(group) {
-        const g = this.listVersions.find(g => g.group === group.group)
-        g.show = !g.show
+        await this.editAppItem(this.selectedFile._id, change)
       },
       download(file) {
-
-      },
-      changeGroupName(group, name, cb) {
-        const g = this.listVersions.find(g => g.group === group.group)
-        g.name = name
-        cb && typeof cb === 'function' && cb()
-      },
-      addNewApp(){
-        this.listVersions.push({
-          group: this.name,
-          versions: [],
-          show: false
-        })
-        this.name = ''
-        this.dialog.newApp = false
+        window.open(`${location.origin}${file.uploadPath}`)
       }
     }
   }
@@ -378,29 +310,6 @@
         font-size: 14px;
         cursor: pointer;
       }
-    }
-  }
-
-  .dialog {
-    background: white;
-    border-radius: 4px;
-    width: 100%;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-
-    &-title {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 16px;
-      margin-left: 5px;
-    }
-
-    &-action {
-      display: flex;
-      align-self: flex-end;
-      margin-top: 24px;
-      margin-right: -8px;
     }
   }
 </style>

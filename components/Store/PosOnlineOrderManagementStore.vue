@@ -13,7 +13,12 @@
         stores: [],
         searchText: null,
         orderBy: null,
+        //
         apps: [],
+        appItems: [],
+        // view model
+        appShows: {},
+        versionControlOrderBy: { order: 'desc', type: 'uploadDate' },
       }
     },
     computed: {
@@ -76,12 +81,60 @@
             groups.push(group)
         })
         return groups
+      },
+      //
+      appNames() {
+        return _.map(this.apps, app => app.name)
+      },
+      newAppItemDialogViewModel() {
+        return {
+          listGroup: _.map(this.apps, app => ({ text: app.name, value: app._id })),
+          listBaseVersions: _.map(this.versionControlViewModel, app => {
+            return {
+              group: app._id,
+              versions: _.map(app.files, file => ({ text: file.version, value: file.version }))
+            }
+          }),
+          listRelease: [
+            {text: 'Beta', value: 'Beta'},
+            {text: 'Stable', value: 'Stable'},
+            {text: 'Archived', value: 'Archived'},
+          ],
+          listType: [
+            {text: 'APK', value: 'APK'},
+            {text: 'Patch', value: 'Patch'}
+          ],
+        }
+      },
+      orderedAppItems() {
+        return _.orderBy(this.appItems, this.versionControlOrderBy.type, this.versionControlOrderBy.order)
+      },
+      versionControlViewModel() {
+        return _.map(this.apps, app => {
+          const appViewModel = {
+            _id: app._id,
+            group: app.name,
+            files: [],
+            show: this.appShows[app._id]
+          }
+          _.each(this.orderedAppItems, appItem => {
+            if (appItem.app._id === app._id)
+              appViewModel.files.push({
+                ..._.pick(appItem, ['_id', 'version', 'type', 'release', 'uploadDate', 'uploadPath']),
+                base: appItem.baseVersion,
+                note: appItem.changeLog,
+                menu: false
+              })
+          })
+          return appViewModel
+        })
       }
     },
     async created() {
       await this.loadStoreGroups()
       await this.loadStores()
       await this.loadApps()
+      await this.loadAppItems()
     },
     methods: {
       // store groups
@@ -112,6 +165,7 @@
         const stores = await cms.getModel('Store').find({ groups: { $elemMatch: { $in: storeGroupIds } } })
         this.stores.splice(0, this.stores.length, ...stores)
       },
+      
       async addStore({ name, groups, address }) {
         if (_.includes(this.storeNames, name)) {
           alert('This name is already taken!')
@@ -123,6 +177,7 @@
         await cms.getModel('Store').create({ name, alias, groups, address, addedDate: dayjs(), pickup: true })
         await this.loadStores()
       },
+      
       getUniqueAlias(alias) {
         let ctr = 0
         let newAlias
@@ -132,6 +187,7 @@
         } while(_.includes(this.storeAlias, newAlias))
         return newAlias
       },
+      
       async removeStore(groupId, store) {
         const indexOfGroup = _.findIndex(store.groups, g => g._id === groupId)
         store.groups.splice(indexOfGroup, 1)
@@ -143,6 +199,7 @@
           await this.loadStores()
         }
       },
+      
       async updateStore(_id, change) {
         if (change.alias) {
           const store = _.find(this.stores, store => store.alias === change.alias)
@@ -164,65 +221,127 @@
       async addDevice({pairingCode}) {
         // TODO: addDevice
       },
+      
       async removeDevice(_id) {
         // TODO: removeDevice
       },
+      
       async updateDevice(_id, change) {
         // TODO: updateDevice
       },
       
       // apps
-      async loadAppItems() {
-        const apps = await cms.getModel('AppItem').find({})
+      async loadApps() {
+        const apps = await cms.getModel('App').find({})
         this.apps.splice(0, this.apps.length, ...apps)
       },
-      async uploadApp({file, version, type, status, changeLog}) {
+      
+      async addApp(name, callback) {
+        if (_.includes(this.appNames, name)) {
+          callback && callback({ ok: false, message: 'App name has been taken!' })
+        } else {
+          await cms.getModel('App').create({ name })
+          callback && callback({ ok: true })
+          await this.loadApps()
+        }
+      },
+      
+      async changeAppName(_id, name, callback) {
+        const app = _.find(this.apps, app => app.name === name)
+        if (app) {
+          if (app._id === _id) {
+            return
+          } else {
+            callback && callback({ ok: false, message: 'Name has been taken!' })
+            return
+          }
+        }
+        
+        await cms.getModel('App').updateOne({_id}, { name })
+        callback && callback({ ok: true })
+        await this.loadApps()  // TODO: just change app name, consider setting value locally without loadApps
+      },
+      
+      // appItems
+      async loadAppItems() {
+        const appItems = await cms.getModel('AppItem').find({})
+        this.appItems.splice(0, this.appItems.length, ...appItems)
+      },
+      
+      async uploadAppItem({ file, group, version, type, base, release, note }) {
         await this.$getService('FileUploadStore').prepareUploadAppFolder(file.name, version)
         const uploadPath = await this.$getService('FileUploadStore').uploadApp(file, version)
-        await cms.getModel('AppItem').create({ name: file.name, version, type, status, changeLog, uploadPath, uploadDate: new Date() })
+        await cms.getModel('AppItem').create({ version, type, changeLog: note, uploadPath, uploadDate: new Date(), app: group, baseVersion: base, release })
         await this.loadAppItems()
       },
-      async editApp(_id, change) {
-        const appInfo = await cms.getModel('AppItem').findOne({_id})
-        if (!appInfo)
+      
+      async editAppItem(_id, change) {
+        const appItem = await cms.getModel('AppItem').findOne({_id})
+        if (!appItem)
           return
-        if (appInfo.version !== change.version) {
-          await this.$getService('FileUploadStore').prepareUploadAppFolder(appInfo.name, change.version)
-          await this.$getService('FileUploadStore').moveApp(appInfo.uploadPath, change.version)
-        }
         await cms.getModel('AppItem').updateOne({_id}, change)
         await this.loadAppItems()
       },
-      async removeApp(_id) {
-        const appInfo = await cms.getModel('AppItem').findOne({_id})
-        // delete file
-        await this.$getService('FileUploadStore').removeFile(appInfo.uploadPath)
+      
+      async removeAppItem(_id) {
+        const appItem = await cms.getModel('AppItem').findOne({_id})
+        // delete file in file explorer
+        await this.$getService('FileUploadStore').removeFile(appItem.uploadPath)
         // delete app document
         await cms.getModel('AppItem').remove({_id})
         await this.loadAppItems()
+      },
+      
+      toggleHideShowApp(_id) {
+        if (_.has(this.appShows, _id)) {
+          this.appShows[_id] = !this.appShows[_id]
+        } else {
+          this.$set(this.appShows, _id, true)
+        }
       }
     },
     provide() {
       return {
+        // groups
+        storeGroups: this.storeGroups,
         loadStoreGroups: this.loadStoreGroups,
-        loadStores: this.loadStores,
         addGroup: this.addGroup,
+
+        // stores
+        stores: this.stores,
+        loadStores: this.loadStores,
         addStore: this.addStore,
         removeStore: this.removeStore,
         updateStore: this.updateStore,
-        addDevice: this.addDevice,
-        removeDevice: this.removeDevice,
-        updateDevice: this.updateDevice,
-        storeGroups: this.storeGroups,
-        stores: this.stores,
+        
+        // store management display model
         posManagementModel: this.posManagementModel,
         searchText: this.searchText,
         orderBy: this.orderBy,
+        
+        // devices
+        addDevice: this.addDevice,
+        removeDevice: this.removeDevice,
+        updateDevice: this.updateDevice,
+        
+        // apps
+        apps: this.apps,
+        loadApps: this.loadApps,
+        addApp: this.addApp,
+        changeAppName: this.changeAppName,
+        
+        // app items
         loadAppItems: this.loadAppItems,
-        uploadApp: this.uploadApp,
-        editApp: this.editApp,
-        removeApp: this.removeApp,
-        apps: this.apps
+        uploadAppItem: this.uploadAppItem,
+        editAppItem: this.editAppItem,
+        removeAppItem: this.removeAppItem,
+        appItems: this.appItems,
+        
+        //
+        versionControlViewModel: this.versionControlViewModel,
+        newAppItemDialogViewModel: this.newAppItemDialogViewModel,
+        versionControlOrderBy: this.versionControlOrderBy,
+        toggleHideShowApp: this.toggleHideShowApp,
       }
     }
   }

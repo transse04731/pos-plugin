@@ -78,7 +78,7 @@
     props: {
       name: String,
       stores: Array,
-      apps: Array,
+      appItems: Array,
     },
     data() {
       return {
@@ -97,7 +97,7 @@
     },
     computed: {
       appVersions() {
-        return _.map(this.apps, app => ({ text: app.version, value: app.version }))
+        return _.map(this.appItems, appItem => ({ text: appItem.version, value: appItem.version }))
       }
     },
     methods: {

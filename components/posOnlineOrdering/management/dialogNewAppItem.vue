@@ -1,5 +1,5 @@
 <template>
-  <g-dialog v-model="internalValue" width="580" eager>
+  <g-dialog v-if="internalValue" v-model="internalValue" width="580" eager>
     <div class="dialog">
       <div class="dialog__title">{{edit ? 'Edit' : 'Add New'}} Version</div>
       <div class="dialog__content">
@@ -38,46 +38,33 @@
 </template>
 
 <script>
+  import _ from 'lodash'
+  
   export default {
-    name: "dialogVersionControl",
+    name: "dialogNewAppItem",
     props: {
       value: Boolean,
       edit: Boolean,
-      name: String,
       version: String,
       group: String,
       type: String,
       base: String,
       release: String,
       note: String,
+      listGroup: Array,
+      listBaseVersions: Array,
+      listRelease: Array,
+      listType: Array
     },
     data() {
       return {
-        listGroup: [
-          {text: 'POS_Android', value: 'POS_Android'},
-          {text: 'POS_Windows', value: 'POS_Windows'}
-        ],
-        listType: [
-          {text: 'APK', value: 'APK'},
-          {text: 'Patch', value: 'Patch'}
-        ],
-        listBaseVersion: [
-          {text: 'N/A', value: ''},
-          {text: '1.00', value: '1.00'},
-          {text: '0.80', value: '0.80'}
-        ],
-        listRelease: [
-          {text: 'Beta', value: 'Beta'},
-          {text: 'Stable', value: 'Stable'},
-          {text: 'Archived', value: 'Archived'},
-        ],
-        internalName: this.name || '',
-        internalGroup: this.group || 'POS_Android',
-        internalVersion: this.version || '',
-        internalType: this.type || 'APK',
-        internalBase: this.base || '',
-        internalRelease: this.release || 'beta',
-        internalNote: this.note || '',
+        internalName: '',
+        internalGroup: this.group,
+        internalVersion: this.version,
+        internalType: this.type,
+        internalBase: this.base,
+        internalRelease: this.release,
+        internalNote: this.note,
         file: null
       }
     },
@@ -89,6 +76,13 @@
         set(val) {
           this.$emit('input', val)
         }
+      },
+      listBaseVersion() {
+        const listBaseVersionModel = _.find(this.listBaseVersions, v => v.group === this.internalGroup)
+        if (listBaseVersionModel)
+          return listBaseVersionModel.versions
+        else
+          return []
       }
     },
     methods: {
@@ -123,7 +117,6 @@
           
           this.$emit('add', {
             file: this.file,
-            name: this.file.name,
             group: this.internalGroup,
             version: this.internalVersion,
             type: this.internalType,
