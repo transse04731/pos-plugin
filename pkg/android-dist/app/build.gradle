@@ -1,0 +1,10 @@
+apply from: '../pos-android/app.gradle'
+
+android {
+    defaultConfig {
+        applicationId "io.gigasource.restaurant"
+    }
+}
+
+
+

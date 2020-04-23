@@ -1,0 +1,20 @@
+{
+  "name": "pkg_build",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pkg:macos": "pkg --config pkg.config.js --targets node10-macos-x64 --output out/app index.js --no-bytecode",
+    "build:android": "node android/pkg.js",
+    "build:win32": "node win32/pkg.js",
+    "build:android:dest": "node android/pkg.js && cp build/app-android android-dist/app/src/main/assets/appAssets/app",
+    "build:apk": "npm run build:android:dest && cd android-dist && ./gradlew build"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "giga-pkg-patches": "github:gigasource/giga-pkg-patches",
+    "pkg": "^4.4.4"
+  }
+}
