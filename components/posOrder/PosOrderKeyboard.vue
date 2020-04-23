@@ -46,7 +46,7 @@
         default: 'active'
       }
     },
-    injectService: ['OrderStore:(productIdQuery,queryProductsById,productIdQueryResults,addProductToOrder)'],
+    injectService: ['OrderStore:(productIdQuery,queryProductsById,productIdQueryResults,addProductToOrder,addModifierToProduct)'],
     computed: {
       mainKeyboard() {
         const keyboard = _.cloneDeep(defaultKeyboard)
@@ -183,7 +183,12 @@
           if (this.productIdQueryResults.length === 1) {
             const onlyResult = this.productIdQueryResults[0];
             if (onlyResult.attributes.length === 0 || onlyResult.attributes.keys().length === onlyResult.attributes.length) {
-              this.addProductToOrder(onlyResult)
+              if(onlyResult.isModifier) {
+                this.addModifierToProduct(onlyResult)
+              } else {
+                this.addProductToOrder(onlyResult)
+              }
+              this.productIdQuery = ''
               return
             }
           }
