@@ -4,6 +4,12 @@
   "extensions": [],
   "fields": [
     {
+      "_id": "5ea16f4ad055954d81bc6315",
+      "schemaType": "string",
+      "key": "id",
+      "type": "input"
+    },
+    {
       "_id": "5e8d5bc67610f43263473aca",
       "schemaType": "string",
       "key": "alias",

@@ -31,6 +31,9 @@
       storeAlias() {
         return _.map(this.stores, s => s.alias)
       },
+      storeIds() {
+        return _.map(this.stores, s => s.id)
+      },
       intermediatePosManagementModel() {
         const storeGroupViewModels = []
         _.each(this.storeGroups, storeGroup => {
@@ -183,12 +186,13 @@
         }
         
         // get unique alias
-        const alias = this.getUniqueAlias(_.toLower(name))
-        await cms.getModel('Store').create({ name, alias, groups, address, addedDate: dayjs(), pickup: true })
+        const alias = this.getUniqueStoreAlias(_.toLower(name))
+        const id = this.getUniqueStoreId()
+        await cms.getModel('Store').create({ id, name, alias, groups, address, addedDate: dayjs(), pickup: true })
         await this.loadStores()
       },
       
-      getUniqueAlias(alias) {
+      getUniqueStoreAlias(alias) {
         let ctr = 0
         let newAlias
         do {
@@ -196,6 +200,15 @@
           newAlias = alias + ctr
         } while(_.includes(this.storeAlias, newAlias))
         return newAlias
+      },
+
+      getUniqueStoreId() {
+        // TODO: synchronize between multiple web session
+        let newId = 0
+        do {
+          newId++
+        } while(_.includes(this.storeIds, newId))
+        return newId
       },
       
       async removeStore(groupId, store) {
