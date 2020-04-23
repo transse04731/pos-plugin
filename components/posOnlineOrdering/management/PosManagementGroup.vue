@@ -26,7 +26,10 @@
                 <div class="col-3">
                   {{device.appName}}
                 </div>
-                <div class="row-flex col-3">
+                <div class="row-flex col-1">
+                  {{ device.appVersion }}
+                </div>
+                <div class="row-flex col-2">
                   <g-select class="w-50" :items="appVersions" v-model="device.appVersion"/>
                   <p class="ml-3 text-indigo-accent-2" style="cursor: pointer" @click="updateAppVersion(device)">Update</p>
                 </div>
