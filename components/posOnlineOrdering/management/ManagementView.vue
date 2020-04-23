@@ -128,7 +128,9 @@
         },
         showFilterMenu: false,
         selectedStoreId: null,
-        sidebarItems
+        sidebarItems,
+
+        deviceIdList: [],
       }
     },
     injectService: ['PosOnlineOrderManagementStore:(loadStoreGroups,loadStores,addGroup,addStore,removeStore,updateStore,addDevice,removeDevice,updateDevice,storeGroups,stores,posManagementModel,searchText,orderBy,apps,appItems)'],
@@ -142,7 +144,32 @@
       selectedStore() {
         if (this.selectedStoreId)
           return _.find(this.stores, store => store._id === this.selectedStoreId)
-      }
+      },
+    },
+    mounted() {
+      window.cms.socket.on('updateDeviceStatus', storeId => {
+        if (storeId) {
+          const storeIdList = _.flatten(this.posManagementModel.map(e => e.stores)).map(e => e._id)
+
+          if (storeIdList.includes(storeId)) this.loadStores()
+        } else {
+          this.loadStores()
+        }
+      })
+
+      this.$watch('posManagementModel', val => {
+        const stores = _.flatten(val.map(e => e.stores))
+        const devices = _.flatten(stores.map(store => store.devices))
+        const deviceIds = devices.map(device => device._id)
+        this.deviceIdList = _.uniq(this.deviceIdList.concat(deviceIds))
+
+        // Duplicated IDs will be filtered on backend so it's OK to send the same IDs again
+        window.cms.socket.emit('watchDeviceStatus', this.deviceIdList)
+      })
+    },
+    beforeDestroy() {
+      window.cms.socket.off('updateDeviceStatus')
+      window.cms.socket.emit('unwatchDeviceStatus', this.deviceIdList)
     },
     methods: {
       viewStoreSetting(store) {

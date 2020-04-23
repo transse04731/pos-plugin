@@ -4,6 +4,7 @@ const ObjectId = mongoose.Types.ObjectId;
 const ProxyServer = require('@gigasource/nodejs-proxy-server/libs/server.js');
 const {remoteControlExpressServerPort, remoteControlSocketIOServerPort} = global.APP_CONFIG;
 const deviceStatusSubscribers = {};
+const _ = require('lodash');
 
 const Schema = mongoose.Schema
 const savedMessageSchema = new Schema({
@@ -81,11 +82,11 @@ module.exports = function (cms) {
     let remoteControlDeviceId = null;
 
     socket.on('watchDeviceStatus', clientIdList => {
-      deviceStatusSubscribers[socket.id] = (deviceStatusSubscribers[socket.id] || []).concat(clientIdList);
+      deviceStatusSubscribers[socket.id] = _.uniq((deviceStatusSubscribers[socket.id] || []).concat(clientIdList));
     });
 
     socket.on('unwatchDeviceStatus', clientIdList => {
-      deviceStatusSubscribers[socket.id] = (deviceStatusSubscribers[socket.id] || []).filter(id => !clientIdList.includes(id));
+      deviceStatusSubscribers[socket.id] = _.uniq((deviceStatusSubscribers[socket.id] || []).filter(id => !clientIdList.includes(id)));
     });
 
     socket.on('createOrder', async (storeId, orderData) => {
