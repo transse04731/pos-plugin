@@ -184,8 +184,6 @@
           alert('This name is already taken!')
           return
         }
-        
-        // get unique alias
         const alias = this.getUniqueStoreAlias(_.toLower(name))
         const id = this.getUniqueStoreId()
         await cms.getModel('Store').create({ id, name, alias, groups, address, addedDate: dayjs(), pickup: true })
