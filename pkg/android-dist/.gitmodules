@@ -1,0 +1,3 @@
+[submodule "pos-android"]
+	path = pos-android
+	url =  git@github.com:gigasource/pos-android.git

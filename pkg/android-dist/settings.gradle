@@ -1,0 +1,4 @@
+rootProject.name='POS Restaurant'
+include ':app'
+include ':pos-android'
+project(':pos-android').projectDir = new File(rootDir, "pos-android/app")
