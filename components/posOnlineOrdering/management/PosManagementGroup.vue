@@ -1,9 +1,28 @@
 <template>
   <div class="pos-management-group">
     <div class="pos-management-group__header" @click="toggleContent">
-      <g-icon size="20" v-if="showContent">expand_less</g-icon>
-      <g-icon size="20" v-else>expand_more</g-icon>
-      <div class="pos-management-group__header-name">{{name}}</div>
+      <g-icon class="icon-first" size="20" v-if="showContent">expand_less</g-icon>
+      <g-icon class="icon-first" size="20" v-else>expand_more</g-icon>
+      <g-edit-view-input
+          :value="name"
+          @click.native.stop.prevent="() => {}"
+          @input="(value, cb) => changeGroupName(value, cb)">
+        <template v-slot:action="{mode, switchToEditMode, applyChange, resetValue}">
+          <g-menu v-if="mode !== 'edit'" v-model="nameEditMenu" close-on-content-click nudge-bottom="5" nudge-left="30">
+            <template v-slot:activator="{on}">
+              <div class="btn-edit" :style="[nameEditMenu && {background: '#F4F5FA'}]">
+                <g-icon :class="[nameEditMenu && 'btn-edit--active']" size="16" @click="on.click">mdi-pencil-outline</g-icon>
+              </div>
+            </template>
+            <div class="menu-edit">
+              <div @click="switchToEditMode()">Rename</div>
+              <div @click="deleteGroup">Delete</div>
+            </div>
+          </g-menu>
+          <g-icon v-if="mode === 'edit'" @click="applyChange()" class="ml-1">mdi-check</g-icon>
+          <g-icon v-if="mode === 'edit'" @click="resetValue()" class="ml-1">mdi-close</g-icon>
+        </template>
+      </g-edit-view-input>
     </div>
     <template v-if="showContent">
       <div class="pos-management-group__content">
@@ -92,6 +111,7 @@
         iframeRefreshInterval: null,
         remoteControlDeviceId: null,
         disableRemoteControlBtn: false,
+        nameEditMenu: false
       }
     },
     computed: {
@@ -170,6 +190,12 @@
         const {socket} = window.cms
         socket.emit('updateApp', device._id, device.updateVersion)
         await cms.getModel('Device').updateOne({_id: device._id}, { version})
+      },
+      changeGroupName(name) {
+
+      },
+      deleteGroup() {
+        this.$emit('delete:group', this.name)
       }
     },
     beforeDestroy() {
@@ -190,7 +216,7 @@
       font-weight: 700;
       border-bottom: 1px solid #EFEFEF;
 
-      .g-icon {
+      .icon-first {
         margin: 16px;
         box-shadow: 0.5px 0px 2px rgba(0, 0, 0, 0.1398);
       }
@@ -300,6 +326,30 @@
         padding: 0 8px;
         text-transform: capitalize;
       }
+    }
+
+    .btn-edit {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 8px;
+
+      &--active {
+        color: #536DFE !important;
+      }
+    }
+  }
+
+  .menu-edit {
+    background: white;
+    border-radius: 2px;
+
+    & > div {
+      padding: 6px 12px;
+      cursor: pointer;
     }
   }
 </style>
