@@ -16,8 +16,6 @@ module.exports = cms => {
   cms.app.use(/^\/$/, async (req, res, next) => {
     if (!req.session.userId)
       return res.redirect('/sign-in')
-    if (req.session.userRole.name === 'admin')
-      return res.redirect('/admin')
     else
       return res.redirect('/management')
     next()
