@@ -112,7 +112,7 @@
     components: {Account, VersionControl},
     props: {},
     data: function () {
-      const sidebarItems = [ { title: 'Restaurant Management', icon: 'icon-management_white', onClick: () => this.changeView('list', 'Restaurant Management') }]
+      const sidebarItems = [ { title: 'Store Management', icon: 'icon-management_white', onClick: () => this.changeView('list', 'Store Management') }]
       if (cms.loginUser.user.role.name === 'admin')
         sidebarItems.push({ title: 'Version Control', icon: 'icon-version_control', onClick: () => this.changeView('version', 'Version Control') })
       sidebarItems.push({ title: 'Account Management', icon: 'icon-account-management', onClick: () => this.changeView('account', 'Account Management') })

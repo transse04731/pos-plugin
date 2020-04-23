@@ -48,6 +48,12 @@
       this.updateZipCodeDebounce = _.debounce(this.updateZipCode, 500)
       this.updateFeeDebounce = _.debounce(this.updateFee, 500)
     },
+    mounted() {
+      const inputs = document.querySelectorAll('input[type=number]')
+      for(const input of inputs) {
+        input.step = 0.01
+      }
+    },
     computed: {
       items() {
         return this.store.deliveryFee.fees
@@ -99,9 +105,15 @@
       updateDeliveryFee(change) {
         const deliveryFee = {...this.store.deliveryFee, ...change}
         this.$emit('update', {deliveryFee})
+        this.$nextTick(() => {
+          const inputs = document.querySelectorAll('input[type=number]')
+          for(const input of inputs) {
+            input.step = 0.01
+          }
+        })
       },
       removeFee(item) {
-        const index = this.store.deliveryFee.fees.findIndex(f => f.zipCode === item.zipCode)
+        const index = this.store.deliveryFee.fees.findIndex(f => f._id === item._id)
         this.store.deliveryFee.fees.splice(index, 1)
         this.updateFees()
       }

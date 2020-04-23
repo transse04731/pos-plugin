@@ -9,18 +9,18 @@
         </div>
         <div class="row-flex">
           <div class="col-6">
-            <g-select text-field-component="GTextFieldBs" :items="listGroup" label="Type" v-model="internalGroup"/>
+            <g-select :class="[edit && 'disabled']" text-field-component="GTextFieldBs" :items="listGroup" label="Group" v-model="internalGroup"/>
           </div>
           <div class="col-6">
-            <g-text-field-bs large label="Version" v-model="internalVersion"/>
+            <g-text-field-bs :disabled="edit" large label="Version" v-model="internalVersion"/>
           </div>
         </div>
         <div class="row-flex">
           <div class="col-6">
-            <g-select text-field-component="GTextFieldBs" :items="listType" label="Type" v-model="internalType"/>
+            <g-select :class="[edit && 'disabled']" text-field-component="GTextFieldBs" :items="listType" label="Type" v-model="internalType"/>
           </div>
           <div class="col-6">
-            <g-select text-field-component="GTextFieldBs" :items="listBaseVersion" label="Base Version" v-model="internalBase"/>
+            <g-select :class="[edit && 'disabled']" text-field-component="GTextFieldBs" :items="listBaseVersion" label="Base Version" v-model="internalBase"/>
           </div>
         </div>
         <g-select text-field-component="GTextFieldBs" :items="listRelease" label="Release" v-model="internalRelease"/>
@@ -31,7 +31,10 @@
       </div>
       <div class="dialog__action">
         <g-btn-bs large text-color="#424242" @click="internalValue = false">Cancel</g-btn-bs>
-        <g-btn-bs large background-color="indigo accent-2" text-color="white" @click="upload">Upload</g-btn-bs>
+        <g-btn-bs :disabled="!internalName || !internalGroup || !internalType || !internalVersion || !internalRelease"
+                  large background-color="indigo accent-2" text-color="white" @click="upload">
+          Upload
+        </g-btn-bs>
       </div>
     </div>
   </g-dialog>

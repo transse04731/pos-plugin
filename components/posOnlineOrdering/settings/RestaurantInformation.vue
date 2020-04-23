@@ -1,21 +1,21 @@
 <template>
   <div class="restaurant-info">
-    <div class="restaurant-info__title">Restaurant Information</div>
+    <div class="restaurant-info__title">Store Information</div>
     <div class="restaurant-info__main" v-if="store">
       <div>
         <div class="restaurant-info__main--left">
           <div class="mb-3 fw-700">Basic info</div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto 1fr; grid-gap: 5px">
-            <g-text-field-bs large label="Restaurant Name"
-                             placeholder="Restaurant Name"
+            <g-text-field-bs large label="Store Name"
+                             placeholder="Store Name"
                              :value="store.name"
                              @input="updateDebounce({ name: $event })"/>
-            <g-text-field-bs large label="Restaurant Phone"
-                             placeholder="Restaurant Phone"
+            <g-text-field-bs large label="Store Phone"
+                             placeholder="Store Phone"
                              :value="store.phone"
                              @input="updateDebounce({ phone: $event })"/>
             <div class="span-2">
-              <p>Restaurant Address</p>
+              <p>Store Address</p>
               <g-textarea outlined no-resize placeholder="Address..."
                           :rows="3"
                           :value="store.address"
@@ -33,12 +33,12 @@
       <div class="restaurant-info__main--right">
         <div class="mb-3 fw-700">Upload photo</div>
         <div class="mb-5">
-          <div class="mb-2">Restaurant Photo</div>
-          <upload-zone :url="store.orderHeaderImageSrc" @url="update({ orderHeaderImageSrc: $event })"/>
+          <div class="mb-2">Store Photo</div>
+          <upload-zone :url="store.orderHeaderImageSrc" @url="update({ orderHeaderImageSrc: $event })" :option="{maxWidth: 500, maxHeight: 200}"/>
         </div>
         <div>
-          <div class="mb-2">Restaurant Logo</div>
-          <upload-zone :url="store.logoImageSrc" @url="update({ logoImageSrc: $event })"/>
+          <div class="mb-2">Store Logo</div>
+          <upload-zone :url="store.logoImageSrc" @url="update({ logoImageSrc: $event })" :option="{maxHeight: 100}"/>
         </div>
       </div>
     </div>
