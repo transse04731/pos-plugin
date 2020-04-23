@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100vh; width: 100%">
+  <div style="height: 100vh; width: 100%; overflow: auto">
     <slot :name="viewName" v-bind="viewParams"/>
   </div>
 </template>
