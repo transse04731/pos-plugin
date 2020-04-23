@@ -10,11 +10,11 @@
     </div>
     <div class="version-control__table">
       <div class="version-control__table-header">
-        <div class="col-3 pl-3" @click="_sort('version')">
+        <div class="col-3 pl-3" @click="sortAppItem('version')">
           Version
           <g-icon v-if="sort.type === 'version'" size="16">{{sort.order === 'asc' ? 'fas fa-long-arrow-alt-up' : 'fas fa-long-arrow-alt-down'}}</g-icon>
         </div>
-        <div class="col-1 pl-1" @click="_sort('type')">
+        <div class="col-1 pl-1" @click="sortAppItem('type')">
           Type
           <g-icon v-if="sort.type === 'type'" size="16">{{sort.order === 'asc' ? 'fas fa-long-arrow-alt-up' : 'fas fa-long-arrow-alt-down'}}</g-icon>
         </div>
@@ -22,11 +22,11 @@
           From
           <g-icon v-if="sort.type === 'base'" size="16">{{sort.order === 'asc' ? 'fas fa-long-arrow-alt-up' : 'fas fa-long-arrow-alt-down'}}</g-icon>
         </div>
-        <div class="col-1 pl-1" @click="_sort('release')">
+        <div class="col-1 pl-1" @click="sortAppItem('release')">
           Release
           <g-icon v-if="sort.type === 'release'" size="16">{{sort.order === 'asc' ? 'fas fa-long-arrow-alt-up' : 'fas fa-long-arrow-alt-down'}}</g-icon>
         </div>
-        <div class="col-2 pl-1" @click="_sort('uploadDate')">
+        <div class="col-2 pl-1" @click="sortAppItem('uploadDate')">
           Upload date
           <g-icon v-if="sort.type === 'uploadTime'" size="16">{{sort.order === 'asc' ? 'fas fa-long-arrow-alt-up' : 'fas fa-long-arrow-alt-down'}}</g-icon>
         </div>
@@ -115,7 +115,7 @@
         // app items
         'PosOnlineOrderManagementStore:(uploadAppItem,editAppItem,removeAppItem)',
         // view model
-        'PosOnlineOrderManagementStore:(versionControlViewModel,newAppItemDialogViewModel,versionControlOrderBy,toggleHideShowApp)'
+        'PosOnlineOrderManagementStore:(versionControlViewModel,newAppItemDialogViewModel,versionControlOrderBy,toggleHideShowApp,sortAppItem)'
     ],
     data() {
       return {
