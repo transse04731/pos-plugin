@@ -10,7 +10,10 @@
 
         <div class="col-6">
           <div>Webshop URL</div>
-          <div style="font-style: italic; color: #536DFE">{{computedDevice.url}}</div>
+          <div>
+            <span style="font-style: italic; color: #536DFE">{{computedDevice.url}}</span>
+            <span v-if="!webshopAvailable" style="font-style: italic; color: #F44336"> - Not available</span>
+          </div>
         </div>
       </div>
       <g-btn-bs v-if="connected" large background-color="#424242" text-color="#FFF" style="margin-top: 24px;"
@@ -18,7 +21,7 @@
         Unpair
       </g-btn-bs>
       <g-btn-bs v-else large background-color="#424242" text-color="#FFF" style="margin-top: 24px;"
-                @click.stop="dialog.connect = true">
+                @click.stop="openConnectDialog">
         Pair
       </g-btn-bs>
       <g-divider style="margin-top: 24px"/>
@@ -62,7 +65,7 @@
       </g-grid-select>
     </div>
 
-    <dialog-connect v-model="dialog.connect" @confirm="connect"/>
+    <dialog-connect v-model="dialog.connect" :error="pairError" :pairing="pairing" @confirm="connect"/>
     <dialog-disconnect v-model="dialog.disconnect" @confirm="disconnect"/>
   </div>
 </template>
@@ -70,6 +73,7 @@
 <script>
   import ValuePicker from './ValuePicker';
   import GGridItemSelector from '../FnButton/components/GGridItemSelector';
+  import axios from 'axios';
 
   export default {
     name: "OnlineOrderSetting",
@@ -93,6 +97,9 @@
           {text: 'Time to Complete', value: 'time'},
         ],
         webshopUrl: '',
+        webshopAvailable: true,
+        pairError: null,
+        pairing: false,
       }
     },
     computed: {
@@ -131,8 +138,16 @@
     },
     methods: {
       async connect(pairingCode) {
-        this.$emit('registerOnlineOrder', pairingCode, deviceId => {
-          if (deviceId) {
+        this.pairing = true
+        this.pairError = null
+
+        this.$emit('registerOnlineOrder', pairingCode, (error, deviceId) => {
+          this.pairing = false
+
+          if (error) {
+            this.connected = false
+            this.pairError = error
+          } else {
             this.computedDevice = {
               id: deviceId,
               paired: true,
@@ -141,8 +156,8 @@
             }
 
             this.connected = true
-          } else {
-            this.connected = false
+            this.dialog.connect = false
+            this.pairError = null
           }
         })
       },
@@ -159,11 +174,25 @@
         })
       },
       updateSound(value) {
-        this.computedDevice = Object.assign({}, this.computedDevice, { sound: value })
+        this.computedDevice = Object.assign({}, this.computedDevice, {sound: value})
+      },
+      openConnectDialog() {
+        this.dialog.connect = true
+        this.pairError = null
+        this.pairing = false
       }
     },
     mounted() {
-      window.cms.socket.emit('getWebshopUrl', webshopUrl => this.webshopUrl = webshopUrl);
+      window.cms.socket.emit('getWebshopUrl', async webshopUrl => {
+        this.webshopUrl = webshopUrl
+
+        try {
+          await axios.get(`${webshopUrl}/health-check`)
+          this.webshopAvailable = true
+        } catch (e) {
+          this.webshopAvailable = false
+        }
+      });
 
       this.$nextTick(() => {
         this.$emit('getOnlineDevice')

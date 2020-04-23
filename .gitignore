@@ -2,3 +2,6 @@
 package-lock.json
 dist/
 node_modules
+pkg/android-dist/pos-android
+pkg/android-dist/app/src/main/assets/appAssets/app
+pkg/build

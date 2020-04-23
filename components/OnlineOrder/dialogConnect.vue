@@ -11,9 +11,16 @@
         <div class="dialog-note">
           <b>Note: </b>Pairing code can be found by opening your online ordering settings on your browser.
         </div>
+        <div v-if="pairing" class="mt-2">
+          <g-progress-circular class="mr-2" indeterminate/>
+          <span>Pairing...</span>
+        </div>
+        <div v-if="error" class="mt-2 text-red">
+          Error: {{error}}
+        </div>
         <div class="dialog-buttons">
           <g-btn-bs width="100" text-color="#424242" @click="internalValue = false">Cancel</g-btn-bs>
-          <g-btn-bs width="100" background-color="#536DFE" text-color="white" @click="connect">Confirm</g-btn-bs>
+          <g-btn-bs width="100" background-color="#536DFE" text-color="white" @click="connect">Pair</g-btn-bs>
         </div>
       </div>
     </g-dialog>
@@ -26,11 +33,13 @@
     name: "dialogConnect",
     props: {
       value: null,
+      error: null,
+      pairing: false,
     },
     data() {
       return {
         code: '',
-        dialogInput: false
+        dialogInput: false,
       }
     },
     computed: {
@@ -47,7 +56,6 @@
     methods: {
       connect() {
         this.$emit('confirm', this.code)
-        this.internalValue = false
       },
       changeCode(code) {
         this.code = code
