@@ -12,7 +12,8 @@
         </div>
       </div>
       <div class="bg-grey-lighten-1 pa-2">
-        <pos-keyboard-full v-model="keyboard"/>
+        <pos-keyboard-full v-if="check === 'username'" v-model="name"/>
+        <pos-numpad class="dialog-user__numpad" v-else-if="check === 'passcode'" v-model="passcode"/>
       </div>
     </div>
   </g-dialog>
@@ -24,6 +25,7 @@
     props: {
       value: null,
 			focusInput: String,
+      add: Boolean
     },
 		data(){
     	return {
@@ -53,26 +55,25 @@
           this.$emit('update:focusInput', val);
         }
       },
-			keyboard: {
-      	get() {
-      		if(this.check === 'username')
-      			return this.name;
-      		else if(this.check === 'passcode')
-      			return this.passcode;
-				},
-				set(val) {
-					if(this.check === 'username')
-						return this.name = val;
-					else if(this.check === 'passcode')
-						return this.passcode = val;
-				}
-			}
     },
 		methods: {
 			async submit() {
-			  this.selectedUser.name = this.name;
-			  this.selectedUser.passcode = this.passcode;
-			  await this.updateUser(this.selectedUser._id, this.selectedUser);
+        if(this.add) {
+          const user = {
+            name: this.name,
+            passcode: this.passcode,
+          };
+          await this.updateUser(null, user);
+          const newUser = this.listUsers[this.listUsers.length - 1];
+          this.selectedUser = {
+            ...newUser,
+            prepend: newUser.avatar,
+          }
+        } else {
+          this.selectedUser.name = this.name;
+          this.selectedUser.passcode = this.passcode;
+          await this.updateUser(this.selectedUser._id, this.selectedUser);
+        }
 				this.dialogUserDetail = false;
 			}
 		},
@@ -82,8 +83,8 @@
           const textfield = this.$refs[this.focusInput];
           if (textfield) textfield.$refs.input.focus();
         }, 200);
-        this.name = val ? this.selectedUser.name : '';
-        this.passcode = val ? this.selectedUser.passcode : '';
+        this.name = this.add ? '' : this.selectedUser.name;
+        this.passcode = this.add ? '' : this.selectedUser.passcode;
       }
 		}
   }
@@ -105,6 +106,12 @@
         justify-content: flex-end;
         padding-top: 24px;
       }
+    }
+
+    &__numpad {
+      height: 174px;
+      width: 40%;
+      margin: auto;
     }
   }
 </style>

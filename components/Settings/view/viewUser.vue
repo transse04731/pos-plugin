@@ -92,7 +92,7 @@
     </g-grid-layout>
     <dialog-user-detail :focusInput.sync="focusInput" v-model="dialogUserDetail"/>
     <dialog-select-avatar v-model="dialogSelectAvatar"/>
-    <dialog-new-user v-model="dialogNewUser"/>
+    <dialog-user-detail add :focusInput.sync="focusInput" v-model="dialogNewUser"/>
   </fragment>
 </template>
 
@@ -111,7 +111,7 @@
       return {
         layout: layout,
 				dialogUserDetail: false,
-				focusInput: null,
+				focusInput: 'username',
 				dialogSelectAvatar: false,
 				dialogNewUser: false
       }
@@ -230,6 +230,10 @@
 			color: #1471FF;
 			cursor: pointer;
 		}
+
+    .bs-tf-wrapper {
+      margin: 8px 5px 0;
+    }
 	}
 
 </style>

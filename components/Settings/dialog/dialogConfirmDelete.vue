@@ -5,8 +5,8 @@
         {{$t('ui.confirmation')}}
       </g-card-title>
       <g-card-text>
-        <span>{{$t("settings.deletePrompt")}}</span>
-        <span v-if="computedType">{{computedType}}</span>
+        <span>{{$t("settings.deletePrompt")}} </span>
+        <span v-if="computedType">{{computedType}} </span>
         <b v-if="computedLabel">"{{computedLabel}}"</b>?
       </g-card-text>
       <g-card-actions>
