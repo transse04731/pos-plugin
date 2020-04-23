@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="po-order-table">
-      <div class="po-order-table__header">
+      <div v-if="store.orderHeaderImageSrc" class="po-order-table__header">
         <!-- header image -->
         <img :src="store.orderHeaderImageSrc" class="po-order-table__header__image"/>
       </div>
