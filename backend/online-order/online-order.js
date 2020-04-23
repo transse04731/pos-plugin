@@ -13,8 +13,22 @@ let activeProxies = 0;
 let deviceSockets = [];
 
 function createOnlineOrderSocket(deviceId) {
-  if (!onlineOrderSocket) {
+  const maxConnectionAttempt = 5;
+
+  return new Promise((resolve, reject) => {
+    if (onlineOrderSocket) return resolve()
+
     onlineOrderSocket = io(`${webshopUrl}?clientId=${deviceId}`);
+
+    onlineOrderSocket.once('connect', resolve);
+
+    onlineOrderSocket.on('reconnecting', function (numberOfAttempt) {
+      if (numberOfAttempt >= maxConnectionAttempt) {
+        reject(`Can not pair with server at address ${webshopUrl}`);
+        cleanupOnlineOrderSocket();
+      }
+    });
+
     onlineOrderSocket.on('createOrder', async (orderData, ackFn) => {
       if (!orderData) return
       const {orderType: type, paymentType, customer, products: items, deliveryTime, createdDate: dateString, shippingFee} = orderData
@@ -104,7 +118,7 @@ function createOnlineOrderSocket(deviceId) {
         proxyClient = null;
       }
     })
-  }
+  });
 }
 
 async function getDeviceId(pairingCode) {
@@ -140,9 +154,25 @@ async function updateDeviceStatus(paired, deviceId = null) {
   await cms.getModel('PosSetting').updateOne({}, {onlineDevice: deviceInfo});
 }
 
+function cleanupOnlineOrderSocket() {
+  if (onlineOrderSocket) {
+    onlineOrderSocket.off('createOrder');
+    onlineOrderSocket.off('startRemoteControl');
+    onlineOrderSocket.off('stopRemoteControl');
+    onlineOrderSocket.off('reconnecting');
+    onlineOrderSocket.disconnect();
+    onlineOrderSocket = null;
+  }
+}
+
 module.exports = async cms => {
-  const deviceId = await getDeviceId()
-  if (deviceId) createOnlineOrderSocket(deviceId)
+  try {
+    const deviceId = await getDeviceId();
+    if (deviceId) await createOnlineOrderSocket(deviceId);
+  } catch (e) {
+    console.error(e);
+    await updateDeviceStatus(false);
+  }
 
   cms.socket.on('connect', socket => {
     deviceSockets.push(socket)
@@ -155,11 +185,16 @@ module.exports = async cms => {
       const deviceId = await getDeviceId(pairingCode)
 
       if (deviceId) {
-        createOnlineOrderSocket(deviceId)
-        await updateDeviceStatus(true, deviceId);
-        if (typeof callback === 'function') callback(deviceId)
+        try {
+          await createOnlineOrderSocket(deviceId);
+          await updateDeviceStatus(true, deviceId);
+          if (typeof callback === 'function') callback(null, deviceId)
+        } catch (e) {
+          console.error(e);
+          callback(e);
+        }
       } else {
-        callback(null)
+        callback(`Invalid pairing code`);
       }
     });
 
@@ -181,11 +216,7 @@ module.exports = async cms => {
         }
       }
 
-      if (onlineOrderSocket) {
-        onlineOrderSocket.off('createOrder');
-        onlineOrderSocket.disconnect();
-        onlineOrderSocket = null;
-      }
+      cleanupOnlineOrderSocket();
 
       if (proxyClient) {
         proxyClient.destroy();
