@@ -16,18 +16,18 @@
             </div>
             <div style="flex: 1">
               <div class="row-flex mb-1" v-for="(device, index) in store.devices" :key="`device_${store.id}_${index}`">
-                <div class="row-flex col-3">
+                <div class="row-flex col-2">
                   <g-icon>{{getDeviceIcon(device)}}</g-icon>
                   <span class="ml-1">{{device.name}}</span>
                 </div>
                 <div class="col-2">
                   {{device.hardware}}
                 </div>
-                <div class="col-3">
-                  {{device.appName}}
-                </div>
                 <div class="row-flex col-3">
-                  <g-select class="w-50" :items="appVersions" v-model="device.appVersion"/>
+                  {{ `${device.appVersion} (${device.appName}, ${device.appRelease})` }}
+                </div>
+                <div class="row-flex col-4">
+                  <g-select class="w-50" :items="device.versions" v-model="device.updateVersion"/>
                   <p class="ml-3 text-indigo-accent-2" style="cursor: pointer" @click="updateAppVersion(device)">Update</p>
                 </div>
                 <div class="col-1">
@@ -95,9 +95,6 @@
       }
     },
     computed: {
-      appVersions() {
-        return _.map(this.appItems, appItem => ({ text: appItem.version, value: appItem.version }))
-      }
     },
     methods: {
       getDeviceIcon(device) {
@@ -168,17 +165,9 @@
         if (this.iframeRefreshInterval) clearInterval(this.iframeRefreshInterval)
       },
       async updateAppVersion(device) {
-        const name = device.appName
-        const version = device.appVersion
-        const app = await cms.getModel('App').findOne({ version})
-        if (app) {
-          console.log('update app for device', device)
-          const {socket} = window.cms
-          socket.emit('updateApp', device._id, app.uploadPath)
-          await cms.getModel('Device').updateOne({_id: device._id}, { version})
-        } else {
-          console.log('Found no app with version', version)
-        }
+        const {socket} = window.cms
+        socket.emit('updateApp', device._id, device.updateVersion)
+        await cms.getModel('Device').updateOne({_id: device._id}, { version})
       }
     },
     beforeDestroy() {

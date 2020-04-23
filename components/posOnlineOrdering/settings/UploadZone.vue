@@ -3,13 +3,13 @@
     <slot v-bind:showUploadDialog="showUploadDialog">
       <div v-if="url" style="height: 244px; display: flex; align-items: center; justify-content: center">
         <img :src="url" class="uploaded-image" draggable="false"/>
-        <g-btn-bs @click="showUploadDialog('crop')" class="edit-image-btn" text-color="#424242" background-color="#FFF" :elevation="elevation">
+        <g-btn-bs @click="showUploadDialog()" class="edit-image-btn" text-color="#424242" background-color="#FFF" :elevation="elevation">
           <g-icon>photo_camera</g-icon>
           <span style="margin-left: 4px">Edit Photo</span>
         </g-btn-bs>
       </div>
 
-      <div v-else @click="showUploadDialog('src')" style="padding: 20px; height: 244px">
+      <div v-else @click="showUploadDialog()" style="padding: 20px; height: 244px">
         <div style="display: flex; align-items: center">
           <img src="/plugins/pos-plugin/assets/img.svg" class="mr-2">
           <div>
@@ -29,13 +29,13 @@
     <g-dialog v-model="dialog.upload" persistent>
       <div style="width: 580px; background-color: #FFF; border-radius: 5px; margin: 0 auto;">
         <!-- src -->
-        <div style="font-weight: 600;font-size: 24px;color: #212121; padding: 35px 0 28px 35px">Upload Restaurant Photo</div>
+        <div style="font-weight: 600;font-size: 24px;color: #212121; padding: 36px">Upload Photo</div>
         <template v-if="view === 'src'">
           <div style="margin-bottom: -1px;">
             <span @click="tab = 'url'" :style=" {...getTabStyle('url'), marginLeft: '35px' }">Paste Photo Url</span>
             <span @click="tab= 'upload'" :style="getTabStyle('upload')">Upload a photo</span>
           </div>
-          <div style="border: 1px solid #9E9E9E; background-color: #EFEFEF; padding: 36px;">
+          <div style="border: 1px solid #9E9E9E; background-color: #EFEFEF; padding: 36px; border-radius: 0 0 5px 5px">
             <template v-if="tab === 'url'">
               <g-text-field-bs v-model="photoUrl" label="Photo URL"/>
             </template>
@@ -45,7 +45,7 @@
                 <span>{{ fileName }}</span>
               </div>
             </template>
-            <div style="display: flex; justify-content: flex-end; margin-top: 34px;">
+            <div style="display: flex; justify-content: flex-end; margin-top: 24px">
               <g-btn-bs height="44" @click="closeDialog">Cancel</g-btn-bs>
               <g-btn-bs @click="moveToCropView" background-color="#536DFE" width="98" height="44" text-color="#FFF">Next</g-btn-bs>
             </div>
@@ -77,7 +77,8 @@
       elevation: {
         type: Number,
         default: 2
-      }
+      },
+      option: Object
     },
     data: function () {
       return {
@@ -86,7 +87,7 @@
         
         // via link
         loadingImage: false,
-        photoUrl: this.url || '',
+        photoUrl: '',
         
         // via file
         file: null,
@@ -129,6 +130,7 @@
           'font-weight': 'bold',
           'font-size': '15px',
           'padding': '8px 10px',
+          'border-radius': '2px 2px 0 0',
           'border': `1px solid ${ tab === this.tab? '#9E9E9E' : 'transparent' }`,
           'border-bottom': `1px solid ${ tab === this.tab? 'transparent' : '#9E9E9E' }`,
           background: tab === this.tab ? '#EFEFEF' : 'transparent',
@@ -138,6 +140,9 @@
       showUploadDialog(view = 'src') {
         this.dialog.upload = true
         this.view = view
+        this.tab = 'url'
+        this.photoUrl = ''
+        this.file = null
       },
       moveToSrcView() {
         this.view = 'src'
@@ -165,6 +170,7 @@
         })
       },
       closeDialog() {
+        this.cropper && this.cropper.destroy()
         this.dialog.upload = false
         this.removeTemporaryFileIfExist()
       },
@@ -173,7 +179,7 @@
       },
       async _uploadImage() {
         this.dialog.uploading = true
-        const options = { imageSmoothingEnabled: true, imageSmoothingQuality: 'high' }
+        const options = { imageSmoothingEnabled: true, imageSmoothingQuality: 'high', ... this.option}
         this.cropper.getCroppedCanvas(options).toBlob(async (blob) => {
           let uploadedUrl
           if (this.tab === 'url') {
@@ -183,10 +189,10 @@
             uploadedUrl = await this.uploadImage(new File([blob], this.file.name, { type: this.file.type }))
           }
           this.$emit('url', uploadedUrl)
-          this.photoUrl = uploadedUrl
-          this.dialog.upload = false
           this.dialog.uploading = false
         })
+        this.cropper && this.cropper.destroy()
+        this.dialog.upload = false
       },
       removeTemporaryFileIfExist() {
         if (this.photoUrl && this.isExternalFile)

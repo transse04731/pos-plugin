@@ -3,10 +3,10 @@
     <!-- Product info -->
     <div class="menu-setting-new-item__main">
       <div class="ta-center">{{ index + 1 }}</div>
-      <upload-zone class="menu-setting-new-item__image" :url="internalImage" @url="getImage">
+      <upload-zone class="menu-setting-new-item__image" @url="getImage" :option="{maxHeight: 80, maxWidth: 80}">
         <template v-slot:default="{showUploadDialog}">
-          <img @click="showUploadDialog('crop')" v-if="internalImage" :src="internalImage" draggable="false" style="opacity: 0.8; width: 100%; height: 100%"/>
-          <div @click="showUploadDialog('src')" v-else class="menu-setting-new-item__image--upload">
+          <img @click="showUploadDialog()" v-if="internalImage" :src="internalImage" draggable="false" style="opacity: 0.8; width: 100%; height: 100%"/>
+          <div @click="showUploadDialog()" v-else class="menu-setting-new-item__image--upload">
             <img alt src="/plugins/pos-plugin/assets/upload.svg"/>
             <p>Upload</p>
           </div>
@@ -17,14 +17,14 @@
           <div class="col-1">
             <g-text-field-bs small v-model="internalId" type="text" placeholder="No."/>
           </div>
-          <div :class="useMultiplePrinters? 'col-6': 'col-9'">
-            <g-text-field-bs small v-model="internalName" :rules="productRules.name" placeholder="Name *"/>
+          <div class="flex-equal">
+            <g-text-field-bs small v-model="internalName"  placeholder="Name *"/>
           </div>
           <div class="col-3" v-if="useMultiplePrinters">
-            <g-select multiple small text-field-component="GTextFieldBs" v-model="internalPrinter" :items="internalAvailablePrinters"/>
+            <g-select small text-field-component="GTextFieldBs" v-model="internalPrinter" :items="internalAvailablePrinters"/>
           </div>
           <div class="col-2">
-            <g-text-field-bs small v-model="internalPrice" :rules="productRules.price" type="number" placeholder="Price *"/>
+            <g-text-field-bs small v-model="internalPrice" type="number" placeholder="Price *"/>
           </div>
         </div>
         <div class="menu-setting-new-item__content--lower">
@@ -35,7 +35,7 @@
             <div class="menu-setting-new-item__tax">
               <div>Tax:</div>
               <div>
-                <g-grid-select mandatory :value="internalTax" :items="taxes" itemCols="6">
+                <g-grid-select mandatory :value="internalTax" :items="taxes" :itemCols="Math.round(12/taxes.length)">
                   <template #default="{ toggleSelect, item, index }">
                     <div class="option" @click="e =>{ toggleSelect(item); internalTax = item.value;}">
                       {{item.text}}
@@ -63,7 +63,7 @@
 <script>
   import _ from 'lodash'
   import UploadZone from "./UploadZone";
-  
+
   export default {
     name: 'NewMenuItem',
     components: {UploadZone},
@@ -80,15 +80,16 @@
       availablePrinters: Array,
       useMultiplePrinters: Boolean,
     },
+    injectService:['SettingsStore:(getAllTaxCategory)'],
     data: function () {
       let internalPrinter
-      if (this.groupPrinters && this.groupPrinters.length) {
-        internalPrinter = this.useMultiplePrinters ? this.groupPrinters : [this.groupPrinters[0]]
+      if (this.useMultiplePrinters) {
+        internalPrinter = (this.groupPrinters && this.groupPrinters[0]) || null
       } else {
         // availablePrinters is not an empty array
-        internalPrinter = this.useMultiplePrinters ? this.availablePrinters : [this.availablePrinters[0]]
+        internalPrinter = this.groupPrinters[0] || this.availablePrinters[0]
       }
-      
+
       return {
         internalId: this.id || '',
         internalName: this.name,
@@ -96,14 +97,18 @@
         internalPrice: this.price,
         internalTax: this.tax || 7,
         internalImage: this.image,
-        internalPrinter: internalPrinter,
-        // TODO: Link database
-        taxes: [{ text: '19%', value: 19 }, { text: '7%', value: 7 }],
-        productRules: {
-          id: [ (value) => value ? true : 'Product\'s id is missing' ],
-          name: [ (value) => value ? true : 'Product\'s name is missing' ],
-          price: [ (value) => value ? true : 'Product\'s price is missing' ]
-        }
+        internalPrinter,
+        taxes: [],
+      }
+    },
+    async created() {
+      this.taxes = (await this.getAllTaxCategory()).map(tax => ({
+        text: tax.value + '%',
+        value: tax.value
+      }))
+      const inputNumber = document.querySelectorAll('input[type=number]')
+      for(const input of inputNumber) {
+        input.step = 0.01
       }
     },
     computed: {
@@ -120,12 +125,12 @@
           alert('Product name is missing')
           return
         }
-        
+
         if (!this.internalPrice) {
           alert('Product\'s price is missing')
           return
         }
-        
+
         if (!this.internalId) {
           alert('Product\'s id is missing')
           return
@@ -133,6 +138,11 @@
 
         if (!this.internalPrinter.length) {
           alert('Product\'s printer is missing')
+          return
+        }
+
+        if(isNaN(this.internalPrice)) {
+          alert('Product\'s price must be a number')
           return
         }
 
@@ -204,19 +214,19 @@
           .bs-tf-inner-input-group {
             height: 30px;
             font-size: 14px;
+            line-height: 28px;
             max-width: 100%;
             padding-right: 6px;
 
             .bs-tf-input {
-              height: 28px;
-              flex: 0 0 0;
+              display: none;
             }
 
             .input {
               height: 28px;
               display: flex;
               overflow: scroll hidden;
-              max-width: calc(100% - 24px);
+              width: calc(100% - 24px);
               scrollbar-width: none; // firefox
 
               &::-webkit-scrollbar {
@@ -233,11 +243,27 @@
 
         ::v-deep .bs-tf-inner-input-group {
           padding: 0 6px;
+
+          input[type=number] {
+            margin: 0 -6px;
+            padding-left: 6px;
+            padding-right: 6px;
+            -moz-appearance: textfield;
+            outline: none;
+            user-select: text;
+
+            &::-webkit-outer-spin-button,
+            &::-webkit-inner-spin-button {
+              -webkit-appearance: none;
+              margin: 0;
+            }
+          }
         }
 
         ::v-deep .bs-tf-input {
           width: 100%;
           outline: none;
+          margin: 0;
         }
       }
 

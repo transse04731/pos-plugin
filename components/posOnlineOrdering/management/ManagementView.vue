@@ -13,12 +13,8 @@
               </g-btn-bs>
             </template>
             <div class="filter-options">
-              <div :class="['option', { 'option--selected':  orderBy === 'lastUpdated' }]"
-                   @click="orderBy = 'lastUpdated'">Last Updated
-              </div>
-              <div :class="['option', { 'option--selected':  orderBy === 'firstUpdated' }]"
-                   @click="orderBy = 'firstUpdated'">First Updated
-              </div>
+              <div :class="['option', { 'option--selected':  orderBy === 'lastUpdated' }]" @click="orderBy = 'lastUpdated'">Last Updated</div>
+              <div :class="['option', { 'option--selected':  orderBy === 'firstUpdated' }]" @click="orderBy = 'firstUpdated'">First Updated</div>
               <div :class="['option', { 'option--selected':  orderBy === 'az' }]" @click="orderBy = 'az'">A to Z</div>
               <div :class="['option', { 'option--selected':  orderBy === 'za' }]" @click="orderBy = 'za'">Z to A</div>
             </div>
@@ -35,10 +31,10 @@
           <div class="pos-management__table-header">
             <div class="col-3"></div>
             <div class="row-flex col-9">
-              <div class="col-3">Name</div>
+              <div class="col-2">Name</div>
               <div class="col-2">Device</div>
-              <div class="col-3">Application</div>
-              <div class="col-3">Version</div>
+              <div class="col-3">Current Version</div>
+              <div class="col-4">Update</div>
               <div class="col-1">Action</div>
             </div>
           </div>
@@ -94,7 +90,7 @@
             @open:dialogDelete="dialog.deleteDevice = $event"/>
       </template>
       <template v-else-if="view === 'version'">
-        <version-control/>
+        <version-control />
       </template>
       <template v-else-if="view === 'account'">
         <account/>
@@ -116,22 +112,10 @@
     components: {Account, VersionControl},
     props: {},
     data: function () {
-      const sidebarItems = [{
-        title: 'Restaurant Management',
-        icon: 'icon-management_white',
-        onClick: () => this.changeView('list', 'Restaurant Management')
-      }]
+      const sidebarItems = [ { title: 'Store Management', icon: 'icon-management_white', onClick: () => this.changeView('list', 'Store Management') }]
       if (cms.loginUser.user.role.name === 'admin')
-        sidebarItems.push({
-          title: 'Version Control',
-          icon: 'icon-version_control',
-          onClick: () => this.changeView('version', 'Version Control')
-        })
-      sidebarItems.push({
-        title: 'Account Management',
-        icon: 'icon-account-management',
-        onClick: () => this.changeView('account', 'Account Management')
-      })
+        sidebarItems.push({ title: 'Version Control', icon: 'icon-version_control', onClick: () => this.changeView('version', 'Version Control') })
+      sidebarItems.push({ title: 'Account Management', icon: 'icon-account-management', onClick: () => this.changeView('account', 'Account Management') })
       return {
         storePlaceHolder: $t('posManagement.searchPlaceholder'),
         username: cms.loginUser.user.username,
@@ -196,18 +180,18 @@
         node.onClick && node.onClick.bind(this)();
       },
       changeView(view, title) {
-        if (view) {
+        if(view) {
           this.view = view
           //reset icon
-          for (const item of this.sidebarItems) {
-            if (item.icon.startsWith('icon-') && item.icon.endsWith('_white')) {
+          for(const item of this.sidebarItems) {
+            if(item.icon.startsWith('icon-') && item.icon.endsWith('_white')) {
               this.$set(item, 'icon', item.icon.slice(0, item.icon.length - 6))
             }
           }
         }
-        if (title) {
+        if(title) {
           const item = this.sidebarItems.find(i => i.title === title)
-          this.$set(item, 'icon', item.icon + '_white')
+          this.$set(item, 'icon', item.icon+'_white')
         }
       },
     }

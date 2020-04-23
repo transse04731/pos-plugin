@@ -32,20 +32,30 @@
         return _.map(this.stores, s => s.alias)
       },
       intermediatePosManagementModel() {
-        const groups = []
+        const storeGroupViewModels = []
         _.each(this.storeGroups, storeGroup => {
-          const group = { _id: storeGroup._id, name: storeGroup.name, stores: [] }
+          const storeGroupViewModel = {
+            _id: storeGroup._id,
+            name: storeGroup.name,
+            stores: []
+          }
+          
           _.each(this.stores, store => {
-            if (_.find(store.groups, group => group._id === storeGroup._id))
-              group.stores.push({...store, id: group.stores.length + 1 })
+            if (_.find(store.groups, g => g._id === storeGroup._id)) {
+              storeGroupViewModel.stores.push({
+                ...this.convertStoreToViewModel(store)
+              })
+            }
           })
-          groups.push(group)
+          
+          storeGroupViewModels.push(storeGroupViewModel)
         })
-        return groups
+        return storeGroupViewModels
       },
       posManagementModel() {
         if (!this.searchText && !this.orderBy)
           return this.intermediatePosManagementModel
+        
         const groups = []
         _.each(this.intermediatePosManagementModel, storeGroup => {
           const group = { _id: storeGroup._id, name: storeGroup.name }
@@ -217,6 +227,29 @@
         await this.loadStores()
       },
       
+      convertStoreToViewModel(store) {
+        const storeViewModel = {
+          ..._.omit(store, 'devices'),
+          devices: _.map(store.devices, device => {
+            const app = _.find(this.versionControlViewModel, app => app.group === device.appName)
+            const appItem = _.filter(app && app.files, appItem => appItem.version > device.appVersion)
+            const deviceVersions = _.orderBy(_.map(appItem, this.convertAppItemToViewModel), 'text', 'desc')
+            return {
+              ...device,
+              versions: deviceVersions,
+              updateVersion: deviceVersions.length && deviceVersions[0].value
+            }
+          })
+        }
+        return storeViewModel
+      },
+      convertAppItemToViewModel(appItem) {
+        return {
+          text: `${appItem.version} (${appItem.type} - ${appItem.release})`,
+          value: appItem.uploadPath
+        }
+      },
+      
       // devices
       async addDevice({pairingCode}) {
         // TODO: addDevice
@@ -247,7 +280,7 @@
       },
       
       async changeAppName(_id, name, callback) {
-        const app = _.find(this.apps, app => app.name === name)
+        let app = _.find(this.apps, app => app.name === name)
         if (app) {
           if (app._id === _id) {
             return
@@ -257,7 +290,20 @@
           }
         }
         
+        // get current app name
+        app = _.find(this.apps, app => app._id === _id)
+        if (!app) {
+          callback && callback({ ok: false, message: 'App is not exist!' })
+          return
+        }
+        const currentAppName = app.name
+        
+        // change app name in App collection
         await cms.getModel('App').updateOne({_id}, { name })
+        
+        // change app name in Device collection
+        await cms.getModel('Device').updateMany({ appName: currentAppName }, { appName: name })
+        
         callback && callback({ ok: true })
         await this.loadApps()  // TODO: just change app name, consider setting value locally without loadApps
       },
@@ -275,11 +321,11 @@
         await this.loadAppItems()
       },
       
-      async editAppItem(_id, change) {
+      async editAppItem(_id, { release, note}) {
         const appItem = await cms.getModel('AppItem').findOne({_id})
         if (!appItem)
           return
-        await cms.getModel('AppItem').updateOne({_id}, change)
+        await cms.getModel('AppItem').updateOne({_id}, { changeLog: note, release })
         await this.loadAppItems()
       },
       
@@ -297,6 +343,19 @@
           this.appShows[_id] = !this.appShows[_id]
         } else {
           this.$set(this.appShows, _id, true)
+        }
+      },
+
+      sortAppItem(type) {
+        console.log('sortAppItem', type)
+        if (this.versionControlOrderBy.type === type) {
+          if (this.versionControlOrderBy.order === 'asc')
+            this.versionControlOrderBy.order = 'desc'
+          else
+            this.versionControlOrderBy.order = 'asc'
+        } else {
+          this.versionControlOrderBy.type = type
+          this.versionControlOrderBy.order = 'asc'
         }
       }
     },
@@ -342,6 +401,7 @@
         newAppItemDialogViewModel: this.newAppItemDialogViewModel,
         versionControlOrderBy: this.versionControlOrderBy,
         toggleHideShowApp: this.toggleHideShowApp,
+        sortAppItem: this.sortAppItem,
       }
     }
   }

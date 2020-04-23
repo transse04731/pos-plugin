@@ -8,8 +8,8 @@
         <div class="menu-setting-item__content px-2">
           <div class="menu-setting-item__name row-flex">
             <span class="col-1">{{id}}.</span>
-            <span :class="useMultiplePrinters?'col-7':'col-11'">{{name}}</span>
-            <span class="col-6" v-if="useMultiplePrinters">{{groupPrinterStr}}</span>
+            <span class="flex-equal">{{name}}</span>
+            <span class="col-3" v-if="useMultiplePrinters">{{groupPrinterStr}}</span>
           </div>
           <div class="menu-setting-item__desc">
             {{desc}}
@@ -114,7 +114,7 @@
 <style scoped lang="scss">
   .menu-setting-item {
     display: grid;
-    grid-template-columns: 40px 80px 1fr auto 50px;
+    grid-template-columns: 40px 80px 1fr 60px 50px;
     grid-gap: 15px;
     background-color: #fff;
     align-items: center;
