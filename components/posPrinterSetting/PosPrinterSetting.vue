@@ -26,7 +26,12 @@
           <g-icon style="cursor: pointer" @click="openDialog('ipInput')">icon-keyboard</g-icon>
         </template>
       </g-text-field-bs>
-      <g-btn-bs background-color="blue accent 3" style="padding: 6px; flex: 1" @click="$emit('testPrinter', printer)">
+      <g-btn-bs background-color="blue accent 3" style="padding: 6px; flex: 1; transition: none" @click="$emit('testPrinter', printer)">
+        {{$t('settings.testPrinter')}}
+      </g-btn-bs>
+    </div>
+    <div v-else-if="selectedPrinterType && selectedPrinterType !== 'ip'" class="config">
+      <g-btn-bs background-color="blue accent 3" style="padding: 6px 16px; transition: none" @click="$emit('testPrinter', printer)">
         {{$t('settings.testPrinter')}}
       </g-btn-bs>
     </div>
@@ -79,7 +84,7 @@
         </div>
       </template>
     </g-grid-select>
-    <g-divider inset style="margin: 12px 0;"/>
+    <g-divider inset class="mt-2 mb-2"/>
     <div class="title" style="margin-left: 12px">Default tax</div>
     <div class="row-flex" style="margin-left: 12px">
       <div class="col-2">{{$t('restaurant.product.dineInTax')}}</div>
@@ -444,14 +449,15 @@
       line-height: 20px;
       margin-left: 4px;
       margin-bottom: 4px;
+      margin-top: 2px;
     }
 
     .config {
       padding: 16px 8px 12px;
 
       .printer {
-        width: calc(25% - 16px);
-        flex: 0 0 calc(25% - 16px);
+        width: calc(25% - 8px);
+        flex: 0 0 calc(25% - 8px);
         margin: 4px;
         display: flex;
         align-items: center;
@@ -478,7 +484,8 @@
 
       ::v-deep .bs-tf-label {
         font-weight: 700;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
+        line-height: 1;
       }
     }
 
@@ -502,7 +509,7 @@
       margin-left: 8px;
 
       .g-switch-wrapper {
-        margin: 8px 4px;
+        margin: 4px;
 
         ::v-deep .g-switch-label {
           font-size: 13px;
