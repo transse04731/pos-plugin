@@ -13,8 +13,12 @@
               </g-btn-bs>
             </template>
             <div class="filter-options">
-              <div :class="['option', { 'option--selected':  orderBy === 'lastUpdated' }]" @click="orderBy = 'lastUpdated'">Last Updated</div>
-              <div :class="['option', { 'option--selected':  orderBy === 'firstUpdated' }]" @click="orderBy = 'firstUpdated'">First Updated</div>
+              <div :class="['option', { 'option--selected':  orderBy === 'lastUpdated' }]"
+                   @click="orderBy = 'lastUpdated'">Last Updated
+              </div>
+              <div :class="['option', { 'option--selected':  orderBy === 'firstUpdated' }]"
+                   @click="orderBy = 'firstUpdated'">First Updated
+              </div>
               <div :class="['option', { 'option--selected':  orderBy === 'az' }]" @click="orderBy = 'az'">A to Z</div>
               <div :class="['option', { 'option--selected':  orderBy === 'za' }]" @click="orderBy = 'za'">Z to A</div>
             </div>
@@ -90,7 +94,7 @@
             @open:dialogDelete="dialog.deleteDevice = $event"/>
       </template>
       <template v-else-if="view === 'version'">
-        <version-control />
+        <version-control/>
       </template>
       <template v-else-if="view === 'account'">
         <account/>
@@ -112,10 +116,22 @@
     components: {Account, VersionControl},
     props: {},
     data: function () {
-      const sidebarItems = [ { title: 'Restaurant Management', icon: 'icon-management_white', onClick: () => this.changeView('list', 'Restaurant Management') }]
+      const sidebarItems = [{
+        title: 'Restaurant Management',
+        icon: 'icon-management_white',
+        onClick: () => this.changeView('list', 'Restaurant Management')
+      }]
       if (cms.loginUser.user.role.name === 'admin')
-        sidebarItems.push({ title: 'Version Control', icon: 'icon-version_control', onClick: () => this.changeView('version', 'Version Control') })
-      sidebarItems.push({ title: 'Account Management', icon: 'icon-account-management', onClick: () => this.changeView('account', 'Account Management') })
+        sidebarItems.push({
+          title: 'Version Control',
+          icon: 'icon-version_control',
+          onClick: () => this.changeView('version', 'Version Control')
+        })
+      sidebarItems.push({
+        title: 'Account Management',
+        icon: 'icon-account-management',
+        onClick: () => this.changeView('account', 'Account Management')
+      })
       return {
         storePlaceHolder: $t('posManagement.searchPlaceholder'),
         username: cms.loginUser.user.username,
@@ -128,7 +144,9 @@
         },
         showFilterMenu: false,
         selectedStoreId: null,
-        sidebarItems
+        sidebarItems,
+
+        deviceIdList: [],
       }
     },
     injectService: ['PosOnlineOrderManagementStore:(loadStoreGroups,loadStores,addGroup,addStore,removeStore,updateStore,addDevice,removeDevice,updateDevice,storeGroups,stores,posManagementModel,searchText,orderBy,apps,appItems)'],
@@ -142,7 +160,32 @@
       selectedStore() {
         if (this.selectedStoreId)
           return _.find(this.stores, store => store._id === this.selectedStoreId)
-      }
+      },
+    },
+    mounted() {
+      window.cms.socket.on('updateDeviceStatus', storeId => {
+        if (storeId) {
+          const storeIdList = _.flatten(this.posManagementModel.map(e => e.stores)).map(e => e._id)
+
+          if (storeIdList.includes(storeId)) this.loadStores()
+        } else {
+          this.loadStores()
+        }
+      })
+
+      this.$watch('posManagementModel', val => {
+        const stores = _.flatten(val.map(e => e.stores))
+        const devices = _.flatten(stores.map(store => store.devices))
+        const deviceIds = devices.map(device => device._id)
+        this.deviceIdList = _.uniq(this.deviceIdList.concat(deviceIds))
+
+        // Duplicated IDs will be filtered on backend so it's OK to send the same IDs again
+        window.cms.socket.emit('watchDeviceStatus', this.deviceIdList)
+      })
+    },
+    beforeDestroy() {
+      window.cms.socket.off('updateDeviceStatus')
+      window.cms.socket.emit('unwatchDeviceStatus', this.deviceIdList)
     },
     methods: {
       viewStoreSetting(store) {
@@ -153,18 +196,18 @@
         node.onClick && node.onClick.bind(this)();
       },
       changeView(view, title) {
-        if(view) {
+        if (view) {
           this.view = view
           //reset icon
-          for(const item of this.sidebarItems) {
-            if(item.icon.startsWith('icon-') && item.icon.endsWith('_white')) {
+          for (const item of this.sidebarItems) {
+            if (item.icon.startsWith('icon-') && item.icon.endsWith('_white')) {
               this.$set(item, 'icon', item.icon.slice(0, item.icon.length - 6))
             }
           }
         }
-        if(title) {
+        if (title) {
           const item = this.sidebarItems.find(i => i.title === title)
-          this.$set(item, 'icon', item.icon+'_white')
+          this.$set(item, 'icon', item.icon + '_white')
         }
       },
     }

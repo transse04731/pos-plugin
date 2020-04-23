@@ -4,7 +4,7 @@
     <div class="device__content">
       <p><b>Status: </b>{{ status }}</p>
       <p><b>WebShop URL: </b>{{url}}</p>
-      <g-btn-bs v-if="status === 'Paired'" large background-color="#E0E0E0" @click="unPair">Un Pair</g-btn-bs>
+      <g-btn-bs v-if="status === 'Paired'" large background-color="#E0E0E0" @click="unPair">Unpair</g-btn-bs>
       <g-btn-bs v-else large background-color="#E0E0E0" @click="showPairDialog">Pair</g-btn-bs>
     </div>
     <g-dialog v-model="dialog.connect" width="40%" eager>
@@ -67,7 +67,7 @@
         }
       },
       async unPair() {
-        await axios.post(`/device/un-register`, { _id: this.pairedInfo._id })
+        await axios.post(`/device/unregister`, { _id: this.pairedInfo._id })
         await this.loadPairStatus()
       },
       async showPairDialog() {

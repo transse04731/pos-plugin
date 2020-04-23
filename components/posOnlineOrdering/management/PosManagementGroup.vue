@@ -92,7 +92,6 @@
         iframeRefreshInterval: null,
         remoteControlDeviceId: null,
         disableRemoteControlBtn: false,
-        watchingClientStatus: false,
       }
     },
     computed: {
@@ -168,23 +167,6 @@
       onIframeLoad() {
         if (this.iframeRefreshInterval) clearInterval(this.iframeRefreshInterval)
       },
-      trackClientStatus(startWatching) {
-        if (startWatching && this.watchingClientStatus) return
-
-        this.watchingClientStatus = startWatching
-        const {socket} = window.cms
-        const deviceIdList = [];
-
-        this.stores.forEach(store => store.devices.forEach(device => deviceIdList.push(device._id)));
-
-        if (startWatching) {
-          socket.emit('watchDeviceStatus', deviceIdList)
-          socket.on('updateDeviceStatus', () => this.$emit('updateStores'))
-        } else {
-          socket.emit('unwatchDeviceStatus', deviceIdList)
-          socket.off('updateDeviceStatus')
-        }
-      },
       async updateAppVersion(device) {
         const name = device.appName
         const version = device.appVersion
@@ -199,13 +181,7 @@
         }
       }
     },
-    watch: {
-      stores(val) {
-        if (val) this.trackClientStatus(true)
-      },
-    },
     beforeDestroy() {
-      this.trackClientStatus(false)
       this.stopRemoteControl()
     }
   }
