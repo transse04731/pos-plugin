@@ -28,7 +28,7 @@
                 </div>
                 <div class="row-flex col-4">
                   <g-select class="w-60" :items="device.versions" v-model="device.updateVersion"/>
-                  <p class="ml-3 text-indigo-accent-2" style="cursor: pointer" @click="updateAppVersion(device)">Update</p>
+                  <p v-if="device.updateVersion" class="ml-3 text-indigo-accent-2" style="cursor: pointer" @click="updateAppVersion(device)">Update</p>
                 </div>
                 <div class="col-1">
                   <g-tooltip
@@ -165,6 +165,8 @@
         if (this.iframeRefreshInterval) clearInterval(this.iframeRefreshInterval)
       },
       async updateAppVersion(device) {
+        if (!device.updateVersion)
+          return
         const {socket} = window.cms
         socket.emit('updateApp', device._id, device.updateVersion)
         await cms.getModel('Device').updateOne({_id: device._id}, { version})
