@@ -164,7 +164,11 @@
         const _product = _.clone(this.productIdQueryResults.find(i => i._id === product._id))
         _product.unit = product.selectedUnit
         _product.attributes = _.values(product.selectedAttributes)
-        this.$getService('OrderStore:addProductToOrder')(_product)
+        if (_product.isModifier) {
+          this.$getService('OrderStore:addModifierToProduct')(_product)
+        } else {
+          this.$getService('OrderStore:addProductToOrder')(_product)
+        }
         this.dialogProductSearch = false
         this.productIdQuery = ''
       },
