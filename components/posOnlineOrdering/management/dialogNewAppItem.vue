@@ -88,6 +88,17 @@
           return []
       }
     },
+    watch: {
+      value() {
+        this.internalName = ''
+        this.internalGroup = this.edit ? this.group : ''
+        this.internalVersion = this.edit ? this.version : ''
+        this.internalType = this.edit ? this.type : ''
+        this.internalBase = this.edit ? this.base : ''
+        this.internalRelease = this.edit ? this.release : ''
+        this.internalNote = this.edit ? this.note : ''
+      }
+    },
     methods: {
       selectFile() {
         const input = document.createElement('input');
