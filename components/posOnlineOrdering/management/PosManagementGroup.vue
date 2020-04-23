@@ -27,7 +27,7 @@
                   {{ `${device.appVersion} (${device.appName}, ${device.appRelease})` }}
                 </div>
                 <div class="row-flex col-4">
-                  <g-select class="w-50" :items="device.versions" v-model="device.updateVersion"/>
+                  <g-select class="w-60" :items="device.versions" v-model="device.updateVersion"/>
                   <p class="ml-3 text-indigo-accent-2" style="cursor: pointer" @click="updateAppVersion(device)">Update</p>
                 </div>
                 <div class="col-1">
