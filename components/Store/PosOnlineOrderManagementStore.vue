@@ -275,11 +275,11 @@
         await this.loadAppItems()
       },
       
-      async editAppItem(_id, change) {
+      async editAppItem(_id, { release, note}) {
         const appItem = await cms.getModel('AppItem').findOne({_id})
         if (!appItem)
           return
-        await cms.getModel('AppItem').updateOne({_id}, change)
+        await cms.getModel('AppItem').updateOne({_id}, { changeLog: note, release })
         await this.loadAppItems()
       },
       
