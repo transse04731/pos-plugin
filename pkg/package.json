@@ -10,6 +10,7 @@
     "build:android": "node android/pkg.js",
     "build:win32": "node win32/pkg.js",
     "build:android:dest": "node android/pkg.js && cp build/app-android android-dist/app/src/main/assets/appAssets/app",
+    "prebuild:apk": "if [ ! -d ../../../dist ]; then cd ../../../;npm run build; fi",
     "build:apk": "npm run build:android:dest && cd android-dist && ./gradlew build"
   },
   "author": "",
