@@ -20,7 +20,10 @@ function createOnlineOrderSocket(deviceId) {
 
     onlineOrderSocket = io(`${webshopUrl}?clientId=${deviceId}`);
 
-    onlineOrderSocket.once('connect', resolve);
+    onlineOrderSocket.once('connect', () => {
+      onlineOrderSocket.off('reconnecting');
+      resolve();
+    });
 
     onlineOrderSocket.on('reconnecting', function (numberOfAttempt) {
       if (numberOfAttempt >= maxConnectionAttempt) {
@@ -111,7 +114,7 @@ function createOnlineOrderSocket(deviceId) {
       }
     })
 
-    onlineOrderSocket.once('disconnect', () => {
+    onlineOrderSocket.on('disconnect', () => {
       activeProxies = 0;
       if (proxyClient) {
         proxyClient.destroy();
@@ -156,11 +159,9 @@ async function updateDeviceStatus(paired, deviceId = null) {
 
 function cleanupOnlineOrderSocket() {
   if (onlineOrderSocket) {
-    onlineOrderSocket.off('createOrder');
-    onlineOrderSocket.off('startRemoteControl');
-    onlineOrderSocket.off('stopRemoteControl');
-    onlineOrderSocket.off('reconnecting');
+    onlineOrderSocket.off();
     onlineOrderSocket.disconnect();
+    onlineOrderSocket.destroy();
     onlineOrderSocket = null;
   }
 }
