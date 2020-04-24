@@ -89,6 +89,11 @@
               "text": "manageAccount"
             }
           ]
+        },
+        {
+          "schemaType": "boolean",
+          "key": "value",
+          "type": "input@switch"
         }
       ]
     },
