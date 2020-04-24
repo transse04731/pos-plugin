@@ -34,7 +34,7 @@
         <div class="mb-3 fw-700">Upload photo</div>
         <div class="mb-5">
           <div class="mb-2">Store Photo</div>
-          <upload-zone :url="store.orderHeaderImageSrc" @url="update({ orderHeaderImageSrc: $event })" :option="{maxWidth: 500, maxHeight: 200}"/>
+          <upload-zone :url="store.orderHeaderImageSrc" @url="update({ orderHeaderImageSrc: $event })" :option="{maxWidth: 500, maxHeight: 200}" :aspect-ratio="2"/>
         </div>
         <div>
           <div class="mb-2">Store Logo</div>
