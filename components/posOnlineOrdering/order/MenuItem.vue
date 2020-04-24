@@ -15,12 +15,12 @@
       <div :class="price2 && 'po-menu-item__prices--discount'"> {{ price | currency }}</div>
       <div v-if="price2">{{ price2 | currency }}</div>
     </div>
-    <g-icon @click="addToOrder"
+    <g-icon @click="addToOrder" v-if="isOpening"
             size="28" color="#424242"
            class="po-menu-item__add">
       add_circle
     </g-icon>
-    <div class="po-menu-item__action">
+    <div class="po-menu-item__action" v-if="isOpening">
       <g-icon @click="addToOrder" v-if="quantity === 0"
               size="28" color="#424242">
         add_circle
@@ -44,7 +44,8 @@
       price: [Number, String],
       price2: [Number, String],
       quantity: Number,
-      currencyUnit: String
+      currencyUnit: String,
+      isOpening: Boolean,
     },
     filters: {
       currency(val) {
