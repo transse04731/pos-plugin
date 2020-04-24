@@ -312,7 +312,8 @@ module.exports = {
       license: 'License',
       receiptCategory: 'Boneinstellung',
       invoiceReport: 'Rechnung, Bericht',
-      entireReceipt: 'Entire Receipt'
+      entireReceipt: 'Entire Receipt',
+      onlineOrderSettings: 'Online Order Settings',
     },
 
     restaurant: {
