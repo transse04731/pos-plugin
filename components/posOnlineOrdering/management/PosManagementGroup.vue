@@ -306,10 +306,18 @@
 
             .input {
               padding-left: 8px;
+              width: 100%;
+              overflow: auto;
+              white-space: nowrap;
+              scrollbar-width: none;
+
+              &::-webkit-scrollbar {
+                display: none;
+              }
             }
 
             .g-tf-input {
-              padding: 0;
+              display: none;
             }
           }
         }
@@ -393,13 +401,34 @@
     }
   }
 
-  .menu-edit {
-    background: white;
-    border-radius: 2px;
+  .menu {
+    &-edit {
+      background: white;
+      border-radius: 2px;
 
-    & > div {
-      padding: 6px 12px;
-      cursor: pointer;
+      & > div {
+        padding: 6px 12px;
+        cursor: pointer;
+      }
+    }
+
+    &--active {
+      border-radius: 50%;
+      background: #F4F5FA;
+      color: #536DFE !important;
+    }
+
+    &-action {
+      background: white;
+      border-radius: 2px;
+
+      &__option {
+        color: #201F2B;
+        padding: 8px 36px 8px 12px;
+        white-space: nowrap;
+        font-size: 14px;
+        cursor: pointer;
+      }
     }
   }
 </style>

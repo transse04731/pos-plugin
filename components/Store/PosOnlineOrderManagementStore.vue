@@ -221,16 +221,6 @@
       },
       
       async updateStore(_id, change) {
-        if (change.alias) {
-          const store = _.find(this.stores, store => store.alias === change.alias)
-          if (store) {
-            if (store._id !== _id) {
-              // TODO: better UX
-              alert('WebShop identity has been taken')
-              return
-            }
-          }
-        }
         await cms.getModel('Store').findOneAndUpdate({_id}, {...change})
         await this.loadStores()
       },
