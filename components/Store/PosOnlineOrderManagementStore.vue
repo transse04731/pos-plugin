@@ -239,7 +239,7 @@
       },
       
       convertStoreToViewModel(store) {
-        const storeViewModel = {
+        return {
           ..._.omit(store, 'devices'),
           devices: _.map(store.devices, device => {
             const app = _.find(this.versionControlViewModel, app => app.group === device.appName)
@@ -247,17 +247,23 @@
             const deviceVersions = _.orderBy(_.map(appItem, this.convertAppItemToViewModel), 'text', 'desc')
             return {
               ...device,
+              // store all version of device's app
               versions: deviceVersions,
-              updateVersion: deviceVersions.length && deviceVersions[0].value
+              // store selected version to update, default set to latest version
+              updateVersion: deviceVersions.length && deviceVersions[0].value,
             }
           })
         }
-        return storeViewModel
       },
       convertAppItemToViewModel(appItem) {
         return {
+          // info which will be used by GSelect
           text: `${appItem.version} (${appItem.type} - ${appItem.release})`,
-          value: appItem.uploadPath
+          value: appItem.uploadPath,
+          // info which will be used to store in Device collection
+          version: appItem.version,
+          type: appItem.type,
+          release: appItem.release
         }
       },
       

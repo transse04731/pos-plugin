@@ -189,7 +189,8 @@
           return
         const {socket} = window.cms
         socket.emit('updateApp', device._id, device.updateVersion)
-        await cms.getModel('Device').updateOne({_id: device._id}, { version})
+        const versionInfo = _.find(device.versions, version => version.value === device.updateVersion)
+        await cms.getModel('Device').updateOne({_id: device._id}, versionInfo)
       },
       changeGroupName(name) {
 
