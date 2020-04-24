@@ -27,7 +27,7 @@
         <div class="pos-management-setting__order--url r">
           <span class="i text-indigo-accent-2">{{ webShopUrlPrefix }}</span>
           <div style="flex: 1; margin-left: 8px">
-            <g-text-field-bs :class="[message && 'error']" large :placeholder="_id" :value="alias" @input="updateAlias"/>
+            <g-text-field-bs dense :class="[message && 'error']" large :placeholder="_id" :value="alias" @input="updateAlias"/>
           </div>
           <div v-if="message" class="error-message">{{message}}</div>
         </div>
@@ -147,12 +147,23 @@
       }
     },
     methods: {
+      aliasInvalid(alias) {
+        if (_.trim(alias) === '') {
+          this.message = 'WebShop url must not empty!!'
+          return true
+        }
+        
+        if (/([^a-zA-Z0-9\-])/g.exec(alias)) {
+          this.message = 'WebShop url must not contain invalid character! Valid character set is a-z, A-Z, 0-9 and \'-\' character'
+          return true
+        }
+      },
       updateAlias(value) {
         this.message = ''
-        if (_.trim(value) === '') {
-          this.message = 'Webshop url must not empty!!'
+        
+        if (this.aliasInvalid(value))
           return
-        }
+        
         const store = _.find(this.stores, store => store.alias === value)
         if (store) {
           if (store._id !== this._id) {
