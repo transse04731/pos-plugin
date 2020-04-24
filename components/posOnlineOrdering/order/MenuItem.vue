@@ -166,7 +166,7 @@
       }
 
       &__action {
-        flex: 0 0 20%;
+        flex: 0 0 85px;
         display: flex;
         align-self: flex-end;
         margin-bottom: 8px;

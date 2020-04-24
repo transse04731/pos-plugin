@@ -4,7 +4,7 @@
       <template  v-if="store">
         <div class="pos-order__left">
           <div class="pos-order__left__header">
-            <img :src="store.logoImageSrc" style="max-height: 100px"/>
+            <img :src="store.logoImageSrc"/>
             <div class="pos-order__left__header--info">
               <div class="row-flex align-items-center justify-end">
                 <span class="phone-image">
@@ -375,7 +375,7 @@
 
       .pos-order__left__header {
         & > img {
-          max-width: 145px;
+          max-width: 130px;
           max-height: 65px;
           margin-left: 8px;
           margin-top: 8px;
