@@ -13,7 +13,6 @@ module.exports = {
       dashboard: 'Dashboard',
       retail: 'Retail',
       welcome: 'Welcome!',
-      logOut: 'Log Out',
       cashRegister: 'Cash Register',
       orderHistory: 'Order History',
       adminDashboard: 'Admin Dashboard',
@@ -25,7 +24,8 @@ module.exports = {
       delivery: 'Delivery',
       editTablePlan: 'Edit Table Plan',
       editMenuCard: 'Edit Menu Card',
-      printerSettings: 'Printer Settings'
+      printerSettings: 'Printer Settings',
+      support: 'Support'
     },
 
     //article view
@@ -159,6 +159,10 @@ module.exports = {
       confirmationPrintZ2: '(End Of Day)',
       reprintZReport: 'Reprint Z-Report',
       runEndOfDay: 'Run End-of-Day',
+      showProductSold: 'Show Product Sold',
+      showZ: 'Show all Z-Number',
+      from: 'From',
+      to: 'To',
       //staff
       staffName: 'Staff Name',
       vouchersSold: 'Vouchers Sold',
@@ -314,6 +318,10 @@ module.exports = {
       invoiceReport: 'Invoice, Report',
       entireReceipt: 'Entire Receipt',
       onlineOrderSettings: 'Online Order Settings',
+      manualTable: 'Manual Table',
+      functions: 'Functions',
+      logOut: 'Log Out',
+      restaurant: 'Restaurant'
     },
 
     restaurant: {
@@ -346,10 +354,11 @@ module.exports = {
         dineInTax: 'Dine-in Tax',
         takeAwayTax: 'Take-away Tax',
         happyHour: 'Happy Hour',
-
       }
     },
     onlineOrder: {
+      orders: 'Orders',
+      onlineOrders: 'Online Orders',
       pendingOrders: 'Pending Orders',
       sentToKitchen: 'Sent to Kitchen',
       dashboard: 'Dashboard',
@@ -384,7 +393,6 @@ module.exports = {
         notPaired: 'Not paired',
         hasSound: 'Incoming order notification sound',
         cancelAndDecline: 'Cancel & move to declined orders',
-
       }
     }
   }
