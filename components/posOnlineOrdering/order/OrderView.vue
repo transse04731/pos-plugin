@@ -65,7 +65,7 @@
               </div>
             </div>
           </div>
-          <order-table v-if="showOrder" @back="showOrder = false" :store="store"/>
+          <order-table v-if="showOrder" @back="showOrder = false" :store="store" :is-opening="isStoreOpening"/>
         </div>
         <div class="pos-order__right">
           <order-table :store="store" :is-opening="isStoreOpening" :merchant-message="merchantMessage"/>
@@ -325,7 +325,7 @@
     &__tab {
       display: flex;
       background-color: #F8F8F8;
-      flex: 0 0 64px;
+      flex: 0 0 72px;
       margin-top: 16px;
       align-items: center;
       border-top-right-radius: 24px;

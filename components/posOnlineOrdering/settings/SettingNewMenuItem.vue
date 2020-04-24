@@ -87,7 +87,7 @@
         internalPrinter = (this.groupPrinters && this.groupPrinters[0]) || null
       } else {
         // availablePrinters is not an empty array
-        internalPrinter = this.groupPrinters[0] || this.availablePrinters[0]
+        internalPrinter = (this.groupPrinters && this.groupPrinters[0]) || this.availablePrinters[0]
       }
 
       return {
