@@ -82,7 +82,6 @@
     &__name {
       font-weight: bold;
       font-size: 18px;
-      line-height: 23px;
     }
 
     &__content {
@@ -142,7 +141,7 @@
   @media screen and (max-width: 1040px) {
     .po-menu-item {
       &__content {
-        line-height: 1;
+        line-height: 1.2;
       }
 
       &__name {
