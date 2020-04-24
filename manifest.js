@@ -4,6 +4,12 @@ module.exports = {
       loader: {
         type: 'vue-singleton'
       },
+      path: 'components/Store/PermissionStore.vue',
+    },
+    {
+      loader: {
+        type: 'vue-singleton'
+      },
       path: 'components/Store/PosStore.vue',
     },
     {

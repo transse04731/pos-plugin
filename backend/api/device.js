@@ -82,7 +82,6 @@ router.post('/register', async (req, res) => {
       }
     });
     await addPairedDeviceToStore(deviceInfo._id, deviceInfo.storeId);
-
     cms.socket.emit('updateDeviceStatus', deviceInfo.storeId);
     res.status(200).json({deviceId: deviceInfo._id})
   } else {
@@ -94,8 +93,8 @@ router.post('/unregister', async (req, res) => {
   const {_id} = req.body;
   const deviceInfo = await DeviceModel.findOne({_id});
   if (deviceInfo) {
-    await DeviceModel.deleteOne({_id})
     await removePairedDeviceFromStore(_id, deviceInfo.storeId)
+    await DeviceModel.deleteOne({_id})
     res.status(200).json({deviceId: deviceInfo._id})
   } else {
     res.status(400).json({message: 'Bad request: Invalid id'})

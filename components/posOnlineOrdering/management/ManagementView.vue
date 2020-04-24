@@ -1,6 +1,9 @@
 <template>
   <div class="pos-management">
+    <!-- side bar -->
     <pos-dashboard-sidebar default-path="item.0" :items="sidebarItems" @node-selected="onNodeSelected"/>
+    
+    <!-- content -->
     <div class="pos-management__main">
       <template v-if="view === 'list'">
         <div class="pos-management__title">POS Management</div>
@@ -20,12 +23,8 @@
             </div>
           </g-menu>
           <g-spacer/>
-          <g-btn-bs border-color="#536DFE" icon="add@16" :disabled="groups.length === 0"
-                    @click="dialog.newStore = true">Add New Store
-          </g-btn-bs>
-          <g-btn-bs background-color="#536DFE" text-color="white" icon="add@16" @click="dialog.newGroup = true">Add New
-            Group
-          </g-btn-bs>
+          <g-btn-bs v-if="manageStorePerm" border-color="#536DFE" icon="add@16" :disabled="groups.length === 0" @click="dialog.newStore = true">Add New Store</g-btn-bs>
+          <g-btn-bs v-if="manageGroupPerm" background-color="#536DFE" text-color="white" icon="add@16" @click="dialog.newGroup = true">Add New Group</g-btn-bs>
         </div>
         <div class="pos-management__table">
           <div class="pos-management__table-header">
@@ -43,7 +42,7 @@
               <div class="pos-management__table-content--empty">
                 <img alt src="/plugins/pos-plugin/assets/empty_group.svg"/>
                 <p class="text-grey-darken-1 mb-2 mt-2">Store is currently empty.</p>
-                <div class="text-indigo-accent-2" style="cursor: pointer" @click="dialog.newGroup = true">
+                <div v-if="manageGroupPerm" class="text-indigo-accent-2" style="cursor: pointer" @click="dialog.newGroup = true">
                   <g-icon style="margin-bottom: 4px; margin-right: -4px" size="18" color="indigo-accent-2">add</g-icon>
                   Add New Group
                 </div>
@@ -69,7 +68,7 @@
           </div>
         </div>
       </template>
-      <template v-else-if="view === 'settings'">
+      <template v-else-if="view === 'settings' && settingsPerm">
         <div class="pos-management__breadcrumbs">
           <span @click="view = 'list'">POS Management</span>
           <g-icon class="mx-2" size="12">fas fa-angle-double-right</g-icon>
@@ -89,17 +88,15 @@
             @open:dialogDevice="dialog.newDevice = $event"
             @open:dialogDelete="dialog.deleteDevice = $event"/>
       </template>
-      <template v-else-if="view === 'version'">
-        <version-control />
-      </template>
-      <template v-else-if="view === 'account'">
-        <account/>
-      </template>
+      <version-control v-else-if="view === 'version' && versionControlPerm"/>
+      <account v-else-if="view === 'account' && manageAccountPerm"/>
     </div>
-    <dialog-new-group v-model="dialog.newGroup" @submit="addGroup($event)" :groups="groups"/>
-    <dialog-new-store v-model="dialog.newStore" @submit="addStore($event)" :groups="groups"/>
-    <dialog-new-device v-model="dialog.newDevice"/>
-    <dialog-delete-item v-model="dialog.deleteDevice" type="device"/>
+    
+    <!-- dialogs -->
+    <dialog-new-group v-if="manageGroupPerm" v-model="dialog.newGroup" @submit="addGroup($event)" :groups="groups"/>
+    <dialog-new-store v-if="manageStorePerm" v-model="dialog.newStore" @submit="addStore($event)" :groups="groups"/>
+    <dialog-new-device v-if="settingsPerm" v-model="dialog.newDevice"/>
+    <dialog-delete-item v-if="settingsPerm" v-model="dialog.deleteDevice" type="device"/>
   </div>
 </template>
 <script>
@@ -111,11 +108,21 @@
     name: 'ManagementView',
     components: {Account, VersionControl},
     props: {},
+    injectService: [
+      // view model
+      'PosOnlineOrderManagementStore:(storeManagementViewModel,searchText,orderBy)',
+      // store groups
+      'PosOnlineOrderManagementStore:(storeGroups,loadStoreGroups,addGroup)',
+      // stores
+      'PosOnlineOrderManagementStore:(stores,loadStores,addStore,removeStore,updateStore)',
+      // devices
+      'PosOnlineOrderManagementStore:(addDevice,removeDevice,updateDevice)',
+      // app
+      'PosOnlineOrderManagementStore:(apps,appItems)',
+      // permissions
+      'PermissionStore:(versionControlPerm,manageAccountPerm,manageGroupPerm,manageStorePerm,settingsPerm)'
+    ],
     data: function () {
-      const sidebarItems = [ { title: 'Store Management', icon: 'icon-management_white', onClick: () => this.changeView('list', 'Store Management') }]
-      if (cms.loginUser.user.role.name === 'admin')
-        sidebarItems.push({ title: 'Version Control', icon: 'icon-version_control', onClick: () => this.changeView('version', 'Version Control') })
-      sidebarItems.push({ title: 'Account Management', icon: 'icon-account-management', onClick: () => this.changeView('account', 'Account Management') })
       return {
         storePlaceHolder: $t('posManagement.searchPlaceholder'),
         username: cms.loginUser.user.username,
@@ -128,23 +135,18 @@
         },
         showFilterMenu: false,
         selectedStoreId: null,
-        sidebarItems,
-
+        sidebarItems: [],
         deviceIdList: [],
       }
     },
-    injectService: [
-        // view model
-        'PosOnlineOrderManagementStore:(storeManagementViewModel,searchText,orderBy)',
-        // store groups
-        'PosOnlineOrderManagementStore:(storeGroups,loadStoreGroups,addGroup)',
-        // stores
-        'PosOnlineOrderManagementStore:(stores,loadStores,addStore,removeStore,updateStore)',
-        // devices
-        'PosOnlineOrderManagementStore:(addDevice,removeDevice,updateDevice)',
-        // app
-        'PosOnlineOrderManagementStore:(apps,appItems)',
-    ],
+    created() {
+      const sidebarItems = [
+        { title: 'Store Management', icon: 'icon-management_white', onClick: () => this.changeView('list', 'Store Management') },
+        this.versionControlPerm && { title: 'Version Control', icon: 'icon-version_control', onClick: () => this.changeView('version', 'Version Control') },
+        this.manageAccountPerm && { title: 'Account Management', icon: 'icon-account-management', onClick: () => this.changeView('account', 'Account Management') }
+      ]
+      this.sidebarItems.splice(0, this.sidebarItems.length, ...sidebarItems)
+    },
     computed: {
       searchResult() {
         return this.storeManagementViewModel
