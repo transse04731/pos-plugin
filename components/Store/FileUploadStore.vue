@@ -89,12 +89,8 @@
       async createFolder(parentPath, folderPath) {
         const separator = _.endsWith(parentPath, '/') ? '' : '/'
         const folderExist = await this.isFolderExist(`${parentPath}${separator}${folderPath}`)
-        if (!folderExist) {
-          console.log('folder is not exist, create new')
+        if (!folderExist)
           await this.gridFsHandler.createNewFolder(parentPath, folderPath)
-        } else {
-          console.log(`folder ${folderPath} existed. skip`)
-        }
       }
     },
     provide() {
