@@ -107,7 +107,7 @@
     },
     filters: {
       currency(val) {
-        return $t('common.currency') + val
+        return $t('common.currency') + val.toFixed(2)
       }
     },
     async created() {
