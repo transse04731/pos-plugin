@@ -195,7 +195,14 @@
               "url": "plugins/pos-plugin/components/posPrinterSetting/PosPrinterSettingForMultiple.vue",
               "path": "components/posPrinterSetting/PosPrinterSettingForMultiple.vue",
               "pluginName": "pos-plugin",
-              "isScopedSlot": true
+              "isScopedSlot": true,
+              "inject": [
+                {
+                  "service": "SettingsStore:testPrinter",
+                  "local": "testPrinter",
+                  "type": "event"
+                }
+              ]
             },
             {
               "choice": "view",
