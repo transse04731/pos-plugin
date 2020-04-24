@@ -84,23 +84,24 @@
         </div>
       </template>
     </g-grid-select>
-    <g-divider inset class="mt-2 mb-2"/>
-    <div class="title" style="margin-left: 12px">Default tax</div>
-    <div class="row-flex" style="margin-left: 12px">
-      <div class="col-2">{{$t('restaurant.product.dineInTax')}}</div>
-      <g-grid-select mandatory return-object item-cols="auto" :items="listTaxCategories" v-model="dineInTax" style="margin-left: 12px">
-        <template v-slot:default="{ toggleSelect, item }">
-          <div class="option" @click="toggleSelect(item)">
-            {{item.value}}%
-          </div>
-        </template>
-        <template v-slot:selected="{ item }">
-          <div class="option option--selected">
-            {{item.value}}%
-          </div>
-        </template>
-      </g-grid-select>
-    </div>
+    <template v-if="groupPrinter && groupPrinter.type === 'kitchen'">
+      <g-divider inset class="mt-2 mb-2"/>
+      <div class="title" style="margin-left: 12px">Default tax</div>
+      <div class="row-flex" style="margin-left: 12px">
+        <div class="col-2">{{$t('restaurant.product.dineInTax')}}</div>
+        <g-grid-select mandatory return-object item-cols="auto" :items="listTaxCategories" v-model="dineInTax" style="margin-left: 12px">
+          <template v-slot:default="{ toggleSelect, item }">
+            <div class="option" @click="toggleSelect(item)">
+              {{item.value}}%
+            </div>
+          </template>
+          <template v-slot:selected="{ item }">
+            <div class="option option--selected">
+              {{item.value}}%
+            </div>
+          </template>
+        </g-grid-select>
+      </div>
 
     <div class="row-flex" style="margin-left: 12px; margin-top: 8px;">
       <div class="col-2">{{$t('restaurant.product.takeAwayTax')}}</div>
@@ -117,6 +118,7 @@
         </template>
       </g-grid-select>
     </div>
+    </template>
 
     <dialog-form-input v-model="showDialog" @submit="updateSettings">
       <template #input>
@@ -417,6 +419,7 @@
           return
         }
         await this.setupPrinter()
+        this.groupPrinter = await this.getGroupPrinterById(val)
       },
       async index() {
         await this.setupPrinter()

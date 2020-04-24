@@ -1,34 +1,34 @@
 <template>
   <div class="online-order-setting">
-    <div class="online-order-setting__title">Online Order Settings</div>
+    <div class="online-order-setting__title">{{$t('onlineOrder.settings.onlineOrderSettings')}}</div>
     <div class="online-order-setting__content">
       <div class="row-flex" v-if="computedDevice">
         <div class="col-6">
-          <div>Status</div>
+          <div>{{$t('onlineOrder.settings.status')}}</div>
           <div style="font-style: italic">{{connected ? 'Connected' : 'Not paired'}}</div>
         </div>
 
         <div class="col-6">
-          <div>Webshop URL</div>
+          <div>{{$t('onlineOrder.settings.webshopUrl')}}</div>
           <div>
             <span style="font-style: italic; color: #536DFE">{{computedDevice.url}}</span>
-            <span v-if="!webshopAvailable" style="font-style: italic; color: #F44336"> - Not available</span>
+            <span v-if="!webshopAvailable" style="font-style: italic; color: #F44336"> - {{$t('onlineOrder.settings.notAvailable')}}</span>
           </div>
         </div>
       </div>
       <g-btn-bs v-if="connected" large background-color="#424242" text-color="#FFF" style="margin-top: 24px;"
                 @click.stop="dialog.disconnect = true">
-        Unpair
+        {{$t('onlineOrder.settings.unpair')}}
       </g-btn-bs>
       <g-btn-bs v-else large background-color="#424242" text-color="#FFF" style="margin-top: 24px;"
                 @click.stop="openConnectDialog">
-        Pair
+        {{$t('onlineOrder.settings.pair')}}
       </g-btn-bs>
       <g-divider style="margin-top: 24px"/>
     </div>
-    <div class="online-order-setting__title">General Settings</div>
+    <div class="online-order-setting__title">{{$t('onlineOrder.settings.generalSettings')}}</div>
     <div class="online-order-setting__content">
-      <p><b>Default time to complete order: </b></p>
+      <p><b>{{$t('onlineOrder.settings.timeToComplete')}}: </b></p>
       <g-row>
         <g-grid-select :grid="false" :items="deliveryTimes" v-model="computedDefaultPrepareTime" mandatory>
           <template #default="{item, toggleSelect}">
@@ -45,10 +45,10 @@
           </template>
         </g-grid-select>
       </g-row>
-      <g-switch label="Incoming order notification sound" :input-value="computedDevice.sound"
+      <g-switch :label="$t('onlineOrder.settings.hasSound')" :input-value="computedDevice.sound"
                 @change="updateSound"
       />
-      <p><b>Order sorting option: </b></p>
+      <p><b>{{$t('onlineOrder.settings.sorting')}}: </b></p>
       <g-grid-select :grid="false" :items="orderSorting" v-model="computedOnlineOrderSorting" mandatory>
         <template #default="{item, toggleSelect}">
           <g-btn-bs border-color="#e0e0e0" text-color="black" width="160" height="30"

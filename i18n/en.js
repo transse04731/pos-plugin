@@ -346,6 +346,44 @@ module.exports = {
         happyHour: 'Happy Hour',
 
       }
+    },
+    onlineOrder: {
+      pendingOrders: 'Pending Orders',
+      sentToKitchen: 'Sent to Kitchen',
+      dashboard: 'Dashboard',
+      completedOrders: 'Completed Orders',
+      declinedOrders: 'Declined Orders',
+      no: 'No.',
+      customer: 'Customer',
+      address: 'Address',
+      amount: 'Amount',
+      received: 'Received',
+      delivery: 'Delivery',
+      pickUp: 'Pick-up',
+      type: 'Type',
+      status: 'Status',
+      completed: 'Completed',
+      declined: 'Declined',
+      shippingFee: 'Shipping Fee',
+      noPending: 'No Pending orders yet',
+      noKitchen: 'No orders sent to kitchen',
+
+      settings: {
+        onlineOrderSettings: 'Online Order Settings',
+        status: 'Status',
+        webshopUrl: 'Webshop URL',
+        notAvailable: 'Not available',
+        pair: 'Pair',
+        unpair: 'Unpair',
+        generalSettings: 'General Settings',
+        timeToComplete: 'Default time to complete order',
+        sorting: 'Order sorting option',
+        connected: 'Connected',
+        notPaired: 'Not paired',
+        hasSound: 'Incoming order notification sound',
+        cancelAndDecline: 'Cancel & move to declined orders',
+
+      }
     }
   }
 }

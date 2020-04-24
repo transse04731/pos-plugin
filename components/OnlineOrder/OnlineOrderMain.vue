@@ -2,7 +2,7 @@
   <div class="main">
     <div class="pending-orders pr-2">
       <div class="header">
-        Pending Orders
+        {{$t('onlineOrder.pendingOrders')}}
         <g-badge inline :value="true" color="#4CAF50" v-if="internalOrders && internalOrders.length">
           <template v-slot:badge>
             <div class="px-2">{{internalOrders.length}}</div>
@@ -48,7 +48,7 @@
                 </div>
               </div>
               <div class="row-flex">
-                <div class="col-9 fw-700">Shipping Fee</div>
+                <div class="col-9 fw-700">{{$t('onlineOrder.shippingFee')}}</div>
                 <div class="col-3 fs-small-2 ta-right">€{{order.shippingFee || 0}}</div>
               </div>
             </g-card-text>
@@ -75,7 +75,7 @@
     </div>
     <div class="kitchen-orders pl-2">
       <div class="header">
-        Sent to kitchen
+        {{$t('onlineOrder.sentToKitchen')}}
         <g-badge inline :value="true" color="#F9A825" v-if="sortedKitchenOrders && sortedKitchenOrders.length">
           <template v-slot:badge>
             <div class="px-2">{{sortedKitchenOrders.length}}</div>
@@ -85,7 +85,7 @@
       <div class="content">
         <template v-if="!sortedKitchenOrders || !sortedKitchenOrders.length">
           <div class="kitchen-orders--empty">
-            <p>No orders sent to kitchen</p>
+            <p>{{$t('onlineOrder.noKitchen')}}</p>
           </div>
         </template>
         <template v-else>

@@ -1,5 +1,5 @@
 module.exports = {
-  en: {
+  de: {
     //login
     login: {
       network: 'Network',
@@ -49,8 +49,8 @@ module.exports = {
       productId: 'Product ID',
       id: 'ID',
       name: 'Name',
-      type: 'Type',
-      isModifier: 'Is Modifier'
+      type: 'Typ',
+      isModifier: 'Ausnahme'
     },
 
     //UI
@@ -344,6 +344,42 @@ module.exports = {
         dineInTax: 'Im Haus Steuer',
         takeAwayTax: 'Außer Haus Steuer',
         happyHour: 'Happy Hour'
+      }
+    },
+    onlineOrder: {
+      pendingOrders: 'offene Bestellung',
+      sentToKitchen: 'In Bearbeitung (Küche)',
+      dashboard: 'Übersicht',
+      completedOrders: 'abgeschlossene Bestellungen',
+      declinedOrders: 'abgelehnte Bestellungen',
+      no: 'Nr.',
+      customer: 'Kunde',
+      address: 'Adresse',
+      amount: 'Betrag... Bar / EC',
+      received: 'Bestellung',
+      delivery: 'Lieferung',
+      pickUp: 'Abholung',
+      type: 'Typ',
+      status: 'Status',
+      completed: 'abgeschlossen',
+      declined: 'abgelehnt',
+      shippingFee: 'Liefergebühr',
+      noPending: 'No Pending orders yet',
+      noKitchen: 'No orders sent to kitchen',
+
+      settings: {
+        onlineOrderSettings: 'Online Bestellung Einstellungen',
+        status: 'Status',
+        webshopUrl: 'Webshop URL',
+        notAvailable: 'Not available',
+        pair: 'verbinden',
+        unpair: 'Unpair',
+        generalSettings: 'allgm. Einstellungnen',
+        timeToComplete: 'Dauer bis Abschluss der Bestellung',
+        sorting: 'Sortierung der Bestellung',
+        connected: 'Connected',
+        notPaired: 'Not paired',
+        hasSound: 'Klingeln bei Eingang der Bestellung',
       }
     }
   }

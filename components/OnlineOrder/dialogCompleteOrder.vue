@@ -42,7 +42,7 @@
           <div class="ta-right">€ {{order.vSum}}</div>
         </div>
         <div class="row-flex justify-between mb-2">
-          <div>Shipping fee:</div>
+          <div>{{$t('onlineOrder.shippingFee')}}:</div>
           <div class="ta-right">€ {{order.shippingFee || 0}}</div>
         </div>
         <div class="dashed-gradient"/>
