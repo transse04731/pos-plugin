@@ -67,7 +67,19 @@ router.post('/register', async (req, res) => {
 
   const deviceInfo = await DeviceModel.findOne({pairingCode, paired: false});
   if (deviceInfo) {
-    await DeviceModel.updateOne({pairingCode}, {paired: true, online: true, hardware, appName, appVersion, features });
+    await DeviceModel.updateOne({pairingCode}, {paired: true, online: true, hardware, appName, appVersion, features, appFeatures: {
+        fastCheckout: true,
+        manualTable: true,
+        delivery: true,
+        editMenuCard: true,
+        tablePlan: true,
+        onlineOrdering: true,
+        editTablePlan: true,
+        staffReport: true,
+        eodReport: true,
+        monthlyReport: true
+      }
+    });
     await addPairedDeviceToStore(deviceInfo._id, deviceInfo.storeId);
 
     cms.socket.emit('updateDeviceStatus', deviceInfo.storeId);

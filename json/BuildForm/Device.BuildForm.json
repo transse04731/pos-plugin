@@ -55,6 +55,13 @@
       "flex": "md4"
     },
     {
+      "_id": "5ea16979e02e5d58141801e9",
+      "schemaType": "boolean",
+      "key": "online",
+      "default": "false",
+      "type": "input@switch"
+    },
+    {
       "_id": "5e97d3eac94f346ab6d7fa7b",
       "schemaType": "array",
       "key": "features",
@@ -69,6 +76,74 @@
       "fields": [
         {
           "schemaType": "string"
+        }
+      ]
+    },
+    {
+      "_id": "5ea2a2d17dd5671f139bc2b4",
+      "schemaType": "object",
+      "key": "appFeatures",
+      "type": "object",
+      "fields": [
+        {
+          "schemaType": "boolean",
+          "key": "fastCheckout",
+          "default": "true",
+          "type": "input@switch"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "manualTable",
+          "default": "true",
+          "type": "input@switch"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "delivery",
+          "default": "true",
+          "type": "input@switch"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "editMenuCard",
+          "default": "true",
+          "type": "input@switch"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "tablePlan",
+          "default": "true",
+          "type": "input@switch"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "onlineOrdering",
+          "default": "true",
+          "type": "input@switch"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "editTablePlan",
+          "default": "true",
+          "type": "input@switch"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "staffReport",
+          "default": "true",
+          "type": "input@switch"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "eodReport",
+          "default": "true",
+          "type": "input@switch"
+        },
+        {
+          "schemaType": "boolean",
+          "key": "monthlyReport",
+          "default": "true",
+          "type": "input@switch"
         }
       ]
     }
