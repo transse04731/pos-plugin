@@ -274,21 +274,14 @@
             return
           }
         }
-        
-        // get current app name
         app = _.find(this.apps, app => app._id === _id)
         if (!app) {
           callback && callback({ ok: false, message: 'App is not exist!' })
           return
         }
         const currentAppName = app.name
-        
-        // change app name in App collection
         await cms.getModel('App').updateOne({_id}, { name })
-        
-        // change app name in Device collection
         await cms.getModel('Device').updateMany({ appName: currentAppName }, { appName: name })
-        
         callback && callback({ ok: true })
         await this.loadApps()  // TODO: just change app name, consider setting value locally without loadApps
       },
