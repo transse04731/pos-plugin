@@ -1,9 +1,9 @@
 <template>
   <div class="setting-wrapper">
-    <g-date-picker-input label="From:" v-model="from" class="mt-5"/>
-    <g-date-picker-input label="To:" v-model="to"/>
-    <pos-switch dense label="Show Product Sold" v-model="showProductSold"/>
-    <pos-switch dense label="Show All Z-Number" v-model="showAllZNumber" class="mt-5"/>
+    <g-date-picker-input :label="$t('report.from')" v-model="from" class="mt-5"/>
+    <g-date-picker-input :label="$t('report.to')" v-model="to"/>
+    <pos-switch dense :label="$t('report.showProductSold')" v-model="showProductSold"/>
+    <pos-switch dense :label="$t('report.showZ')" v-model="showAllZNumber" class="mt-5"/>
   </div>
 </template>
 

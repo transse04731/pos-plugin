@@ -21,10 +21,10 @@
     computed: {
       internalValue() {
         const sidebarData = this.$getService('SettingsStore:sidebarData');
-        if (!this.value) return sidebarData[0].title
+        if (!this.value) return sidebarData[0].key
         const activeItemPath = this.value.split('.').slice(1).join('.')
-        const activeItem = _.get(this.$getService('SettingsStore:sidebarData'), activeItemPath)
-        if (activeItem.isView) return activeItem.title
+        const activeItem = _.get(sidebarData, activeItemPath)
+        if (activeItem.isView) return activeItem.key
       }
     },
     methods: {

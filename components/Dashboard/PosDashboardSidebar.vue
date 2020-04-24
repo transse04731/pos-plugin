@@ -14,7 +14,7 @@
     <g-side-bar-tree-view
         ref="tree"
         :item-children="itemChildren"
-        :data="items"
+        :data="computedItems"
         v-model="sidebar"
         @node-selected="onNodeSelected"
         @node-expansion-toggled="(path, toggled) => $emit('toggle', path, toggled)"/>
@@ -59,10 +59,14 @@
       },
       srcImg() {
         return this.user ? this.user.avatar : ''
+      },
+      computedItems() {
+        return this.mapTitle(this.items)
       }
     },
     created() {
       this.timerId = setInterval(() => this.now = dayjs().format('HH:mm'), 1000)
+      console.log(this.items)
     },
     beforeDestroy() {
       clearInterval(this.timerId)
@@ -92,6 +96,17 @@
       logout() {
         this.$router.push('/pos-login')
         this.user = null
+      },
+      mapTitle(items) {
+        return items.map(item => {
+          if (typeof item.title === 'function') {
+            return Object.assign({}, item, {
+              title: item.title(),
+              ...item.items && {items: this.mapTitle(item.items) }
+            })
+          }
+          return item
+        })
       }
     }
   }

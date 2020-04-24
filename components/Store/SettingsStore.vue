@@ -17,7 +17,7 @@
       return {
         sidebarData: [
           { title: sidebar.user, icon: 'person', isView: true, key: 'user'},
-          { title: sidebar.general, icon: 'radio_button_unchecked', iconType: 'small', isView: true, key: 'general' },
+          { title: sidebar.general, icon: 'icon-general_setting', iconType: 'small', isView: true, key: 'general' },
           {
             title: sidebar.advancedSettings, icon: 'icon-switch', svgIcon: true, key: 'advancedSettings',
             items: [
@@ -26,7 +26,7 @@
               { title: sidebar.tax, icon: 'radio_button_unchecked', iconType: 'small', isView: true, key: 'tax' },
             ]
           },
-          { title: 'Online Ordering', icon: 'icon-general_setting', isView: true, key: 'onlineOrderSettings' }
+          { title: sidebar.onlineOrderSettings, icon: 'icon-general_setting', isView: true, key: 'onlineOrderSettings' }
         ],
         printerSidebarDefault: [
           {

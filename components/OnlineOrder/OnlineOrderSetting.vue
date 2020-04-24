@@ -220,8 +220,6 @@
 
     &__content {
       background: #FFFFFF;
-      border: 0.4px solid #9E9E9E;
-      border-radius: 4px;
       width: 80%;
       display: flex;
       flex-direction: column;
