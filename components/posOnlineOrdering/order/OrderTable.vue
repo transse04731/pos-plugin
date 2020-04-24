@@ -60,7 +60,7 @@
               <template v-if="orderType === 'delivery'">
                 <g-text-field v-model="customer.address" label="Address" clearable clear-icon="icon-cancel@16" prepend-icon="icon-place@16"/>
                 <g-text-field v-model="customer.zipCode" label="Zip code" clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
-                <g-text-field type="datetime-local" label="Delivery time" clearable clear-icon="icon-cancel@16" prepend-icon="icon-delivery-truck@16"/>
+                <g-text-field type="time" label="Delivery time" clearable clear-icon="icon-cancel@16" prepend-icon="icon-delivery-truck@16"/>
               </template>
               <g-textarea v-model="customer.note" placeholder="Note..." rows="3" no-resize/>
             </div>
@@ -334,6 +334,11 @@
             user-select: text !important;
           }
         }
+
+        .g-textarea ::v-deep textarea,
+        .g-tf-wrapper ::v-deep input {
+          user-select: text !important;
+        }
       }
 
       .order-item-detail {
@@ -439,6 +444,8 @@
         display: none;
       }
     }
+
+
   }
   .order-created {
     width: 464px;

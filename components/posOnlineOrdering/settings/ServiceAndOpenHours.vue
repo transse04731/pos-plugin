@@ -97,8 +97,8 @@
       addNewOpenHour() {
         const newOpenHour = {
           dayInWeeks: [false, false, false, false, false, false, false],
-          openTime: '06:30',
-          closeTime: '23:30'
+          openTime: '06:30 AM',
+          closeTime: '11:30 PM'
         }
         const newOpenHours = [...this.store.openHours, newOpenHour]
         this.$emit('update', { openHours: newOpenHours })

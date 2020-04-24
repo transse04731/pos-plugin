@@ -1,7 +1,7 @@
 <template>
   <div class="menu-setting">
     <template v-if="renderPage">
-      <div class="menu-setting__title mb-3">Settings Menu</div>
+      <div class="menu-setting__title mb-3">Menu Settings</div>
       <div v-if="!categories || !categories.length" class="menu-setting--empty">
         <img src="/plugins/pos-plugin/assets/folk_knife.svg">
         <p>Menu is currently empty.</p>

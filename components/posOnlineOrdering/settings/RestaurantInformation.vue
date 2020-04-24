@@ -34,11 +34,11 @@
         <div class="mb-3 fw-700">Upload photo</div>
         <div class="mb-5">
           <div class="mb-2">Store Photo</div>
-          <upload-zone :url="store.orderHeaderImageSrc" @url="update({ orderHeaderImageSrc: $event })" :option="{maxWidth: 500, maxHeight: 200}" :aspect-ratio="2"/>
+          <upload-zone :url="store.orderHeaderImageSrc" @url="update({ orderHeaderImageSrc: $event })" :option="{maxWidth: 500, maxHeight: 500}" :aspect-ratio="2"/>
         </div>
         <div>
           <div class="mb-2">Store Logo</div>
-          <upload-zone :url="store.logoImageSrc" @url="update({ logoImageSrc: $event })" :option="{maxHeight: 100}"/>
+          <upload-zone :url="store.logoImageSrc" @url="update({ logoImageSrc: $event })" :option="{maxHeight: 500, maxWidth: 500}"/>
         </div>
       </div>
     </div>
