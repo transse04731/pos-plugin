@@ -69,7 +69,7 @@
                       <g-icon :class="[device.menu && 'menu--active']" @click="on.click">more_horiz</g-icon>
                     </template>
                     <div class="menu-action">
-                      <div class="menu-action__option" @click="openFeatureControlDialog(device)">Feature control</div>
+                      <div class="menu-action__option" @click="openFeatureControlDialog(store, device)">Feature control</div>
                       <div class="menu-action__option" @click="disableDevice(device)">Disable device</div>
                       <div class="menu-action__option" @click="deleteDevice(device)">Delete device</div>
                     </div>
@@ -103,6 +103,7 @@
         v-if="selectedDevice"
         v-model="dialog.featureControl"
         :device="selectedDevice"
+        :store="selectedStore"
         @cancel="closeFeatureControlDialog"
         @save="updateDeviceAppFeature"/>
   </div>
@@ -133,6 +134,7 @@
         remoteControlDeviceId: null,
         disableRemoteControlBtn: false,
         nameEditMenu: false,
+        selectedStore: null,
         selectedDevice: null,
         dialog: {
           featureControl: false
@@ -224,11 +226,13 @@
       deleteGroup() {
         this.$emit('delete:group', this.name)
       },
-      openFeatureControlDialog(device) {
+      openFeatureControlDialog(store, device) {
+        this.selectedStore = store
         this.selectedDevice = device
         this.dialog.featureControl = true
       },
       closeFeatureControlDialog() {
+        this.selectedStore = null
         this.selectedDevice = null
         this.dialog.featureControl = false
       },

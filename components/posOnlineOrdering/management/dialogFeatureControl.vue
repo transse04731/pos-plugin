@@ -3,42 +3,43 @@
     <div class="dlg-feature-control">
       <div class="dlg-feature-control__title">Feature control</div>
       <div class="dlg-feature-control__header">
-        <span class="dlg-feature-control__header__group">{{group}}</span>
+        <span class="dlg-feature-control__header__group">{{store.name}}</span>
+        <g-spacer/>
         <span class="dlg-feature-control__header__device-info">{{deviceInfo}}</span>
       </div>
-      <div class="dlg-feature-control__body">
-        <div class="w-50">
+      <div class="dlg-feature-control__body row-flex">
+        <div class="col-6">
           <g-switch v-model="featureControl.fastCheckout" label="Fast Checkout"/>
         </div>
-        <div class="w-50">
-          <g-switch v-model="featureControl.manualTable" label="Fast Checkout"/>
+        <div class="col-6">
+          <g-switch v-model="featureControl.manualTable" label="Manual Table"/>
         </div>
-        <div class="w-50">
-          <g-switch v-model="featureControl.delivery" label="Fast Checkout"/>
+        <div class="col-6">
+          <g-switch v-model="featureControl.delivery" label="Delivery"/>
         </div>
-        <div class="w-50">
-          <g-switch v-model="featureControl.editMenuCard" label="Fast Checkout"/>
+        <div class="col-6">
+          <g-switch v-model="featureControl.editMenuCard" label="Edit Menu Card"/>
         </div>
-        <div class="w-50">
-          <g-switch v-model="featureControl.tablePlan" label="Fast Checkout"/>
+        <div class="col-6">
+          <g-switch v-model="featureControl.tablePlan" label="Table Plan"/>
         </div>
-        <div class="w-50">
-          <g-switch v-model="featureControl.editTablePlan" label="Fast Checkout"/>
+        <div class="col-6">
+          <g-switch v-model="featureControl.editTablePlan" label="Edit Table Plan"/>
         </div>
-        <span class="line"/>
-        <div class="w-50">
-          <g-switch v-model="featureControl.onlineOrdering" label="Fast Checkout"/>
-          <div>Note: Only one device can connect to online ordering at a time.</div>
+        <div class="dlg-feature-control__body__line"></div>
+        <div class="col-12">
+          <g-switch v-model="featureControl.onlineOrdering" label="Online Ordering"/>
+          <div style="font-size: 12px;">Note: Only one device can connect to online ordering at a time.</div>
         </div>
-        <span class="line"/>
-        <div class="w-50">
-          <g-switch v-model="featureControl.staffReport" label="Fast Checkout"/>
+        <div class="dlg-feature-control__body__line"></div>
+        <div class="col-6">
+          <g-switch v-model="featureControl.staffReport" label="Staff Report"/>
         </div>
-        <div class="w-50">
-          <g-switch v-model="featureControl.eodReport" label="Fast Checkout"/>
+        <div class="col-6">
+          <g-switch v-model="featureControl.eodReport" label="End of Day"/>
         </div>
-        <div class="w-50">
-          <g-switch v-model="featureControl.monthlyReport" label="Fast Checkout"/>
+        <div class="col-6">
+          <g-switch v-model="featureControl.monthlyReport" label="Monthly Report"/>
         </div>
       </div>
       <div class="dlg-feature-control__actions">
@@ -53,7 +54,8 @@
     name: 'dialogFeatureControl',
     props: {
       value: Boolean,
-      device: Object
+      device: Object,
+      store: Object
     },
     data: function () {
       return {
@@ -63,6 +65,7 @@
           delivery: true,
           editMenuCard: true,
           tablePlan: true,
+          onlineOrdering: true,
           editTablePlan: true,
           staffReport: true,
           eodReport: true,
@@ -72,7 +75,7 @@
     },
     computed: {
       deviceInfo() {
-        return `${device.name}, ${device.hardware}, ${device.appName}, ${device.appVersion}, ${device.appRelease}`
+        return `${this.device.name}, ${this.device.hardware}, ${this.device.appName}, ${this.device.appVersion}, ${this.device.appRelease}`
       }
     },
     methods: {
@@ -88,14 +91,22 @@
 <style scoped lang="scss">
   .dlg-feature-control {
     padding: 40px;
+    background: #FFF;
+    border-radius: 4px;
+    width: 580px;
+    margin: 0 auto;
     
     &__title {
       font-weight: 600;
       font-size: 24px;
       color: #212121;
+      margin-bottom: 20px;
     }
     
     &__header {
+      display: flex;
+      margin-bottom: 10px;
+      
       &__group {
         font-weight: bold;
         font-size: 16px;
@@ -108,7 +119,15 @@
     }
     
     &__body {
+      flex-wrap: wrap;
       margin-bottom: 40px;
+      
+      &__line {
+        background: #EFEFEF;
+        height: 1px;
+        width: 100%;
+        margin: 15px 0;
+      }
     }
     
     &__actions {
