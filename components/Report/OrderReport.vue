@@ -85,12 +85,12 @@
           <span>Total</span>
           <span class="float-right">${{orderSum | convertMoney}}</span>
         </div>
-        <div style="margin: 12px 0;">
+        <div v-if="orderCashReceived || orderCashReceived === 0" style="margin: 12px 0;">
           <span>Cash tend</span>
           <span class="float-right">${{orderCashReceived | convertMoney}}</span>
         </div>
         <div class="divider divider-dashed"/>
-        <div class="due" style="margin: 12px 0;">
+        <div v-if="orderCashback || orderCashback === 0" class="due" style="margin: 12px 0;">
           <span>Change due</span>
           <span class="float-right">${{orderCashback | convertMoney}}</span>
         </div>
