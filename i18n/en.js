@@ -20,7 +20,12 @@ module.exports = {
       staffReport: 'Staff Report',
       endOfDay: 'End of Day',
       monthlyReport: 'Monthly Report',
-      settings: 'Settings'
+      settings: 'Settings',
+      fastCheckout: 'Fast Checkout',
+      delivery: 'Delivery',
+      editTablePlan: 'Edit Table Plan',
+      editMenuCard: 'Edit Menu Card',
+      printerSettings: 'Printer Settings'
     },
 
     //article view
