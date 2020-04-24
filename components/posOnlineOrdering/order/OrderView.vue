@@ -24,7 +24,6 @@
               </div>
             </div>
           </div>
-          <div class="title">What you like?</div>
           <div class="pos-order__info" v-if="orderItems.length > 0">
             <g-badge :value="true" color="#4CAF50" overlay>
               <template v-slot:badge>
@@ -57,6 +56,7 @@
               <div v-for="(item, index) in categoryItems" :key="index">
                 <menu-item
                     v-bind="item"
+                    :is-opening="isStoreOpening"
                     :currency-unit="store.currency"
                     :quantity="getQuantityInOrder(item)"
                     @menu-item-selected="addItemToOrder(item)"
@@ -68,15 +68,15 @@
           <order-table v-if="showOrder" @back="showOrder = false" :store="store"/>
         </div>
         <div class="pos-order__right">
-          <order-table :store="store"/>
+          <order-table :store="store" :is-opening="isStoreOpening" :merchant-message="merchantMessage"/>
         </div>
       
         <!-- Merchant dialog -->
-        <g-dialog :value="!isStoreOpening" persistent>
+        <g-dialog v-model="dialog.closed" persistent>
           <div class="dialog-closed">
             <div class="dialog-closed__title">Merchant is temporarily closed</div>
             <div class="dialog-closed__message">{{ merchantMessage }}</div>
-            <g-btn-bs text-color="indigo accent-2">OK</g-btn-bs>
+            <g-btn-bs text-color="indigo accent-2" @click="dialog.closed = false">OK</g-btn-bs>
           </div>
         </g-dialog>
       </template>
@@ -103,6 +103,9 @@
         dayInWeeks: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         today: dayjs().format("dddd"),
         now: dayjs().format('HH:mm'),
+        dialog: {
+          closed: false
+        }
       }
     },
     filters: {
@@ -128,6 +131,7 @@
         this.today = dayjs().format('dddd')
         this.now = dayjs().format('HH:mm')
       }, 1000)
+      this.dialog.closed = !this.isStoreOpening
     },
     beforeDestroy() {
       clearInterval(this.dayInterval)
@@ -322,6 +326,7 @@
       display: flex;
       background-color: #F8F8F8;
       flex: 0 0 64px;
+      margin-top: 16px;
       align-items: center;
       border-top-right-radius: 24px;
       border-bottom-right-radius: 24px;
