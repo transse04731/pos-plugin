@@ -78,7 +78,8 @@
         type: Number,
         default: 2
       },
-      option: Object
+      option: Object,
+      aspectRatio: Number
     },
     data: function () {
       return {
@@ -161,7 +162,8 @@
           if (!image) return
           const cropperCtor = (await Cropper()).default
           const cropper = new cropperCtor(image, {
-            oncrop() {
+            aspectRatio: this.aspectRatio,
+            crop() {
 
             }
           });
