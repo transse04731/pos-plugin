@@ -162,10 +162,7 @@
           if (!image) return
           const cropperCtor = (await Cropper()).default
           const cropper = new cropperCtor(image, {
-            aspectRatio: this.aspectRatio,
-            crop() {
-
-            }
+            aspectRatio: this.aspectRatio
           });
           this.$set(this, 'cropper', cropper)
           this.initializingCropper = false
