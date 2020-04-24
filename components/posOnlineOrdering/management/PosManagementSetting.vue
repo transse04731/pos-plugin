@@ -157,6 +157,13 @@
           this.message = 'WebShop url must not contain invalid character! Valid character set is a-z, A-Z, 0-9 and \'-\' character'
           return true
         }
+        
+        // TODO: Validate duplicate store
+        // TODO: UX
+        if (_.includes(this.aliases, alias)) {
+          this.message = 'WebShop url has been taken!'
+          return true
+        }
       },
       updateAlias(value) {
         this.message = ''

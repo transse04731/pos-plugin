@@ -76,12 +76,13 @@
         </div>
         <pos-management-setting
             :_id="selectedStore._id"
-            :name="selectedStore.name"
+            :setting-name="selectedStore.settingName"
+            :setting-address="selectedStore.settingAddress"
             :alias="selectedStore.alias"
+            :aliases="storeAlias"
             :client-domain="selectedStore.clientDomain"
             :group="selectedStore.groups"
             :online-ordering="selectedStore.onlineOrdering"
-            :address="selectedStore.address"
             :devices="selectedStore.devices"
             :groups="groups"
             @update="updateStore(selectedStore._id, $event)"
@@ -114,7 +115,7 @@
       // store groups
       'PosOnlineOrderManagementStore:(storeGroups,loadStoreGroups,addGroup)',
       // stores
-      'PosOnlineOrderManagementStore:(stores,loadStores,addStore,removeStore,updateStore)',
+      'PosOnlineOrderManagementStore:(stores,loadStores,addStore,removeStore,updateStore,storeAlias)',
       // devices
       'PosOnlineOrderManagementStore:(addDevice,removeDevice,updateDevice)',
       // app

@@ -319,6 +319,7 @@
 
         // stores
         stores: this.stores,
+        storeAlias: this.storeAlias,
         loadStores: this.loadStores,
         addStore: this.addStore,
         removeStore: this.removeStore,
