@@ -192,7 +192,7 @@
               "component": "viewPaymentToolbar",
               "binding": [],
               "slotScopeBinding": [],
-              "slot": "Payment",
+              "slot": "payment",
               "url": "plugins/pos-plugin/components/Settings/view/viewPaymentToolbar.vue",
               "path": "components/Settings/view/viewPaymentToolbar.vue",
               "pluginName": "pos-plugin"
@@ -202,7 +202,7 @@
               "component": "viewUserToolbar",
               "binding": [],
               "slotScopeBinding": [],
-              "slot": "User",
+              "slot": "user",
               "url": "plugins/pos-plugin/components/Settings/view/viewUserToolbar.vue",
               "path": "components/Settings/view/viewUserToolbar.vue",
               "pluginName": "pos-plugin"
@@ -212,7 +212,10 @@
               "component": "viewTaxToolbar",
               "binding": [],
               "slotScopeBinding": [],
-              "slot": "Tax"
+              "slot": "tax",
+              "url": "plugins/pos-plugin/components/Settings/view/viewTaxToolbar.vue",
+              "path": "components/Settings/view/viewTaxToolbar.vue",
+              "pluginName": "pos-plugin"
             }
           ],
           "inject": [
@@ -261,14 +264,17 @@
               "component": "viewGeneral",
               "binding": [],
               "slotScopeBinding": [],
-              "slot": "General"
+              "slot": "general",
+              "url": "plugins/pos-plugin/components/Settings/view/viewGeneral.vue",
+              "path": "components/Settings/view/viewGeneral.vue",
+              "pluginName": "pos-plugin"
             },
             {
               "choice": "view",
               "component": "viewCompany",
               "binding": [],
               "slotScopeBinding": [],
-              "slot": "Company Info",
+              "slot": "companyInfo",
               "url": "plugins/pos-plugin/components/Settings/view/viewCompany.vue",
               "path": "components/Settings/view/viewCompany.vue",
               "pluginName": "pos-plugin"
@@ -278,7 +284,7 @@
               "component": "viewPayment",
               "binding": [],
               "slotScopeBinding": [],
-              "slot": "Payment",
+              "slot": "payment",
               "url": "plugins/pos-plugin/components/Settings/view/viewPayment.vue",
               "path": "components/Settings/view/viewPayment.vue",
               "pluginName": "pos-plugin"
@@ -288,7 +294,7 @@
               "component": "viewUser",
               "binding": [],
               "slotScopeBinding": [],
-              "slot": "User",
+              "slot": "user",
               "content": {
                 "props": {
                   "layout": {
@@ -447,7 +453,7 @@
               "component": "viewTax",
               "binding": [],
               "slotScopeBinding": [],
-              "slot": "Tax",
+              "slot": "tax",
               "url": "plugins/pos-plugin/components/Settings/view/viewTax.vue",
               "path": "components/Settings/view/viewTax.vue",
               "pluginName": "pos-plugin"
@@ -457,7 +463,7 @@
               "component": "OnlineOrderSetting",
               "binding": [],
               "slotScopeBinding": [],
-              "slot": "Online Ordering",
+              "slot": "onlineOrderSettings",
               "url": "plugins/pos-plugin/components/OnlineOrder/OnlineOrderSetting.vue",
               "path": "components/OnlineOrder/OnlineOrderSetting.vue",
               "pluginName": "pos-plugin",
