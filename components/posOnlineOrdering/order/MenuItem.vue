@@ -133,6 +133,10 @@
     &__action {
       display: none;
     }
+
+    .g-icon {
+      -webkit-tap-highlight-color: transparent;
+    }
   }
 
   @media screen and (max-width: 1040px) {

@@ -13,7 +13,7 @@
                 <span class="sub-title">{{store.phone}}</span>
               </div>
             
-              <div style="display: flex; align-items: center; font-weight: 300">
+              <div style="display: flex; align-items: center; font-weight: 300; white-space: nowrap">
                 <span :style="storeOpenStatusStyle">{{ storeOpenStatus }}</span>
                 <template v-if="storeWorkingTime">
                   <span style="margin-right: 3px;">|</span>
@@ -232,7 +232,7 @@
         this.$set(this, 'products', await cms.getModel('Product').find({ store: this.store._id }, { store: 0 }))
       },
       getCategoryStyle(cate) {
-        const common = {cursor: 'pointer', padding: '20px', whiteSpace: 'nowrap'};
+        const common = {cursor: 'pointer', padding: '20px', whiteSpace: 'nowrap', '-webkit-tap-highlight-color': 'transparent'};
         return cate._id === this.selectedCategoryId ? {
           fontWeight: 'bold',
           borderBottom: '2px solid #000',
