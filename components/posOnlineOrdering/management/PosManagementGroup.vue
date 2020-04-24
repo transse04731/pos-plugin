@@ -49,7 +49,7 @@
                   <g-select class="w-60" :items="device.versions" v-model="device.updateVersion"/>
                   <p v-if="device.updateVersion" class="ml-3 text-indigo-accent-2" style="cursor: pointer" @click="updateAppVersion(device)">Update</p>
                 </div>
-                <div class="col-1">
+                <div class="col-1 row-flex align-items-center">
                   <!-- remote control -->
                   <g-tooltip
                       :open-on-hover="true" top speech-bubble color="#000" transition="0.3">
@@ -66,7 +66,7 @@
                   <!-- extra actions -->
                   <g-menu v-model="device.menu" close-on-content-click nudge-bottom="5">
                     <template v-slot:activator="{on}">
-                      <g-icon :class="[device.menu && 'menu--active']" @click="on.click">more_horiz</g-icon>
+                      <g-icon :class="[device.menu && 'menu--active', 'ml-2']" @click="on.click">more_horiz</g-icon>
                     </template>
                     <div class="menu-action">
                       <div class="menu-action__option" @click="openFeatureControlDialog(store, device)">Feature control</div>
