@@ -26,7 +26,7 @@
         return _.map(this.storeGroups, sg => sg.name)
       },
       storeAlias() {
-        return _.map(this.stores, s => s.alias)
+        return _.map(this.stores, s => _.toLower(s.alias))
       },
       searchTextLowerCase() {
         return _.lowerCase(this.searchText)

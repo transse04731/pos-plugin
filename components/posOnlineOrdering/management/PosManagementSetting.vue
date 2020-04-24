@@ -160,7 +160,7 @@
         
         // TODO: Validate duplicate store
         // TODO: UX
-        if (_.includes(this.aliases, alias)) {
+        if (_.includes(this.aliases, _.toLower(alias))) {
           this.message = 'WebShop url has been taken!'
           return true
         }
