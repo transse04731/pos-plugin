@@ -56,7 +56,10 @@
               <g-text-field-bs label="Reason to decline (optional)" v-model="order.declineReason"/>
             </g-card-actions>
             <g-card-actions v-if="order.confirmStep2">
-              <value-picker :values="[15, 30, 45, 60]" :default-value="defaultPrepareTime || 30" allow-custom v-model="order.prepareTime"></value-picker>
+              <div>
+                <p class="ml-2 mb-1">Time to complete (min)</p>
+                <value-picker :values="[15, 30, 45, 60]" :default-value="defaultPrepareTime || 30" allow-custom v-model="order.prepareTime"></value-picker>
+              </div>
             </g-card-actions>
             <g-card-actions>
               <g-btn-bs width="60" border-color="#C4C4C4" text-color="black" @click.stop="onClickDecline(order)">
