@@ -9,39 +9,54 @@
     domain: 'PermissionStore',
     props: {},
     computed: {
-      haveManageAccountPermission() {
-        return _.find(cms.loginUser.user.permissions, perm => perm.permission === 'manageAccount' && perm.value === true)
+      versionControlPerm() {
+        return cms.loginUser.user.role.name === 'admin'
       },
-      haveManageGroupPermission() {
-        return _.find(cms.loginUser.user.permissions, perm => perm.permission === 'manageGroup' && perm.value === true)
+      manageAccountPerm() {
+        return _.find(this.permissions, perm => perm.permission === 'manageAccount' && perm.value === true)
       },
-      haveManageStorePermission() {
-        return _.find(cms.loginUser.user.permissions, perm => perm.permission === 'manageStore' && perm.value === true)
+      manageGroupPerm() {
+        return _.find(this.permissions, perm => perm.permission === 'manageGroup' && perm.value === true)
       },
-      haveRemoteControlPermission() {
-        return _.find(cms.loginUser.user.permissions, perm => perm.permission === 'remoteControl' && perm.value === true)
+      manageStorePerm() {
+        return _.find(this.permissions, perm => perm.permission === 'manageStore' && perm.value === true)
       },
-      haveConfigOnlineOrderingPermission() {
-        return _.find(cms.loginUser.user.permissions, perm => perm.permission === 'configOnlineOrdering' && perm.value === true)
+      remoteControlPerm() {
+        return _.find(this.permissions, perm => perm.permission === 'remoteControl' && perm.value === true)
       },
-      haveSettingPermission() {
-        return _.find(cms.loginUser.user.permissions, perm => perm.permission === 'setting' && perm.value === true)
+      configOnlineOrderingPerm() {
+        return _.find(this.permissions, perm => perm.permission === 'configOnlineOrdering' && perm.value === true)
       },
-      haveUpdatePermission() {
-        return _.find(cms.loginUser.user.permissions, perm => perm.permission === 'update' && perm.value === true)
+      settingsPerm() {
+        return _.find(this.permissions, perm => perm.permission === 'settings' && perm.value === true)
+      },
+      updateAppPerm() {
+        return _.find(this.permissions, perm => perm.permission === 'updateApp' && perm.value === true)
+      },
+      featureControlPerm() {
+        return _.find(this.permissions, perm => perm.permission === 'featureControl' && perm.value === true)
       }
     },
-    methods: {
+    data() {
+      return {
+        permissions: []
+      }
+    },
+    async created() {
+      const user = await cms.getModel('User').findOne({ _id: cms.loginUser.user._id }, { permissions : 1 })
+      user && this.permissions.splice(0, 0, ...user.permissions)
     },
     provide() {
       return {
-        haveManageAccountPermission: this.haveManageAccountPermission,
-        haveManageGroupPermission: this.haveManageGroupPermission,
-        haveManageStorePermission: this.haveManageStorePermission,
-        haveRemoteControlPermission: this.haveRemoteControlPermission,
-        haveConfigOnlineOrderingPermission: this.haveConfigOnlineOrderingPermission,
-        haveSettingPermission: this.haveSettingPermission,
-        haveUpdatePermission: this.haveUpdatePermission
+        versionControlPerm: this.versionControlPerm,
+        manageAccountPerm: this.manageAccountPerm,
+        manageGroupPerm: this.manageGroupPerm,
+        manageStorePerm: this.manageStorePerm,
+        remoteControlPerm: this.remoteControlPerm,
+        configOnlineOrderingPerm: this.configOnlineOrderingPerm,
+        settingsPerm: this.settingsPerm,
+        updateAppPerm: this.updateAppPerm,
+        featureControlPerm: this.featureControlPerm
       }
     }
   }

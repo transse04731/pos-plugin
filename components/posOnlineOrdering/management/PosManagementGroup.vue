@@ -7,7 +7,7 @@
           :value="name"
           @click.native.stop.prevent="() => {}"
           @input="(value, cb) => changeGroupName(value, cb)">
-        <template v-slot:action="{mode, switchToEditMode, applyChange, resetValue}">
+        <template v-if="manageGroupPerm" v-slot:action="{mode, switchToEditMode, applyChange, resetValue}">
           <g-menu v-if="mode !== 'edit'" v-model="nameEditMenu" close-on-content-click nudge-bottom="5" nudge-left="30">
             <template v-slot:activator="{on}">
               <div class="btn-edit" :style="[nameEditMenu && {background: '#F4F5FA'}]">
@@ -46,12 +46,14 @@
                   {{ `${device.appVersion} (${device.appName}, ${device.appRelease})` }}
                 </div>
                 <div class="row-flex col-4">
-                  <g-select class="w-60" :items="device.versions" v-model="device.updateVersion"/>
-                  <p v-if="device.updateVersion" class="ml-3 text-indigo-accent-2" style="cursor: pointer" @click="updateAppVersion(device)">Update</p>
+                  <template v-if="updateAppPerm">
+                    <g-select class="w-60" :items="device.versions" v-model="device.updateVersion"/>
+                    <p v-if="device.updateVersion" class="ml-3 text-indigo-accent-2" style="cursor: pointer" @click="updateAppVersion(device)">Update</p>
+                  </template>
                 </div>
                 <div class="col-1">
                   <!-- remote control -->
-                  <g-tooltip
+                  <g-tooltip v-if="remoteControlPerm"
                       :open-on-hover="true" top speech-bubble color="#000" transition="0.3">
                     <template v-slot:activator="{on}">
                       <div :class="device.online && device.paired && device.features && device.features.includes('proxy') && !disableRemoteControlBtn
@@ -69,9 +71,9 @@
                       <g-icon :class="[device.menu && 'menu--active']" @click="on.click">more_horiz</g-icon>
                     </template>
                     <div class="menu-action">
-                      <div class="menu-action__option" @click="openFeatureControlDialog(store, device)">Feature control</div>
-                      <div class="menu-action__option" @click="disableDevice(device)">Disable device</div>
-                      <div class="menu-action__option" @click="deleteDevice(device)">Delete device</div>
+                      <div v-if="featureControlPerm" class="menu-action__option" @click="openFeatureControlDialog(store, device)">Feature control</div>
+                      <div v-if="settingsPerm" class="menu-action__option" @click="disableDevice(device)">Disable device</div>
+                      <div v-if="settingsPerm" class="menu-action__option" @click="deleteDevice(device)">Delete device</div>
                     </div>
                   </g-menu>
                 </div>
@@ -79,12 +81,12 @@
             </div>
           </div>
           <div class="pos-management-group__content-action">
-            <g-btn-bs small border-color="grey-darken-1" @click="$emit('view:settings', store)">Settings</g-btn-bs>
-            <g-btn-bs small border-color="grey-darken-1" @click="openWebShopConfig(store)">WebShop Config</g-btn-bs>
+            <g-btn-bs v-if="settingsPerm" small border-color="grey-darken-1" @click="$emit('view:settings', store)">Settings</g-btn-bs>
+            <g-btn-bs v-if="configOnlineOrderingPerm" small border-color="grey-darken-1" @click="openWebShopConfig(store)">WebShop Config</g-btn-bs>
           </div>
         </div>
 
-        <g-dnd-dialog v-model="showIframe" :width="iframeWidth"
+        <g-dnd-dialog v-if="remoteControlPerm" v-model="showIframe" :width="iframeWidth"
                       :height="iframeHeight" lazy @close="stopRemoteControl"
                       @dragStart="iframeDragging = true" @dragEnd="iframeDragging = false"
                       @resizeStart="iframeDragging = true" @resizeEnd="iframeDragging = false">
@@ -121,6 +123,10 @@
       stores: Array,
       appItems: Array,
     },
+    injectService: [
+      // permissions
+      'PermissionStore:(versionControlPerm,manageAccountPerm,manageGroupPerm,manageStorePerm,settingsPerm,updateAppPerm,remoteControlPerm,featureControlPerm,configOnlineOrderingPerm)'
+    ],
     data() {
       return {
         showContent: false,

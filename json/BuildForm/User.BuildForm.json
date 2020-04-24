@@ -52,7 +52,7 @@
       "_id": "5e9ffbbb5bd44e437e6473dd",
       "schemaType": "array",
       "key": "permissions",
-      "type": "input@multiSelect",
+      "type": "array",
       "fields": [
         {
           "schemaType": "string",
@@ -86,7 +86,11 @@
             },
             {
               "value": "manageAccount",
-              "text": "manageAccount"
+              "text": "Manage Account"
+            },
+            {
+              "value": "featureControl",
+              "text": "Feature Control"
             }
           ]
         },

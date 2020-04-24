@@ -1,4 +1,3 @@
-const authenticateAPI = require('./api/authenticate')
 const deviceAPI = require('./api/device')
 const storeAPI = require('./api/store')
 
@@ -6,7 +5,6 @@ module.exports = cms => {
   cms.data['loginUrl'] = '/sign-in';
   cms.data['nonAuthenticateUrls'] = ['/login', '/store']
 
-  cms.app.use('/user', authenticateAPI)
   cms.app.use('/device', deviceAPI)
   cms.app.use('/store', storeAPI)
 
