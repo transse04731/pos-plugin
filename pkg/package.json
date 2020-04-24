@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "giga-pkg-patches": "github:gigasource/giga-pkg-patches",
+    "giga-pkg-patches": "github:gigasource/giga-pkg-patches#1.0.1",
     "pkg": "^4.4.4"
   }
 }

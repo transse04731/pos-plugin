@@ -1,8 +1,51 @@
-apply from: '../pos-android/app.gradle'
+apply from: '../pos-android/app/build.gradle'
 
 android {
     defaultConfig {
         applicationId "io.gigasource.restaurant"
+    }
+    signingConfigs {
+        release {
+            storeFile file("release.keystore")
+            storePassword "123456"
+            keyAlias "key0"
+            keyPassword "123456"
+        }
+        debug {
+            storeFile file("release.keystore")
+            storePassword "123456"
+            keyAlias "key0"
+            keyPassword "123456"
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+        debug {
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    flavorDimensions "giga"
+
+    productFlavors {
+        dev {
+            dimension "giga"
+            buildConfigField("String", "mode", '"--mode=android-local-server"')
+            buildConfigField("String", "androidWebshop", '"--androidWebshop=http://192.168.10.13:8888"')
+        }
+        pro {
+            dimension "giga"
+            buildConfigField("String", "mode", '"--mode=android"')
+        }
+    }
+    sourceSets {
+        main {
+            java.srcDirs = ['../pos-android/app/src/main/java']
+            assets.srcDirs = ['../pos-android/app/src/main/assets', '../app/src/main/assets']
+            res.srcDirs = ['../pos-android/app/src/main/res']
+        }
     }
 }
 
