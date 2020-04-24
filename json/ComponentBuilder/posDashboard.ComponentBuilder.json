@@ -219,10 +219,17 @@
             },
             {
               "choice": "view",
-              "component": "posFunctions",
+              "component": "PosDashboardFunction",
               "binding": [],
               "slotScopeBinding": [],
-              "slot": "Functions"
+              "slot": "Functions",
+              "content": {
+                "props": {},
+                "events": {}
+              },
+              "url": "plugins/pos-plugin/components/Dashboard/PosDashboardFunction.vue",
+              "path": "components/Dashboard/PosDashboardFunction.vue",
+              "pluginName": "pos-plugin"
             },
             {
               "choice": "view",
