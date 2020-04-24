@@ -6,9 +6,10 @@ const mongoose = require('mongoose')
 const ObjectId = mongoose.Types.ObjectId
 
 const DeviceModel = cms.getModel('Device');
+const StoreModel = cms.getModel('Store')
 
 function generateDeviceCode() {
-  return randomstring.generate({length: 6})
+  return randomstring.generate({length: 6}).toLowerCase()
 }
 
 async function generateUniqueDeviceCode() {
@@ -20,16 +21,18 @@ async function generateUniqueDeviceCode() {
 }
 
 async function addPairedDeviceToStore(deviceId, storeId) {
-  const store = await cms.getModel('Store').findOne({_id: storeId}, {devices: 1});
-  const deviceIds = store.devices.map(e => e._id.toString());
-  if (!deviceIds.includes(deviceId)) store.devices.push(ObjectId(deviceId))
-  await cms.getModel('Store').updateOne({_id: storeId}, {devices: store.devices});
+  const store = await StoreModel.findOne({_id: storeId }, {devices: 1})
+  const deviceIds = _.map(store.devices, e => e._id)
+  if (!deviceIds.includes(deviceId))
+    deviceIds.push(deviceId)
+  await StoreModel.updateOne({_id: storeId}, { devices: deviceIds });
 }
 
 async function removePairedDeviceFromStore(deviceId, storeId) {
-  const store = await cms.getModel('Store').findOne({_id: storeId}, {devices: 1});
-  store.devices.filter(_id => deviceId !== _id.toString());
-  await cms.getModel('Store').updateOne({_id: storeId}, {devices: store.devices});
+  const store = await StoreModel.findOne({ _id: storeId }, {devices: 1});
+  const deviceIds = _.map(store.devices, e => e._id)
+  const newDeviceIds = _.filter(deviceIds, id => id !== deviceId)
+  await StoreModel.updateOne({ _id: storeId.toString() }, { devices: newDeviceIds });
 }
 
 router.get('/pairing-code', async (req, res) => {
