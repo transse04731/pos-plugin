@@ -24,7 +24,7 @@
     <slot name="footer">
       <g-btn :uppercase="false" large text background-color="white" text-color="#424242" width="100%" @click.stop="logout">
         <g-icon svg>icon-logout</g-icon>
-        <span class="ml-2">Log Out</span>
+        <span class="ml-2">{{$t('sidebar.logOut')}}</span>
       </g-btn>
     </slot>
   </g-sidebar>
