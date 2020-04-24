@@ -40,9 +40,9 @@
               <g-text-field-bs v-model="photoUrl" label="Photo URL"/>
             </template>
             <template v-else>
-              <div style="height: 70px; display: flex; align-items: center">
+              <div style="height: 70px; display: flex; align-items: center; width: 100%; overflow: hidden">
                 <g-btn-bs @click="choosePhoto" background-color="#FFF" border-color="#C4C4C4" text-color="#424242" width="150">Choose Photo</g-btn-bs>
-                <span>{{ fileName }}</span>
+                <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ fileName }}</div>
               </div>
             </template>
             <div style="display: flex; justify-content: flex-end; margin-top: 24px">

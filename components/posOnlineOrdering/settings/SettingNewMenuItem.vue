@@ -3,7 +3,7 @@
     <!-- Product info -->
     <div class="menu-setting-new-item__main">
       <div class="ta-center">{{ index + 1 }}</div>
-      <upload-zone class="menu-setting-new-item__image" @url="getImage" :option="{maxHeight: 80, maxWidth: 80}" :aspect-ratio="1">
+      <upload-zone class="menu-setting-new-item__image" @url="getImage" :option="{maxHeight: 500, maxWidth: 500}" :aspect-ratio="1">
         <template v-slot:default="{showUploadDialog}">
           <img @click="showUploadDialog()" v-if="internalImage" :src="internalImage" draggable="false" style="opacity: 0.8; width: 100%; height: 100%"/>
           <div @click="showUploadDialog()" v-else class="menu-setting-new-item__image--upload">
