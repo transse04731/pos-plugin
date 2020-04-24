@@ -63,6 +63,16 @@ router.post('/upload-zone/clean', async (req, res) => {
     }
 })
 
+router.get('/generate-id', async (req, res) => {
+  // TODO: Sync
+  const ids = _.map(await cms.getModel('Store').find({}, { id: 1 }), store => store.id)
+  let id = 0
+  do {
+    id++
+  } while(_.includes(ids, id.toString()))
+  res.status(200).json({ id })
+})
+
 function download(url, dest, cb, errCb) {
   const file = fs.createWriteStream(dest);
   https.get(url, res => {

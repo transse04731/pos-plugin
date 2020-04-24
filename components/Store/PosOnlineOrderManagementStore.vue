@@ -184,7 +184,8 @@
           return
         }
         const alias = this.getUniqueStoreAlias(_.toLower(name))
-        const id = this.getUniqueStoreId()
+        const id = await this.getUniqueStoreId()
+        debugger
         await cms.getModel('Store').create({ id, name, alias, groups, address, addedDate: dayjs(), pickup: true })
         await this.loadStores()
       },
@@ -199,13 +200,8 @@
         return newAlias
       },
 
-      getUniqueStoreId() {
-        // TODO: synchronize between multiple web session
-        let newId = 0
-        do {
-          newId++
-        } while(_.includes(this.storeIds, newId.toString()))
-        return newId
+      async getUniqueStoreId() {
+        return (await axios.get('/store/generate-id')).data.id
       },
       
       async removeStore(groupId, store) {
