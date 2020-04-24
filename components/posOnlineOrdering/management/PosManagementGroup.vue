@@ -50,6 +50,7 @@
                   <p v-if="device.updateVersion" class="ml-3 text-indigo-accent-2" style="cursor: pointer" @click="updateAppVersion(device)">Update</p>
                 </div>
                 <div class="col-1">
+                  <!-- remote control -->
                   <g-tooltip
                       :open-on-hover="true" top speech-bubble color="#000" transition="0.3">
                     <template v-slot:activator="{on}">
@@ -62,6 +63,17 @@
                     </template>
                     <span>Remote Control</span>
                   </g-tooltip>
+                  <!-- extra actions -->
+                  <g-menu v-model="device.menu" close-on-content-click nudge-bottom="5">
+                    <template v-slot:activator="{on}">
+                      <g-icon :class="[device.menu && 'menu--active']" @click="on.click">more_horiz</g-icon>
+                    </template>
+                    <div class="menu-action">
+                      <div class="menu-action__option" @click="openFeatureControlDialog(device)">Feature control</div>
+                      <div class="menu-action__option" @click="disableDevice(device)">Disable device</div>
+                      <div class="menu-action__option" @click="deleteDevice(device)">Delete device</div>
+                    </div>
+                  </g-menu>
                 </div>
               </div>
             </div>
@@ -86,14 +98,23 @@
         </g-dnd-dialog>
       </div>
     </template>
+    
+    <dialog-feature-control
+        v-if="selectedDevice"
+        v-model="dialog.featureControl"
+        :device="selectedDevice"
+        @cancel="closeFeatureControlDialog"
+        @save="updateDeviceAppFeature"/>
   </div>
 </template>
 
 <script>
   import _ from 'lodash'
+  import DialogFeatureControl from './dialogFeatureControl';
 
   export default {
     name: "PosManagementGroup",
+    components: { DialogFeatureControl },
     props: {
       name: String,
       stores: Array,
@@ -111,7 +132,11 @@
         iframeRefreshInterval: null,
         remoteControlDeviceId: null,
         disableRemoteControlBtn: false,
-        nameEditMenu: false
+        nameEditMenu: false,
+        selectedDevice: null,
+        dialog: {
+          featureControl: false
+        }
       }
     },
     computed: {
@@ -191,17 +216,37 @@
         socket.emit('updateApp', device._id, device.updateVersion)
         const versionInfo = _.find(device.versions, version => version.value === device.updateVersion)
         await cms.getModel('Device').updateOne({_id: device._id}, versionInfo)
+        // TODO: update UI
       },
       changeGroupName(name) {
 
       },
       deleteGroup() {
         this.$emit('delete:group', this.name)
+      },
+      openFeatureControlDialog(device) {
+        this.selectedDevice = device
+        this.dialog.featureControl = true
+      },
+      closeFeatureControlDialog() {
+        this.selectedDevice = null
+        this.dialog.featureControl = false
+      },
+      async updateDeviceAppFeature(features) {
+        const {socket} = window.cms
+        socket.emit('updateAppFeature', this.selectedDevice._id, features)
+        await cms.getModel('Device').updateOne({_id: device._id}, { appFeatures: features })
+      },
+      disableDevice(device) {
+        // TODO:
+      },
+      deleteDevice(device) {
+        // TODO:
       }
     },
     beforeDestroy() {
       this.stopRemoteControl()
-    }
+    },
   }
 </script>
 
