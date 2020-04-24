@@ -53,7 +53,7 @@ module.exports = function (cms) {
     saveMessage, loadMessages, deleteMessage,
   });
 
-  function notifyFrontend(online, clientId) {
+  function updateDeviceAndNotify(online, clientId) {
     const DeviceModel = cms.getModel('Device');
     DeviceModel.updateOne({_id: clientId}, {online}, err => {
       if (err) console.error(err);
@@ -72,8 +72,8 @@ module.exports = function (cms) {
   externalSocketIOServer.on('connect', socket => {
     if (socket.request._query && socket.request._query.clientId) {
       const clientId = socket.request._query.clientId;
-      notifyFrontend(true, clientId);
-      socket.once('disconnect', () => notifyFrontend(false, clientId));
+      updateDeviceAndNotify(true, clientId);
+      socket.once('disconnect', () => updateDeviceAndNotify(false, clientId));
     }
   });
 

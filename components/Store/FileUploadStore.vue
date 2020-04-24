@@ -73,7 +73,7 @@
           }))
         })
       },
-      
+
       async removeFile(filePath /*view path or download path*/) {
         const path = filePath.substr(filePath.indexOf('//') + 1)
         await this.gridFsHandler.deleteFileByPath(path)
@@ -89,8 +89,7 @@
       async createFolder(parentPath, folderPath) {
         const separator = _.endsWith(parentPath, '/') ? '' : '/'
         const folderExist = await this.isFolderExist(`${parentPath}${separator}${folderPath}`)
-        if (!folderExist)
-          await this.gridFsHandler.createNewFolder(parentPath, folderPath)
+        if (!folderExist) await this.gridFsHandler.createNewFolder(parentPath, folderPath)
       }
     },
     provide() {

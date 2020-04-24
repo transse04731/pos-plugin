@@ -24,11 +24,12 @@
       </div>
       <div>
         <p>WebShop URL</p>
-        <div class="pos-management-setting__order--url">
+        <div class="pos-management-setting__order--url r">
           <span class="i text-indigo-accent-2">{{ webShopUrlPrefix }}</span>
           <div style="flex: 1; margin-left: 8px">
-            <g-text-field-bs large :placeholder="_id" :value="alias" @input="updateAlias"/>
+            <g-text-field-bs :class="[message && 'error']" large :placeholder="_id" :value="alias" @input="updateAlias"/>
           </div>
+          <div v-if="message" class="error-message">{{message}}</div>
         </div>
       </div>
       <div>
@@ -99,8 +100,10 @@
       groups: Array,
       aliases: Array,
     },
+    injectService: ['PosOnlineOrderManagementStore:(stores)'],
     data() {
       return {
+        message: ''
       }
     },
     created() {
@@ -145,9 +148,17 @@
     },
     methods: {
       updateAlias(value) {
+        this.message = ''
         if (_.trim(value) === '') {
-          alert('Webshop url must not empty')
+          this.message = 'Webshop url must not empty!!'
           return
+        }
+        const store = _.find(this.stores, store => store.alias === value)
+        if (store) {
+          if (store._id !== this._id) {
+              this.message = 'WebShop identity has been taken!!'
+              return
+          }
         }
         this.updateDebounce({ alias: value })
       },
@@ -194,6 +205,24 @@
       &--url {
         display: flex;
         align-items: center;
+
+        .error-message {
+          position: absolute;
+          bottom: -4px;
+          right: 8px;
+          color: #ff4452;
+          font-size: 12px;
+          font-style: italic;
+        }
+
+        .error ::v-deep {
+          .bs-tf-input-group {
+            .bs-tf-inner-input-group {
+              border-color: #ff4452 !important;
+              box-shadow: 0 0 0 3px rgba(233, 0, 0, 0.25)
+            }
+          }
+        }
       }
     }
 

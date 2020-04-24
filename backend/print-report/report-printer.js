@@ -1,7 +1,6 @@
 const fs = require('fs');
 const Vue = require('vue');
 const PhantomUtil = require('./phantom-util');
-const phantomUtil = new PhantomUtil();
 const EscPrinter = require("./node-thermal-printer");
 const dayjs = require('dayjs')
 const _ = require('lodash')
@@ -11,11 +10,15 @@ const renderer = require('vue-server-renderer').createRenderer({
 });
 
 module.exports = async function (cms) {
+  let phantomUtil;
+
   cms.socket.on('connect', socket => {
     socket.on('printReport', reportHandler)
   })
 
   async function reportHandler(reportType, args, callback) {
+    if (!phantomUtil) phantomUtil = new PhantomUtil();
+
     if (reportType === 'OrderReport') {
       await orderReportHandler(args, callback)
     } else if (reportType === 'ZReport') {
@@ -24,7 +27,7 @@ module.exports = async function (cms) {
       await monthlyReportHandler(args, callback)
     } else if (reportType === 'XReport') {
       await xReportHandler(args, callback)
-    }  else if (reportType === 'StaffReport') {
+    } else if (reportType === 'StaffReport') {
       await staffReportHandler(args, callback)
     }
   }
@@ -176,12 +179,12 @@ module.exports = async function (cms) {
   }
 
   async function monthlyReportHandler(report, callback) {
-    const props = {...report }
+    const props = {...report}
     const MonthReport = require('../../dist/MonthReport.vue')
     const component = new Vue({
-      components: { MonthReport },
+      components: {MonthReport},
       render(h) {
-        return h('MonthReport', { props })
+        return h('MonthReport', {props})
       }
     })
 
@@ -198,9 +201,9 @@ module.exports = async function (cms) {
   async function staffReportHandler(report, callback) {
     const StaffReport = require('../../dist/StaffReport.vue')
     const component = new Vue({
-      components: { StaffReport },
+      components: {StaffReport},
       render(h) {
-        return h('StaffReport', { props: { orderSalesByStaff: report } })
+        return h('StaffReport', {props: {orderSalesByStaff: report}})
       }
     })
 
@@ -210,13 +213,13 @@ module.exports = async function (cms) {
         return
       }
       await print(html)
-      callback({ success: true })
+      callback({success: true})
     })
   }
 
   async function xReportHandler({from, to}, callback) {
     try {
-      const report  = await new Promise((resolve, reject) => {
+      const report = await new Promise((resolve, reject) => {
         cms.api.processData('OrderXReport', {from, to}, result => {
           if (result === 'string') reject(result)
           else resolve(result)
@@ -238,9 +241,9 @@ module.exports = async function (cms) {
 
       const XReport = require('../../dist/XReport.vue')
       const component = new Vue({
-        components: { XReport },
+        components: {XReport},
         render(h) {
-          return h('XReport', { props })
+          return h('XReport', {props})
         }
       })
 

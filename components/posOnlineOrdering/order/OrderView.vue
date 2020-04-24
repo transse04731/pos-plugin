@@ -4,7 +4,7 @@
       <template  v-if="store">
         <div class="pos-order__left">
           <div class="pos-order__left__header">
-            <img :src="store.logoImageSrc" style="max-height: 100px"/>
+            <img :src="store.logoImageSrc"/>
             <div class="pos-order__left__header--info">
               <div class="row-flex align-items-center justify-end">
                 <span class="phone-image">
@@ -13,7 +13,7 @@
                 <span class="sub-title">{{store.phone}}</span>
               </div>
             
-              <div style="display: flex; align-items: center; font-weight: 300">
+              <div style="display: flex; align-items: center; font-weight: 300; white-space: nowrap">
                 <span :style="storeOpenStatusStyle">{{ storeOpenStatus }}</span>
                 <template v-if="storeWorkingTime">
                   <span style="margin-right: 3px;">|</span>
@@ -232,7 +232,7 @@
         this.$set(this, 'products', await cms.getModel('Product').find({ store: this.store._id }, { store: 0 }))
       },
       getCategoryStyle(cate) {
-        const common = {cursor: 'pointer', padding: '20px', whiteSpace: 'nowrap'};
+        const common = {cursor: 'pointer', padding: '20px', whiteSpace: 'nowrap', '-webkit-tap-highlight-color': 'transparent'};
         return cate._id === this.selectedCategoryId ? {
           fontWeight: 'bold',
           borderBottom: '2px solid #000',
@@ -375,7 +375,7 @@
 
       .pos-order__left__header {
         & > img {
-          max-width: 145px;
+          max-width: 130px;
           max-height: 65px;
           margin-left: 8px;
           margin-top: 8px;

@@ -82,7 +82,6 @@
     &__name {
       font-weight: bold;
       font-size: 18px;
-      line-height: 23px;
     }
 
     &__content {
@@ -133,12 +132,16 @@
     &__action {
       display: none;
     }
+
+    .g-icon {
+      -webkit-tap-highlight-color: transparent;
+    }
   }
 
   @media screen and (max-width: 1040px) {
     .po-menu-item {
       &__content {
-        line-height: 1;
+        line-height: 1.2;
       }
 
       &__name {
@@ -162,7 +165,7 @@
       }
 
       &__action {
-        flex: 0 0 20%;
+        flex: 0 0 85px;
         display: flex;
         align-self: flex-end;
         margin-bottom: 8px;

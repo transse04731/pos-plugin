@@ -51,7 +51,7 @@
                     <p v-if="device.updateVersion" class="ml-3 text-indigo-accent-2" style="cursor: pointer" @click="updateAppVersion(device)">Update</p>
                   </template>
                 </div>
-                <div class="col-1">
+                <div class="col-1 row-flex align-items-center">
                   <!-- remote control -->
                   <g-tooltip v-if="remoteControlPerm"
                       :open-on-hover="true" top speech-bubble color="#000" transition="0.3">
@@ -68,7 +68,7 @@
                   <!-- extra actions -->
                   <g-menu v-model="device.menu" close-on-content-click nudge-bottom="5">
                     <template v-slot:activator="{on}">
-                      <g-icon :class="[device.menu && 'menu--active']" @click="on.click">more_horiz</g-icon>
+                      <g-icon :class="[device.menu && 'menu--active', 'ml-2']" @click="on.click">more_horiz</g-icon>
                     </template>
                     <div class="menu-action">
                       <div v-if="featureControlPerm" class="menu-action__option" @click="openFeatureControlDialog(store, device)">Feature control</div>
@@ -312,10 +312,18 @@
 
             .input {
               padding-left: 8px;
+              width: 100%;
+              overflow: auto;
+              white-space: nowrap;
+              scrollbar-width: none;
+
+              &::-webkit-scrollbar {
+                display: none;
+              }
             }
 
             .g-tf-input {
-              padding: 0;
+              display: none;
             }
           }
         }
@@ -399,13 +407,34 @@
     }
   }
 
-  .menu-edit {
-    background: white;
-    border-radius: 2px;
+  .menu {
+    &-edit {
+      background: white;
+      border-radius: 2px;
 
-    & > div {
-      padding: 6px 12px;
-      cursor: pointer;
+      & > div {
+        padding: 6px 12px;
+        cursor: pointer;
+      }
+    }
+
+    &--active {
+      border-radius: 50%;
+      background: #F4F5FA;
+      color: #536DFE !important;
+    }
+
+    &-action {
+      background: white;
+      border-radius: 2px;
+
+      &__option {
+        color: #201F2B;
+        padding: 8px 36px 8px 12px;
+        white-space: nowrap;
+        font-size: 14px;
+        cursor: pointer;
+      }
     }
   }
 </style>
