@@ -30,8 +30,8 @@
           <div class="pos-management-group__content-info" @click="toggleStoreSetting(store)">
             <div style="flex: 0 0 25%; padding-left: 16px">
               <div class="fw-700 text-blue-accent-3">ID: {{store.id}}</div>
-              <div>{{store.name}}</div>
-              <div>{{store.address}}</div>
+              <div>{{store.settingName}}</div>
+              <div>{{store.settingAddress}}</div>
             </div>
             <div style="flex: 1">
               <div class="row-flex mb-1" v-for="(device, index) in store.devices" :key="`device_${store.id}_${index}`">

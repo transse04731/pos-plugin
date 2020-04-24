@@ -16,21 +16,33 @@
       "type": "input"
     },
     {
+      "_id": "5ea2d4fae6df1b2a2f051860",
+      "schemaType": "string",
+      "key": "settingName",
+      "type": "input"
+    },
+    {
+      "_id": "5ea2d4fae6df1b2a2f051861",
+      "schemaType": "string",
+      "key": "settingAddress",
+      "type": "input"
+    },
+    {
       "_id": "5e86c1998197ab54362972ed",
       "schemaType": "string",
       "key": "name",
       "type": "input"
     },
     {
-      "_id": "5e859b5eb7b7b30cc39f2629",
-      "schemaType": "string",
-      "key": "phone",
-      "type": "input"
-    },
-    {
       "_id": "5e859b5eb7b7b30cc39f262a",
       "schemaType": "string",
       "key": "address",
+      "type": "input"
+    },
+    {
+      "_id": "5e859b5eb7b7b30cc39f2629",
+      "schemaType": "string",
+      "key": "phone",
       "type": "input"
     },
     {
@@ -139,6 +151,12 @@
       "type": "array"
     },
     {
+      "_id": "5e93d961a403ff2fddae4f03",
+      "schemaType": "boolean",
+      "key": "useMultiplePrinters",
+      "type": "input@switch"
+    },
+    {
       "_id": "5e859b5eb7b7b30cc39f2637",
       "schemaType": "objectId",
       "key": "user",
@@ -193,12 +211,6 @@
       ]
     },
     {
-      "_id": "5e93d961a403ff2fddae4f03",
-      "schemaType": "boolean",
-      "key": "useMultiplePrinters",
-      "type": "input@switch"
-    },
-    {
       "_id": "5e9823e543f64d169b559432",
       "schemaType": "array",
       "key": "devices",
@@ -209,7 +221,7 @@
           "ref": "Device",
           "autopopulate": true,
           "type": "ref-select",
-          "labelProp": "\u001dname"
+          "labelProp": "name"
         }
       ],
       "type": "array"

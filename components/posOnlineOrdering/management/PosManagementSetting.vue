@@ -8,8 +8,8 @@
                 item-text="name"
                 item-value="_id"
                 v-model="computedGroup"/>
-      <g-text-field-bs large label="Name" v-model="computedName"/>
-      <g-text-field-bs large label="Address" v-model="computedAddress"/>
+      <g-text-field-bs large label="Name" v-model="computedSettingName"/>
+      <g-text-field-bs large label="Address" v-model="computedSettingAddress"/>
     </div>
     
     <!-- ONLINE ORDER STORE -->
@@ -90,9 +90,9 @@
     name: "PosManagementSetting",
     props: {
       _id: String,
-      name: String,
+      settingName: String,
       group: null,
-      address: String,
+      settingAddress: String,
       onlineOrdering: Boolean,
       alias: String,
       clientDomain: String,
@@ -121,20 +121,20 @@
           this.updateDebounce({ groups: val })
         }
       },
-      computedName: {
+      computedSettingName: {
         get() {
-          return this.name
+          return this.settingName
         },
         set(val) {
-          this.updateDebounce({ name: val })
+          this.updateDebounce({ settingName: val })
         }
       },
-      computedAddress: {
+      computedSettingAddress: {
         get() {
-          return this.address
+          return this.settingAddress
         },
         set(val) {
-          this.updateDebounce({ address: val })
+          this.updateDebounce({ settingAddress: val })
         }
       },
       computedOnlineOrdering: {

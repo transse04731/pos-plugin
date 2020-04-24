@@ -54,9 +54,9 @@
     methods: {
       submit() {
         const store = {
-          name: this.name,
           groups: this.group,
-          address: this.address
+          settingName: this.name,
+          settingAddress: this.address
         }
         this.$emit('submit', store)
         this.internalValue = false

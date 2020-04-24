@@ -25,14 +25,8 @@
       storeGroupNames() {
         return _.map(this.storeGroups, sg => sg.name)
       },
-      storeNames() {
-        return _.map(this.stores, s => s.name)
-      },
       storeAlias() {
         return _.map(this.stores, s => s.alias)
-      },
-      storeIds() {
-        return _.map(this.stores, s => s.id)
       },
       searchTextLowerCase() {
         return _.lowerCase(this.searchText)
@@ -177,16 +171,10 @@
         this.stores.splice(0, this.stores.length, ...stores)
       },
       
-      async addStore({ name, groups, address }) {
-        if (_.includes(this.storeNames, name)) {
-          // TODO: better UX
-          alert('This name is already taken!')
-          return
-        }
-        const alias = this.getUniqueStoreAlias(_.toLower(name))
+      async addStore({ settingName, groups, settingAddress }) {
+        const alias = this.getUniqueStoreAlias(_.toLower(settingName))
         const id = await this.getUniqueStoreId()
-        debugger
-        await cms.getModel('Store').create({ id, name, alias, groups, address, addedDate: dayjs(), pickup: true })
+        await cms.getModel('Store').create({ id, settingName,  alias, groups, settingAddress, addedDate: dayjs(), pickup: true })
         await this.loadStores()
       },
       
