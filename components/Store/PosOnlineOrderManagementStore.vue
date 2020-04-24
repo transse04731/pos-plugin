@@ -204,7 +204,7 @@
         let newId = 0
         do {
           newId++
-        } while(_.includes(this.storeIds, newId))
+        } while(_.includes(this.storeIds, newId.toString()))
         return newId
       },
       
