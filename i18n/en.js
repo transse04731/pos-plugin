@@ -295,6 +295,7 @@ module.exports = {
       user: 'User',
       settings: 'Settings',
       general: 'General',
+      generalSettings: 'General Settings',
       orderScreen: 'Order Screen',
       printTemplate: 'Print Template',
       paymentLayout: 'Payment Layout',
@@ -311,7 +312,8 @@ module.exports = {
       license: 'License',
       receiptCategory: 'Receipt Category',
       invoiceReport: 'Invoice, Report',
-      entireReceipt: 'Entire Receipt'
+      entireReceipt: 'Entire Receipt',
+      onlineOrderSettings: 'Online Order Settings',
     },
 
     restaurant: {

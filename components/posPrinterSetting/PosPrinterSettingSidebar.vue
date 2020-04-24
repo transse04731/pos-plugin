@@ -75,7 +75,7 @@
       computedSidebar() {
         const sidebar = this.printerSidebar
         if(sidebar) {
-          const category = sidebar.find(s => s.title === this.$t('sidebar.receiptCategory'))
+          const category = sidebar.find(s => s.key === 'receiptCategory')
           const kitchens = category ? category.items : []
           for (const kitchen of kitchens) {
             if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForKitchenPrinter) {
@@ -84,14 +84,14 @@
               kitchen.slot = 'printer'
             }
           }
-          const invoice = sidebar.find(s => s.title === this.$t('sidebar.invoiceReport'))
+          const invoice = sidebar.find(s => s.key === 'invoiceReport')
           if(invoice)
             if (this.printerGeneralSetting && this.printerGeneralSetting.useMultiPrinterForInvoicePrinter) {
               invoice.slot = 'multiple'
             } else {
               invoice.slot = 'printer'
             }
-          const receipt = sidebar.find(s => s.title === this.$t('sidebar.entireReceipt'))
+          const receipt = sidebar.find(s => s.key === 'entireReceipt')
           if(receipt) {
             if(receipt.items) {
               for(const item of receipt.items) {

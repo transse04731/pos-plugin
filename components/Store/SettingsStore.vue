@@ -6,65 +6,44 @@
   import {getHighestFavouriteProductOrder, getHighestProductOrder, getProductGridOrder} from '../logic/productUtils';
   import {getProvided} from '../logic/commonUtils';
 
-  const printerSidebarDefault = [
-    {
-      title: 'Receipt Category', icon: 'icon-restaurant', displayChild: true,
-      items: [
-        {type: 'edit'}
-      ]
-    },
-    {
-      title: 'Invoice, Report', icon: 'icon-invoice_report', type: 'invoice'
-    },
-    {
-      title: 'Entire Receipt', icon: 'icon-receipt', displayChild: false, type: 'entire'
-    },
-    {
-      title: 'General Setting', icon: 'icon-general_setting', slot: 'general'
-    }
-  ]
-
   export default {
     name: 'SettingsStore',
     domain: 'SettingsStore',
     injectService: ['PosStore:(user, device)'],
     data() {
       const i18n = this.$i18n;
-      const {sidebar} = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
+      const { sidebar } = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
 
       return {
         sidebarData: [
-          /*{
-            title: sidebar.product, icon: 'icon-liefer_packet', svgIcon: true, /!*badge: '3', badgeColor: '#FF9529',*!/
-            items: [
-              { title: sidebar.articles, icon: 'radio_button_unchecked', iconType: 'small', isView: true },
-              { title: sidebar.category, icon: 'radio_button_unchecked', iconType: 'small', isView: true /!*href: '/settings/category' *!/ },
-              { title: sidebar.productLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/pos-article', appendIcon: 'open_in_new' },
-            ]
-          },*/
-          /*{ title: 'Reporting', icon: 'icon-bar_chart', svgIcon: true },*/
-          {title: sidebar.user, icon: 'person', isView: true /*href: '/setting/user'*/},
-          { title: sidebar.general, icon: 'radio_button_unchecked', iconType: 'small', isView: true},
-      /*{
-        title: sidebar.settings, icon: 'icon-cog', svgIcon: true, /!*badge: '3', badgeColor: '#9C24AC',*!/
-        items: [
-          { title: sidebar.general, icon: 'radio_button_unchecked', iconType: 'small', isView: true /!*href: '/settings/general'*!/ },
-          /!*{ title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small' },
-          { title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small' },*!/
-          { title: sidebar.paymentLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/pos-payment-config', appendIcon: 'open_in_new' },
-          { title: sidebar.functionLayout, icon: 'radio_button_unchecked', iconType: 'small', href: '/pos-fn-button', appendIcon: 'open_in_new' },
-        ]
-      },*/
+          { title: sidebar.user, icon: 'person', isView: true, key: 'user'},
+          { title: sidebar.general, icon: 'radio_button_unchecked', iconType: 'small', isView: true, key: 'general' },
           {
-            title: sidebar.advancedSettings, icon: 'icon-switch', svgIcon: true,/* badge: '3', badgeColor: '#FF4081',*/
+            title: sidebar.advancedSettings, icon: 'icon-switch', svgIcon: true, key: 'advancedSettings',
             items: [
-              { title: sidebar.companyInfo, icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/company'*/ },
-              { title: sidebar.payment, icon: 'radio_button_unchecked', iconType: 'small', isView: true /*href: '/settings/payment'*/ },
-              { title: sidebar.tax, icon: 'radio_button_unchecked', iconType: 'small', isView: true },
-              /*{ title: 'License', icon: 'radio_button_unchecked', iconType: 'small' },*/
+              { title: sidebar.companyInfo, icon: 'radio_button_unchecked', iconType: 'small', isView: true, key: 'companyInfo' },
+              { title: sidebar.payment, icon: 'radio_button_unchecked', iconType: 'small', isView: true, key: 'payment' },
+              { title: sidebar.tax, icon: 'radio_button_unchecked', iconType: 'small', isView: true, key: 'tax' },
             ]
           },
-          {title: 'Online Ordering', icon: 'icon-general_setting', isView: true}
+          { title: 'Online Ordering', icon: 'icon-general_setting', isView: true, key: 'onlineOrderSettings' }
+        ],
+        printerSidebarDefault: [
+          {
+            title: sidebar.receiptCategory, icon: 'icon-restaurant', displayChild: true, key: 'receiptCategory',
+            items: [
+              {type: 'edit'}
+            ]
+          },
+          {
+            title: sidebar.invoiceReport, icon: 'icon-invoice_report', type: 'invoice', key: 'invoiceReport'
+          },
+          {
+            title: sidebar.entireReceipt, icon: 'icon-receipt', displayChild: false, type: 'entire', key: 'entireReceipt'
+          },
+          {
+            title: sidebar.generalSettings, icon: 'icon-general_setting', slot: 'general'
+          }
         ],
         //category view
         listCategories: [],
@@ -627,7 +606,7 @@
       },
       //printer setting
       async genPrinterSidebar() {
-        this.printerSidebar = _.cloneDeep(printerSidebarDefault)
+        this.printerSidebar = _.cloneDeep(this.printerSidebarDefault)
         const groupPrinters = await cms.getModel('GroupPrinter').find()
         const kitchenPrinters = groupPrinters.filter(p => p.type === 'kitchen')
         const category = this.printerSidebar[0]

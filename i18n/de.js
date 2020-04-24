@@ -252,7 +252,7 @@ module.exports = {
       quickFnRows: 'Quick Function Rows',
       beginHour: 'New day starts at',
       //hardware
-      thermalPrinter: 'Thermal Printer',
+      thermalPrinter: 'Bondrucker',
       reset: 'Reset',
       ipAddress: 'IP Adresse',
       setupPrinter: 'Setup Printer',
@@ -295,6 +295,7 @@ module.exports = {
       user: 'Benutzer',
       settings: 'Settings',
       general: 'allgm. Einstellungen',
+      generalSettings: 'allgm. Einstellungen',
       orderScreen: 'Order Screen',
       printTemplate: 'Print Template',
       paymentLayout: 'Payment Layout',
