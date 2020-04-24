@@ -133,10 +133,21 @@
         deviceIdList: [],
       }
     },
-    injectService: ['PosOnlineOrderManagementStore:(loadStoreGroups,loadStores,addGroup,addStore,removeStore,updateStore,addDevice,removeDevice,updateDevice,storeGroups,stores,posManagementModel,searchText,orderBy,apps,appItems)'],
+    injectService: [
+        // view model
+        'PosOnlineOrderManagementStore:(storeManagementViewModel,searchText,orderBy)',
+        // store groups
+        'PosOnlineOrderManagementStore:(storeGroups,loadStoreGroups,addGroup)',
+        // stores
+        'PosOnlineOrderManagementStore:(stores,loadStores,addStore,removeStore,updateStore)',
+        // devices
+        'PosOnlineOrderManagementStore:(addDevice,removeDevice,updateDevice)',
+        // app
+        'PosOnlineOrderManagementStore:(apps,appItems)',
+    ],
     computed: {
       searchResult() {
-        return this.posManagementModel
+        return this.storeManagementViewModel
       },
       groups() {
         return this.storeGroups
@@ -149,7 +160,7 @@
     mounted() {
       window.cms.socket.on('updateDeviceStatus', storeId => {
         if (storeId) {
-          const storeIdList = _.flatten(this.posManagementModel.map(e => e.stores)).map(e => e._id)
+          const storeIdList = _.flatten(this.storeManagementViewModel.map(e => e.stores)).map(e => e._id)
 
           if (storeIdList.includes(storeId)) this.loadStores()
         } else {
@@ -157,7 +168,7 @@
         }
       })
 
-      this.$watch('posManagementModel', val => {
+      this.$watch('storeManagementViewModel', val => {
         const stores = _.flatten(val.map(e => e.stores))
         const devices = _.flatten(stores.map(store => store.devices))
         const deviceIds = devices.map(device => device._id)

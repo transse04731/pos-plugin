@@ -34,66 +34,28 @@
       storeIds() {
         return _.map(this.stores, s => s.id)
       },
-      intermediatePosManagementModel() {
-        const storeGroupViewModels = []
-        _.each(this.storeGroups, storeGroup => {
-          const storeGroupViewModel = {
-            _id: storeGroup._id,
-            name: storeGroup.name,
-            stores: []
-          }
-          
-          _.each(this.stores, store => {
-            if (_.find(store.groups, g => g._id === storeGroup._id)) {
-              storeGroupViewModel.stores.push({
-                ...this.convertStoreToViewModel(store)
-              })
-            }
-          })
-          
-          storeGroupViewModels.push(storeGroupViewModel)
-        })
-        return storeGroupViewModels
+      searchTextLowerCase() {
+        return _.lowerCase(this.searchText)
       },
-      posManagementModel() {
-        if (!this.searchText && !this.orderBy)
-          return this.intermediatePosManagementModel
-        
-        const groups = []
-        _.each(this.intermediatePosManagementModel, storeGroup => {
-          const group = { _id: storeGroup._id, name: storeGroup.name }
-          const stores = []
-          // search
-          if (this.searchText) {
-            _.each(storeGroup.stores, store => _.includes(_.lowerCase(store.name), _.lowerCase(this.searchText)) && stores.push(store))
-          } else {
-            stores.push(...storeGroup.stores)
-          }
-          
-          // sort
-          if (this.orderBy) {
-            switch (this.orderBy) {
-              case 'lastUpdated':
-                group.stores = _.orderBy(stores, 'addedDate', 'desc')
-                break;
-              case 'firstUpdated':
-                group.stores = _.orderBy(stores, 'addedDate', 'asc')
-                break;
-              case 'az':
-                group.stores = _.orderBy(stores, 'name', 'asc')
-                break;
-              case 'za':
-                group.stores = _.orderBy(stores, 'name', 'desc')
-                break;
-            }
-          } else {
-            group.stores = stores
-          }
-        
-          if (group.stores.length > 0)
-            groups.push(group)
-        })
-        return groups
+      storeSearchSortResult() {
+        // apply search
+        const stores = this.searchTextLowerCase ? _.filter(this.stores, store => _.includes(_.lowerCase(store.name), this.searchTextLowerCase)) : this.stores
+
+        // apply sort
+        switch (this.orderBy) {
+          case 'lastUpdated': return _.orderBy(stores, 'addedDate', 'desc')
+          case 'firstUpdated': return _.orderBy(stores, 'addedDate', 'asc')
+          case 'az': return _.orderBy(stores, 'name', 'asc')
+          case 'za': return _.orderBy(stores, 'name', 'desc')
+          default: return stores
+        }
+      },
+      storeManagementViewModel() {
+        const storeGroupVMs = _.map(this.storeGroups, group => ({
+          ..._.pick(group, '_id', 'name'),
+          stores: _.map(_.filter(this.storeSearchSortResult, store => this.storeInStoreGroup(store, group)), this.convertStoreToViewModel)
+        }))
+        return _.filter(storeGroupVMs, this.storeGroupHasStores)
       },
       //
       appNames() {
@@ -150,6 +112,42 @@
       await this.loadAppItems()
     },
     methods: {
+      // view model helper methods
+      convertStoreToViewModel(store) {
+        return {
+          ..._.omit(store, 'devices'),
+          devices: _.map(store.devices, device => {
+            const app = _.find(this.versionControlViewModel, app => app.group === device.appName)
+            const appItem = _.filter(app && app.files, appItem => appItem.version > device.appVersion)
+            const deviceVersions = _.orderBy(_.map(appItem, this.convertAppItemToViewModel), 'text', 'desc')
+            return {
+              ...device,
+              // store all version of device's app
+              versions: deviceVersions,
+              // store selected version to update, default set to latest version
+              updateVersion: deviceVersions.length && deviceVersions[0].value,
+            }
+          })
+        }
+      },
+      convertAppItemToViewModel(appItem) {
+        return {
+          // info which will be used by GSelect
+          text: `${appItem.version} (${appItem.type} - ${appItem.release})`,
+          value: appItem.uploadPath,
+          // info which will be used to store in Device collection
+          version: appItem.version,
+          type: appItem.type,
+          release: appItem.release
+        }
+      },
+      storeGroupHasStores(storeGroupVM) {
+        return storeGroupVM.stores.length > 0
+      },
+      storeInStoreGroup(store, storeGroup) {
+        return _.find(store.groups, group => group._id === storeGroup._id)
+      },
+      
       // store groups
       async loadStoreGroups() {
         let storeGroups
@@ -181,6 +179,7 @@
       
       async addStore({ name, groups, address }) {
         if (_.includes(this.storeNames, name)) {
+          // TODO: better UX
           alert('This name is already taken!')
           return
         }
@@ -225,10 +224,8 @@
         if (change.alias) {
           const store = _.find(this.stores, store => store.alias === change.alias)
           if (store) {
-            console.log('alias', change.alias, store)
-            console.log('store id', store._id)
-            console.log('current id', _id)
             if (store._id !== _id) {
+              // TODO: better UX
               alert('WebShop identity has been taken')
               return
             }
@@ -236,35 +233,6 @@
         }
         await cms.getModel('Store').findOneAndUpdate({_id}, {...change})
         await this.loadStores()
-      },
-      
-      convertStoreToViewModel(store) {
-        return {
-          ..._.omit(store, 'devices'),
-          devices: _.map(store.devices, device => {
-            const app = _.find(this.versionControlViewModel, app => app.group === device.appName)
-            const appItem = _.filter(app && app.files, appItem => appItem.version > device.appVersion)
-            const deviceVersions = _.orderBy(_.map(appItem, this.convertAppItemToViewModel), 'text', 'desc')
-            return {
-              ...device,
-              // store all version of device's app
-              versions: deviceVersions,
-              // store selected version to update, default set to latest version
-              updateVersion: deviceVersions.length && deviceVersions[0].value,
-            }
-          })
-        }
-      },
-      convertAppItemToViewModel(appItem) {
-        return {
-          // info which will be used by GSelect
-          text: `${appItem.version} (${appItem.type} - ${appItem.release})`,
-          value: appItem.uploadPath,
-          // info which will be used to store in Device collection
-          version: appItem.version,
-          type: appItem.type,
-          release: appItem.release
-        }
       },
       
       // devices
@@ -338,7 +306,7 @@
         await this.loadAppItems()
       },
       
-      async editAppItem(_id, { release, note}) {
+      async editAppItem(_id, { release, note }) {
         const appItem = await cms.getModel('AppItem').findOne({_id})
         if (!appItem)
           return
@@ -350,7 +318,7 @@
         const appItem = await cms.getModel('AppItem').findOne({_id})
         // delete file in file explorer
         await this.$getService('FileUploadStore').removeFile(appItem.uploadPath)
-        // delete app document
+        // delete document in collection
         await cms.getModel('AppItem').remove({_id})
         await this.loadAppItems()
       },
@@ -364,7 +332,6 @@
       },
 
       sortAppItem(type) {
-        console.log('sortAppItem', type)
         if (this.versionControlOrderBy.type === type) {
           if (this.versionControlOrderBy.order === 'asc')
             this.versionControlOrderBy.order = 'desc'
@@ -391,7 +358,7 @@
         updateStore: this.updateStore,
         
         // store management display model
-        posManagementModel: this.posManagementModel,
+        storeManagementViewModel: this.storeManagementViewModel,
         searchText: this.searchText,
         orderBy: this.orderBy,
         
