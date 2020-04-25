@@ -198,7 +198,7 @@
           this.view = view
           //reset icon
           for(const item of this.sidebarItems) {
-            if(item.icon.startsWith('icon-') && item.icon.endsWith('_white')) {
+            if(item && item.icon.startsWith('icon-') && item.icon.endsWith('_white')) {
               this.$set(item, 'icon', item.icon.slice(0, item.icon.length - 6))
             }
           }
