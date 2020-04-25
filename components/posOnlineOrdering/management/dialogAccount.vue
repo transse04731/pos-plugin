@@ -1,5 +1,5 @@
 <template>
-  <g-dialog v-model="internalValue" width="580" eager>
+  <g-dialog v-model="internalValue" width="580" eager persistent>
     <div class="dialog">
       <div class="dialog-title">{{edit ? 'Edit' : 'Create New'}} Account</div>
       <div class="dialog-content">
@@ -16,17 +16,16 @@
           <g-text-field-bs label="Retype Password" type="password" v-model="retypePassword"/>
         </div>
         <div class="span-2">
-          <g-combobox deletable-chips multiple text-field-component="GTextFieldBs" label="Group" v-model="groups"/>
+          <g-select deletable-chips multiple text-field-component="GTextFieldBs" label="Group" v-model="internalGroups" :items="availableGroupsViewModel"/>
         </div>
         <div class="dialog-content__permission">
           <p class="span-2 ml-2 mt-3">Permission</p>
-          <g-checkbox color="#536DFE" label="Add new group" value="Add new group" v-model="permissions"/>
-          <g-checkbox color="#536DFE" label="Settings" value="Settings" v-model="permissions"/>
-          <g-checkbox color="#536DFE" label="Add new store" value="Add new store" v-model="permissions"/>
-          <g-checkbox color="#536DFE" label="Update" value="Update" v-model="permissions"/>
-          <g-checkbox color="#536DFE" label="Remote control" value="Remote control" v-model="permissions"/>
-          <g-checkbox color="#536DFE" label="Account management" value="Account management" v-model="permissions"/>
-          <g-checkbox color="#536DFE" label="Config online ordering" value="Config online ordering" v-model="permissions"/>
+          <g-checkbox
+              v-for="(perm, i) in internalPermissions"
+              :key="i"
+              :label="perm.permission | startCase"
+              v-model="perm.value"
+              color="#536DFE"/>
         </div>
       </div>
       <div class="dialog-action">
@@ -46,31 +45,27 @@
       name: String,
       email: String,
       password: String,
-      group: Array,
-      permission: Array
+      groups: Array,
+      permissions: Array,
     },
-    data() {
-      return {
-        internalName: '',
-        internalEmail: '',
-        internalPassword: '',
-        retypePassword: '',
-        groups: [],
-        permissions: []
+    filters: {
+      startCase(val) {
+        return _.startCase(val)
       }
     },
-    watch: {
-      name(val) {
-        this.internalName = val || ''
-      },
-      email(val) {
-        this.internalEmail = val || ''
-      },
-      group(val) {
-        this.groups = val || []
-      },
-      permission(val) {
-        this.permissions = val || []
+    injectService: [
+      'PosOnlineOrderManagementStore:storeGroups',
+      'PermissionStore:allPermissions'
+    ],
+    data() {
+      return {
+        internalName: this.name,
+        internalEmail: this.email,
+        internalPassword: this.password,
+        retypePassword: '',
+        internalGroups: this.groups,
+        internalPermissions: null,
+        availableGroupsViewModel: null
       }
     },
     computed: {
@@ -83,9 +78,37 @@
         }
       },
     },
+    created() {
+      this.availableGroupsViewModel = _.map(this.storeGroups, group => ({ text: group.name, value: group._id }))
+      this.internalPermissions = _.map(this.allPermissions, availPerm => {
+        const definedPerm = _.find(this.permissions, defPerm => defPerm.permission === availPerm)
+        return definedPerm ? definedPerm : { permission: availPerm, value: false }
+      })
+    },
     methods: {
       save() {
-
+        if (this.edit) {
+          const changes = {};
+          this.name !== this.internalName && (changes.name = this.internalName)
+          this.email !== this.internalEmail && (changes.email = this.internalEmail)
+          this.groups !== this.internalGroups && (changes.groups = this.internalGroups)
+          this.permissions !== this.internalPermissions && (changes.permissions = this.internalPermissions)
+          this.$emit('edit', changes)
+          this.internalValue = false
+        } else {
+          if (this.internalPassword !== this.retypePassword) {
+            alert('Retype password mismatch!')
+            return
+          }
+          this.$emit('add', {
+            name: this.internalName,
+            password: this.internalPassword,
+            email: this.internalEmail,
+            groups: this.internalGroups,
+            permissions: this.internalPermissions
+          })
+          this.internalValue = false
+        }
       }
     }
   }

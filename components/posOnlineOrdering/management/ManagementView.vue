@@ -141,10 +141,11 @@
       }
     },
     created() {
+      // TODO: Bug: manageAccountPerm is null in this code block
       const sidebarItems = [
         { title: 'Store Management', icon: 'icon-management_white', onClick: () => this.changeView('list', 'Store Management') },
         this.versionControlPerm && { title: 'Version Control', icon: 'icon-version_control', onClick: () => this.changeView('version', 'Version Control') },
-        this.manageAccountPerm && { title: 'Account Management', icon: 'icon-account-management', onClick: () => this.changeView('account', 'Account Management') }
+        /*this.manageAccountPerm &&*/ { title: 'Account Management', icon: 'icon-account-management', onClick: () => this.changeView('account', 'Account Management') }
       ]
       this.sidebarItems.splice(0, this.sidebarItems.length, ...sidebarItems)
     },
