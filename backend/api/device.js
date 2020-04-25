@@ -68,13 +68,14 @@ router.post('/register', async (req, res) => {
   const deviceInfo = await DeviceModel.findOne({pairingCode, paired: false});
 
   // TODO: This is for testing, remove this when pairing logic in pos-restaurant is completed
-  features = Array.isArray(features) ? features : [];
-  if (!features.includes('onlineOrder')) features.push('onlineOrder');
-  if (!features.includes('proxy')) features.push('proxy');
+  // features = Array.isArray(features) ? features : [];
+  // if (!features.includes('onlineOrder')) features.push('onlineOrder');
+  // if (!features.includes('proxy')) features.push('proxy');
 
   if (deviceInfo) {
+    // TODO: custom value depend on features provided by request
     // online status will be updated when client connects to external Socket.io server (see backend/socket-io-server.js file)
-    await DeviceModel.updateOne({pairingCode}, {paired: true, online: false, hardware, appName, appVersion, features, appFeatures: {
+    await DeviceModel.updateOne({pairingCode}, {paired: true, online: false, hardware, appName, appVersion, features: {
         fastCheckout: true,
         manualTable: true,
         delivery: true,
@@ -84,7 +85,9 @@ router.post('/register', async (req, res) => {
         editTablePlan: true,
         staffReport: true,
         eodReport: true,
-        monthlyReport: true
+        monthlyReport: true,
+        remoteControl: true,
+        proxy: true
       }
     });
     await addPairedDeviceToStore(deviceInfo._id, deviceInfo.storeId);

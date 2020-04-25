@@ -41,6 +41,13 @@
         <div class="col-6">
           <g-switch v-model="featureControl.monthlyReport" label="Monthly Report"/>
         </div>
+        <div class="dlg-feature-control__body__line"></div>
+        <div class="col-6">
+          <g-switch v-model="featureControl.remoteControl" label="Remote Control"/>
+        </div>
+        <div class="col-6">
+          <g-switch v-model="featureControl.proxy" label="Proxy"/>
+        </div>
       </div>
       <div class="dlg-feature-control__actions">
         <g-btn-bs @click="close">Cancel</g-btn-bs>
@@ -69,7 +76,9 @@
           editTablePlan: true,
           staffReport: true,
           eodReport: true,
-          monthlyReport: true
+          monthlyReport: true,
+          remoteControl: true,
+          proxy: true
         }
       }
     },

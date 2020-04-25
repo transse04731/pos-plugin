@@ -56,7 +56,7 @@
                   <g-tooltip v-if="remoteControlPerm"
                       :open-on-hover="true" top speech-bubble color="#000" transition="0.3">
                     <template v-slot:activator="{on}">
-                      <div :class="device.online && device.paired && device.features && device.features.includes('proxy') && !disableRemoteControlBtn
+                      <div :class="device.online && device.paired && device.features && device.features.proxy && !disableRemoteControlBtn
                                   ? 'pos-management-group__content-btn' : 'pos-management-group__content-btn--disabled'"
                            @mouseenter="on.mouseenter"
                            @mouseleave="on.mouseleave"
@@ -245,7 +245,7 @@
       async updateDeviceAppFeature(features) {
         const {socket} = window.cms
         socket.emit('updateAppFeature', this.selectedDevice._id, features)
-        await cms.getModel('Device').updateOne({_id: this.selectedDevice._id}, { appFeatures: features })
+        await cms.getModel('Device').updateOne({_id: this.selectedDevice._id}, { features })
       },
       disableDevice(device) {
         // TODO:
