@@ -174,7 +174,18 @@
       async addStore({ settingName, groups, settingAddress }) {
         const alias = this.getUniqueStoreAlias(_.toLower(settingName))
         const id = await this.getUniqueStoreId()
-        await cms.getModel('Store').create({ id, settingName,  alias, groups, settingAddress, addedDate: dayjs(), pickup: true })
+        await cms.getModel('Store').create({
+          id, settingName, settingAddress, alias, groups,
+          addedDate: dayjs(),
+          openHours: [
+            {
+              dayInWeeks: [true, true, true, true, true, true, true],
+              openTime: '06:30',
+              closeTime: '22:30'
+            }
+          ],
+          pickup: true
+        })
         await this.loadStores()
       },
       
@@ -205,6 +216,15 @@
       },
       
       async updateStore(_id, change) {
+        if (change.alias)
+          change.alias = _.toLower(change.alias)
+        
+        const result = await cms.getModel('Store').findOne({_id: { $ne: _id }, alias: change.alias })
+        if (result) {
+          alert('WebShop url has been taken!')
+          return
+        }
+
         await cms.getModel('Store').findOneAndUpdate({_id}, {...change})
         await this.loadStores()
       },
