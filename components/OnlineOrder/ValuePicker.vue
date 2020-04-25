@@ -29,7 +29,7 @@
     },
     data() {
       return {
-        inputValue: '',
+        inputValue: (!this.values.includes(this.value) && this.value) || '',
         dialog: false
       }
     },
@@ -41,13 +41,13 @@
         this.$emit('input', val)
       },
       pickCustomValue(val) {
-        this.$emit('input', val)
+        this.$emit('input', +val)
       },
       isValueSelected(val) {
         return this.value === val
       },
       changeValue(val) {
-        this.inputValue = val
+        this.inputValue = +val
         this.pickCustomValue(val)
       }
     },
