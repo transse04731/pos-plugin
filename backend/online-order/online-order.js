@@ -34,8 +34,12 @@ function createOnlineOrderSocket(deviceId) {
 
     onlineOrderSocket.on('createOrder', async (orderData, ackFn) => {
       if (!orderData) return
-      const {orderType: type, paymentType, customer, products: items, deliveryTime, createdDate: dateString, shippingFee} = orderData
+      let {orderType: type, paymentType, customer, products: items, deliveryTime, createdDate: dateString, shippingFee} = orderData
 
+      items = items.map(item => {
+        if (item.originalPrice) return item;
+        return {originalPrice: item.price, ...item};
+      });
       const date = new Date(dateString)
       const vDiscount = orderUtil.calOrderDiscount(items).toFixed(2)
       const vSum = (orderUtil.calOrderTotal(items) + orderUtil.calOrderModifier(items) + shippingFee).toFixed(2)

@@ -338,8 +338,8 @@
           if (_.isNil(orderId)) reject()
           cms.socket.emit('printReport', 'OrderReport', { orderId }, this.device, ({ success, message }) => {
             if (success) resolve()
-            reject(message)
-          })
+            else reject(message)
+          });
         })
       },
       //<!--</editor-fold>-->
@@ -537,8 +537,12 @@
         await cms.getModel('Order').findOneAndUpdate({ _id: order._id},
           Object.assign({}, order, {
             status: 'completed'
-          }))
+          }));
         await this.updateOnlineOrders()
+
+        cms.socket.emit('printReport', 'OrderReport', { orderId: order._id }, this.device, ({ success, message }) => {
+          if (!success) console.error(message)
+        });
       },
       async getOnlineOrdersWithStatus(status) {
         this.onlineOrders = await cms.getModel('Order').find({
