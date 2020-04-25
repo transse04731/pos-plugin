@@ -123,7 +123,7 @@
             storeGroups: _.map(account.storeGroups, sg => sg._id),
             permissions: perms,
             // will be used to show in Account.vue
-            ..._.pick(account, '_id', 'name', 'username'),
+            ..._.pick(account, '_id', 'name', 'username', 'active'),
             storeGroupsStr: _.join(_.map(account.storeGroups, sg => sg.name), ', '),
             totalStore: _.filter(this.stores, store => _.some(_.map(account.storeGroups, group => this.storeInStoreGroup(store, group)))).length,
             totalPermissions: perms.length,
