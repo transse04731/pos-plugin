@@ -105,7 +105,7 @@
       }
 
       if (posSettings.onlineDevice) {
-        this.isFirstTimeSetup = posSettings.onlineDevice.paired
+        this.isFirstTimeSetup = !posSettings.onlineDevice.paired
       }
     },
     watch: {

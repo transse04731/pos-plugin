@@ -152,6 +152,9 @@
       completeSetup() {
         this.isFirstTimeSetup = false
       },
+      firstTimeSetup() {
+        this.isFirstTimeSetup = true
+      },
       async getEnabledFeatures() {
         const enabledFeatures = await cms.getModel('Feature').find({ enabled: true })
         this.enabledFeatures = enabledFeatures.map(item => item.name)
@@ -179,10 +182,22 @@
       })
 
       this.$router.beforeEach((to, from, next) => {
-        if (to.path === '/admin' || to.path === '/plugins' || to.path === '/pos-login' || to.path === '/pos-setup') next()
-        else if (!this.user) next('/pos-login')
-        else next()
+        if (to.path === '/admin' || to.path === '/plugins' || to.path === '/pos-login' || to.path === '/pos-setup') {
+          next()
+        } else if (!this.user) {
+          next('/pos-login')
+        } else next()
       })
+    },
+    watch: {
+      isFirstTimeSetup: {
+        handler(val) {
+          const { path } = this.$router.currentRoute;
+          if (path === '/admin' || path === '/plugins' || path === '/pos-setup') return
+          if (val) this.$router.push('/pos-setup')
+        },
+        immediate: true
+      }
     },
     beforeDestroy() {
       this.setDateInterval && clearInterval(this.setDateInterval)

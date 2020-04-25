@@ -512,6 +512,16 @@
                   "service": "SettingsStore:updateOnlineOrderSorting",
                   "local": "updateOnlineOrderSorting",
                   "type": "event"
+                },
+                {
+                  "service": "PosStore:completeSetup",
+                  "local": "completeSetup",
+                  "type": "event"
+                },
+                {
+                  "service": "PosStore:firstTimeSetup",
+                  "local": "firstTimeSetup",
+                  "type": "event"
                 }
               ]
             }

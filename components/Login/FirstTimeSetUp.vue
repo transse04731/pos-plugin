@@ -10,16 +10,21 @@
           </template>
         </g-text-field-bs>
         <div v-if="error" class="dialog-message--error">
-          <g-icon>icon-no-connection</g-icon>
-          <span class="ml-2 fs-small">No internet connection</span>
+          <g-icon v-if="offline">icon-no-connection</g-icon>
+          <span class="ml-2 fs-small">{{errorMessage}}</span>
         </div>
         <div class="row-flex" style="margin-top: 24px;">
           <div class="dialog-message--note">
             <b>Note: </b>Please contact your local provide start using the program. Internet connection is required.
           </div>
           <div>
-            <g-btn-bs background-color="#2979FF" text-color="white" width="7.5em"
-                      @click="connect">Connect</g-btn-bs>
+            <g-btn-bs :background-color="pairing ? 'grey': '#2979FF'" text-color="white" width="7.5em" height="44px"
+                      @click="connect" :disabled="pairing">
+              <template v-if="pairing">
+                <g-progress-circular class="mr-2" indeterminate/>
+              </template>
+              <template v-else>Connect</template>
+            </g-btn-bs>
           </div>
         </div>
       </div>
@@ -52,11 +57,19 @@
           input: false,
         },
         code: '',
-        error: true
+        error: false,
+        errorMessage: 'No internet connection',
+        pairing: false,
+        offline: false
       }
     },
     created() {
-      this.error = !navigator.onLine
+      if (!navigator.onLine) {
+        this.offline = true
+        this.error = true
+        this.errorMessage = ''
+      }
+
       window.addEventListener('online', () => {
         this.error = false
       });
@@ -73,9 +86,19 @@
         this.$router.push({path: '/pos-login'})
       },
       connect() {
+        this.pairing = true
+
         this.$emit('registerOnlineOrder', this.code, (error, deviceId) => {
-          this.success = !!deviceId
-          this.success && this.$emit('completeSetup')
+          if (error) {
+            this.error = true
+            this.errorMessage = 'Pair failed. Please try again.'
+          } else {
+            this.success = true
+            this.error = false
+            this.code = ''
+            this.success && this.$emit('completeSetup')
+          }
+          this.pairing = false
         })
       }
     },

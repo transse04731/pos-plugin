@@ -103,7 +103,6 @@
           {text: 'Time to Complete', value: 'time'},
         ],
         webshopUrl: '',
-        webshopName: '',
         webshopAvailable: true,
         pairError: null,
         pairing: false,
@@ -165,7 +164,6 @@
             this.connected = true
             this.dialog.connect = false
             this.pairError = null
-            this.getWebshopName()
           }
         })
       },
@@ -179,7 +177,6 @@
           }
 
           this.connected = false
-          this.webshopName = ''
         })
       },
       updateSound(value) {
@@ -189,17 +186,9 @@
         this.dialog.connect = true
         this.pairError = null
         this.pairing = false
-      },
-      getWebshopName() {
-        window.cms.socket.emit('getWebshopName', webshopName => {
-          if (!webshopName) this.webshopName = 'Web shop name not available'
-          else this.webshopName = webshopName
-        })
       }
     },
     mounted() {
-      this.getWebshopName()
-
       window.cms.socket.emit('getWebshopUrl', async webshopUrl => {
         this.webshopUrl = webshopUrl
 
