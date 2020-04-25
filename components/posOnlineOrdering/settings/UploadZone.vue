@@ -171,7 +171,6 @@
       closeDialog() {
         this.cropper && this.cropper.destroy()
         this.dialog.upload = false
-        this.removeTemporaryFileIfExist()
       },
       choosePhoto() {
         this.openUploadFileDialog(file => this.file = file)
@@ -183,7 +182,6 @@
           let uploadedUrl
           if (this.tab === 'url') {
             uploadedUrl = await this.uploadImage(new File([blob], this.photoUrl.substr(this.photoUrl.lastIndexOf('/') + 1)), { type: 'image/*' })
-            this.removeTemporaryFileIfExist()
           } else {
             uploadedUrl = await this.uploadImage(new File([blob], this.file.name, { type: this.file.type }))
           }
@@ -192,10 +190,6 @@
         })
         this.cropper && this.cropper.destroy()
         this.dialog.upload = false
-      },
-      removeTemporaryFileIfExist() {
-        if (this.photoUrl && this.isExternalFile)
-          axios.post(`/store/upload-zone/clean?url=${this.photoUrl}`)
       }
     }
   }
