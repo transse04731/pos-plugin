@@ -67,7 +67,7 @@
                 <template v-if="orderType === 'delivery'">
                   <g-text-field v-model="customer.address" label="Address" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-place@16"/>
                   <g-text-field v-model="customer.zipCode" label="Zip code" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
-                  <g-text-field type="time" label="Delivery time" required prepend-icon="icon-delivery-truck@16"/>
+                  <g-time-picker-input v-model="customer.deliveryTime" label="Delivery time" required prepend-icon="icon-delivery-truck@16"/>
                 </template>
                 <g-textarea v-model="customer.note" placeholder="Note..." rows="3" no-resize/>
               </div>
@@ -148,7 +148,7 @@
           phone: '',
           address: '',
           zipCode: '',
-          deliveryTime: new Date(),
+          deliveryTime: '',
           note: ''
         },
         currency: $t('common.currency'),
@@ -229,13 +229,18 @@
             category: orderItem.category.name,
           }
         })
-        
+
+        //convert delivery time to date
+        const period = deliveryTime.substr(deliveryTime.length - 2, deliveryTime.length)
+        const time = deliveryTime.slice(0, deliveryTime.length - 2).trim().split(':')
+        const date = dayjs().second(0).minute(+time[1]).hour(+time[0]).add(period.toUpperCase() === 'PM' ? 12 : 0, 'hour')
+
         const orderData = {
           orderType: this.orderType,
           paymentType: this.paymentType,
           customer,
           products,
-          deliveryTime,
+          deliveryTime: date.toDate(),
           note,
           createdDate: new Date(),
           shippingFee: this.shippingFee,
