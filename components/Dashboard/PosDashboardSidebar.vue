@@ -2,10 +2,8 @@
   <g-sidebar>
     <template v-slot:header>
       <div class="sidebar-header">
-        <g-avatar size="40">
-          <g-img :src="srcImg"/>
-        </g-avatar>
-        <span class="username">{{userName}}</span>
+        <div class="sidebar-header__avatar">{{firstUserLetter}}</div>
+        <span class="sidebar-header__username">{{userName}}</span>
         <g-spacer/>
         <span>{{ now }}</span>
       </div>
@@ -35,7 +33,7 @@
 
   export default {
     name: 'PosDashboardSidebar',
-    injectService: [ 'PosStore:(user,logout)' ],
+    injectService: [ 'PosStore:(logout)' ],
     props: {
       title: {
         type: String,
@@ -55,10 +53,10 @@
     },
     computed: {
       userName() {
-        return this.user ? this.user.name : ''
+        return cms.loginUser.user.username
       },
-      srcImg() {
-        return this.user ? this.user.avatar : ''
+      firstUserLetter() {
+        return _.toUpper(this.userName[0])
       }
     },
     created() {
@@ -104,7 +102,7 @@
       font-weight: 600;
       color: #1d1d26;
       
-      .username {
+      &__username {
         word-break: break-all;
         -webkit-line-clamp: 2;
         display: -webkit-box;
@@ -113,6 +111,18 @@
         font-size: 14px;
         font-weight: 600;
         padding-left: 8px;
+      }
+      
+      $avatarSize: 40px;
+      
+      &__avatar {
+        width: $avatarSize;
+        height: $avatarSize;
+        line-height: $avatarSize;
+        text-align: center;
+        border-radius: 50%;
+        background: #0e5bad;
+        color: #FFF
       }
     }
   }
