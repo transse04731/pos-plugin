@@ -158,8 +158,8 @@ module.exports = {
       printReport: 'Print Report',
       pendingPrintLine1: 'Day {date} is not yet closed.',
       pendingPrintLine2: 'Do you want to run End-of-day on {date}?',
-      confirmationPrintZ1: 'Are you sure to print Z-Report',
-      confirmationPrintZ2: '(End Of Day)',
+      confirmationPrintZ1: 'Möchten Sie den Z-Bericht drucken',
+      confirmationPrintZ2: '(Tagesabschluss)',
       reprintZReport: 'Reprint Z-Report',
       runEndOfDay: 'Z-Bericht erstellen',
       showProductSold: 'Artikelverkauf-Bericht',
@@ -292,7 +292,7 @@ module.exports = {
 
     //dates
     dates: {
-      daysOfWeek: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
+      daysOfWeek: ['SO', 'MO', 'DI', 'MI', 'DO', 'FR', 'SA'],
       timeFormat: 'HH:mm',
       dateFormat: 'DD/MM/YYYY',
     },
