@@ -193,7 +193,7 @@
       isFirstTimeSetup: {
         handler(val) {
           const { path } = this.$router.currentRoute;
-          if (path === '/admin' || path === '/plugins' || path === '/pos-setup') return
+          if (path === '/admin' || path === '/plugins/' || path === '/pos-setup') return
           if (val) this.$router.push('/pos-setup')
         },
         immediate: true
