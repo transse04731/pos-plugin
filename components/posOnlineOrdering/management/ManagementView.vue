@@ -141,11 +141,29 @@
     },
     computed: {
       sidebarItems() {
-        return [
-          { title: 'Store Management', icon: 'icon-management_white', onClick: () => this.changeView('list', 'Store Management') },
-          this.versionControlPerm && { title: 'Version Control', icon: 'icon-version_control', onClick: () => this.changeView('version', 'Version Control') },
-          this.manageAccountPerm && { title: 'Account Management', icon: 'icon-account-management', onClick: () => this.changeView('account', 'Account Management') }
-        ]
+        const items = []
+        if(this.view === 'list') {
+          items.push({ title: 'Store Management', icon: 'icon-management_white', onClick: () => this.changeView('list') })
+        } else {
+          items.push({ title: 'Store Management', icon: 'icon-management', onClick: () => this.changeView('list') })
+        }
+
+        if(this.versionControlPerm) {
+          if(this.view === 'version') {
+            items.push({ title: 'Version Control', icon: 'icon-version_control_white', onClick: () => this.changeView('version', 'Version Control') })
+          } else  {
+            items.push({ title: 'Version Control', icon: 'icon-version_control', onClick: () => this.changeView('version', 'Version Control') })
+          }
+        }
+
+        if(this.manageAccountPerm) {
+          if(this.view === 'account') {
+            items.push({ title: 'Account Management', icon: 'icon-account-management_white', onClick: () => this.changeView('account', 'Account Management') })
+          } else {
+            items.push({ title: 'Account Management', icon: 'icon-account-management', onClick: () => this.changeView('account', 'Account Management') })
+          }
+        }
+        return items
       },
       searchResult() {
         return this.storeManagementViewModel
@@ -191,19 +209,9 @@
       onNodeSelected(node) {
         node.onClick && node.onClick.bind(this)();
       },
-      changeView(view, title) {
+      changeView(view) {
         if(view) {
           this.view = view
-          //reset icon
-          for(const item of this.sidebarItems) {
-            if(item && item.icon.startsWith('icon-') && item.icon.endsWith('_white')) {
-              this.$set(item, 'icon', item.icon.slice(0, item.icon.length - 6))
-            }
-          }
-        }
-        if(title) {
-          const item = this.sidebarItems.find(i => i.title === title)
-          this.$set(item, 'icon', item.icon+'_white')
         }
       },
     }

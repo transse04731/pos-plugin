@@ -16,7 +16,7 @@
           <g-text-field-bs label="Retype Password" type="password" v-model="retypePassword"/>
         </div>
         <div class="span-2">
-          <g-select deletable-chips multiple text-field-component="GTextFieldBs" label="Group" v-model="internalStoreGroups" :items="availableGroupsViewModel"/>
+          <g-autocomplete deletable-chips multiple text-field-component="GTextFieldBs" label="Group" v-model="internalStoreGroups" :items="availableGroupsViewModel"/>
         </div>
         <div class="dialog-content__permission">
           <p class="span-2 ml-2 mt-3">Permission</p>
@@ -152,7 +152,7 @@
        margin-right: 0 !important;
      }
 
-     .g-combobox ::v-deep .input {
+     .g-autocomplete ::v-deep .input {
        display: flex;
        flex-wrap: wrap;
        height: 96px;
@@ -170,7 +170,7 @@
        }
      }
 
-     .g-combobox ::v-deep .bs-tf-append-inner {
+     .g-autocomplete ::v-deep .bs-tf-append-inner {
        display: none;
      }
    }
