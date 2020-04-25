@@ -41,7 +41,7 @@ module.exports = {
       loader: {
         type: 'backend-api'
       },
-      path: 'backend/print-report/report-printer.js',
+      path: 'backend/print-report/index.js',
       type: 'backend'
     },
     {

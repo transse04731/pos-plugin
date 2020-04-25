@@ -10,7 +10,9 @@ module.exports = {
   }),
 
   async getGroupPrinterInfo(cms, device, type) {
-    const {printerGeneralSetting: { useMultiPrinterForEntirePrinter, useMultiPrinterForInvoicePrinter, useMultiPrinterForKitchenPrinter } } = await cms.getModel('PosSetting').findOne()
+    const {printerGeneralSetting} = await cms.getModel('PosSetting').findOne();
+    const {useMultiPrinterForEntirePrinter, useMultiPrinterForInvoicePrinter, useMultiPrinterForKitchenPrinter} = printerGeneralSetting;
+
     let printMultiple = false
 
     if (type === 'kitchen') printMultiple = useMultiPrinterForKitchenPrinter
@@ -18,30 +20,34 @@ module.exports = {
     if (type === 'invoice') printMultiple = useMultiPrinterForInvoicePrinter
 
     const groupPrinters = printMultiple
-      ? await cms.getModel('GroupPrinter').aggregate([
-        { $unwind: { path: '$printers' } },
-        { $match: { 'printers.hardwares': device, type } }
-      ])
-      : await cms.getModel('GroupPrinter').aggregate([
-        { $unwind: { path: '$printers' } },
-        { $match: { type } }
-      ])
+        ? await cms.getModel('GroupPrinter').aggregate([
+          {$unwind: {path: '$printers'}},
+          {$match: {'printers.hardwares': device, type}}
+        ])
+        : await cms.getModel('GroupPrinter').aggregate([
+          {$unwind: {path: '$printers'}},
+          {$match: {type}}
+        ])
 
     if (!groupPrinters) return null;
 
     return groupPrinters;
   },
 
-  async print(html, groupPrinter) {
+  async print(html, printerInfo) {
     try {
       const png = await phantomUtil.render(html)
 
-      const printer = new EscPrinter(groupPrinter);
+      const printer = new EscPrinter(printerInfo);
       printer.printPng(png);
       await printer.print();
     } catch (e) {
       throw e
     }
+  },
+
+  async convertHtmlToPng(html) {
+    return await phantomUtil.render(html);
   },
 
   groupArticles(items) {
@@ -59,7 +65,7 @@ module.exports = {
     return resultArr
   },
 
-  getPrinter(groupPrinter) {
-    return new EscPrinter(groupPrinter)
+  getEscPrinter(printerInfo) {
+    return new EscPrinter(printerInfo)
   }
 }

@@ -1,6 +1,6 @@
 const Vue = require('vue');
 const _ = require('lodash');
-const {renderer, print, groupArticles, getPrinter} = require('../print-utils/print-utils');
+const {renderer, print, groupArticles, getEscPrinter} = require('../print-utils/print-utils');
 
 module.exports = async function (cms) {
   cms.socket.on('connect', socket => {
@@ -80,7 +80,7 @@ module.exports = async function (cms) {
   }
 
   async function printEsc(props, {printers: printerInfo}) {
-    const printer = await getPrinter(printerInfo);
+    const printer = await getEscPrinter(printerInfo);
     const {items, table, time} = props;
 
     function convertMoney(value) {

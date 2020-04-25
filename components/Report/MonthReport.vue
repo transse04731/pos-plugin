@@ -6,11 +6,11 @@
         <div class="title">Sales</div>
         <div class="detail" v-for="(amount, payment) in salesByPayment" :key="`sales${payment}`">
           <span>{{payment}}</span>
-          <span class="float-right">€ {{amount | convertMoney}}</span>
+          <span class="float-right">{{amount | convertMoney}}</span>
         </div>
         <div class="total">
           <span>Total</span>
-          <span class="float-right"><u>€ {{total | convertMoney}}</u></span>
+          <span class="float-right"><u>{{total | convertMoney}}</u></span>
         </div>
       </div>
       <div v-if="zNumbers" class="report__z-number">
@@ -19,7 +19,7 @@
             <td>
               <div class="row-flex justify-between">
                 <span>Z-Number {{z.z}}:</span>
-                <span class="ml-2 float-right">€ {{z.sum | convertMoney}}</span>
+                <span class="ml-2 float-right">{{z.sum | convertMoney}}</span>
               </div>
             </td>
             <td>Date: {{z.date}}</td>
@@ -30,7 +30,7 @@
         <div class="title">Product Sold</div>
         <div v-for="({products, sum}, category) in salesByCategory" :key="`category${category}`">
           <p class="category">
-            {{category}} (€ {{sum | convertMoney}})
+            {{category}} ({{sum | convertMoney}})
           </p>
           <p class="product" v-for="{product, quantity} in products" :key="`item${product}`">
             {{quantity}} x {{product}}

@@ -68,7 +68,7 @@
 
       <div class="col col-12 checkout-details">
         <div>
-          <span>Subtotal</span>
+          <span>Sub-total</span>
           <span class="float-right">{{(orderSum - orderTax) | convertMoney}}</span>
         </div>
         <div v-if="!isNaN(discount) && discount > 0" style="margin: 12px 0;">
