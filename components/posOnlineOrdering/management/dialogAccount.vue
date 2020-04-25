@@ -99,6 +99,7 @@
           this.internalValue = false
         } else {
           if (this.internalPassword !== this.retypePassword) {
+            // TODO: UX
             alert('Retype password mismatch!')
             return
           }

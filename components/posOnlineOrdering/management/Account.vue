@@ -80,7 +80,7 @@
                 </template>
                 <div class="menu-action">
                   <div class="menu-action__option" @click="openDialogAccount(true, account)">Edit</div>
-                  <div class="menu-action__option" @click="resetPassword(account)">Reset Password</div>
+                  <div class="menu-action__option" @click="openDialogResetPassword(account)">Reset Password</div>
                   <div class="menu-action__option" @click="changeStatus(account)">{{account.status === 'active' ? 'Disable' : 'Enable'}} Account</div>
                   <div class="menu-action__option" @click="openDialogDelete(account)">Delete</div>
                 </div>
@@ -99,13 +99,21 @@
         @edit="editAccount(selectedAccount._id, $event)"
         @add="createAccount"
     />
+    <dialog-new-account-password
+        v-if="dialog.setNewPassword"
+        v-model="dialog.setNewPassword"
+        @cancel="dialog.setNewPassword = false"
+        @save="editAccount(selectedAccount._id, $event)"
+    />
     <dialog-delete-item v-model="dialog.delete" type="user" @confirm="deleteUser"/>
   </div>
 </template>
 
 <script>
+  import DialogNewAccountPassword from './dialogNewAccountPassword';
   export default {
     name: "Account",
+    components: { DialogNewAccountPassword },
     data() {
       return {
         searchText: '',
@@ -120,6 +128,7 @@
           account: false,
           edit: false,
           delete: false,
+          setNewPassword: false,
         },
         selectedAccount: null,
       }
@@ -145,12 +154,13 @@
         this.selectedAccount = account
         this.dialog.account = true
       },
+      openDialogResetPassword(account) {
+        this.selectedAccount = account
+        this.dialog.setNewPassword = true
+      },
       openDialogDelete(account) {
         this.selectedAccount = account
         this.dialog.delete = true
-      },
-      resetPassword(account) {
-
       },
       changeStatus(account) {
         this.editAccount(account._id, { active: !account.active })
