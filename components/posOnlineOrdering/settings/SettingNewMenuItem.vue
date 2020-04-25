@@ -56,7 +56,7 @@
     <!-- Action button -->
     <div style="display: flex; justify-content: flex-end; margin: 4px 8px">
       <g-btn-bs @click="$emit('cancel')">Cancel</g-btn-bs>
-      <g-btn-bs width="80" background-color="#536DFE" text-color="white" @click="saveMenuItem">Save</g-btn-bs>
+      <g-btn-bs :disabled="!internalName || !internalId || isNaN(internalPrice) || !internalPrinter" width="80" background-color="#536DFE" text-color="white" @click="saveMenuItem">Save</g-btn-bs>
     </div>
   </div>
 </template>
@@ -136,7 +136,7 @@
           return
         }
 
-        if (!this.internalPrinter.length) {
+        if (!this.internalPrinter) {
           alert('Product\'s printer is missing')
           return
         }

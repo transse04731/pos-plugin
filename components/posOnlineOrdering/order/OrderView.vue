@@ -344,7 +344,7 @@
         margin-bottom: 24px;
       }
 
-      span.sub-title {
+      .sub-title {
         font-size: 24px;
         font-weight: 700;
       }
