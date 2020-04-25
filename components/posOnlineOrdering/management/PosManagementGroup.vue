@@ -245,7 +245,7 @@
       async updateDeviceAppFeature(features) {
         const {socket} = window.cms
         socket.emit('updateAppFeature', this.selectedDevice._id, features)
-        await cms.getModel('Device').updateOne({_id: device._id}, { appFeatures: features })
+        await cms.getModel('Device').updateOne({_id: this.selectedDevice._id}, { appFeatures: features })
       },
       disableDevice(device) {
         // TODO:
