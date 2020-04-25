@@ -5,7 +5,13 @@
       <div class="row-flex" v-if="computedDevice">
         <div class="col-6">
           <div>{{$t('onlineOrder.settings.status')}}</div>
-          <div style="font-style: italic">{{connected ? 'Connected' : 'Not paired'}}</div>
+          <div style="font-style: italic">
+            <span>
+              {{connected ? 'Connected' : 'Not connected'}}
+            </span>
+
+            <span v-if="connected" style="color: #4CAF50"> ({{this.webshopName}})</span>
+          </div>
         </div>
 
         <div class="col-6">
@@ -97,6 +103,7 @@
           {text: 'Time to Complete', value: 'time'},
         ],
         webshopUrl: '',
+        webshopName: '',
         webshopAvailable: true,
         pairError: null,
         pairing: false,
@@ -158,6 +165,7 @@
             this.connected = true
             this.dialog.connect = false
             this.pairError = null
+            this.getWebshopName()
           }
         })
       },
@@ -171,6 +179,7 @@
           }
 
           this.connected = false
+          this.webshopName = ''
         })
       },
       updateSound(value) {
@@ -180,9 +189,17 @@
         this.dialog.connect = true
         this.pairError = null
         this.pairing = false
+      },
+      getWebshopName() {
+        window.cms.socket.emit('getWebshopName', webshopName => {
+          if (!webshopName) this.webshopName = 'Web shop name not available'
+          else this.webshopName = webshopName
+        })
       }
     },
     mounted() {
+      this.getWebshopName()
+
       window.cms.socket.emit('getWebshopUrl', async webshopUrl => {
         this.webshopUrl = webshopUrl
 
