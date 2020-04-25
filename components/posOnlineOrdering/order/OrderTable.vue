@@ -610,3 +610,28 @@
     }
   }
 </style>
+
+<style lang="scss">
+  input {
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      animation: autofill 0s forwards !important;
+    }
+
+    @keyframes autofill {
+      100% {
+        background: transparent;
+        color: inherit;
+      }
+    }
+
+    @-webkit-keyframes autofill {
+      100% {
+        background: transparent;
+        color: inherit;
+      }
+    }
+  }
+</style>
