@@ -70,6 +70,19 @@ module.exports = function (cms) {
 
   // externalSocketIOServer is Socket.io namespace for store/restaurant app to connect (use default namespace)
   externalSocketIOServer.on('connect', socket => {
+    socket.on('getWebshopName', async (deviceId, callback) => {
+      const DeviceModel = cms.getModel('Device');
+      const StoreModel = cms.getModel('Store');
+
+      const device = await DeviceModel.findById(deviceId);
+      if (!device) return callback(null);
+
+      const store = await StoreModel.findById(device.storeId);
+      if (!store) return callback(null);
+
+      callback(store.settingName);
+    });
+
     if (socket.request._query && socket.request._query.clientId) {
       const clientId = socket.request._query.clientId;
       updateDeviceAndNotify(true, clientId);
