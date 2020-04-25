@@ -57,7 +57,7 @@
     }
 
     .bs-tf-wrapper {
-      width: 120px;
+      margin-left: 8px;
     }
   }
 </style>

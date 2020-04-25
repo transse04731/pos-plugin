@@ -2,7 +2,7 @@ apply from: '../pos-android/app/build.gradle'
 
 android {
     defaultConfig {
-        applicationId "io.gigasource.restaurant"
+        applicationId "io.gigasource.pos"
     }
     signingConfigs {
         release {

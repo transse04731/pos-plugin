@@ -62,10 +62,16 @@
               </div>
             </g-card-actions>
             <g-card-actions>
-              <g-btn-bs width="60" border-color="#C4C4C4" text-color="black" @click.stop="onClickDecline(order)">
-                {{order.confirmStep2 ? 'Back' : 'No'}}
+              <g-btn-bs v-if="!order.confirmStep2 && !order.declineStep2" width="60" border-color="#C4C4C4" text-color="black" @click.stop="onClickDecline(order)">
+                No
               </g-btn-bs>
-              <g-btn-bs icon="icon-printer-setting" background-color="#E0E0E0" text-color="black" style="flex: 1" @click.stop="onClickAccept(order)">
+              <g-btn-bs v-if="order.confirmStep2 || order.declineStep2" width="60" border-color="#C4C4C4" text-color="black" @click.stop="onBack(order)">
+                Back
+              </g-btn-bs>
+              <g-btn-bs v-if="order.declineStep2" background-color="#E0E0E0" text-color="black" style="flex: 1" @click="declineOrder(order)">
+                Confirm
+              </g-btn-bs>
+              <g-btn-bs v-else icon="icon-printer-setting" background-color="#E0E0E0" text-color="black" style="flex: 1" @click.stop="onClickAccept(order)">
                 {{getPaymentTexts(order.payment)}}
               </g-btn-bs>
             </g-card-actions>
@@ -216,10 +222,13 @@
       onClickDecline(order) {
         if (order.confirmStep2) return this.$set(order, 'confirmStep2', false)
         if (!order.declineStep2) return this.$set(order, 'declineStep2', true)
-        this.declineOrder(order)
       },
       openDialog(order) {
         this.$refs.dialog.showDialog(order)
+      },
+      onBack(order) {
+        this.$set(order, 'declineStep2', false)
+        this.$set(order, 'confirmStep2', false)
       }
     },
     mounted() {
@@ -269,10 +278,6 @@
 
         .g-btn-bs {
           text-transform: capitalize;
-        }
-
-        .bs-tf-wrapper {
-          width: 120px;
         }
       }
     }
