@@ -144,6 +144,16 @@
     margin-right: 8px;
   }
 
+  .g-treeview-wrapper ::v-deep .g-treeview-item .g-treeview-title {
+    line-height: 1.2;
+    white-space: normal;
+    display: -webkit-box;
+    word-break: break-word;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
   .g-btn ::v-deep .g-btn__content {
     justify-content: flex-start;
     color: #424242;
