@@ -67,10 +67,10 @@
           <div v-for="(account, i) in accountViewModel" :key="i"
                :class="['account__table-row', i % 2 === 0 ? 'account__table-row--even' : 'account__table-row--odd']">
             <div class="flex-equal pl-3">{{account.name}}</div>
-            <div class="flex-equal pl-1">{{account.email}}</div>
-            <div class="flex-equal pl-1" style="word-break: break-word">{{account.groupsStr}}</div>
-            <div class="col-1 ta-center">{{account.store}}</div>
-            <div class="col-1 ta-center">{{account.permissions.length}}</div>
+            <div class="flex-equal pl-1">{{account.username}}</div>
+            <div class="flex-equal pl-1" style="word-break: break-word">{{account.storeGroupsStr}}</div>
+            <div class="col-1 ta-center">{{account.totalStore}}</div>
+            <div class="col-1 ta-center">{{account.totalPermissions}}</div>
             <div class="flex-equal pl-1">{{account.createdBy}}</div>
             <div style="flex: 0 0 75px; text-align: center"><span :class="getStatusClass(account.status)">{{account.status}}</span></div>
             <div style="flex: 0 0 50px; text-align: center">

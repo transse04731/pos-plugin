@@ -14,7 +14,8 @@
           return cms.loginUser.user.role.name === 'admin'
       },
       manageAccountPerm() {
-        return _.find(this.userPermissions, perm => perm.permission === 'manageAccount' && perm.value === true)
+        if (cms.loginUser.user)
+          return cms.loginUser.user.role.name === 'admin'
       },
       manageGroupPerm() {
         return _.find(this.userPermissions, perm => perm.permission === 'manageGroup' && perm.value === true)
@@ -41,7 +42,7 @@
     data() {
       return {
         userPermissions: [],
-        allPermissions: [ "manageAccount", "manageGroup", "manageStore", "remoteControl", "configOnlineOrdering", "settings", "updateApp", "featureControl" ]
+        allPermissions: [ "manageGroup", "manageStore", "remoteControl", "configOnlineOrdering", "settings", "updateApp", "featureControl" ]
       }
     },
     async created() {

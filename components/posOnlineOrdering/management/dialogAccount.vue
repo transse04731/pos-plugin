@@ -7,7 +7,7 @@
           <g-text-field-bs label="Name" v-model="internalName"/>
         </div>
         <div>
-          <g-text-field-bs label="Email" v-model="internalEmail"/>
+          <g-text-field-bs label="Email" v-model="internalUsername"/>
         </div>
         <div v-if="!edit">
           <g-text-field-bs label="Password" type="password" v-model="internalPassword"/>
@@ -16,7 +16,7 @@
           <g-text-field-bs label="Retype Password" type="password" v-model="retypePassword"/>
         </div>
         <div class="span-2">
-          <g-select deletable-chips multiple text-field-component="GTextFieldBs" label="Group" v-model="internalGroups" :items="availableGroupsViewModel"/>
+          <g-select deletable-chips multiple text-field-component="GTextFieldBs" label="Group" v-model="internalStoreGroups" :items="availableGroupsViewModel"/>
         </div>
         <div class="dialog-content__permission">
           <p class="span-2 ml-2 mt-3">Permission</p>
@@ -42,10 +42,11 @@
     props: {
       value: Boolean,
       edit: Boolean,
+      //
       name: String,
-      email: String,
+      username: String,
       password: String,
-      groups: Array,
+      storeGroups: Array,
       permissions: Array,
     },
     filters: {
@@ -60,10 +61,10 @@
     data() {
       return {
         internalName: this.name,
-        internalEmail: this.email,
+        internalUsername: this.username,
         internalPassword: this.password,
         retypePassword: '',
-        internalGroups: this.groups,
+        internalStoreGroups: this.storeGroups,
         internalPermissions: null,
         availableGroupsViewModel: null
       }
@@ -88,11 +89,12 @@
     methods: {
       save() {
         if (this.edit) {
-          const changes = {};
+          const changes = {
+            storeGroups: this.internalStoreGroups,
+            permissions: this.internalPermissions
+          };
           this.name !== this.internalName && (changes.name = this.internalName)
-          this.email !== this.internalEmail && (changes.email = this.internalEmail)
-          this.groups !== this.internalGroups && (changes.groups = this.internalGroups)
-          this.permissions !== this.internalPermissions && (changes.permissions = this.internalPermissions)
+          this.username !== this.internalUsername && (changes.username = this.internalUsername)
           this.$emit('edit', changes)
           this.internalValue = false
         } else {
@@ -103,8 +105,8 @@
           this.$emit('add', {
             name: this.internalName,
             password: this.internalPassword,
-            email: this.internalEmail,
-            groups: this.internalGroups,
+            username: this.internalUsername,
+            storeGroups: this.internalStoreGroups,
             permissions: this.internalPermissions
           })
           this.internalValue = false

@@ -117,15 +117,19 @@
       // accounts
       accountViewModel() {
         return _.map(this.accounts, account => {
+          const perms = _.map(_.filter(account.permissions, perm => perm.value), perm => _.omit(perm, '_id'))
           return {
-            ..._.pick(account, '_id', 'name'),
-            email: account.username,
-            groups: _.map(account.storeGroups, sg => sg._id),
-            groupsStr: _.join(_.map(account.storeGroups, sg => sg.name), ', '),
-            store: _.filter(this.stores, store => _.some(_.map(account.storeGroups, group => this.storeInStoreGroup(store, group)))).length,
-            permissions: _.map(account.permissions, perm => _.omit(perm, '_id')),
+            // will be used in dialogAccount.vue
+            storeGroups: _.map(account.storeGroups, sg => sg._id),
+            permissions: perms,
+            // will be used to show in Account.vue
+            ..._.pick(account, '_id', 'name', 'username'),
+            storeGroupsStr: _.join(_.map(account.storeGroups, sg => sg.name), ', '),
+            totalStore: _.filter(this.stores, store => _.some(_.map(account.storeGroups, group => this.storeInStoreGroup(store, group)))).length,
+            totalPermissions: perms.length,
             createdBy: account.createdBy && account.createdBy.username,
             status: account.active ? 'active' : 'disabled',
+            // menu context display status
             menu: false,
           }
         })
@@ -376,24 +380,28 @@
         const accounts = await cms.getModel('User').find({ createdBy: cms.loginUser.user._id })
         this.accounts.splice(0, this.accounts.length, ...accounts)
       },
-      async createAccount({ name, email, password, groups, permissions }) {
-        if (_.find(this.accounts, acc => acc.username === email)) {
+      async createAccount({ name, username, password, storeGroups, permissions }) {
+        if (_.find(this.accounts, acc => acc.username === username)) {
           this.showMessage('Username has been taken!')
           return
         }
-        
+        const userRole = await cms.getModel('Role').findOne({name: 'user'})
         await cms.getModel('User').create({
           name,
-          username: email,
+          username,
           password,
-          storeGroups: groups,
-          permissions
+          storeGroups,
+          permissions,
+          active: true,
+          role: userRole._id,
+          createdBy: cms.loginUser.user._id
         })
         
         await this.loadAccounts()
       },
       async editAccount(_id, change) {
-        if (change.email && _.find(this.accounts, acc => acc.username === change.email && acc._id !== _id)) {
+        console.log(change)
+        if (change.username && _.find(this.accounts, acc => acc.username === change.username && acc._id !== _id)) {
           this.showMessage('Email address has been taken!')
           return
         }
