@@ -1,5 +1,5 @@
 <template>
-  <g-snackbar v-model="showSnackbar" top right color="#536dfe">Saved</g-snackbar>
+  <g-snackbar v-model="showSnackbar" top right color="#536dfe">{{message}}</g-snackbar>
 </template>
 <script>
   import _ from 'lodash'
@@ -8,20 +8,34 @@
     domain: 'PosOnlineOrderManagementStore',
     data: function () {
       return {
+        // common
         showSnackbar: false,
+        message: '',
+        
+        // store management
         storeGroups: [],
         stores: [],
         searchText: null,
         orderBy: null,
-        //
+        
+        // version control
         apps: [],
         appItems: [],
-        // view model
         appShows: {},
         versionControlOrderBy: { order: 'desc', type: 'uploadDate' },
+
+        // account management
+        accounts: [],
+        accountSearch: null,
+        accountFilter: {
+          createdBy: null,
+          inGroups: null,
+          permissions: null
+        },
       }
     },
     computed: {
+      // store management
       storeGroupNames() {
         return _.map(this.storeGroups, sg => sg.name)
       },
@@ -51,7 +65,8 @@
         }))
         return _.filter(storeGroupVMs, this.storeGroupHasStores)
       },
-      //
+      
+      // version control
       appNames() {
         return _.map(this.apps, app => app.name)
       },
@@ -97,6 +112,23 @@
           })
           return appViewModel
         })
+      },
+      
+      // accounts
+      accountViewModel() {
+        return _.map(this.accounts, account => {
+          return {
+            ..._.pick(account, '_id', 'name'),
+            email: account.username,
+            groups: _.map(account.storeGroups, sg => sg._id),
+            groupsStr: _.join(_.map(account.storeGroups, sg => sg.name), ', '),
+            store: _.filter(this.stores, store => _.some(_.map(account.storeGroups, group => this.storeInStoreGroup(store, group)))).length,
+            permissions: _.map(account.permissions, perm => _.omit(perm, '_id')),
+            createdBy: account.createdBy && account.createdBy.username,
+            status: account.active ? 'active' : 'disabled',
+            menu: false,
+          }
+        })
       }
     },
     async created() {
@@ -104,8 +136,18 @@
       await this.loadStores()
       await this.loadApps()
       await this.loadAppItems()
+      await this.loadAccounts()
     },
     methods: {
+      // common
+      showMessage(message) {
+        this.message = message
+        this.showSnackbar = true
+      },
+      showSavedMessage() {
+        this.showMessage('Saved')
+      },
+      
       // view model helper methods
       convertStoreToViewModel(store) {
         return {
@@ -170,7 +212,6 @@
         const stores = await cms.getModel('Store').find({ groups: { $elemMatch: { $in: storeGroupIds } } })
         this.stores.splice(0, this.stores.length, ...stores)
       },
-      
       async addStore({ settingName, groups, settingAddress }) {
         const alias = this.getUniqueStoreAlias(_.toLower(settingName))
         const id = await this.getUniqueStoreId()
@@ -198,7 +239,6 @@
         } while(_.includes(this.storeAlias, newAlias))
         return newAlias
       },
-
       async getUniqueStoreId() {
         return (await axios.get('/store/generate-id')).data.id
       },
@@ -221,11 +261,12 @@
         
         const result = await cms.getModel('Store').findOne({_id: { $ne: _id }, alias: change.alias })
         if (result) {
-          alert('WebShop url has been taken!')
+          this.showMessage('WebShop url has been taken!')
           return
         }
 
         await cms.getModel('Store').findOneAndUpdate({_id}, {...change})
+        this.showSavedMessage()
         await this.loadStores()
       },
       
@@ -328,6 +369,42 @@
           this.versionControlOrderBy.type = type
           this.versionControlOrderBy.order = 'asc'
         }
+      },
+      
+      // Account Management
+      async loadAccounts() {
+        const accounts = await cms.getModel('User').find({ createdBy: cms.loginUser.user._id })
+        this.accounts.splice(0, this.accounts.length, ...accounts)
+      },
+      async createAccount({ name, email, password, groups, permissions }) {
+        if (_.find(this.accounts, acc => acc.username === email)) {
+          this.showMessage('Username has been taken!')
+          return
+        }
+        
+        await cms.getModel('User').create({
+          name,
+          username: email,
+          password,
+          storeGroups: groups,
+          permissions
+        })
+        
+        await this.loadAccounts()
+      },
+      async editAccount(_id, change) {
+        if (change.email && _.find(this.accounts, acc => acc.username === change.email && acc._id !== _id)) {
+          this.showMessage('Email address has been taken!')
+          return
+        }
+        await cms.getModel('User').updateOne({_id}, change)
+        await this.loadAccounts()
+      },
+      async deleteAccount(_id) {
+        const subAccounts = await cms.getModel('User').find({createdBy: _id})
+        const ids = [_id, _.map(subAccounts, sa => sa._id)]
+        await cms.getModel('User').remove({_id: { $in: ids}})
+        await this.loadAccounts()
       }
     },
     provide() {
@@ -367,6 +444,12 @@
         editAppItem: this.editAppItem,
         removeAppItem: this.removeAppItem,
         appItems: this.appItems,
+        
+        // account management
+        accountViewModel: this.accountViewModel,
+        createAccount: this.createAccount,
+        editAccount: this.editAccount,
+        deleteAccount: this.deleteAccount,
         
         //
         versionControlViewModel: this.versionControlViewModel,

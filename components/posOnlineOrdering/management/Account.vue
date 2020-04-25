@@ -54,23 +54,23 @@
         <div style="flex: 0 0 50px"></div>
       </div>
       <div class="account__table-content">
-        <template v-if="!listAccounts || listAccounts.length === 0">
+        <template v-if="!accountViewModel || accountViewModel.length === 0">
           <div class="version-control__table-content--empty">
             <img alt src="/plugins/pos-plugin/assets/empty_group.svg"/>
             <p class="text-grey-darken-1 mt-2">Account is currently empty</p>
-            <g-btn-bs text-color="indigo accent-2" icon="add@16" class="fw-700" @click="openDialogAccount()">Create New
-              Account
+            <g-btn-bs text-color="indigo accent-2" icon="add@16" class="fw-700" @click="openDialogAccount()">
+              Create New Account
             </g-btn-bs>
           </div>
         </template>
         <template v-else>
-          <div v-for="(account, i) in listAccounts" :key="i"
+          <div v-for="(account, i) in accountViewModel" :key="i"
                :class="['account__table-row', i % 2 === 0 ? 'account__table-row--even' : 'account__table-row--odd']">
             <div class="flex-equal pl-3">{{account.name}}</div>
             <div class="flex-equal pl-1">{{account.email}}</div>
-            <div class="flex-equal pl-1" style="word-break: break-word">{{account.group.join('; ')}}</div>
+            <div class="flex-equal pl-1" style="word-break: break-word">{{account.groupsStr}}</div>
             <div class="col-1 ta-center">{{account.store}}</div>
-            <div class="col-1 ta-center">{{account.permission.length}}</div>
+            <div class="col-1 ta-center">{{account.permissions.length}}</div>
             <div class="flex-equal pl-1">{{account.createdBy}}</div>
             <div style="flex: 0 0 75px; text-align: center"><span :class="getStatusClass(account.status)">{{account.status}}</span></div>
             <div style="flex: 0 0 50px; text-align: center">
@@ -90,7 +90,16 @@
         </template>
       </div>
     </div>
-    <dialog-account v-model="dialog.account" :edit="dialog.edit" v-bind="selectedAccount"/>
+    <dialog-account
+        v-if="dialog.account"
+        v-model="dialog.account"
+        :edit="dialog.edit"
+        v-bind="selectedAccount"
+        @cancel="dialog.account = false"
+        @cancel="dialog.account = false"
+        @edit="editAccount(selectedAccount._id, $event)"
+        @add="createAccount"
+    />
     <dialog-delete-item v-model="dialog.delete" type="user" @confirm="deleteUser"/>
   </div>
 </template>
@@ -108,40 +117,6 @@
           permission: []
         },
         filters: [],
-        listAccounts: [
-          {
-            id: 1,
-            name: 'Dolores Abernathy',
-            email: 'dolores@ww.com',
-            group: ['Westworld'],
-            store: 2,
-            permission: ['Add new group', 'Settings'],
-            createdBy: 'robert.ford@delos.com',
-            status: 'active',
-            menu: false,
-          },
-          {
-            id: 2,
-            name: 'Engerraund Serac',
-            email: 'serac@inciteinc.com',
-            group: [],
-            store: 100,
-            permission: ['Add new group', 'Settings', 'Add new store', 'Update', 'Remove control', 'Account management', 'Config online ordering'],
-            status: 'active',
-            menu: false,
-          },
-          {
-            id: 3,
-            name: 'Bernard Lowe',
-            email: 'bernard@ww.com',
-            group: ['Westworld', 'Delos'],
-            store: 36,
-            permission: ['Add new group', 'Settings', 'Add new store', 'Update'],
-            createdBy: 'robert.ford@delos.com',
-            status: 'disabled',
-            menu: false
-          },
-        ],
         dialog: {
           account: false,
           edit: false,
@@ -150,16 +125,11 @@
         selectedAccount: null,
       }
     },
+    injectService: [
+      'PosOnlineOrderManagementStore:(accountViewModel,createAccount,editAccount,deleteAccount)',
+    ],
     methods: {
-      openDialogAccount(edit = false, account = null) {
-        this.dialog.edit = edit
-        this.selectedAccount = account
-        this.dialog.account = true
-      },
-      openDialogDelete(account) {
-        this.selectedAccount = account
-        this.dialog.delete = true
-      },
+      // style
       getStatusClass(status) {
         const statusDefault = 'account__status '
         if (status === 'active') {
@@ -169,21 +139,29 @@
           return statusDefault + 'account__status--disabled'
         }
       },
+      
+      //
+      openDialogAccount(edit = false, account = null) {
+        this.dialog.edit = edit
+        this.selectedAccount = account
+        this.dialog.account = true
+      },
+      openDialogDelete(account) {
+        this.selectedAccount = account
+        this.dialog.delete = true
+      },
       resetPassword(account) {
 
       },
       changeStatus(account) {
-        if(account.status === 'active') {
-          account.status = 'disabled'
-        } else if(account.status === 'disabled') {
-          account.status = 'active'
-        }
+        this.editAccount(account._id, { active: !account.active })
       },
-      deleteUser() {
-        const index = this.listAccounts.findIndex(a => a.id === this.selectedAccount.id)
-        this.listAccounts.splice(index, 1)
+      async deleteUser() {
+        await this.deleteAccount(this.selectedAccount._id)
         this.selectedAccount = null
       },
+      
+      // filters
       clearFilter(all) {
         this.filter = {
           create: null,
@@ -216,7 +194,7 @@
           const i = this.filter[filter.type].findIndex(item => item === filter.value)
           this.filter[filter.type].splice(i, 1)
         }
-      }
+      },
     }
   }
 </script>
