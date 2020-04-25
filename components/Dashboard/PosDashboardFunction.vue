@@ -63,8 +63,8 @@
 
         return this.btnDown.filter(item => {
           if (!item.feature) return true
-          if (this.user && this.user.role !== 'admin')
-            if (item.feature === 'settings' || item.feature === 'printerSettings') return false
+          if (this.user && this.user.role === 'admin')
+            if (item.feature === 'settings' || item.feature === 'printerSettings') return true
           return (this.enabledFeatures.includes(item.feature))
         })
       },
