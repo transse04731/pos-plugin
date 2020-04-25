@@ -123,12 +123,7 @@
     </div>
     
     <!-- Order created -->
-    <template v-if="showOrderSuccess">
-      <order-created v-if="isMobileView()" class="order-created--mobile" @close="closeOrderSuccess" @subscribe="subscribe"/>
-      <g-dialog  v-else v-model="showOrderSuccess" class="dlg-order-created">
-        <order-created class="order-created" @close="closeOrderSuccess" @subscribe="subscribe"/>
-      </g-dialog>
-    </template>
+    <order-created v-model="dialog.value" :order="dialog.order" @close="closeOrderSuccess" @subscribe="subscribe"/>
   </div>
 </template>
 <script>
@@ -156,14 +151,19 @@
           deliveryTime: new Date(),
           note: ''
         },
-        showOrderSuccess: false,
-        currency: $t('common.currency')
+        currency: $t('common.currency'),
+        dialog: {
+          value: false,
+          order: {}
+        }
       }
     },
     injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems,clearOrder)'],
     filters: {
       currency(value) {
-        return $t('common.currency') + value.toFixed(2)
+        if (value)
+          return $t('common.currency') + value.toFixed(2)
+        return 0
       }
     },
     computed: {
@@ -244,21 +244,24 @@
         }
 
         socket.emit('createOrder', this.store._id, orderData)
+
+        this.dialog.order = {
+          items: this.orderItems,
+          shippingFee: this.shippingFee,
+          totalPrice: this.totalPrice,
+        }
         
-        this.clearOrder()
-        
-        this.showOrderSuccess = true
+        this.dialog.value = true
       },
       closeOrderSuccess() {
-        this.showOrderSuccess = false
+        this.clearOrder()
+        this.view = 'order'
+        this.$emit('back') // for mobile
       },
       async subscribe(email) {
         const response = (await axios.post('/store/subscribe', { email, storeId: this.store._id })).data
         alert(response.message)
         this.closeOrderSuccess()
-      },
-      isMobileView() {
-        return window.screen.width < 600
       },
     }
   }

@@ -71,7 +71,6 @@
       display: flex;
       align-self: flex-end;
       margin-top: 24px;
-      margin-right: -8px;
     }
   }
 </style>
