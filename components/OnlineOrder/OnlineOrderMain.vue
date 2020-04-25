@@ -53,7 +53,11 @@
               </div>
             </g-card-text>
             <g-card-actions v-if="order.declineStep2">
-              <g-text-field-bs label="Reason to decline (optional)" v-model="order.declineReason"/>
+              <g-text-field-bs label="Reason to decline (optional)" v-model="order.declineReason">
+                <template v-slot:append-inner>
+                  <g-icon style="cursor: pointer" @click="openDialogReason(order)">icon-keyboard</g-icon>
+                </template>
+              </g-text-field-bs>
             </g-card-actions>
             <g-card-actions v-if="order.confirmStep2">
               <div>
@@ -142,23 +146,22 @@
                            @setPendingOrder="setPendingOrder"
                            @declineOrder="declineOrder"
     ></dialog-complete-order>
+    <dialog-text-filter v-model="dialog.reason" label="Reason" :default-value="dialog.order.declineReason" @submit="submitReason"/>
   </div>
 </template>
 
 <script>
   import ValuePicker from './ValuePicker';
   import DialogCompleteOrder from './dialogCompleteOrder';
+  import DialogTextFilter from "../pos-shared-components/dialogFilter/dialogTextFilter";
   export default {
     name: 'OnlineOrderMain',
-    components: { DialogCompleteOrder, ValuePicker },
+    components: {DialogTextFilter, DialogCompleteOrder, ValuePicker },
     props: {
       pendingOrders: Array,
       kitchenOrders: Array,
       defaultPrepareTime: Number,
       onlineOrderSorting: String
-    },
-    data: {
-      decimals: 2
     },
     filters: {
       formatDate(date) {
@@ -171,7 +174,12 @@
     data() {
       return {
         internalOrders: [],
-        showDialog: false
+        showDialog: false,
+        decimals: 2,
+        dialog: {
+          order: {},
+          reason: false,
+        }
       }
     },
     watch: {
@@ -229,6 +237,14 @@
       onBack(order) {
         this.$set(order, 'declineStep2', false)
         this.$set(order, 'confirmStep2', false)
+      },
+      openDialogReason(order) {
+        this.dialog.order = order
+        this.dialog.reason = true
+      },
+      submitReason(reason) {
+        const order = this.internalOrders.find(o => o._id === this.dialog.order._id)
+        this.$set(order, 'declineReason', reason)
       }
     },
     mounted() {

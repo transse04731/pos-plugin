@@ -9,7 +9,12 @@
         </g-btn-bs>
       </slot>
     </template>
-    <g-text-field-bs ref="input" v-if="allowCustom" placeholder="Custom..." :value="inputValue" @input="pickCustomValue"></g-text-field-bs>
+    <g-text-field-bs ref="input" v-if="allowCustom" placeholder="Custom..." :value="inputValue" @input="pickCustomValue">
+      <template v-slot:append-inner>
+        <g-icon style="cursor: pointer" @click="dialog = true">icon-keyboard</g-icon>
+      </template>
+    </g-text-field-bs>
+    <dialog-number-filter v-model="dialog" label="Custom time" @submit="changeValue"/>
   </div>
 </template>
 
@@ -24,7 +29,8 @@
     },
     data() {
       return {
-        inputValue: ''
+        inputValue: '',
+        dialog: false
       }
     },
     methods: {
@@ -39,6 +45,10 @@
       },
       isValueSelected(val) {
         return this.value === val
+      },
+      changeValue(val) {
+        this.inputValue = val
+        this.pickCustomValue(val)
       }
     },
     mounted() {
