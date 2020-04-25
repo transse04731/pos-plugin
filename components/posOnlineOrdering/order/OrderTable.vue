@@ -67,7 +67,7 @@
                 <template v-if="orderType === 'delivery'">
                   <g-text-field v-model="customer.address" label="Address" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-place@16"/>
                   <g-text-field v-model="customer.zipCode" label="Zip code" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
-                  <g-text-field type="time" label="Delivery time" required prepend-icon="icon-delivery-truck@16"/>
+                  <g-time-picker-input v-model="customer.deliveryTime" label="Delivery time" required prepend-icon="icon-delivery-truck@16"/>
                 </template>
                 <g-textarea v-model="customer.note" placeholder="Note..." rows="3" no-resize/>
               </div>
@@ -123,12 +123,7 @@
     </div>
     
     <!-- Order created -->
-    <template v-if="showOrderSuccess">
-      <order-created v-if="isMobileView()" class="order-created--mobile" @close="closeOrderSuccess" @subscribe="subscribe"/>
-      <g-dialog  v-else v-model="showOrderSuccess" class="dlg-order-created">
-        <order-created class="order-created" @close="closeOrderSuccess" @subscribe="subscribe"/>
-      </g-dialog>
-    </template>
+    <order-created v-model="dialog.value" :order="dialog.order" @close="closeOrderSuccess" @subscribe="subscribe"/>
   </div>
 </template>
 <script>
@@ -153,17 +148,22 @@
           phone: '',
           address: '',
           zipCode: '',
-          deliveryTime: new Date(),
+          deliveryTime: '',
           note: ''
         },
-        showOrderSuccess: false,
-        currency: $t('common.currency')
+        currency: $t('common.currency'),
+        dialog: {
+          value: false,
+          order: {}
+        }
       }
     },
     injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems,clearOrder)'],
     filters: {
       currency(value) {
-        return $t('common.currency') + value.toFixed(2)
+        if (value)
+          return $t('common.currency') + value.toFixed(2)
+        return 0
       }
     },
     computed: {
@@ -229,13 +229,18 @@
             category: orderItem.category.name,
           }
         })
-        
+
+        //convert delivery time to date
+        const period = deliveryTime.substr(deliveryTime.length - 2, deliveryTime.length)
+        const time = deliveryTime.slice(0, deliveryTime.length - 2).trim().split(':')
+        const date = dayjs().second(0).minute(+time[1]).hour(+time[0]).add(period.toUpperCase() === 'PM' ? 12 : 0, 'hour')
+
         const orderData = {
           orderType: this.orderType,
           paymentType: this.paymentType,
           customer,
           products,
-          deliveryTime,
+          deliveryTime: date.toDate(),
           note,
           createdDate: new Date(),
           shippingFee: this.shippingFee,
@@ -244,21 +249,24 @@
         }
 
         socket.emit('createOrder', this.store._id, orderData)
+
+        this.dialog.order = {
+          items: this.orderItems,
+          shippingFee: this.shippingFee,
+          totalPrice: this.totalPrice,
+        }
         
-        this.clearOrder()
-        
-        this.showOrderSuccess = true
+        this.dialog.value = true
       },
       closeOrderSuccess() {
-        this.showOrderSuccess = false
+        this.clearOrder()
+        this.view = 'order'
+        this.$emit('back') // for mobile
       },
       async subscribe(email) {
         const response = (await axios.post('/store/subscribe', { email, storeId: this.store._id })).data
         alert(response.message)
         this.closeOrderSuccess()
-      },
-      isMobileView() {
-        return window.screen.width < 600
       },
     }
   }
@@ -598,6 +606,31 @@
           padding: 20px;
           border-radius: 0 25px 0 0;
         }
+      }
+    }
+  }
+</style>
+
+<style lang="scss">
+  input {
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      animation: autofill 0s forwards !important;
+    }
+
+    @keyframes autofill {
+      100% {
+        background: transparent;
+        color: inherit;
+      }
+    }
+
+    @-webkit-keyframes autofill {
+      100% {
+        background: transparent;
+        color: inherit;
       }
     }
   }

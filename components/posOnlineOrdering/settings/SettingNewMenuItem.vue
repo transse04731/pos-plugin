@@ -54,9 +54,9 @@
       </div>
     </div>
     <!-- Action button -->
-    <div style="display: flex; justify-content: flex-end">
+    <div style="display: flex; justify-content: flex-end; margin: 4px 8px">
       <g-btn-bs @click="$emit('cancel')">Cancel</g-btn-bs>
-      <g-btn-bs text-color="#536DFE" @click="saveMenuItem">Save</g-btn-bs>
+      <g-btn-bs width="80" background-color="#536DFE" text-color="white" @click="saveMenuItem">Save</g-btn-bs>
     </div>
   </div>
 </template>

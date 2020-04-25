@@ -6,21 +6,27 @@
           <div class="pos-order__left__header">
             <img :src="store.logoImageSrc"/>
             <div class="pos-order__left__header--info">
-              <div class="row-flex align-items-center justify-end">
-                <span class="phone-image">
-                  <img alt src="/plugins/pos-plugin/assets/phone.svg"/>
-                </span>
-                <span class="sub-title">{{store.phone}}</span>
+              <div>
+                <div class="row-flex align-items-center justify-end">
+                  <span class="phone-image">
+                    <img alt src="/plugins/pos-plugin/assets/phone.svg"/>
+                  </span>
+                  <span class="sub-title">{{store.phone}}</span>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: flex-end; white-space: nowrap;">
+                  <span :style="storeOpenStatusStyle">{{ storeOpenStatus }}</span>
+                  <template v-if="storeWorkingTime">
+                    <span style="margin-right: 3px;">|</span>
+                    <g-icon size="16">access_time</g-icon>
+                    <span style="color: #424242; margin-left: 3px">{{ storeWorkingTime }}</span>
+                  </template>
+                  <span v-else>today</span>
+                </div>
               </div>
-            
-              <div style="display: flex; align-items: center; font-weight: 300; white-space: nowrap">
-                <span :style="storeOpenStatusStyle">{{ storeOpenStatus }}</span>
-                <template v-if="storeWorkingTime">
-                  <span style="margin-right: 3px;">|</span>
-                  <g-icon size="16">access_time</g-icon>
-                  <span style="color: #424242; margin-left: 3px">{{ storeWorkingTime }}</span>
-                </template>
-                <span v-else>today</span>
+              <div class="address">
+                <span>{{store.address}}</span>
+                <span class="ml-1">{{store.zipCode}} {{store.townCity}}</span>
               </div>
             </div>
           </div>
@@ -109,8 +115,10 @@
       }
     },
     filters: {
-      currency(val) {
-        return $t('common.currency') + val.toFixed(2)
+      currency(value) {
+        if (value)
+          return $t('common.currency') + value.toFixed(2)
+        return 0
       }
     },
     async created() {
@@ -288,16 +296,44 @@
 
         &--info {
           text-align: right;
+          font-size: 15px;
+          color: #424242;
+          font-weight: 300;
+          margin-top: 8px;
 
           .phone-image {
-            width: 35px;
-            height: 35px;
+            width: 24px;
+            height: 24px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             background-color: #000;
             border-radius: 100%;
-            margin-right: 10px
+            margin-right: 10px;
+
+            & > img {
+              width: 16px;
+              height: 16px;
+            }
+
+            & + .sub-title {
+              font-size: 15px;
+            }
+          }
+
+          & > div:first-child {
+            display: flex;
+            flex-flow: row-reverse;
+
+            .phone-image {
+              margin-left: 16px;
+            }
+          }
+
+          .address {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
           }
         }
       }
@@ -308,7 +344,7 @@
         margin-bottom: 24px;
       }
 
-      .sub-title {
+      span.sub-title {
         font-size: 24px;
         font-weight: 700;
       }
@@ -387,21 +423,30 @@
         }
 
         &--info {
-          font-size: 14px;
+          font-size: 12px;
           margin-right: 15px;
 
-          .phone-image {
-            width: 24px;
-            height: 24px;
+          & > div:first-child {
+            display: block;
 
-            & > img {
+            .phone-image {
+              margin-left: 0;
               width: 16px;
               height: 16px;
+
+              & > img {
+                width: 10px;
+                height: 10px;
+              }
+            }
+
+            .sub-title {
+              font-size: 12px;
             }
           }
 
-          .sub-title {
-            font-size: 15px;
+          .address {
+            display: block;
           }
         }
       }
