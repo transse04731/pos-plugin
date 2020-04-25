@@ -10,15 +10,18 @@
       "slotsType": "array",
       "slots": [
         "default"
+      ],
+      "preprocess": [
+        "label"
       ]
     }
   ],
   "fields": [
     {
-      "_id": "5de7351ba7884176a656ef04",
-      "schemaType": "string",
+      "_id": "5ea3b4eaf221a0602aba6375",
+      "schemaType": "mixed",
       "key": "label",
-      "type": "input",
+      "type": "I18nInput",
       "addable": true
     },
     {

@@ -24,7 +24,7 @@
   export default {
     name: 'dialogTextFilter',
     props: {
-      label: String,
+      label: null,
       value: null,
 			defaultValue: {
       	type: String,

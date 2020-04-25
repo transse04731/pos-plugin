@@ -3,7 +3,7 @@
     <div class="wrapper">
       <div class="dialog-title">
         <span>{{$t('orderHistory.dateTimeSelection')}}</span>
-        <g-icon size="20" svg @click="internalValue = false">icon-close</g-icon>
+<!--        <g-icon size="20" svg @click="internalValue = false">icon-close</g-icon>-->
       </div>
       <g-date-range-picker v-model="selectedDatetime"/>
       <div class="action">

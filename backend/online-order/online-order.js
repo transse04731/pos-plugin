@@ -76,6 +76,13 @@ function createOnlineOrderSocket(deviceId) {
       ackFn();
     });
 
+    onlineOrderSocket.on('updateAppFeature', async data => {
+      await Promise.all(_.map(data, async (enabled, name) => {
+        return await cms.getModel('Feature').updateOne({ name }, { $set: { enabled } }, { upsert: true })
+      }))
+      deviceSockets.forEach(socket => socket.emit('updateAppFeature')) // emit to all frontends
+    })
+
     onlineOrderSocket.on('startRemoteControl', (proxyServerPort, callback) => {
       activeProxies++;
 

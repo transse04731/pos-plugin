@@ -23,7 +23,7 @@
   export default {
     name: 'dialogRangeFilter',
     props: {
-      label: String,
+      label: null,
       min: {
         type: [Number, String],
         default: 0

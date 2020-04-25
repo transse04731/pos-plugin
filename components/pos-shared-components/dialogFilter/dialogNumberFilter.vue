@@ -25,7 +25,7 @@
   export default {
     name: 'dialogNumberFilter',
     props: {
-      label: String,
+      label: null,
       value: null,
 			rules: Array,
     },

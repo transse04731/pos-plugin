@@ -80,6 +80,9 @@ module.exports = {
       promotion: 'Gutschein',
       name: 'Name',
       choose: 'Choose Position',
+      tblTotal: 'Gesamt',
+      tblRow: 'Zeilen pro Seite',
+      tblPage: 'Page'
     },
 
     dialogs: {
@@ -155,8 +158,8 @@ module.exports = {
       printReport: 'Print Report',
       pendingPrintLine1: 'Day {date} is not yet closed.',
       pendingPrintLine2: 'Do you want to run End-of-day on {date}?',
-      confirmationPrintZ1: 'Are you sure to print Z-Report',
-      confirmationPrintZ2: '(End Of Day)',
+      confirmationPrintZ1: 'Möchten Sie den Z-Bericht drucken',
+      confirmationPrintZ2: '(Tagesabschluss)',
       reprintZReport: 'Reprint Z-Report',
       runEndOfDay: 'Z-Bericht erstellen',
       showProductSold: 'Artikelverkauf-Bericht',
@@ -187,7 +190,8 @@ module.exports = {
       amount: 'Betrag',
       staff: 'Benutzer',
       info: 'Info',
-      filter: 'Filter'
+      filter: 'Filter',
+      deleteOrder: 'Bestellung löschen'
     },
 
     payment: {
@@ -275,6 +279,9 @@ module.exports = {
       multipleInvoicePrinter: 'Mehrere Drucker für Rechnung',
       multipleEntirePrinter: 'Mehrere Drucker für Gesamte Drucker',
       showDineInTax: 'Show Dine-in Tax',
+      networkPrinter: 'Netzwerk Drucker',
+      serialPrinter: 'COM',
+      usb: 'USB',
       //payment
       paymentName: 'Name',
       paymentIcon: 'Symbol',
@@ -285,7 +292,7 @@ module.exports = {
 
     //dates
     dates: {
-      daysOfWeek: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
+      daysOfWeek: ['SO', 'MO', 'DI', 'MI', 'DO', 'FR', 'SA'],
       timeFormat: 'HH:mm',
       dateFormat: 'DD/MM/YYYY',
     },
@@ -370,7 +377,7 @@ module.exports = {
       amount: 'Betrag... Bar / EC',
       received: 'Bestellung',
       delivery: 'Lieferung',
-      pickUp: 'Abholung',
+      'pick-up': 'Abholung',
       type: 'Typ',
       status: 'Status',
       completed: 'abgeschlossen',

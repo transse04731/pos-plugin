@@ -189,12 +189,21 @@
                   "component": "VTag",
                   "content": {
                     "props": {
-                      "html": "Back",
                       "tag": "span",
                       "class": [
                         "ml-2"
-                      ]
-                    }
+                      ],
+                      "html": {
+                        "_code_": "\n        module.exports = function() {\n          return $t('ui.back')\n        }\n        ",
+                        "_code_type_": "commonJs",
+                        "_metadata_": {
+                          "text": "ui.back"
+                        }
+                      }
+                    },
+                    "preprocess": [
+                      "html"
+                    ]
                   },
                   "binding": [],
                   "slotScopeBinding": []
@@ -225,7 +234,10 @@
                     "_code_": "module.exports = function () {\n  const order = this.$getService('OrderStore:orderHistoryCurrentOrder');\n  this.$getService('dialogConfirmDeleteOrderHistory:open')('Order No.', order.id);\n}",
                     "_code_type_": "commonJs"
                   }
-                }
+                },
+                "preprocess": [
+                  "html"
+                ]
               },
               "binding": [],
               "slotScopeBinding": [],
@@ -247,12 +259,21 @@
                   "component": "VTag",
                   "content": {
                     "props": {
-                      "html": "Delete Order",
                       "tag": "span",
                       "class": [
                         "ml-2"
-                      ]
-                    }
+                      ],
+                      "html": {
+                        "_code_": "\n        module.exports = function() {\n          return $t('orderHistory.deleteOrder')\n        }\n        ",
+                        "_code_type_": "commonJs",
+                        "_metadata_": {
+                          "text": "orderHistory.deleteOrder"
+                        }
+                      }
+                    },
+                    "preprocess": [
+                      "html"
+                    ]
                   },
                   "binding": [],
                   "slotScopeBinding": []
@@ -274,7 +295,10 @@
                     "_code_": "module.exports = async function() {\n  const order = this.$getService('OrderStore:orderHistoryCurrentOrder')\n  order && await this.$getService('OrderStore:printOrderReport')(order._id)\n}",
                     "_code_type_": "commonJs"
                   }
-                }
+                },
+                "preprocess": [
+                  "html"
+                ]
               },
               "binding": [],
               "slotScopeBinding": [],
@@ -296,12 +320,21 @@
                   "component": "VTag",
                   "content": {
                     "props": {
-                      "html": "Print",
                       "tag": "span",
                       "class": [
                         "ml-2"
-                      ]
-                    }
+                      ],
+                      "html": {
+                        "_code_": "\n        module.exports = function() {\n          return $t('ui.print')\n        }\n        ",
+                        "_code_type_": "commonJs",
+                        "_metadata_": {
+                          "text": "ui.print"
+                        }
+                      }
+                    },
+                    "preprocess": [
+                      "html"
+                    ]
                   },
                   "binding": [],
                   "slotScopeBinding": []
@@ -346,15 +379,24 @@
       "component": "dialogNumberFilter",
       "content": {
         "props": {
-          "label": "Order No",
-          "rules": []
+          "rules": [],
+          "label": {
+            "_code_": "\n        module.exports = function() {\n          return $t('orderHistory.orderNo')\n        }\n        ",
+            "_code_type_": "commonJs",
+            "_metadata_": {
+              "text": "orderHistory.orderNo"
+            }
+          }
         },
         "events": {
           "submit": {
-            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Order No',\n    text: val,\n    condition: {$where: '/.*'+val+'.*/.test(this.id)'}\n  }\n  this.$getService('OrderStore:updateOrderHistoryFilter')(filter);\n  await this.$getService('OrderStore:getOrderHistory')();\n  await this.$getService('OrderStore:getTotalOrders')();\n}",
+            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: this.$t('orderHistrory.orderNo'),\n    text: val,\n    condition: {$where: '/.*'+val+'.*/.test(this.id)'}\n  }\n  this.$getService('OrderStore:updateOrderHistoryFilter')(filter);\n  await this.$getService('OrderStore:getOrderHistory')();\n  await this.$getService('OrderStore:getTotalOrders')();\n}",
             "_code_type_": "commonJs"
           }
-        }
+        },
+        "preprocess": [
+          "label"
+        ]
       },
       "binding": [],
       "slotScopeBinding": [],
@@ -376,20 +418,29 @@
       "component": "dialogNumberFilter",
       "content": {
         "props": {
-          "label": "Barcode",
           "rules": [
             {
               "_code_": "module.exports = function (val) {\n  const orders = root.$getService('OrderStore:orderHistoryOrders');\n  const index = orders.findIndex(o => o.bookingNumber.includes(val))\n  return index !== -1 || 'Not found'\n}",
               "_code_type_": "commonJs"
             }
-          ]
+          ],
+          "label": {
+            "_code_": "\n        module.exports = function() {\n          return $t('orderHistory.barcode')\n        }\n        ",
+            "_code_type_": "commonJs",
+            "_metadata_": {
+              "text": "orderHistory.barcode"
+            }
+          }
         },
         "events": {
           "submit": {
-            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Barcode',\n    text: val,\n    condition: {barcode: {\"$regex\": val}}\n  }\n  this.$getService('OrderStore:updateOrderHistoryFilter')(filter);\n  await this.$getService('OrderStore:getOrderHistory')();\n  await this.$getService('OrderStore:getTotalOrders')();\n}",
+            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: this.$t('orderHistory.barcode'),\n    text: val,\n    condition: {barcode: {\"$regex\": val}}\n  }\n  this.$getService('OrderStore:updateOrderHistoryFilter')(filter);\n  await this.$getService('OrderStore:getOrderHistory')();\n  await this.$getService('OrderStore:getTotalOrders')();\n}",
             "_code_type_": "commonJs"
           }
-        }
+        },
+        "preprocess": [
+          "label"
+        ]
       },
       "binding": [],
       "slotScopeBinding": [],
@@ -412,14 +463,23 @@
       "component": "dialogTextFilter",
       "content": {
         "props": {
-          "label": "Staff"
+          "label": {
+            "_code_": "\n        module.exports = function() {\n          return $t('orderHistory.staff')\n        }\n        ",
+            "_code_type_": "commonJs",
+            "_metadata_": {
+              "text": "orderHistory.staff"
+            }
+          }
         },
         "events": {
           "submit": {
-            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Staff',\n    text: val,\n    condition: {'user.name': { '$regex': val, $options: 'i'}}\n  }\n  this.$getService('OrderStore:updateOrderHistoryFilter')(filter);\n  await this.$getService('OrderStore:getOrderHistory')();\n  await this.$getService('OrderStore:getTotalOrders')();\n}",
+            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: this.$t('orderHistory.staff'),\n    text: val,\n    condition: {'user.name': { '$regex': val, $options: 'i'}}\n  }\n  this.$getService('OrderStore:updateOrderHistoryFilter')(filter);\n  await this.$getService('OrderStore:getOrderHistory')();\n  await this.$getService('OrderStore:getTotalOrders')();\n}",
             "_code_type_": "commonJs"
           }
-        }
+        },
+        "preprocess": [
+          "label"
+        ]
       },
       "binding": [],
       "slotScopeBinding": [],
@@ -441,15 +501,24 @@
       "component": "dialogRangeFilter",
       "content": {
         "props": {
-          "label": "Price Range Filter",
-          "max": 1000
+          "max": 1000,
+          "label": {
+            "_code_": "\n        module.exports = function() {\n          return $t('orderHistory.amount')\n        }\n        ",
+            "_code_type_": "commonJs",
+            "_metadata_": {
+              "text": "orderHistory.amount"
+            }
+          }
         },
         "events": {
           "submit": {
-            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: 'Amount',\n    text: val[0] + ' - ' + val[1],\n    condition: {vSum: { '$gte': val[0], '$lte': val[1] }}\n  }\n  this.$getService('OrderStore:updateOrderHistoryFilter')(filter);\n  await this.$getService('OrderStore:getOrderHistory')();\n  await this.$getService('OrderStore:getTotalOrders')();\n}",
+            "_code_": "module.exports = async function(val) {\n  const filter = {\n    title: this.$t('orderHistory.amount'),\n    text: val[0] + ' - ' + val[1],\n    condition: {vSum: { '$gte': val[0], '$lte': val[1] }}\n  }\n  this.$getService('OrderStore:updateOrderHistoryFilter')(filter);\n  await this.$getService('OrderStore:getOrderHistory')();\n  await this.$getService('OrderStore:getTotalOrders')();\n}",
             "_code_type_": "commonJs"
           }
-        }
+        },
+        "preprocess": [
+          "label"
+        ]
       },
       "binding": [],
       "slotScopeBinding": [],

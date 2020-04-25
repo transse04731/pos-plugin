@@ -191,8 +191,10 @@
                 "justifyContent": "",
                 "columns": [
                   "1fr",
+                  "auto",
+                  "4px",
                   "20%",
-                  "20px",
+                  "4px",
                   "20%",
                   "20px"
                 ],
@@ -205,14 +207,14 @@
                 "rowGap": 0,
                 "subAreas": [
                   {
-                    "name": "version-button",
+                    "name": "support-button",
                     "top": 2,
-                    "left": 2,
+                    "left": 6,
                     "width": 1,
                     "height": 1,
                     "margin": "",
                     "padding": "",
-                    "bgColor": "hsl(310, 100%, 50%, 50%)",
+                    "bgColor": "hsl(209, 100%, 50%, 50%)",
                     "alignSelf": "",
                     "justifySelf": "",
                     "wrapInDiv": false,
@@ -229,14 +231,38 @@
                     "flexAlignSelf": ""
                   },
                   {
-                    "name": "support-button",
+                    "name": "version-button",
                     "top": 2,
                     "left": 4,
                     "width": 1,
                     "height": 1,
                     "margin": "",
                     "padding": "",
-                    "bgColor": "hsl(65, 100%, 50%, 50%)",
+                    "bgColor": "hsl(216, 100%, 50%, 50%)",
+                    "alignSelf": "",
+                    "justifySelf": "",
+                    "wrapInDiv": false,
+                    "displayFlex": false,
+                    "flexDirection": "row",
+                    "flexWrap": false,
+                    "flexJustifyContent": "",
+                    "flexAlignItems": "",
+                    "flexAlignContent": "",
+                    "flexOrder": "",
+                    "flexGrow": "",
+                    "flexShrink": "",
+                    "flexBasis": "",
+                    "flexAlignSelf": ""
+                  },
+                  {
+                    "name": "language-button",
+                    "top": 2,
+                    "left": 2,
+                    "width": 1,
+                    "height": 1,
+                    "margin": "",
+                    "padding": "",
+                    "bgColor": "hsl(72, 100%, 50%, 50%)",
                     "alignSelf": "",
                     "justifySelf": "",
                     "wrapInDiv": false,
@@ -622,6 +648,16 @@
           "binding": [],
           "slotScopeBinding": [],
           "slot": "introduction-line"
+        },
+        {
+          "choice": "view",
+          "component": "PosLoginBtnLanguage",
+          "binding": [],
+          "slotScopeBinding": [],
+          "slot": "language-button",
+          "url": "plugins/pos-plugin/components/Login/PosLoginBtnLanguage.vue",
+          "path": "components/Login/PosLoginBtnLanguage.vue",
+          "pluginName": "pos-plugin"
         }
       ],
       "slot": null

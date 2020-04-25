@@ -3,6 +3,9 @@
 
   export default {
     name: 'PosTextField',
+    props: {
+      label: null
+    },
     mixins: [GTextFieldBs],
     mounted() {
       this.$nextTick(() => {

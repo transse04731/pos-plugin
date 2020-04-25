@@ -17,15 +17,114 @@
         user: null,
         loginPassword: '',
         incorrectPasscode: false,
-        //payment screen variables
-        paymentAmountTendered: '',
-        paymentTip: 0,
-        lastPayment: 0,
         timeFormat: this.$t('dates.timeFormat'),
         dateFormat: this.$t('dates.dateFormat'),
         locale: 'en',
         device: 'Terminal1',
         isFirstTimeSetup: true,
+        enabledFeatures: [],
+        dashboardSidebar: [
+          {
+            icon: 'icon-restaurant',
+            children() {
+              const rooms = this.$getService('RoomStore').rooms
+              const result = rooms.map(room => {
+                return {
+                  title: room.name,
+                  icon: 'radio_button_unchecked',
+                  iconType: 'small',
+                  onClick() {
+                    this.$emit('update:view', {
+                      name: 'Restaurant',
+                      params: {
+                        id: room._id
+                      }
+                    })
+                  }
+                }
+              });
+
+              return result;
+            },
+            title: this.$t('sidebar.restaurant'),
+            feature: 'tablePlan'
+          },
+          {
+            icon: 'icon-manual-table',
+            onClick() {
+              this.$emit('update:view', {
+                name: 'ManualTable',
+                params: ''
+              })
+            },
+            title: this.$t('sidebar.manualTable'),
+            feature: 'manualTable'
+          },
+          {
+            icon: 'icon-delivery',
+            items: [
+              {
+                icon: 'radio_button_unchecked',
+                iconType: 'small',
+                onClick() {
+                  this.$emit('update:view', {
+                    name: 'Dashboard'
+                  })
+                },
+                title: this.$t('onlineOrder.dashboard')
+              },
+              {
+                icon: 'radio_button_unchecked',
+                iconType: 'small',
+                onClick() {
+                  this.$emit('update:view', {
+                    name: 'Order',
+                    params: {
+                      status: 'completed'
+                    }
+                  })
+                },
+                title: this.$t('onlineOrder.completedOrders')
+              },
+              {
+                icon: 'radio_button_unchecked',
+                iconType: 'small',
+                onClick() {
+                  this.$emit('update:view', {
+                    name: 'Order',
+                    params: {
+                      status: 'declined'
+                    }
+                  })
+                },
+                title: this.$t('onlineOrder.declinedOrders')
+              }
+            ],
+            title: this.$t('onlineOrder.onlineOrders'),
+            feature: 'onlineOrdering'
+          },
+          {
+            icon: 'icon-functions',
+            onClick() {
+              this.$emit('update:view', {
+                name: 'Functions',
+                params: ''
+              })
+            },
+            title: this.$t('sidebar.functions')
+          }
+        ]
+      }
+    },
+    computed: {
+      computedDashboardSidebar() {
+        if (this.user && this.enabledFeatures) {
+          return this.dashboardSidebar.filter(item => {
+            if (!item.feature) return true
+            return this.enabledFeatures.includes(item.feature)
+          })
+        }
+        return this.dashboardSidebar
       }
     },
     domain: 'PosStore',
@@ -52,7 +151,10 @@
       },
       completeSetup() {
         this.isFirstTimeSetup = false
-        localStorage.setItem('isFirstTimeSetup', 'false')
+      },
+      async getEnabledFeatures() {
+        const enabledFeatures = await cms.getModel('Feature').find({ enabled: true })
+        this.enabledFeatures = enabledFeatures.map(item => item.name)
       }
       //<!--</editor-fold>-->
     },
@@ -71,7 +173,16 @@
         }
       }
 
-      this.isFirstTimeSetup = JSON.parse(localStorage.getItem('isFirstTimeSetup'))
+      await this.getEnabledFeatures()
+      cms.socket.on('updateAppFeature', async () => {
+        await this.getEnabledFeatures()
+      })
+
+      this.$router.beforeEach((to, from, next) => {
+        if (to.path === '/admin' || to.path === '/plugins' || to.path === '/pos-login' || to.path === '/pos-setup') next()
+        else if (!this.user) next('/pos-login')
+        else next()
+      })
     },
     beforeDestroy() {
       this.setDateInterval && clearInterval(this.setDateInterval)
@@ -80,6 +191,7 @@
       return {
         ...getProvided(this.$data, this),
         ...getProvided(this.$options.methods, this),
+        ...getProvided(this.$options.computed, this)
       }
     }
   }

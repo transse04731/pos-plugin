@@ -31,8 +31,8 @@
           </td>
           <td>{{item.date | formatDate}}</td>
           <td>{{item.deliveryDate | formatDate}}</td>
-          <td class="fw-700">{{item.type}}</td>
-          <td :class="statusClass">{{item.status}}</td>
+          <td class="fw-700">{{$t(`onlineOrder.${item.type}`)}}</td>
+          <td :class="statusClass">{{$t(`onlineOrder.${item.status}`)}}</td>
         </tr>
         </tbody>
       </g-table>

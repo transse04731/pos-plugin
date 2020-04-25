@@ -1,7 +1,7 @@
 <template>
   <div class="function">
-    <div class="function--up">
-      <div v-for="(btn, i) in btnUp" :key="`up_${i}`"
+    <div class="function--up" v-show="computedBtnGroup1.length" >
+      <div v-for="(btn, i) in computedBtnGroup1" :key="`up_${i}`"
            class="function-btn"
            @click="changePath(btn.path)">
         <g-icon size="60">{{btn.icon}}</g-icon>
@@ -10,7 +10,7 @@
     </div>
     <g-divider color="#9e9e9e"/>
     <div class="function--down">
-      <div v-for="(btn, i) in btnDown" :key="`down_${i}`"
+      <div v-for="(btn, i) in computedBtnGroup2" :key="`down_${i}`"
            class="function-btn"
            @click="changePath(btn.path)">
         <g-icon size="60">{{btn.icon}}</g-icon>
@@ -23,27 +23,52 @@
 <script>
   export default {
     name: "PosDashboardFunction",
+    props: {
+      enabledFeatures: Array,
+      user: null
+    },
     data() {
       const i18n = this.$i18n;
-      const { dashboard } = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
+      const { dashboard: { delivery, editMenuCard, editTablePlan, endOfDay, fastCheckout, monthlyReport, orderHistory, printerSettings, settings, staffReport, support } } = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
 
       return {
         btnUp: [
-          {title: dashboard.fastCheckout, icon: 'icon-fast-checkout', path: '/pos-order-2'},
-          {title: dashboard.delivery, icon: 'icon-delivery', path: '/pos-delivery'}
+          {title: fastCheckout, feature: 'fastCheckout',icon: 'icon-fast-checkout', path: '/pos-order-2'},
+          {title: delivery, feature: 'delivery', icon: 'icon-delivery', path: '/pos-delivery'}
         ],
         btnDown: [
-          {title: dashboard.staffReport, icon: 'icon-staff-report', path: '/pos-staff-report'},
-          {title: dashboard.settings, icon: 'icon-dashboard', path: '/pos-settings'},
-          {title: dashboard.endOfDay, icon: 'icon-calendar', path: '/pos-eod-report'},
-          {title: dashboard.orderHistory, icon: 'icon-history', path: '/pos-order-history'},
-          {title: dashboard.monthlyReport, icon: 'icon-month_report', path: '/pos-month-report'},
-          {title: dashboard.support, icon: 'icon-support-2', path: '/pos-support'},
-          {title: dashboard.editTablePlan, icon: 'icon-edit-table-plan', path: '/pos-edit-table-plan'},
-          {title: dashboard.editMenuCard, icon: 'icon-edit-menu-card', path: '/pos-edit-menu-card'},
-          {title: dashboard.printerSettings, icon: 'icon-printer-setting', path: '/pos-printer-setting'},
+          {title: staffReport, feature: 'staffReport', icon: 'icon-staff-report', path: '/pos-staff-report'},
+          {title: settings, feature: 'settings', icon: 'icon-dashboard', path: '/pos-settings'},
+          {title: endOfDay, feature:'eodReport', icon: 'icon-calendar', path: '/pos-eod-report'},
+          {title: orderHistory, icon: 'icon-history', path: '/pos-order-history'},
+          {title: monthlyReport, feature: 'monthlyReport', icon: 'icon-month_report', path: '/pos-month-report'},
+          {title: support, icon: 'icon-support-2', path: '/pos-support'},
+          {title: editTablePlan, feature: 'editTablePlan', icon: 'icon-edit-table-plan', path: '/pos-edit-table-plan'},
+          {title: editMenuCard, feature: 'editMenuCard', icon: 'icon-edit-menu-card', path: '/pos-edit-menu-card'},
+          {title: printerSettings, feature: 'printerSettings', icon: 'icon-printer-setting', path: '/pos-printer-setting'},
         ]
       }
+    },
+    computed: {
+      computedBtnGroup1() {
+        if (!this.enabledFeatures || !this.enabledFeatures.length) return
+
+        return this.btnUp.filter(item => {
+          if (!item.feature) return true
+          return (this.enabledFeatures.includes(item.feature))
+        })
+      },
+      computedBtnGroup2() {
+        if (!this.enabledFeatures || !this.enabledFeatures.length) return
+
+        return this.btnDown.filter(item => {
+          if (!item.feature) return true
+          if (this.user && this.user.role === 'admin')
+            if (item.feature === 'settings' || item.feature === 'printerSettings') return true
+          return (this.enabledFeatures.includes(item.feature))
+        })
+      },
+
     },
     methods: {
       changePath(path) {

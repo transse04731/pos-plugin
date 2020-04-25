@@ -73,7 +73,7 @@
         this.$router.push({path: '/pos-login'})
       },
       connect() {
-        this.$emit('registerOnlineOrder', this.code, deviceId => {
+        this.$emit('registerOnlineOrder', this.code, (error, deviceId) => {
           this.success = !!deviceId
           this.success && this.$emit('completeSetup')
         })
@@ -82,6 +82,7 @@
     watch: {
       isFirstTimeSetup: {
         handler(val) {
+          console.log(val)
           if (!val) this.$router.push('/pos-login')
         },
         immediate: true

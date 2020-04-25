@@ -9,7 +9,7 @@
   export default {
     name: 'SettingsStore',
     domain: 'SettingsStore',
-    injectService: ['PosStore:(user, device)'],
+    injectService: ['PosStore:(user, device, isFirstTimeSetup)'],
     data() {
       const i18n = this.$i18n;
       const { sidebar } = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
@@ -102,6 +102,10 @@
         } else hardwares = [{name: this.device}]
 
         await this.updatePosSetting('hardwares', hardwares)
+      }
+
+      if (posSettings.onlineDevice) {
+        this.isFirstTimeSetup = posSettings.onlineDevice.paired
       }
     },
     watch: {
