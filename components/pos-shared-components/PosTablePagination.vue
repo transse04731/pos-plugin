@@ -1,8 +1,8 @@
 <template>
   <div class="g-pagination-wrapper">
     <div v-if="selected" class="g-pagination-text">Selected: {{selected}}</div>
-    <div class="g-pagination-text">Total: {{totalDocument}}</div>
-    <div class="g-pagination-text">Rows per page:</div>
+    <div class="g-pagination-text">{{$t('ui.tblTotal')}}: {{totalDocument}}</div>
+    <div class="g-pagination-text">{{$t('ui.tblRow')}}:</div>
     <div class="g-pagination-input">
       <g-select :items="computedRowsPerPageItems"
                 :value="selectLimit"
@@ -10,7 +10,7 @@
       />
     </div>
     <div class="g-pagination-text">
-      Page:
+      {{$t('ui.tblPage')}}:
     </div>
     <div class="g-pagination-input" style="margin-right: 16px">
       <g-combobox

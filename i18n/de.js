@@ -80,6 +80,9 @@ module.exports = {
       promotion: 'Gutschein',
       name: 'Name',
       choose: 'Choose Position',
+      tblTotal: 'Gesamt',
+      tblRow: 'Zeilen pro Seite',
+      tblPage: 'Page'
     },
 
     dialogs: {
@@ -187,7 +190,8 @@ module.exports = {
       amount: 'Betrag',
       staff: 'Benutzer',
       info: 'Info',
-      filter: 'Filter'
+      filter: 'Filter',
+      deleteOrder: 'Bestellung löschen'
     },
 
     payment: {
@@ -275,6 +279,9 @@ module.exports = {
       multipleInvoicePrinter: 'Mehrere Drucker für Rechnung',
       multipleEntirePrinter: 'Mehrere Drucker für Gesamte Drucker',
       showDineInTax: 'Show Dine-in Tax',
+      networkPrinter: 'Netzwerk Drucker',
+      serialPrinter: 'COM',
+      usb: 'USB',
       //payment
       paymentName: 'Name',
       paymentIcon: 'Symbol',
@@ -370,7 +377,7 @@ module.exports = {
       amount: 'Betrag... Bar / EC',
       received: 'Bestellung',
       delivery: 'Lieferung',
-      pickUp: 'Abholung',
+      'pick-up': 'Abholung',
       type: 'Typ',
       status: 'Status',
       completed: 'abgeschlossen',

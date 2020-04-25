@@ -10,17 +10,13 @@
       "slotsType": "array",
       "slots": [
         "default"
+      ],
+      "preprocess": [
+        "label"
       ]
     }
   ],
   "fields": [
-    {
-      "_id": "5de72c1ba7884176a656ee54",
-      "schemaType": "string",
-      "key": "label",
-      "type": "input",
-      "addable": true
-    },
     {
       "_id": "5de75301a7884176a656ef5f",
       "schemaType": "array",
@@ -36,6 +32,13 @@
           "addable": true
         }
       ]
+    },
+    {
+      "_id": "5ea3b661f221a0602aba63a8",
+      "schemaType": "mixed",
+      "key": "label",
+      "type": "I18nInput",
+      "addable": true
     }
   ],
   "name": "dialogNumberFilter",

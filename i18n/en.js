@@ -80,6 +80,9 @@ module.exports = {
       promotion: 'Promotion',
       name: 'Name',
       choose: 'Choose Position',
+      tblTotal: 'Total',
+      tblRow: 'Rows per page',
+      tblPage: 'Page'
     },
 
     dialogs: {
@@ -187,7 +190,8 @@ module.exports = {
       amount: 'Amount',
       staff: 'Staff',
       info: 'Info',
-      filter: 'Filter'
+      filter: 'Filter',
+      deleteOrder: 'Delete Order'
     },
 
     payment: {
@@ -275,6 +279,9 @@ module.exports = {
       multipleInvoicePrinter: 'Use Multiple Printer For Invoice Printer',
       multipleEntirePrinter: 'Use Multiple Printer For Entire Printer',
       showDineInTax: 'Show Dine-in Tax',
+      networkPrinter: 'Netzwerk Drucker',
+      serialPrinter: 'COM',
+      usb: 'USB',
       //payment
       paymentName: 'Name',
       paymentIcon: 'Icon',
@@ -370,7 +377,7 @@ module.exports = {
       amount: 'Amount',
       received: 'Received',
       delivery: 'Delivery',
-      pickUp: 'Pick-up',
+      'pick-up': 'Pick-up',
       type: 'Type',
       status: 'Status',
       completed: 'Completed',

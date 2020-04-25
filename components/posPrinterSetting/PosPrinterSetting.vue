@@ -149,9 +149,9 @@
     data() {
       return {
         printerTypes: [
-          {name: 'Network Printer', value: 'ip'},
-          {name: 'Serial Port', value: 'com'},
-          {name: 'USB', value: 'usb'}
+          {name: this.$t('settings.networkPrinter'), value: 'ip'},
+          {name: this.$t('settings.serialPrinter'), value: 'com'},
+          {name: this.$t('settings.usb'), value: 'usb'}
         ],
         selectedPrinterType: null,
         listReceipt: [],
