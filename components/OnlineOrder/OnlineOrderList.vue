@@ -1,7 +1,7 @@
 <template>
   <div class="online-order-list">
     <div class="online-order-list__title">
-      {{status}} orders
+      {{`${$t(`onlineOrder.${status}`)} ${$t('onlineOrder.orders')}`}}
     </div>
     <div class="online-order-list__table">
       <g-table elevation="2" fixed-header>
@@ -52,8 +52,11 @@
       }
     },
     data() {
+      const i18n = this.$i18n;
+      const { onlineOrder: { address, amount, customer, delivery, no, received, status, type } } = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
+
       return {
-        headers: ['No.', 'Customer', 'Address', 'Amount', 'Received', 'Delivery', 'Type', 'Status']
+        headers: [no, customer, address, amount, received, delivery, type, status]
       }
     },
     filters: {

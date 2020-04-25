@@ -78,7 +78,9 @@
         const zoomHorizontalRatio = roomEl.clientWidth / roomEl.scrollWidth
 
         if (zoomHorizontalRatio === 1 && zoomVerticalRatio === 1) return
-        roomEl.style.zoom = zoomVerticalRatio < zoomHorizontalRatio ? zoomVerticalRatio : zoomHorizontalRatio
+        roomEl.style.zoom = zoomVerticalRatio < zoomHorizontalRatio
+          ? zoomVerticalRatio.toFixed(1)
+          : zoomHorizontalRatio.toFixed(1)
       })
     },
     methods: {

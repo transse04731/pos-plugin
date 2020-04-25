@@ -3,7 +3,8 @@
   "extensions": [
     {
       "_id": "5e71da0091c0240483d164f8",
-      "extensionType": "ComponentLib"
+      "extensionType": "ComponentLib",
+      "preprocess": []
     }
   ],
   "fields": [
@@ -17,12 +18,6 @@
           "key": "item",
           "type": "object",
           "fields": [
-            {
-              "schemaType": "string",
-              "key": "title",
-              "type": "input",
-              "clipboardType": "cut"
-            },
             {
               "schemaType": "string",
               "key": "icon",
@@ -42,6 +37,12 @@
               "type": "editor",
               "addable": true,
               "clipboardType": "cut"
+            },
+            {
+              "schemaType": "mixed",
+              "key": "title",
+              "type": "I18nInput",
+              "label": "title"
             }
           ]
         },
@@ -50,12 +51,6 @@
           "key": "dynamicItem",
           "type": "object",
           "fields": [
-            {
-              "schemaType": "string",
-              "key": "title",
-              "type": "input",
-              "clipboardType": "cut"
-            },
             {
               "schemaType": "string",
               "key": "icon",
@@ -81,6 +76,12 @@
               "key": "children",
               "type": "editor",
               "addable": true
+            },
+            {
+              "schemaType": "mixed",
+              "key": "title",
+              "type": "I18nInput",
+              "label": "title"
             }
           ],
           "clipboardType": "cut"

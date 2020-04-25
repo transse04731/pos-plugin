@@ -13,7 +13,6 @@ module.exports = {
       dashboard: 'Dashboard',
       retail: 'Retail',
       welcome: 'Welcome!',
-      logOut: 'Log Out',
       cashRegister: 'Cash Register',
       orderHistory: 'Bonhistorie',
       adminDashboard: 'Admin Dashboard',
@@ -25,7 +24,8 @@ module.exports = {
       delivery: 'Lieferung',
       editTablePlan: 'Tischplan bearbeiten',
       editMenuCard: 'Menü bearbeiten',
-      printerSettings: 'Druckereinstellungen'
+      printerSettings: 'Druckereinstellungen',
+      support: 'Support'
     },
 
     //article view
@@ -66,7 +66,7 @@ module.exports = {
       moreItems: 'weitere Artikel',
       save: 'Save',
       submit: 'Submit',
-      add: 'Add',
+      add: 'Bon',
       edit: 'Bearbeiten',
       delete: 'Löschen',
       duplicate: 'Copy',
@@ -159,6 +159,10 @@ module.exports = {
       confirmationPrintZ2: '(End Of Day)',
       reprintZReport: 'Reprint Z-Report',
       runEndOfDay: 'Z-Bericht erstellen',
+      showProductSold: 'Artikelverkauf-Bericht',
+      showZ: 'Alle Z-Bon-Nr. Anzeigen',
+      from: 'Von',
+      to: 'Bis',
       //staff
       staffName: 'Mitarbeiter',
       vouchersSold: 'Gutscheine verkauft',
@@ -313,7 +317,11 @@ module.exports = {
       receiptCategory: 'Boneinstellung',
       invoiceReport: 'Rechnung, Bericht',
       entireReceipt: 'Entire Receipt',
-      onlineOrderSettings: 'Online Order Settings',
+      onlineOrderSettings: 'Online Bestellung Einstellungen',
+      manualTable: 'Tisch Auswahl',
+      functions: 'Funktionen',
+      logOut: 'Abmelden',
+      restaurant: 'Restaurant'
     },
 
     restaurant: {
@@ -349,6 +357,8 @@ module.exports = {
       }
     },
     onlineOrder: {
+      orders: 'Bestellungen',
+      onlineOrders: 'Online Bestellungen',
       pendingOrders: 'offene Bestellung',
       sentToKitchen: 'In Bearbeitung (Küche)',
       dashboard: 'Übersicht',
@@ -382,6 +392,7 @@ module.exports = {
         connected: 'Connected',
         notPaired: 'Not paired',
         hasSound: 'Klingeln bei Eingang der Bestellung',
+        cancelAndDecline: 'Cancel & move to declined orders',
       }
     }
   }

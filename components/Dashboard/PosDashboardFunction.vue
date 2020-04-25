@@ -24,21 +24,24 @@
   export default {
     name: "PosDashboardFunction",
     data() {
+      const i18n = this.$i18n;
+      const { dashboard } = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
+
       return {
         btnUp: [
-          {title: 'Fast Checkout', icon: 'icon-fast-checkout', path: '/pos-order-2'},
-          {title: 'Delivery', icon: 'icon-delivery', path: '/pos-delivery'}
+          {title: dashboard.fastCheckout, icon: 'icon-fast-checkout', path: '/pos-order-2'},
+          {title: dashboard.delivery, icon: 'icon-delivery', path: '/pos-delivery'}
         ],
         btnDown: [
-          {title: 'Staff Report', icon: 'icon-staff-report', path: '/pos-staff-report'},
-          {title: 'Settings', icon: 'icon-dashboard', path: '/pos-settings'},
-          {title: 'End Of Day', icon: 'icon-calendar', path: '/pos-eod-report'},
-          {title: 'Order History', icon: 'icon-history', path: '/pos-order-history'},
-          {title: 'Month', icon: 'icon-month_report', path: '/pos-month-report'},
-          {title: 'Support', icon: 'icon-support-2', path: '/pos-support'},
-          {title: 'Edit Table Plan', icon: 'icon-edit-table-plan', path: '/pos-edit-table-plan'},
-          {title: 'Edit Menu Card', icon: 'icon-edit-menu-card', path: '/pos-edit-menu-card'},
-          {title: 'Printer Setting', icon: 'icon-printer-setting', path: '/pos-printer-setting'},
+          {title: dashboard.staffReport, icon: 'icon-staff-report', path: '/pos-staff-report'},
+          {title: dashboard.settings, icon: 'icon-dashboard', path: '/pos-settings'},
+          {title: dashboard.endOfDay, icon: 'icon-calendar', path: '/pos-eod-report'},
+          {title: dashboard.orderHistory, icon: 'icon-history', path: '/pos-order-history'},
+          {title: dashboard.monthlyReport, icon: 'icon-month_report', path: '/pos-month-report'},
+          {title: dashboard.support, icon: 'icon-support-2', path: '/pos-support'},
+          {title: dashboard.editTablePlan, icon: 'icon-edit-table-plan', path: '/pos-edit-table-plan'},
+          {title: dashboard.editMenuCard, icon: 'icon-edit-menu-card', path: '/pos-edit-menu-card'},
+          {title: dashboard.printerSettings, icon: 'icon-printer-setting', path: '/pos-printer-setting'},
         ]
       }
     },
