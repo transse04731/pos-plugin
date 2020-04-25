@@ -117,122 +117,22 @@
           "items": [],
           "content": {
             "props": {
-              "items": [
-                {
-                  "choice": "dynamicItem",
-                  "icon": "icon-restaurant",
-                  "children": {
-                    "_code_": "module.exports = function () {\n  const rooms = this.$getService('RoomStore').rooms\n  const result = rooms.map(room => {\n    return {\n      title: room.name,\n      icon: 'radio_button_unchecked',\n      iconType: 'small',\n      onClick: () => {\n        this.$emit('update:view', {\n          name: 'Restaurant',\n          params: { \n            id: room._id\n          }\n        })\n      }\n    }\n  });\n\n  return result;\n}",
-                    "_code_type_": "commonJs"
-                  },
-                  "title": {
-                    "_code_": "\n        module.exports = function() {\n          return $t('sidebar.restaurant')\n        }\n        ",
-                    "_code_type_": "commonJs",
-                    "_metadata_": {
-                      "text": "sidebar.restaurant"
-                    }
-                  }
-                },
-                {
-                  "choice": "item",
-                  "icon": "icon-manual-table",
-                  "onClick": {
-                    "_code_": "module.exports = function() {\n  // this.$emit('update:view', {\n  //   name: 'ManualTable',\n  //   params: ''\n  // })\n}",
-                    "_code_type_": "commonJs"
-                  },
-                  "title": {
-                    "_code_": "\n        module.exports = function() {\n          return $t('sidebar.manualTable')\n        }\n        ",
-                    "_code_type_": "commonJs",
-                    "_metadata_": {
-                      "text": "sidebar.manualTable"
-                    }
-                  }
-                },
-                {
-                  "choice": "item",
-                  "icon": "icon-delivery",
-                  "items": [
-                    {
-                      "choice": "item",
-                      "icon": "radio_button_unchecked",
-                      "iconType": "small",
-                      "onClick": {
-                        "_code_": "module.exports = function() {\n  this.$emit('update:view', {\n    name: 'Dashboard'\n  })\n}",
-                        "_code_type_": "commonJs"
-                      },
-                      "title": {
-                        "_code_": "\n        module.exports = function() {\n          return $t('onlineOrder.dashboard')\n        }\n        ",
-                        "_code_type_": "commonJs",
-                        "_metadata_": {
-                          "text": "onlineOrder.dashboard"
-                        }
-                      }
-                    },
-                    {
-                      "choice": "item",
-                      "icon": "radio_button_unchecked",
-                      "iconType": "small",
-                      "onClick": {
-                        "_code_": "module.exports = function () {\n  this.$emit('update:view', {\n    name: 'Order',\n    params: {\n      status: 'completed'\n    }\n  })\n}",
-                        "_code_type_": "commonJs"
-                      },
-                      "title": {
-                        "_code_": "\n        module.exports = function() {\n          return $t('onlineOrder.completedOrders')\n        }\n        ",
-                        "_code_type_": "commonJs",
-                        "_metadata_": {
-                          "text": "onlineOrder.completedOrders"
-                        }
-                      }
-                    },
-                    {
-                      "choice": "item",
-                      "icon": "radio_button_unchecked",
-                      "iconType": "small",
-                      "onClick": {
-                        "_code_": "module.exports = function () {\n  this.$emit('update:view', {\n    name: 'Order',\n    params: {\n      status: 'declined'\n    }\n  })\n}",
-                        "_code_type_": "commonJs"
-                      },
-                      "title": {
-                        "_code_": "\n        module.exports = function() {\n          return $t('onlineOrder.declinedOrders')\n        }\n        ",
-                        "_code_type_": "commonJs",
-                        "_metadata_": {
-                          "text": "onlineOrder.declinedOrders"
-                        }
-                      }
-                    }
-                  ],
-                  "title": {
-                    "_code_": "\n        module.exports = function() {\n          return $t('onlineOrder.onlineOrders')\n        }\n        ",
-                    "_code_type_": "commonJs",
-                    "_metadata_": {
-                      "text": "onlineOrder.onlineOrders"
-                    }
-                  }
-                },
-                {
-                  "choice": "item",
-                  "icon": "icon-functions",
-                  "onClick": {
-                    "_code_": "module.exports = function() {\n  this.$emit('update:view', {\n    name: 'Functions',\n    params: ''\n  })\n}",
-                    "_code_type_": "commonJs"
-                  },
-                  "title": {
-                    "_code_": "\n        module.exports = function() {\n          return $t('sidebar.functions')\n        }\n        ",
-                    "_code_type_": "commonJs",
-                    "_metadata_": {
-                      "text": "sidebar.functions"
-                    }
-                  }
-                }
-              ],
               "afterMountFn": {
                 "_code_": "module.exports = function () {\n  const rooms = this.$getService('RoomStore').rooms\n  if (rooms.length > 0) {\n    this.$emit('update:view', {\n      name: 'Restaurant',\n      params: {\n        id: rooms[0]._id\n      }\n    })\n  }\n}",
                 "_code_type_": "commonJs"
               },
-              "defaultPath": "item.0.item.0"
+              "defaultPath": "item.0.item.0",
+              "items": []
             },
             "preprocess": []
-          }
+          },
+          "inject": [
+            {
+              "service": "PosStore:computedDashboardSidebar",
+              "local": "items",
+              "type": "prop"
+            }
+          ]
         },
         {
           "choice": "view",
@@ -273,6 +173,11 @@
                 {
                   "service": "PosStore:enabledFeatures",
                   "local": "enabledFeatures",
+                  "type": "prop"
+                },
+                {
+                  "service": "PosStore:user",
+                  "local": "user",
                   "type": "prop"
                 }
               ]
