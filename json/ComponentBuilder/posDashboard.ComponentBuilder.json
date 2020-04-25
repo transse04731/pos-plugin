@@ -150,21 +150,6 @@
                 },
                 {
                   "choice": "item",
-                  "icon": "icon-functions",
-                  "onClick": {
-                    "_code_": "module.exports = function() {\n  this.$emit('update:view', {\n    name: 'Functions',\n    params: ''\n  })\n}",
-                    "_code_type_": "commonJs"
-                  },
-                  "title": {
-                    "_code_": "\n        module.exports = function() {\n          return $t('sidebar.functions')\n        }\n        ",
-                    "_code_type_": "commonJs",
-                    "_metadata_": {
-                      "text": "sidebar.functions"
-                    }
-                  }
-                },
-                {
-                  "choice": "item",
                   "icon": "icon-delivery",
                   "items": [
                     {
@@ -223,6 +208,21 @@
                       "text": "onlineOrder.onlineOrders"
                     }
                   }
+                },
+                {
+                  "choice": "item",
+                  "icon": "icon-functions",
+                  "onClick": {
+                    "_code_": "module.exports = function() {\n  this.$emit('update:view', {\n    name: 'Functions',\n    params: ''\n  })\n}",
+                    "_code_type_": "commonJs"
+                  },
+                  "title": {
+                    "_code_": "\n        module.exports = function() {\n          return $t('sidebar.functions')\n        }\n        ",
+                    "_code_type_": "commonJs",
+                    "_metadata_": {
+                      "text": "sidebar.functions"
+                    }
+                  }
                 }
               ],
               "afterMountFn": {
@@ -268,7 +268,14 @@
               "slot": "Functions",
               "url": "plugins/pos-plugin/components/Dashboard/PosDashboardFunction.vue",
               "path": "components/Dashboard/PosDashboardFunction.vue",
-              "pluginName": "pos-plugin"
+              "pluginName": "pos-plugin",
+              "inject": [
+                {
+                  "service": "PosStore:enabledFeatures",
+                  "local": "enabledFeatures",
+                  "type": "prop"
+                }
+              ]
             },
             {
               "choice": "view",
