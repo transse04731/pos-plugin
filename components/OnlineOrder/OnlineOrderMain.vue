@@ -110,7 +110,7 @@
               <div class="kitchen-orders__timer" @click.stop="openDialog(order)">
                 <g-icon v-if="order.type === 'delivery'">icon-delivery-man</g-icon>
                 <g-icon v-if="order.type === 'pickup'">icon-pickup</g-icon>
-                <span class="fw-700 fs-small">{{order.deliveryDate | formatDate}}</span>
+                <span class="fw-700 fs-small">{{getDeliveryDate(order) | formatDate}}</span>
               </div>
             </g-card-title>
             <g-card-text>
@@ -245,6 +245,9 @@
       submitReason(reason) {
         const order = this.internalOrders.find(o => o._id === this.dialog.order._id)
         this.$set(order, 'declineReason', reason)
+      },
+      getDeliveryDate(order) {
+        return dayjs(order.date).add(order.prepareTime, 'minute').toDate()
       }
     },
     mounted() {

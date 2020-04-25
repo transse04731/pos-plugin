@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="row-flex align-items-center">
     <g-menu v-model="menu" close-on-content-click top content-class="menu-language">
       <template v-slot:activator="{on}">
         <g-btn-bs icon-after="arrow_drop_down" text-color="#3B3B3B" @click="on.click">
