@@ -55,7 +55,7 @@
       }
     },
     injectService: [
-      'PosOnlineOrderManagementStore:storeGroups',
+      'PosOnlineOrderManagementStore:availableGroupsViewModel',
       'PermissionStore:allPermissions'
     ],
     data() {
@@ -66,7 +66,6 @@
         retypePassword: '',
         internalStoreGroups: this.storeGroups,
         internalPermissions: null,
-        availableGroupsViewModel: null
       }
     },
     computed: {
@@ -80,7 +79,6 @@
       },
     },
     created() {
-      this.availableGroupsViewModel = _.map(this.storeGroups, group => ({ text: group.name, value: group._id }))
       this.internalPermissions = _.map(this.allPermissions, availPerm => {
         const definedPerm = _.find(this.permissions, defPerm => defPerm.permission === availPerm)
         return definedPerm ? definedPerm : { permission: availPerm, value: false }

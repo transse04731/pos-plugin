@@ -25,12 +25,13 @@
         versionControlOrderBy: { order: 'desc', type: 'uploadDate' },
 
         // account management
+        managerUsers: [],
         accounts: [],
         accountSearch: null,
         accountFilter: {
           createdBy: null,
-          inGroups: null,
-          permissions: null
+          storeGroups: null, // array of storeGroup _id
+          permissions: null // array of permission name
         },
       }
     },
@@ -115,8 +116,23 @@
       },
       
       // accounts
+      lowerCaseAccountSearch() {
+        return _.lowerCase(this.accountSearch)
+      },
+      searchAndFilteredAccounts() {
+        const filters = [acc => acc]
+        if (this.accountSearch)
+          filters.push(acc => _.lowerCase(acc.name).indexOf(this.lowerCaseAccountSearch) > -1)
+        if (this.accountFilter.createdBy)
+          filters.push(acc => acc.createdBy && acc.createdBy._id === this.accountFilter.createdBy)
+        if (this.accountFilter.storeGroups)
+          filters.push(acc => _.intersection(_.map(acc.storeGroups, sg => sg._id), this.accountFilter.storeGroups).length === this.accountFilter.storeGroups.length)
+        if (this.accountFilter.permissions)
+          filters.push(acc => _.intersection(_.map(_.filter(acc.permissions, acc => acc.value), p => p.permission), this.accountFilter.permissions).length === this.accountFilter.permissions.length)
+        return _.filter(this.accounts, acc => _.every(_.map(filters, filter => filter(acc))))
+      },
       accountViewModel() {
-        return _.map(this.accounts, account => {
+        return _.map(this.searchAndFilteredAccounts, account => {
           const perms = _.map(_.filter(account.permissions, perm => perm.value), perm => _.omit(perm, '_id'))
           return {
             // will be used in dialogAccount.vue
@@ -133,7 +149,13 @@
             menu: false,
           }
         })
-      }
+      },
+      managerUsersViewModel() {
+        return _.map(this.managerUsers, user => ({ text: user.username, value: user._id }))
+      },
+      availableGroupsViewModel() {
+        return _.map(this.storeGroups, group => ({ text: group.name, value: group._id }))
+      },
     },
     async created() {
       await this.loadStoreGroups()
@@ -380,6 +402,13 @@
         const accounts = await cms.getModel('User').find({ createdBy: cms.loginUser.user._id })
         this.accounts.splice(0, this.accounts.length, ...accounts)
       },
+      clearFilter() {
+        this.$set(this, 'accountFilter', {
+          createdBy: null,
+          storeGroups: null,
+          permissions: null
+        })
+      },
       async createAccount({ name, username, password, storeGroups, permissions }) {
         if (_.find(this.accounts, acc => acc.username === username)) {
           this.showMessage('Username has been taken!')
@@ -454,10 +483,16 @@
         appItems: this.appItems,
         
         // account management
+        managerUsersViewModel: this.managerUsersViewModel,
+        availableGroupsViewModel: this.availableGroupsViewModel,
         accountViewModel: this.accountViewModel,
+        accountSearch: this.accountSearch,
+        accountFilter: this.accountFilter,
+        clearFilter: this.clearFilter,
         createAccount: this.createAccount,
         editAccount: this.editAccount,
         deleteAccount: this.deleteAccount,
+        
         
         //
         versionControlViewModel: this.versionControlViewModel,

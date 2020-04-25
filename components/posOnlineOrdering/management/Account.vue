@@ -1,31 +1,30 @@
 <template>
   <div class="account">
     <div class="account__title">Account Management</div>
+    
+    <!-- action bar -->
     <div class="account__action-bar">
-      <g-text-field-bs prepend-inner-icon="search" placeholder="Search..." v-model="searchText"/>
+      <g-text-field-bs prepend-inner-icon="search" placeholder="Search..." v-model="accountSearch"/>
       <g-menu v-model="showFilterMenu" content-class="filter-menu" nudge-left="200" nudge-bottom="5">
         <template v-slot:activator="{on}">
-          <g-btn-bs :class="[showFilterMenu && 'btn-filter']" border-color="#e3e5f0" text-color="#757575"
-                    icon="filter_list"
-                    @click="on.click">Filter
-          </g-btn-bs>
+          <g-btn-bs :class="[showFilterMenu && 'btn-filter']" border-color="#e3e5f0" text-color="#757575" icon="filter_list" @click="on.click">Filter</g-btn-bs>
         </template>
         <div class="filter">
           <div class="filter-input">
-            <div>Create by</div>
-            <g-combobox text-field-component="GTextFieldBs" v-model="filter.create"/>
+            <!-- Now user only created by admin so Create by is not needed -->
+            <!--  <div>Create by</div>-->
+            <!--  <g-select text-field-component="GTextFieldBs" v-model="accountFilter.createdBy" :items="managerUsersViewModel"/>-->
             <div>Group</div>
-            <g-combobox class="combobox--large" multiple deletable-chips text-field-component="GTextFieldBs" v-model="filter.group"/>
+            <g-select multiple class="combobox--large" multiple deletable-chips text-field-component="GTextFieldBs" v-model="filter.storeGroups" :items="availableGroupsViewModel"/>
           </div>
           <div class="filter-permission">
             <div class="filter-permission__title">Permission</div>
-            <g-checkbox color="#536DFE" label="Add new group" value="Add new group" v-model="filter.permission"/>
-            <g-checkbox color="#536DFE" label="Settings" value="Settings" v-model="filter.permission"/>
-            <g-checkbox color="#536DFE" label="Add new store" value="Add new store" v-model="filter.permission"/>
-            <g-checkbox color="#536DFE" label="Update" value="Update" v-model="filter.permission"/>
-            <g-checkbox color="#536DFE" label="Remote control" value="Remote control" v-model="filter.permission"/>
-            <g-checkbox color="#536DFE" label="Account management" value="Account management" v-model="filter.permission"/>
-            <g-checkbox color="#536DFE" label="Config online ordering" value="Config online ordering" v-model="filter.permission"/>
+            <g-checkbox
+                v-for="(value, name) in filter.permissions"
+                :key="name"
+                :label="name | startCase"
+                v-model="filter.permissions[name]"
+                color="#536DFE"/>
           </div>
           <div class="filter-action">
             <g-btn-bs @click="clearFilter(false)">Clear filter</g-btn-bs>
@@ -38,10 +37,14 @@
         Create New Account
       </g-btn-bs>
     </div>
-    <div v-if="filters && filters.length > 0" class="account__filter">
-      <g-chip label v-for="(filter, i) in filters" :key="`filter_${i}`" close @close="removeFilter(filter)">{{filter.value}}</g-chip>
-      <g-btn-bs @click="clearFilter(true)" style="white-space: nowrap; min-width: 80px">Clear all</g-btn-bs>
-    </div>
+  
+    <!-- listed filters -->
+<!--    <div v-if="filters && filters.length > 0" class="account__filter">-->
+<!--      <g-chip label v-for="(filter, i) in filters" :key="`filter_${i}`" close @close="removeFilter(filter)">{{filter.value}}</g-chip>-->
+<!--      <g-btn-bs @click="clearFilter(true)" style="white-space: nowrap; min-width: 80px">Clear all</g-btn-bs>-->
+<!--    </div>-->
+    
+    <!-- Account table -->
     <div class="account__table">
       <div class="account__table-header">
         <div class="flex-equal pl-3">Name</div>
@@ -90,6 +93,8 @@
         </template>
       </div>
     </div>
+    
+    <!-- Dialogs -->
     <dialog-account
         v-if="dialog.account"
         v-model="dialog.account"
@@ -97,14 +102,12 @@
         v-bind="selectedAccount"
         @cancel="dialog.account = false"
         @edit="editAccount(selectedAccount._id, $event)"
-        @add="createAccount"
-    />
+        @add="createAccount"/>
     <dialog-new-account-password
         v-if="dialog.setNewPassword"
         v-model="dialog.setNewPassword"
         @cancel="dialog.setNewPassword = false"
-        @save="editAccount(selectedAccount._id, $event)"
-    />
+        @save="editAccount(selectedAccount._id, $event)"/>
     <dialog-delete-item v-model="dialog.delete" type="user" @confirm="deleteUser"/>
   </div>
 </template>
@@ -114,28 +117,37 @@
   export default {
     name: "Account",
     components: { DialogNewAccountPassword },
+    filters: {
+      startCase(val) {
+        return _.startCase(val)
+      }
+    },
     data() {
       return {
-        searchText: '',
         showFilterMenu: false,
+        selectedAccount: null,
+        // filters
         filter: {
-          create: null,
-          group: [],
-          permission: []
+          storeGroups: [],
+          permissions: {}
         },
-        filters: [],
+        // dialogs
         dialog: {
           account: false,
           edit: false,
           delete: false,
           setNewPassword: false,
-        },
-        selectedAccount: null,
+        }
       }
     },
     injectService: [
-      'PosOnlineOrderManagementStore:(accountViewModel,createAccount,editAccount,deleteAccount)',
+      'PosOnlineOrderManagementStore:(accountViewModel,availableGroupsViewModel,managerUsersViewModel,accountSearch,accountFilter)',
+      'PosOnlineOrderManagementStore:(createAccount,editAccount,deleteAccount)',
+      'PermissionStore:allPermissions'
     ],
+    created() {
+      this.$set(this.filter, 'permissions', this.createDefaultPermissionFilter())
+    },
     methods: {
       // style
       getStatusClass(status) {
@@ -147,8 +159,10 @@
           return statusDefault + 'account__status--disabled'
         }
       },
+      createDefaultPermissionFilter() {
+        return _.reduce(this.allPermissions,(accum, perm) => ({...accum, [perm]: false}), {})
+      },
       
-      //
       openDialogAccount(edit = false, account = null) {
         this.dialog.edit = edit
         this.selectedAccount = account
@@ -170,40 +184,20 @@
         this.selectedAccount = null
       },
       
-      // filters
-      clearFilter(all) {
-        this.filter = {
-          create: null,
-          group: [],
-          permission: []
-        }
-        if(all) {
-          this.filters = []
-        }
-      },
+      // filter
       applyFilter() {
-        this.filters = []
-        if(this.filter.create && this.filter.create.trim()) {
-          this.filters.push({type: 'create', value: this.filter.create})
-        }
-        if(this.filter.group.length > 0) {
-          this.filters.push(...this.filter.group.map(g => ({type: 'group', value: g})))
-        }
-        if(this.filter.permission.length > 0) {
-          this.filters.push(...this.filter.permission.map(p => ({type: 'permission', value: p})))
-        }
+        this.$set(this, 'accountFilter', {
+          storeGroups: this.filter.storeGroups,
+          permissions: _.reduce(this.filter.permissions, (result, value, perm) => { value && result.push(perm); return result }, [])
+        })
         this.showFilterMenu = false
       },
-      removeFilter(filter) {
-        const index = this.filters.findIndex(f => f === filter)
-        this.filters.splice(index, 1)
-        if(filter.type === 'create') {
-          this.filter.create = null
-        } else {
-          const i = this.filter[filter.type].findIndex(item => item === filter.value)
-          this.filter[filter.type].splice(i, 1)
-        }
-      },
+      clearFilter() {
+        this.$set(this, 'filter', {
+          storeGroups: [],
+          permissions: this.createDefaultPermissionFilter()
+        })
+      }
     }
   }
 </script>
