@@ -94,6 +94,7 @@
           this.groups !== this.internalGroups && (changes.groups = this.internalGroups)
           this.permissions !== this.internalPermissions && (changes.permissions = this.internalPermissions)
           this.$emit('edit', changes)
+          this.internalValue = false
         } else {
           if (this.internalPassword !== this.retypePassword) {
             alert('Retype password mismatch!')
@@ -106,6 +107,7 @@
             groups: this.internalGroups,
             permissions: this.internalPermissions
           })
+          this.internalValue = false
         }
       }
     }

@@ -10,7 +10,8 @@
     props: {},
     computed: {
       versionControlPerm() {
-        return cms.loginUser.user.role.name === 'admin'
+        if (cms.loginUser.user)
+          return cms.loginUser.user.role.name === 'admin'
       },
       manageAccountPerm() {
         return _.find(this.userPermissions, perm => perm.permission === 'manageAccount' && perm.value === true)

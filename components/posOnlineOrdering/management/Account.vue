@@ -96,7 +96,6 @@
         :edit="dialog.edit"
         v-bind="selectedAccount"
         @cancel="dialog.account = false"
-        @cancel="dialog.account = false"
         @edit="editAccount(selectedAccount._id, $event)"
         @add="createAccount"
     />
