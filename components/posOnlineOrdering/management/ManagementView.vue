@@ -80,31 +80,6 @@
       overflow: hidden;
     }
   }
-
-  .filter-options {
-    background: #FFFFFF;
-    border: 1px solid #D3D3D3;
-    border-radius: 2px;
-
-    .option {
-      background-color: #FFF;
-      font-size: 14px;
-      line-height: 20px;
-      padding: 12px 16px;
-      text-align: left;
-      user-select: none;
-      cursor: pointer;
-      color: #201F2B;
-
-      &--selected {
-        background-color: #EFEFEF;
-      }
-
-      &:hover {
-        background-color: #EFEFEF;
-      }
-    }
-  }
 </style>
 
 <style lang="scss">
