@@ -58,7 +58,9 @@
                 @delete="removeStore(group._id, $event)"
                 @updateStores="loadStores()"
                 @view:settings="viewStoreSetting($event)"
-                @open:dialogDelete="showDeleteDeviceDialog"/>
+                @open:dialogDelete="showDeleteDeviceDialog"
+                @changeGroupName="changeStoreGroupName"
+            />
           </template>
         </div>
       </div>
@@ -118,7 +120,7 @@
       // view model
       'PosOnlineOrderManagementStore:(storeManagementViewModel,searchText,orderBy)',
       // store groups
-      'PosOnlineOrderManagementStore:(storeGroups,loadStoreGroups,addGroup)',
+      'PosOnlineOrderManagementStore:(storeGroups,loadStoreGroups,addGroup,changeStoreGroupName)',
       // stores
       'PosOnlineOrderManagementStore:(stores,loadStores,addStore,removeStore,updateStore,storeAlias)',
       // devices

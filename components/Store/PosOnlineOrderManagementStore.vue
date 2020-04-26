@@ -236,6 +236,15 @@
         await cms.updateUserSession()
         await this.loadStoreGroups()
       },
+      async changeStoreGroupName(_id, name, cb) {
+        if (_.includes(this.storeGroupNames, name)) {
+          alert('This name is already taken!')
+          cb && cb(false)
+        }
+        await cms.getModel('StoreGroup').updateOne({_id}, {name})
+        await this.loadStoreGroups()
+        cb && cb(true)
+      },
 
       // stores
       async loadStores() {
@@ -456,6 +465,7 @@
         storeGroups: this.storeGroups,
         loadStoreGroups: this.loadStoreGroups,
         addGroup: this.addGroup,
+        changeStoreGroupName: this.changeStoreGroupName,
 
         // stores
         stores: this.stores,

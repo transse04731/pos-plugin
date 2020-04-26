@@ -6,7 +6,7 @@
       <g-edit-view-input
           :value="name"
           @click.native.stop.prevent="() => {}"
-          @input="(value, cb) => changeGroupName(value, cb)">
+          @input="(value, cb) => $emit('changeGroupName', _id, value, cb)">
         <template v-if="manageGroupPerm" v-slot:action="{mode, switchToEditMode, applyChange, resetValue}">
           <g-menu v-if="mode !== 'edit'" v-model="nameEditMenu" close-on-content-click nudge-bottom="5" nudge-left="30">
             <template v-slot:activator="{on}">
@@ -118,6 +118,7 @@
     name: "PosManagementGroup",
     components: { DialogFeatureControl },
     props: {
+      _id: String,
       name: String,
       stores: Array,
       appItems: Array,
@@ -225,9 +226,6 @@
         const versionInfo = _.find(device.versions, version => version.value === device.updateVersion)
         await cms.getModel('Device').updateOne({_id: device._id}, versionInfo)
         // TODO: update UI
-      },
-      changeGroupName(name) {
-
       },
       deleteGroup() {
         this.$emit('delete:group', this.name)
