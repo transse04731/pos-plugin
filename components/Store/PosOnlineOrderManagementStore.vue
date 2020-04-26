@@ -48,8 +48,13 @@
       },
       storeSearchSortResult() {
         // apply search
-        const stores = this.searchTextLowerCase ? _.filter(this.stores, store => _.includes(_.lowerCase(store.name), this.searchTextLowerCase)) : this.stores
-
+        const filters = []
+        if (this.searchTextLowerCase) {
+          filters.push(store => _.includes(_.lowerCase(store.settingName), this.searchTextLowerCase))
+          filters.push(store => _.includes(_.lowerCase(store.settingAddress), this.searchTextLowerCase))
+          filters.push(store => _.includes(store.id, this.searchTextLowerCase))
+        }
+        const stores = !this.searchTextLowerCase ? this.stores : _.filter(this.stores, store => _.some(_.map(filters, f => f(store))))
         // apply sort
         switch (this.orderBy) {
           case 'lastUpdated': return _.orderBy(stores, 'addedDate', 'desc')
