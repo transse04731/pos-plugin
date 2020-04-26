@@ -23,16 +23,16 @@
     data: function () {
       return {
         username: cms.loginUser.user.username,
-        view: 'list'
+        view: 'store-management'
       }
     },
     computed: {
       sidebarItems() {
         const items = []
         if(this.view === 'list') {
-          items.push({ title: 'Store Management', icon: 'icon-management_white', onClick: () => this.changeView('list') })
+          items.push({ title: 'Store Management', icon: 'icon-management_white', onClick: () => this.changeView('store-management') })
         } else {
-          items.push({ title: 'Store Management', icon: 'icon-management', onClick: () => this.changeView('list') })
+          items.push({ title: 'Store Management', icon: 'icon-management', onClick: () => this.changeView('store-management') })
         }
 
         if(this.versionControlPerm) {
