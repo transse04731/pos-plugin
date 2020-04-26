@@ -5,6 +5,7 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path')
 const tmp = require('tmp-promise')
+const ObjectId = require('mongoose').ObjectId
 
 router.post('/subscribe', async (req, res) => {
     const subscriptionModel = cms.getModel('Subscription')
@@ -37,9 +38,10 @@ router.get('/generate-id', async (req, res) => {
 })
 
 // check if provided alias is unique or not
-router.get('/validate-alias', async (req, res) => {
+router.post('/validate-alias', async (req, res) => {
   const { store, alias } = req.body
-  const urlTaken = await cms.getModel('Store').findOne({ _id: { $ne: store }, alias: _.toLower(alias) })
+  const storeWithAlias = await cms.getModel('Store').findOne({ alias: _.toLower(alias) })
+  const urlTaken = (storeWithAlias && storeWithAlias._id.toString() !== store)
   res.json(urlTaken ? {message: 'WebShop URL has been taken!'} : {ok: true})
 })
 

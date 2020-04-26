@@ -149,6 +149,7 @@
     },
     methods: {
       async aliasInvalid(alias) {
+        console.log('validate alias')
         if (_.trim(alias) === '') {
           this.aliasErrMessage = 'WebShop url must not empty!!'
           return true
@@ -160,6 +161,7 @@
         }
         
         const res = (await axios.post('/store/validate-alias', { store: this._id, alias })).data
+        console.log('res', res)
         if (!res.ok) {
           this.aliasErrMessage = res.message
           return true
@@ -171,6 +173,7 @@
         if (await this.aliasInvalid(value))
           return
         
+        console.log({ alias: value })
         this.update({ alias: value })
       },
       update(change) {
