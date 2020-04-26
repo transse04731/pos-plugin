@@ -159,7 +159,7 @@
           return true
         }
         
-        const res = (await axios.post('/store/validate-alias', { store: this.store._id, alias })).data
+        const res = (await axios.post('/store/validate-alias', { store: this._id, alias })).data
         if (!res.ok) {
           this.aliasErrMessage = res.message
           return true
