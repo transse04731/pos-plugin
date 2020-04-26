@@ -296,15 +296,6 @@
       },
       
       async updateStore(_id, change) {
-        if (change.alias)
-          change.alias = _.toLower(change.alias)
-        
-        const result = await cms.getModel('Store').findOne({_id: { $ne: _id }, alias: change.alias })
-        if (result) {
-          this.showMessage('WebShop url has been taken!')
-          return
-        }
-
         await cms.getModel('Store').findOneAndUpdate({_id}, {...change})
         this.showSavedMessage()
         await this.loadStores()
