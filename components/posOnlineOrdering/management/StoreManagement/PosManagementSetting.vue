@@ -27,9 +27,9 @@
         <div class="pos-management-setting__order--url r">
           <span class="i text-indigo-accent-2">{{ webShopUrlPrefix }}</span>
           <div style="flex: 1; margin-left: 8px">
-            <g-text-field-bs dense :class="[message && 'error']" large :placeholder="_id" :value="alias" @input="updateAlias"/>
+            <g-text-field-bs dense :class="[aliasErrMessage && 'error']" large :placeholder="_id" :value="alias" @input="updateAliasDebounce"/>
           </div>
-          <div v-if="message" class="error-message">{{message}}</div>
+          <div v-if="aliasErrMessage" class="error-message">{{aliasErrMessage}}</div>
         </div>
       </div>
       <div>
@@ -103,11 +103,12 @@
     injectService: ['PosOnlineOrderManagementStore:(stores)'],
     data() {
       return {
-        message: ''
+        aliasErrMessage: ''
       }
     },
     created() {
       this.updateDebounce = _.debounce(this.update, 1000)
+      this.updateAliasDebounce = _.debounce(this.updateAlias, 1000)
     },
     computed: {
       webShopUrlPrefix() {
@@ -142,43 +143,35 @@
           return this.onlineOrdering ? "1" : "0"
         },
         set(value) {
-          this.update({ onlineOrdering: value === "1" })
+          this.updateDebounce({ onlineOrdering: value === "1" })
         }
       }
     },
     methods: {
-      aliasInvalid(alias) {
+      async aliasInvalid(alias) {
         if (_.trim(alias) === '') {
-          this.message = 'WebShop url must not empty!!'
+          this.aliasErrMessage = 'WebShop url must not empty!!'
           return true
         }
         
         if (/([^a-zA-Z0-9\-])/g.exec(alias)) {
-          this.message = 'WebShop url must not contain invalid character! Valid character set is a-z, A-Z, 0-9 and \'-\' character'
+          this.aliasErrMessage = 'WebShop url must not contain invalid character! Valid character set is a-z, A-Z, 0-9 and \'-\' character'
           return true
         }
         
-        // TODO: Validate duplicate store
-        // TODO: UX
-        if (_.includes(this.aliases, _.toLower(alias))) {
-          this.message = 'WebShop url has been taken!'
+        const res = (await axios.post('/store/validate-alias', { store: this.store._id, alias })).data
+        if (!res.ok) {
+          this.aliasErrMessage = res.message
           return true
         }
       },
-      updateAlias(value) {
-        this.message = ''
+      async updateAlias(value) {
+        this.aliasErrMessage = ''
         
-        if (this.aliasInvalid(value))
+        if (await this.aliasInvalid(value))
           return
         
-        const store = _.find(this.stores, store => store.alias === value)
-        if (store) {
-          if (store._id !== this._id) {
-              this.message = 'WebShop identity has been taken!!'
-              return
-          }
-        }
-        this.updateDebounce({ alias: value })
+        this.update({ alias: value })
       },
       update(change) {
         this.$emit('update', change)

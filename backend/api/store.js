@@ -25,6 +25,7 @@ router.post('/unsubscribe', async(req, res) => {
 // upload-zone
 router.get('/upload-zone/prepare', async (req, res) => https.get(req.query.url, getRes => getRes.pipe(res)));
 
+// generate unique id for store
 router.get('/generate-id', async (req, res) => {
   // TODO: Sync
   const ids = _.map(await cms.getModel('Store').find({}, { id: 1 }), store => store.id)
@@ -33,6 +34,13 @@ router.get('/generate-id', async (req, res) => {
     id++
   } while(_.includes(ids, id.toString()))
   res.status(200).json({ id })
+})
+
+// check if provided alias is unique or not
+router.get('/validate-alias', async (req, res) => {
+  const { store, alias } = req.body
+  const urlTaken = await cms.getModel('Store').findOne({ _id: { $ne: store }, alias: _.toLower(alias) })
+  res.json(urlTaken ? {message: 'WebShop URL has been taken!'} : {ok: true})
 })
 
 module.exports = router
