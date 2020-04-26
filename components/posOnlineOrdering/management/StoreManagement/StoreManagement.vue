@@ -58,8 +58,7 @@
                 @delete="removeStore(group._id, $event)"
                 @updateStores="loadStores()"
                 @view:settings="viewStoreSetting($event)"
-                @open:dialogDelete="showDeleteDeviceDialog"
-                @disabledDevice="disableDevice"/>
+                @open:dialogDelete="showDeleteDeviceDialog"/>
           </template>
         </div>
       </div>
@@ -86,8 +85,7 @@
           :groups="storeGroups"
           @update="updateStore(selectedStore._id, $event)"
           @open:dialogDevice="dialog.newDevice = $event"
-          @open:dialogDelete="showDeleteDeviceDialog"
-          @disabledDevice="disableDevice"/>
+          @open:dialogDelete="showDeleteDeviceDialog"/>
     </template>
     
     <!-- dialogs -->
