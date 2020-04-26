@@ -19,6 +19,7 @@
   "dependencies": {
     "clone-buffer": "^1.0.0",
     "dayjs": "^1.8.17",
+    "form-data": "^3.0.0",
     "node-thermal-printer": "^1.0.3",
     "phantom": "^6.3.0",
     "pngjs": "^3.4.0",
