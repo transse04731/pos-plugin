@@ -72,7 +72,6 @@
                     </template>
                     <div class="menu-action">
                       <div v-if="featureControlPerm" class="menu-action__option" @click="openFeatureControlDialog(store, device)">Feature control</div>
-                      <div v-if="settingsPerm" class="menu-action__option" @click="$emit('disabledDevice', device)">Disable device</div>
                       <div v-if="settingsPerm" class="menu-action__option" @click="$emit('open:dialogDelete', device)">Delete device</div>
                     </div>
                   </g-menu>
@@ -248,12 +247,6 @@
         socket.emit('updateAppFeature', this.selectedDevice._id, features)
         await cms.getModel('Device').updateOne({_id: this.selectedDevice._id}, { features })
         this.dialog.featureControl = false
-      },
-      disableDevice(device) {
-        // TODO:
-      },
-      deleteDevice(device) {
-        // TODO:
       }
     },
     beforeDestroy() {
