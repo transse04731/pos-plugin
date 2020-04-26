@@ -16,7 +16,7 @@
             </template>
             <div class="menu-edit">
               <div @click="switchToEditMode()">Rename</div>
-              <div @click="deleteGroup">Delete</div>
+              <div v-if="stores.length === 0" @click="deleteGroup">Delete</div>
             </div>
           </g-menu>
           <g-icon v-if="mode === 'edit'" @click="applyChange()" class="ml-1">mdi-check</g-icon>
