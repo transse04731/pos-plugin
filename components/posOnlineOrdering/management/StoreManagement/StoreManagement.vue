@@ -1,5 +1,6 @@
 <template>
   <div class="store-management">
+    <!-- store group table: [consider] move to another vue component -->
     <template v-if="view === 'list'">
       <div class="store-management__title">POS Management</div>
       <div class="store-management__actions-bar">
@@ -63,6 +64,8 @@
         </div>
       </div>
     </template>
+    
+    <!-- setting [consider] move to another vue component -->
     <template v-else-if="view === 'settings' && settingsPerm">
       <div class="store-management__breadcrumbs">
         <span @click="view = 'list'">POS Management</span>
@@ -170,8 +173,9 @@
         this.dialog.deleteDevice = true
         this.selectedDevice = device
       },
-      async disableDevice(device) {
-        // TODO: do what
+      async deleteDevice() {
+        await this.removeDevice(this.selectedDevice._id)
+        this.selectedDevice = null
       }
     }
   }

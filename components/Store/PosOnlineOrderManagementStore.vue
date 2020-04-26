@@ -307,7 +307,8 @@
       },
       
       async removeDevice(_id) {
-        // TODO: removeDevice
+        await axios.post(`/device/unregister`, { _id })
+        await this.loadStores()
       },
       
       async updateDevice(_id, change) {
