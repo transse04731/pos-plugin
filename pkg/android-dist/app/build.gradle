@@ -1,8 +1,12 @@
 apply from: '../pos-android/app/build.gradle'
 
 android {
+    def packageJson = file('../../../package.json')
+    def parsedJson = new groovy.json.JsonSlurper().parseText(packageJson.text)
     defaultConfig {
         applicationId "io.gigasource.pos"
+        versionCode 1
+        versionName parsedJson.version
     }
     signingConfigs {
         release {
@@ -52,7 +56,7 @@ android {
 import org.gradle.internal.os.OperatingSystem;
 
 android.applicationVariants.all { variant ->
-    task("addPatchToApk${variant.name.capitalize()}") {
+    task("addPatchToApk${variant.name.capitalize()}", dependsOn: "tinkerPatch${variant.name.capitalize()}") {
         doLast {
             try {
                 if (OperatingSystem.current().isMacOsX()) {
