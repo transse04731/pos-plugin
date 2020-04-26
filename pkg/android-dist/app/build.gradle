@@ -52,7 +52,7 @@ android {
 import org.gradle.internal.os.OperatingSystem;
 
 android.applicationVariants.all { variant ->
-    task("addPatchToApk${variant.name.capitalize()}", dependsOn: "tinkerPatch${variant.name.capitalize()}") {
+    task("addPatchToApk${variant.name.capitalize()}") {
         doLast {
             try {
                 if (OperatingSystem.current().isMacOsX()) {
@@ -62,8 +62,13 @@ android.applicationVariants.all { variant ->
                             ignoreExitValue = true
                         }
                     } catch (Exception e) {
-                        logger.warn("Coudn't find apktool.");
-                        commandLine './download-apktool.sh'
+                        logger.warn("Coudn't find apktool. Try to download apktool");
+                        exec {
+                            commandLine 'chmod', '+x', './download-apktool.sh'
+                        }
+                        exec {
+                            commandLine './download-apktool.sh'
+                        }
                     }
                     exec {
                         commandLine 'rm', '-rf', '../originalBuild/app'
