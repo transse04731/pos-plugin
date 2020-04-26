@@ -1,8 +1,6 @@
 <template>
   <div class="pos-management">
-    <!-- side bar -->
     <pos-dashboard-sidebar default-path="item.0" :items="sidebarItems" @node-selected="onNodeSelected"/>
-    <!-- content -->
     <div class="pos-management__main">
       <store-management v-if="view === 'store-management'"/>
       <version-control v-else-if="view === 'version' && versionControlPerm"/>
