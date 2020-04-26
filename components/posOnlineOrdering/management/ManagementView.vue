@@ -63,7 +63,9 @@
                   :app-items="appItems"
                   @delete="removeStore(group._id, $event)"
                   @updateStores="loadStores()"
-                  @view:settings="viewStoreSetting($event)"/>
+                  @view:settings="viewStoreSetting($event)"
+                  @open:dialogDelete="showDeleteDeviceDialog"
+                  @disabledDevice="disableDevice"/>
             </template>
           </div>
         </div>
@@ -87,7 +89,8 @@
             :groups="groups"
             @update="updateStore(selectedStore._id, $event)"
             @open:dialogDevice="dialog.newDevice = $event"
-            @open:dialogDelete="dialog.deleteDevice = $event"/>
+            @open:dialogDelete="showDeleteDeviceDialog"
+            @disabledDevice="disableDevice"/>
       </template>
       <version-control v-else-if="view === 'version' && versionControlPerm"/>
       <account v-else-if="view === 'account' && manageAccountPerm"/>
@@ -128,15 +131,16 @@
         storePlaceHolder: $t('posManagement.searchPlaceholder'),
         username: cms.loginUser.user.username,
         view: 'list',
+        showFilterMenu: false,
+        selectedStoreId: null,
+        deviceIdList: [],
+        selectedDevice: null,
         dialog: {
           newGroup: false,
           newStore: false,
           newDevice: false,
           deleteDevice: false,
         },
-        showFilterMenu: false,
-        selectedStoreId: null,
-        deviceIdList: [],
       }
     },
     computed: {
@@ -214,6 +218,13 @@
           this.view = view
         }
       },
+      showDeleteDeviceDialog(device) {
+        this.dialog.deleteDevice = true
+        this.selectedDevice = device
+      },
+      async disableDevice(device) {
+        // TODO: do what
+      }
     }
   }
 </script>

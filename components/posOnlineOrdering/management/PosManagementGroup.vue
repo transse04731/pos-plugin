@@ -72,8 +72,8 @@
                     </template>
                     <div class="menu-action">
                       <div v-if="featureControlPerm" class="menu-action__option" @click="openFeatureControlDialog(store, device)">Feature control</div>
-                      <div v-if="settingsPerm" class="menu-action__option" @click="disableDevice(device)">Disable device</div>
-                      <div v-if="settingsPerm" class="menu-action__option" @click="deleteDevice(device)">Delete device</div>
+                      <div v-if="settingsPerm" class="menu-action__option" @click="$emit('disabledDevice', device)">Disable device</div>
+                      <div v-if="settingsPerm" class="menu-action__option" @click="$emit('open:dialogDelete', device)">Delete device</div>
                     </div>
                   </g-menu>
                 </div>
@@ -143,7 +143,8 @@
         selectedStore: null,
         selectedDevice: null,
         dialog: {
-          featureControl: false
+          featureControl: false,
+          deleteDevice: false
         }
       }
     },

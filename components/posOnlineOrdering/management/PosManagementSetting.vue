@@ -62,14 +62,14 @@
             <p class="mb-1">Device type: {{device.type}}</p>
             <p class="mb-1">OS: {{device.os}}</p>
             <p class="mb-1">Status: {{device.status}}</p>
-            <g-btn-bs elevation="2" text-color="#757575">Disable</g-btn-bs>
+            <g-btn-bs elevation="2" text-color="#757575" @click="$emit('disabledDevice', device)">Disable</g-btn-bs>
             <div class="pos-management-setting__device-content--action">
               <g-tooltip :open-on-hover="true" right speech-bubble color="#000" transition="0.3" remove-content-on-close>
                 <template v-slot:activator="{on}">
                   <div class="pos-management-setting__device-content--action-btn mt-1"
                        @mouseenter="on.mouseenter"
                        @mouseleave="on.mouseleave"
-                       @click.stop.prevent="$emit('open:dialogDelete', true)">
+                       @click.stop.prevent="$emit('open:dialogDelete', device)">
                     <g-icon color="#FFF" small>mdi-trash-can-outline</g-icon>
                   </div>
                 </template>
