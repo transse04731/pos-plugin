@@ -2,6 +2,7 @@ const FormData = require('form-data')
 const fs = require('fs')
 const axios = require('axios')
 const path = require('path')
+const https = require('https')
 
 // domain: 'http://localhost:8888'
 // apiBaseUrl: '/cms-files'
@@ -65,7 +66,11 @@ module.exports = function uploader({ domain, apiBaseUrl }) {
     const folderPath = `/update/${getBaseName(fileName)}/${version}`;
     const form = new FormData();
     form.append('file', fs.createReadStream(filePath));
-    const response = await axios.post(`${uploadFileUrl}${folderPath}`, form, { headers: { ...form.getHeaders() } });
+    const response = await axios.post(`${uploadFileUrl}${folderPath}`, form, {
+      maxContentLength: 1024 * 1024 * 1024,
+      httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+      headers: { ...form.getHeaders() }
+    });
     if (!response.data[0].uploadSuccess)
       return;
     const file = response.data[0].createdFile;
