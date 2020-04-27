@@ -25,7 +25,7 @@
       </g-edit-view-input>
     </div>
     <g-expand-transition>
-      <template v-if="showContent">
+      <template v-if="showContent || searchText">
         <div class="pos-management-group__content">
           <div v-for="(store, i) in stores" :class="getStoreRowClass(i)">
             <div class="pos-management-group__content-info" @click="toggleStoreSetting(store)">
@@ -126,6 +126,7 @@
       appItems: Array,
     },
     injectService: [
+      'PosOnlineOrderManagementStore:(searchText)',
       // permissions
       'PermissionStore:(versionControlPerm,manageAccountPerm,manageGroupPerm,manageStorePerm,settingsPerm,updateAppPerm,remoteControlPerm,featureControlPerm,configOnlineOrderingPerm)'
     ],
