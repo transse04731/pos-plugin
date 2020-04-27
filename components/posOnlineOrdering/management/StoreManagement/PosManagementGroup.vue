@@ -106,20 +106,20 @@
 
     <!-- dialog -- TODO: Bring all dialog to StoreManagement.vue -->
     <dialog-pair-new-device
-        v-if="dialog.pairNewDevice"
+        v-if="selectedStore"
         v-model="dialog.pairNewDevice"
         :store="selectedStore"/>
 
     <dialog-pair-new-device-success
-        v-if="dialog.pairNewDeviceSuccess"
+        v-if="selectedStore"
         v-model="dialog.dialog.pairNewDeviceSuccess"
         :store="selectedStore"/>
 
     <dialog-feature-control
-        v-if="selectedDevice"
+        v-if="selectedStore && selectedDevice"
         v-model="dialog.featureControl"
-        :device="selectedDevice"
         :store="selectedStore"
+        :device="selectedDevice"
         @cancel="closeFeatureControlDialog"
         @save="updateDeviceAppFeature"/>
     
