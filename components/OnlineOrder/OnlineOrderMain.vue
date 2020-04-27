@@ -20,9 +20,9 @@
           <g-card elevation="0" v-for="(order, index) in internalOrders" :key="index">
             <g-card-title>
               <g-icon v-if="order.type === 'delivery'">icon-delivery-man</g-icon>
-              <g-icon v-if="order.type === 'pickup'">icon-pickup</g-icon>
+              <g-icon v-if="order.type === 'pick-up'">icon-pickup</g-icon>
               <span class="fs-small-2 ml-1">
-                <span class="text-indigo-accent-2">#{{order.id}}</span>
+                <span class="fs-small fw-700 text-indigo-accent-2">#{{order.id}}</span>
                 {{order.customer ? order.customer.name : 'No customer name'}} - {{order.customer ? order.customer.phone : 'No customer phone'}}
               </span>
               <g-spacer/>
@@ -30,24 +30,24 @@
             </g-card-title>
             <g-card-text>
               <div class="row-flex" v-if="order.customer">
-                <div class="col-1">
+                <div class="w-10">
                   <g-icon color="#9E9E9E" size="20">icon-place</g-icon>
                 </div>
-                <div class="col-10">{{`${order.customer.address} ${order.customer.zipCode}`}}</div>
+                <div class="flex-equal pl-1">{{`${order.customer.address} ${order.customer.zipCode}`}}</div>
               </div>
               <div v-if="order.items">
-                <div class="row-flex" v-for="item in order.items">
-                  <div class="col-1 fw-700">{{item.quantity}}x</div>
-                  <div class="col-8 fs-small-2">
+                <div class="row-flex align-items-end" v-for="item in order.items">
+                  <div class="w-10 fw-700">{{item.quantity}}x</div>
+                  <div class="flex-equal fs-small-2 pl-1" style="line-height: 20px">
                     {{item.id}}. {{item.name}}
                     <template v-if="item.modifiers.length > 0">
                       <span class="i text-grey">(<span v-for="modifier in item.modifiers">{{modifier}}</span>)</span>
                     </template>
                   </div>
-                  <div class="col-3 fs-small-2 ta-right">€{{item.price | formatMoney(decimals)}}</div>
+                  <div class="col-3 fs-small-2 ta-right" style="line-height: 20px">€{{item.price | formatMoney(decimals)}}</div>
                 </div>
               </div>
-              <div class="row-flex">
+              <div v-if="order.type === 'delivery'" class="row-flex">
                 <div class="col-9 fw-700">{{$t('onlineOrder.shippingFee')}}</div>
                 <div class="col-3 fs-small-2 ta-right">€{{order.shippingFee || 0}}</div>
               </div>
@@ -103,14 +103,14 @@
                   :style="[order.prepareTime < 10 && {border: '1px solid #FF4452'}]">
             <g-card-title>
               <span class="fs-small-2 ml-1">
-                <span class="text-indigo-accent-2">#{{order.id}}</span>
+                <span class="fs-small fw-700 text-indigo-accent-2">#{{order.id}}</span>
                 {{order.customer ? order.customer.name : 'No customer name'}} - {{order.customer ? order.customer.phone : 'No customer phone'}}
               </span>
               <g-spacer/>
               <div class="kitchen-orders__timer" @click.stop="openDialog(order)">
                 <g-icon v-if="order.type === 'delivery'">icon-delivery-man</g-icon>
                 <g-icon v-if="order.type === 'pickup'">icon-pickup</g-icon>
-                <span class="fw-700 fs-small">{{getDeliveryDate(order) | formatDate}}</span>
+                <span class="fw-700 fs-small ml-2">{{getDeliveryDate(order) | formatDate}}</span>
               </div>
             </g-card-title>
             <g-card-text>
@@ -118,7 +118,7 @@
                 <div class="col-1">
                   <g-icon color="#9E9E9E" size="20">icon-place</g-icon>
                 </div>
-                <div class="col-10">{{`${order.customer.address} ${order.customer.zipCode}`}}</div>
+                <div class="col-11 text-grey-darken-1">{{`${order.customer.address} ${order.customer.zipCode}`}}</div>
               </div>
               <div class="row-flex" v-if="order.items">
                 <div class="col-1">
@@ -363,7 +363,7 @@
       background: #EFEFEF;
       border: 1px solid #C4C4C4;
       border-radius: 2px;
-      padding: 0 4px;
+      padding: 0 8px;
     }
   }
 
