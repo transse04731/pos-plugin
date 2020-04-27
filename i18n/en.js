@@ -281,8 +281,8 @@ module.exports = {
       multipleInvoicePrinter: 'Use Multiple Printer For Invoice Printer',
       multipleEntirePrinter: 'Use Multiple Printer For Entire Printer',
       showDineInTax: 'Show Dine-in Tax',
-      networkPrinter: 'Netzwerk Drucker',
-      serialPrinter: 'COM',
+      networkPrinter: 'Network Printer',
+      serialPrinter: 'Serial',
       usb: 'USB',
       //payment
       paymentName: 'Name',
