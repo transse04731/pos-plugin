@@ -34,17 +34,17 @@
       <div class="mb-3 fw-700">Service</div>
       <div class="row-flex">
         <div class="col-6">
-          <div>Delivery</div>
+          <div class="mb-2">Delivery</div>
           <g-radio-group v-model="delivery" row>
-            <g-radio color="#536DFE" label="Yes" value="1"/>
-            <g-radio color="#536DFE" label="No" value="0"/>
+            <g-radio small color="#536DFE" label="Yes" value="1" :class="[delivery === '1' && 'selected']"/>
+            <g-radio small color="#536DFE" label="No" value="0" :class="[delivery === '0' && 'selected']"/>
           </g-radio-group>
         </div>
         <div class="col-6">
-          <div>Allow pick-up</div>
+          <div class="mb-2">Allow pick-up</div>
           <g-radio-group v-model="pickup" row>
-            <g-radio color="#536DFE" label="Yes" value="1"/>
-            <g-radio color="#536DFE" label="No" value="0"/>
+            <g-radio small color="#536DFE" label="Yes" value="1" :class="[pickup === '1' && 'selected']"/>
+            <g-radio small color="#536DFE" label="No" value="0" :class="[pickup === '0' && 'selected']"/>
           </g-radio-group>
         </div>
       </div>
@@ -186,6 +186,15 @@
             width: 80px;
             font-weight: 700;
           }
+        }
+      }
+
+      .g-radio-wrapper {
+        margin-right: 40px;
+        margin-left: 0;
+
+        &.selected ::v-deep .g-radio-label {
+          font-weight: 600;
         }
       }
     }
