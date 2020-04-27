@@ -6,9 +6,9 @@
       <g-edit-view-input
           :value="name"
           @click.native.stop.prevent="() => {}"
-          @input="(value, cb) => $emit('changeGroupName', _id, value, cb)">
-        <template v-if="manageGroupPerm" v-slot:action="{mode, switchToEditMode, applyChange, resetValue}">
-          <g-menu v-if="mode !== 'edit'" v-model="nameEditMenu" close-on-content-click nudge-bottom="5" nudge-left="30">
+          @input="(value, cb) => $emit('update:groupName', _id, value, cb)">
+        <template v-slot:action="{mode, switchToEditMode, applyChange, resetValue}">
+          <g-menu v-if="mode !== 'edit' && manageGroupPerm" v-model="nameEditMenu" close-on-content-click nudge-bottom="5" nudge-left="30">
             <template v-slot:activator="{on}">
               <div class="btn-edit" :style="[nameEditMenu && {background: '#F4F5FA'}]">
                 <g-icon :class="[nameEditMenu && 'btn-edit--active']" size="16" @click="on.click">mdi-pencil-outline</g-icon>
@@ -16,7 +16,7 @@
             </template>
             <div class="menu-edit">
               <div @click="switchToEditMode()">Rename</div>
-              <div v-if="stores.length === 0" @click="deleteGroup">Delete</div>
+              <div v-if="stores.length === 0" @click="$emit('delete:group', _id)">Delete</div>
             </div>
           </g-menu>
           <g-icon v-if="mode === 'edit'" @click="applyChange()" class="ml-1">mdi-check</g-icon>
@@ -25,7 +25,7 @@
       </g-edit-view-input>
     </div>
     <g-expand-transition>
-      <template v-if="showContent">
+      <template v-if="showContent || searchText">
         <div class="pos-management-group__content">
           <div v-for="(store, i) in stores" :class="getStoreRowClass(i)">
             <div class="pos-management-group__content-info" @click="toggleStoreSetting(store)">
@@ -49,13 +49,12 @@
                   <div class="row-flex col-4">
                     <template v-if="updateAppPerm">
                       <g-select class="w-60" :items="device.versions" v-model="device.updateVersion"/>
-                      <p v-if="device.updateVersion" class="ml-3 text-indigo-accent-2" style="cursor: pointer" @click="updateAppVersion(device)">Update</p>
+                      <p v-if="device.updateVersion" class="ml-3 text-indigo-accent-2" style="cursor: pointer" @click="$emit('update:deviceAppVersion', device)">Update</p>
                     </template>
                   </div>
                   <div class="col-1 row-flex align-items-center">
                     <!-- remote control -->
-                    <g-tooltip v-if="remoteControlPerm"
-                               :open-on-hover="true" top speech-bubble color="#000" transition="0.3">
+                    <g-tooltip v-if="remoteControlPerm" :open-on-hover="true" top speech-bubble color="#000" transition="0.3">
                       <template v-slot:activator="{on}">
                         <div :class="device.online && device.paired && device.features && device.features.proxy && !disableRemoteControlBtn
                                   ? 'pos-management-group__content-btn' : 'pos-management-group__content-btn--disabled'"
@@ -72,8 +71,9 @@
                         <g-icon :class="[device.menu && 'menu--active', 'ml-2']" @click="on.click">more_horiz</g-icon>
                       </template>
                       <div class="menu-action">
-                        <div v-if="featureControlPerm" class="menu-action__option" @click="openFeatureControlDialog(store, device)">Feature control</div>
-                        <div v-if="settingsPerm" class="menu-action__option" @click="$emit('open:dialogDelete', device)">Delete device</div>
+                        <div v-if="featureControlPerm" class="menu-action__option" @click="$emit('open:editDeviceFeatureDialog', store, device)">Feature control</div>
+                        <div v-if="settingsPerm" class="menu-action__option" @click="$emit('open:editDeviceNameDialog', device)">Edit name</div>
+                        <div v-if="settingsPerm" class="menu-action__option" @click="$emit('open:deleteDeviceDialog', device)">Delete device</div>
                       </div>
                     </g-menu>
                   </div>
@@ -82,7 +82,8 @@
             </div>
             <div class="pos-management-group__content-action">
               <g-btn-bs v-if="settingsPerm" small border-color="grey-darken-1" @click="$emit('view:settings', store)">Settings</g-btn-bs>
-              <g-btn-bs v-if="configOnlineOrderingPerm" small border-color="grey-darken-1" @click="openWebShopConfig(store)">WebShop Config</g-btn-bs>
+              <g-btn-bs v-if="configOnlineOrderingPerm" small border-color="grey-darken-1" @click="openWebShopConfig(store)">Online Ordering</g-btn-bs>
+              <g-btn-bs v-if="settingsPerm" small border-color="grey-darken-1" @click="$emit('open:pairDeviceDialog', store)">Pair New Device</g-btn-bs>
             </div>
           </div>
 
@@ -101,24 +102,18 @@
         </div>
       </template>
     </g-expand-transition>
-    
-    <dialog-feature-control
-        v-if="selectedDevice"
-        v-model="dialog.featureControl"
-        :device="selectedDevice"
-        :store="selectedStore"
-        @cancel="closeFeatureControlDialog"
-        @save="updateDeviceAppFeature"/>
   </div>
 </template>
 
 <script>
   import _ from 'lodash'
   import DialogFeatureControl from './dialogFeatureControl';
+  import DialogPairNewDeviceSuccess from './dialogPairNewDeviceSuccess';
+  import DialogEditDeviceName from './dialogEditDeviceName';
 
   export default {
     name: "PosManagementGroup",
-    components: { DialogFeatureControl },
+    components: { DialogEditDeviceName, DialogPairNewDeviceSuccess, DialogFeatureControl },
     props: {
       _id: String,
       name: String,
@@ -126,6 +121,7 @@
       appItems: Array,
     },
     injectService: [
+      'PosOnlineOrderManagementStore:(searchText)',
       // permissions
       'PermissionStore:(versionControlPerm,manageAccountPerm,manageGroupPerm,manageStorePerm,settingsPerm,updateAppPerm,remoteControlPerm,featureControlPerm,configOnlineOrderingPerm)'
     ],
@@ -144,19 +140,13 @@
         nameEditMenu: false,
         selectedStore: null,
         selectedDevice: null,
-        dialog: {
-          featureControl: false,
-          deleteDevice: false
-        }
       }
     },
     computed: {
     },
     methods: {
       getDeviceIcon(device) {
-        if (device.online) return 'icon-screen_blue'
-
-        return 'icon-screen'
+        return device.online ? 'icon-screen_blue' : 'icon-screen'
       },
       toggleContent() {
         this.showContent = !this.showContent
@@ -168,21 +158,14 @@
           this.showStoreSetting[store._id] = !this.showStoreSetting[store._id]
         }
       },
+      // style
       getStoreRowClass(index) {
-        if (index % 2 === 0)
-          return 'pos-management-group__content--even'
-        return 'pos-management-group__content--odd'
+        return (index % 2 === 0) ? 'pos-management-group__content--even' : 'pos-management-group__content--odd'
       },
       getStatusClass(status) {
-        if (status === 'online')
-          return 'pos-management-group__status--online'
-        if (status === 'offline')
-          return 'pos-management-group__status--offline'
-        return ''
+        return (status === 'online') ? 'pos-management-group__status--online' : (status === 'offline') ? 'pos-management-group__status--offline' : ''
       },
-      deleteStore(store) {
-        this.$emit('delete', store)
-      },
+      //
       openWebShopConfig(store) {
         window.open(`${location.origin}/setting/${store.alias || store._id}`)
       },
@@ -200,7 +183,7 @@
 
             this.iframeRefreshInterval = setInterval(() => {
               this.iframeSrc = ''
-              this.$nextTick(() => this.iframeSrc = `${location.protocol}//${location.hostname}:${proxyPort}/view/pos-dashboard`)
+              this.$nextTick(() => this.iframeSrc = `http://${location.hostname}:${proxyPort}/view/pos-dashboard`)
             }, 10000)
           } else {
             // TODO: handle error
@@ -220,34 +203,6 @@
       onIframeLoad() {
         if (this.iframeRefreshInterval) clearInterval(this.iframeRefreshInterval)
       },
-      async updateAppVersion(device) {
-        if (!device.updateVersion)
-          return
-        const {socket} = window.cms
-        socket.emit('updateApp', device._id, device.updateVersion)
-        const versionInfo = _.find(device.versions, version => version.value === device.updateVersion)
-        await cms.getModel('Device').updateOne({_id: device._id}, versionInfo)
-        // TODO: update UI
-      },
-      deleteGroup() {
-        this.$emit('delete:group', this.name)
-      },
-      openFeatureControlDialog(store, device) {
-        this.selectedStore = store
-        this.selectedDevice = device
-        this.dialog.featureControl = true
-      },
-      closeFeatureControlDialog() {
-        this.selectedStore = null
-        this.selectedDevice = null
-        this.dialog.featureControl = false
-      },
-      async updateDeviceAppFeature(features) {
-        const {socket} = window.cms
-        socket.emit('updateAppFeature', this.selectedDevice._id, features)
-        await cms.getModel('Device').updateOne({_id: this.selectedDevice._id}, { features })
-        this.dialog.featureControl = false
-      }
     },
     beforeDestroy() {
       this.stopRemoteControl()

@@ -46,8 +46,11 @@
       }
     },
     async created() {
-      const user = await cms.getModel('User').findOne({ _id: cms.loginUser.user._id }, { permissions : 1 })
-      user && this.userPermissions.splice(0, 0, ...user.permissions)
+      cms.updateUserSession()
+      if (!cms.loginUser.user.active)
+        this.$getService('PosStore').logout()
+      else
+        this.userPermissions.splice(0, 0, ...cms.loginUser.user.permissions)
     },
     provide() {
       return {
