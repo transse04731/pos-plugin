@@ -37,7 +37,7 @@ android {
         dev {
             dimension "giga"
             buildConfigField("String", "mode", '"--mode=android-local-server"')
-            buildConfigField("String", "androidWebshop", '"--androidWebshop=http://192.168.10.13:8888"')
+            buildConfigField("String", "androidWebshop", "\"--androidWebshop=http://${localIP}:8888\"")
         }
         pro {
             dimension "giga"
@@ -98,31 +98,35 @@ android.applicationVariants.all { variant ->
                     exec {
                         commandLine 'mv', '../originalBuild/app-release-unsigned.apk', '../originalBuild/app-release.apk'
                     }
-                    if (uploadFile) {
-                        def flag = ""
-                        if (variant.getName().contains("dev")) {
-                            flag += " --mode=android-local-server"
-                            flag += " --androidWebshop=http://192.168.10.13:8888"
-                        } else if (variant.getName().contains("pro")) {
-                            flag += "--mode=android"
-                        }
-                        new ByteArrayOutputStream().withStream { os ->
-                            exec {
-                                commandLine "node", '../../getConfig.js'
-                                args(flag.split(' '))
-                                standardOutput = os
-                                ignoreExitValue = true
-                            }
-                            println 'Uploading'
-                            exec {
-                                commandLine "node", '../../uploadNewVersionAndPatch.js', "--domain=${os.toString().replace('\n', '')}"
-                                ignoreExitValue = true
-                            }
-                        }
-                    }
                 }
             } catch (Exception e) {
                 throw new GradleScriptException("Something went wrong when adding patch to apk", e);
+            }
+        }
+    }
+    task("uploadApkAndPatch${variant.name.capitalize()}") {
+        doLast {
+            def flag = ""
+            if (variant.getName().contains("dev")) {
+                flag += " --mode=android-local-server"
+                flag += " --androidWebshop=http://${localIP}:8888"
+            } else if (variant.getName().contains("pro")) {
+                flag += "--mode=android"
+            }
+            println flag
+            new ByteArrayOutputStream().withStream { os ->
+                exec {
+                    commandLine "node", '../../getConfig.js'
+                    args(flag.split(' '))
+                    standardOutput = os
+                    ignoreExitValue = true
+                }
+                println 'Uploading'
+                println os.toString()
+                exec {
+                    commandLine "node", '../../uploadNewVersionAndPatch.js', "--domain=${os.toString().replace('\n', '')}"
+                    ignoreExitValue = true
+                }
             }
         }
     }
