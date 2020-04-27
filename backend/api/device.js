@@ -59,19 +59,9 @@ router.post('/register', async (req, res) => {
   // hardware: Sunmi, Kindle-Fire, etc, ...
   // appName: Pos-Germany.apk
   // appVersion: 1.51
-  // feature: onlineOrder | remoteControl | updatable | proxy
-  // const {pairingCode, hardware, appName, appVersion, features} = req.body;
-  let {pairingCode, hardware, appName, appVersion, features } = req.body;
-
+  let {pairingCode, hardware, appName, appVersion } = req.body;
   if (!pairingCode) return res.status(400).json({message: 'Missing pairingCode in request body'});
-
   const deviceInfo = await DeviceModel.findOne({pairingCode, paired: false});
-
-  // TODO: This is for testing, remove this when pairing logic in pos-restaurant is completed
-  // features = Array.isArray(features) ? features : [];
-  // if (!features.includes('onlineOrder')) features.push('onlineOrder');
-  // if (!features.includes('proxy')) features.push('proxy');
-
   if (deviceInfo) {
     // TODO: custom value depend on features provided by request
     // online status will be updated when client connects to external Socket.io server (see backend/socket-io-server.js file)
