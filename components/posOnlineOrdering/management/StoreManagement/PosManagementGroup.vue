@@ -112,7 +112,7 @@
 
     <dialog-pair-new-device-success
         v-if="selectedStore"
-        v-model="dialog.dialog.pairNewDeviceSuccess"
+        v-model="dialog.pairNewDeviceSuccess"
         :store="selectedStore"/>
 
     <dialog-feature-control
@@ -128,7 +128,7 @@
         v-model="dialog.editDeviceName"
         :device="selectedDevice"
         @cancel="closeEditDeviceNameDialog"
-        @save="$emit('update:deviceName', $event)"/>
+        @save="(_id, name) => $emit('update:deviceName', _id, name)"/>
   </div>
 </template>
 

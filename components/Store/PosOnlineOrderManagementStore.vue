@@ -309,6 +309,7 @@
       },
       
       async updateDevice(_id, change) {
+        debugger
         await cms.getModel('Device').updateOne({_id}, change)
         // load store will reload devices
         await this.loadStores()

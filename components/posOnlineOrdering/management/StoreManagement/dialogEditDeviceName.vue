@@ -5,7 +5,7 @@
       <g-text-field-bs label="Device Name:" v-model="internalName"/>
       <div class="dialog__buttons">
         <g-btn-bs @click="internalValue = false">Cancel</g-btn-bs>
-        <g-btn-bs @click="save">Save</g-btn-bs>
+        <g-btn-bs background-color="#536DFE" text-color="#FFF" @click="save">Save</g-btn-bs>
       </div>
     </div>
   </g-dialog>
@@ -18,7 +18,9 @@
       device: Object
     },
     data: function () {
-      return {}
+      return {
+        internalName: this.device.name
+      }
     },
     computed: {
       internalValue: {
@@ -28,14 +30,11 @@
         set() {
           this.$emit('input', false)
         }
-      },
-      internalName() {
-        return this.device.name
       }
     },
     methods: {
       save() {
-        this.$emit('save', this.device._id, this.internalValue)
+        this.$emit('save', this.device._id, this.internalName)
         this.internalValue = false
       }
     }
@@ -45,7 +44,8 @@
   .dialog {
     background: white;
     border-radius: 4px;
-    width: 100%;
+    width: 500px;
+    margin: 0 auto;
     padding: 40px;
     display: flex;
     flex-direction: column;
