@@ -248,6 +248,10 @@
           takeOut: true,
         }
 
+        if(!this.store.useMultiplePrinters) {
+          Object.assign(orderData, {printers: [this.store.printers[0]]})
+        }
+
         socket.emit('createOrder', this.store._id, orderData)
 
         this.dialog.order = {
