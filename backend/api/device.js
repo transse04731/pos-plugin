@@ -80,7 +80,7 @@ router.post('/register', async (req, res) => {
         delivery: true,
         editMenuCard: true,
         tablePlan: true,
-        onlineOrdering: true,
+        onlineOrdering: false,
         editTablePlan: true,
         staffReport: true,
         eodReport: true,
