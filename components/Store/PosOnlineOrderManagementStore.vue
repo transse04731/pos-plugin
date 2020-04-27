@@ -311,6 +311,7 @@
       
       async removeDevice(_id) {
         await axios.post(`/device/unregister`, { _id })
+        window.cms.socket.emit('unpairDevice', _id)
         await this.loadStores()
       },
       
