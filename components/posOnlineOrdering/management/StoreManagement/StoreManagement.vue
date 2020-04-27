@@ -42,7 +42,7 @@
               </div>
             </div>
           </template>
-          <template v-if="storeGroups.length !== 0 && searchResult.length === 0">
+          <template v-if="storeGroups.length !== 0 && storeManagementViewModel.length === 0">
             <div class="store-management__table-content--empty">
               <p class="text-grey-darken-1">No Store match your search</p>
               <p class="text-grey-darken-1"><span class="fw-700">"{{searchText}}"</span></p>
@@ -51,16 +51,19 @@
           </template>
           <template v-else>
             <pos-management-group
-                v-for="(group, i) in searchResult"
+                v-for="(group, i) in storeManagementViewModel"
                 v-bind="group"
                 :key="`group_${i}`"
                 :app-items="appItems"
-                @delete="removeStore(group._id, $event)"
-                @updateStores="loadStores()"
+                @update:groupName="changeStoreGroupName"
+                @delete:group="deleteStoreGroup"
+                @update:deviceAppVersion="updateDeviceAppVersion"
+                @open:editDeviceFeatureDialog="showFeatureControlDialog"
+                @open:editDeviceNameDialog="showEditDeviceNameDialog"
+                @open:deleteDeviceDialog="showDeleteDeviceDialog"
                 @view:settings="viewStoreSetting($event)"
-                @open:dialogDelete="showDeleteDeviceDialog"
-                @changeGroupName="changeStoreGroupName"
-            />
+                @open:pairDeviceDialog="showPairDeviceDialog"
+                @updateStores="loadStores()"/>
           </template>
         </div>
       </div>
@@ -85,16 +88,28 @@
           :online-ordering="selectedStore.onlineOrdering"
           :devices="selectedStore.devices"
           :groups="storeGroups"
-          @update="updateStore(selectedStore._id, $event)"
-          @open:dialogDevice="dialog.newDevice = $event"
-          @open:dialogDelete="showDeleteDeviceDialog"/>
+          @update="updateStore(selectedStore._id, $event)"/>
     </template>
     
     <!-- dialogs -->
-    <dialog-new-group v-if="manageGroupPerm" v-model="dialog.newGroup" @submit="addGroup($event)" :groups="storeGroups"/>
-    <dialog-new-store v-if="manageStorePerm" v-model="dialog.newStore" @submit="addStore($event)" :groups="storeGroups"/>
-    <dialog-new-device v-if="settingsPerm" v-model="dialog.newDevice"/>
-    <dialog-delete-item v-if="settingsPerm" v-model="dialog.deleteDevice" type="device"/>
+    <dialog-new-group v-if="manageGroupPerm && storeGroups && dialog.newGroup" v-model="dialog.newGroup" @submit="addGroup($event)" :groups="storeGroups"/>
+    <dialog-new-store v-if="manageStorePerm && storeGroups && dialog.newStore" v-model="dialog.newStore" @submit="addStore($event)" :groups="storeGroups"/>
+    <dialog-delete-item v-if="settingsPerm && dialog.deleteDevice" v-model="dialog.deleteDevice" type="device" @confirm="deleteDevice"/>
+    <dialog-pair-new-device v-if="selectedStore && dialog.pairNewDevice" v-model="dialog.pairNewDevice" :store="selectedStore"/>
+    <dialog-pair-new-device-success v-if="selectedStore && dialog.pairNewDeviceSuccess" v-model="dialog.pairNewDeviceSuccess" :store="selectedStore"/>
+    <dialog-feature-control
+        v-if="selectedStore && selectedDevice && dialog.featureControl"
+        v-model="dialog.featureControl"
+        :store="selectedStore"
+        :device="selectedDevice"
+        @cancel="closeFeatureControlDialog"
+        @save="updateDeviceAppFeature"/>
+    <dialog-edit-device-name
+        v-if="selectedDevice && dialog.editDeviceName"
+        v-model="dialog.editDeviceName"
+        :device="selectedDevice"
+        @cancel="closeEditDeviceNameDialog"
+        @save="updateDeviceName"/>
   </div>
 </template>
 <script>
@@ -105,14 +120,17 @@
       return {
         view: 'list',
         showFilterMenu: false,
-        selectedStoreId: null,
+        selectedStore: null,
         deviceIdList: [],
         selectedDevice: null,
         dialog: {
           newGroup: false,
           newStore: false,
-          newDevice: false,
           deleteDevice: false,
+          featureControl: false,
+          pairNewDevice: false,
+          pairNewDeviceSuccess: false,
+          editDeviceName: false,
         },
       }
     },
@@ -120,11 +138,11 @@
       // view model
       'PosOnlineOrderManagementStore:(storeManagementViewModel,searchText,orderBy)',
       // store groups
-      'PosOnlineOrderManagementStore:(storeGroups,loadStoreGroups,addGroup,changeStoreGroupName)',
+      'PosOnlineOrderManagementStore:(storeGroups,loadStoreGroups,addGroup,changeStoreGroupName,deleteStoreGroup)',
       // stores
       'PosOnlineOrderManagementStore:(stores,loadStores,addStore,removeStore,updateStore,storeAlias)',
       // devices
-      'PosOnlineOrderManagementStore:(addDevice,removeDevice,updateDevice)',
+      'PosOnlineOrderManagementStore:(addDevice,removeDevice,updateDevice,updateDeviceFeatures,updateDeviceAppVersion)',
       // app
       'PosOnlineOrderManagementStore:(apps,appItems)',
       // store management permissions
@@ -156,27 +174,66 @@
       window.cms.socket.emit('unwatchDeviceStatus', this.deviceIdList)
     },
     computed: {
-      searchResult() {
-        return this.storeManagementViewModel
-      },
-      selectedStore() {
-        if (this.selectedStoreId)
-          return _.find(this.stores, store => store._id === this.selectedStoreId)
-      },
+      // selectedStore() {
+      //   if (this.selectedStoreId)
+      //     return _.find(this.stores, store => store._id === this.selectedStoreId)
+      // },
     },
     methods: {
+      setSelectedStore(store) {
+        this.$set(this, 'selectedStore', store)
+      },
+      setSelectedDevice(device) {
+        this.$set(this, 'selectedDevice', device)
+      },
+      
       viewStoreSetting(store) {
-        this.selectedStoreId = store._id
+        this.setSelectedStore(store)
         this.view = 'settings'
       },
+      
+      // pair device
+      showPairDeviceDialog(store) {
+        this.setSelectedStore(store)
+        this.dialog.pairNewDevice = true
+      },
+      
+      // delete device
       showDeleteDeviceDialog(device) {
         this.dialog.deleteDevice = true
-        this.selectedDevice = device
+        this.setSelectedDevice(device)
       },
       async deleteDevice() {
         await this.removeDevice(this.selectedDevice._id)
-        this.selectedDevice = null
-      }
+        this.setSelectedDevice(null)
+      },
+      
+      // device features
+      showFeatureControlDialog(store, device) {
+        this.setSelectedStore(store)
+        this.setSelectedDevice(device)
+        this.dialog.featureControl = true
+      },
+      closeFeatureControlDialog() {
+        this.dialog.featureControl = false
+      },
+      updateDeviceAppFeature(features) {
+        this.updateDeviceFeatures(this.selectedDevice._id, features, () => {
+          this.dialog.featureControl = false
+        })
+      },
+      
+      // device name
+      showEditDeviceNameDialog(device) {
+        this.setSelectedDevice(device)
+        this.dialog.editDeviceName = true
+      },
+      closeEditDeviceNameDialog() {
+        this.dialog.editDeviceName = false
+      },
+      updateDeviceName(_id, name) {
+        this.updateDevice(_id, { name })
+      },
     }
   }
 </script>

@@ -9,14 +9,15 @@ const DeviceModel = cms.getModel('Device');
 const StoreModel = cms.getModel('Store')
 
 function generateDeviceCode() {
-  return randomstring.generate({length: 6}).toLowerCase()
+  return randomstring.generate({length: 9, charset: 'numeric'})
 }
 
 async function generateUniqueDeviceCode() {
   const deviceCodes = _.map(await DeviceModel.find({}, {deviceCode: 1}), device => device.deviceCode)
-  let newDeviceCode = generateDeviceCode()
-  while (_.includes(deviceCodes, newDeviceCode))
+  let newDeviceCode
+  do {
     newDeviceCode = generateDeviceCode()
+  } while (_.includes(deviceCodes, newDeviceCode))
   return newDeviceCode
 }
 
@@ -60,19 +61,9 @@ router.post('/register', async (req, res) => {
   // hardware: Sunmi, Kindle-Fire, etc, ...
   // appName: Pos-Germany.apk
   // appVersion: 1.51
-  // feature: onlineOrder | remoteControl | updatable | proxy
-  // const {pairingCode, hardware, appName, appVersion, features} = req.body;
-  let {pairingCode, hardware, appName, appVersion, features } = req.body;
-
+  let {pairingCode, hardware, appName, appVersion } = req.body;
   if (!pairingCode) return res.status(400).json({message: 'Missing pairingCode in request body'});
-
   const deviceInfo = await DeviceModel.findOne({pairingCode, paired: false});
-
-  // TODO: This is for testing, remove this when pairing logic in pos-restaurant is completed
-  // features = Array.isArray(features) ? features : [];
-  // if (!features.includes('onlineOrder')) features.push('onlineOrder');
-  // if (!features.includes('proxy')) features.push('proxy');
-
   if (deviceInfo) {
     // TODO: custom value depend on features provided by request
     // online status will be updated when client connects to external Socket.io server (see backend/socket-io-server.js file)
@@ -82,7 +73,7 @@ router.post('/register', async (req, res) => {
         delivery: true,
         editMenuCard: true,
         tablePlan: true,
-        onlineOrdering: true,
+        onlineOrdering: false,
         editTablePlan: true,
         staffReport: true,
         eodReport: true,
