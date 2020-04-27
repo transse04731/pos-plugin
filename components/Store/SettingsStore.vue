@@ -104,9 +104,21 @@
         await this.updatePosSetting('hardwares', hardwares)
       }
 
-      if (posSettings.onlineDevice) {
+      if (posSettings.onlineDevice && this.$router.currentRoute.path === '/pos-login') {
+        this.onlineDevice = posSettings.onlineDevice
         if (!posSettings.onlineDevice.paired) this.$router.push('/pos-setup')
       }
+
+      // listens for unpair event
+      cms.socket.on('unpairDevice', () => {
+        this.unregisterOnlineOrder(async () => {
+          this.onlineDevice = Object.assign({}, this.onlineDevice, {
+            paired: false
+          })
+          await this.updateOnlineDevice(this.onlineDevice)
+          this.$router.push('/pos-setup')
+        })
+      })
     },
     watch: {
       'productPagination.limit'(newVal) {

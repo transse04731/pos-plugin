@@ -83,6 +83,10 @@ function createOnlineOrderSocket(deviceId) {
       deviceSockets.forEach(socket => socket.emit('updateAppFeature')) // emit to all frontends
     })
 
+    onlineOrderSocket.on('unpairDevice', async () => {
+      deviceSockets.forEach(socket => socket.emit('unpairDevice'))
+    })
+
     onlineOrderSocket.on('startRemoteControl', (proxyServerPort, callback) => {
       activeProxies++;
 
@@ -218,23 +222,6 @@ module.exports = async cms => {
     });
 
     socket.on('unregisterOnlineOrderDevice', async callback => {
-      const posSettings = await cms.getModel('PosSetting').findOne({});
-      const {onlineDevice} = posSettings;
-
-      const unregisterApiUrl = `${webshopUrl}/device/unregister`;
-      const requestBody = {_id: onlineDevice.id};
-
-      try {
-        await axios.post(unregisterApiUrl, requestBody);
-      } catch (e) {
-        if (e.response.status === 400) {
-          // throw error is not necessary because device does not exist on server
-          console.error('Unpair error: device ID doest not exist on server');
-        } else {
-          throw e;
-        }
-      }
-
       cleanupOnlineOrderSocket();
 
       if (proxyClient) {

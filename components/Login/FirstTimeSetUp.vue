@@ -1,6 +1,6 @@
 <template>
   <div class="background row-flex align-items-center justify-center">
-    <g-card persistent width="580" v-if="!success">
+    <g-card persistent width="580">
       <div class="dialog" style="padding: 24px">
         <div class="dialog-title">Welcome to Gigasource POS</div>
         <div class="dialog-title--sub">Pairing Code</div>
@@ -29,16 +29,6 @@
         </div>
       </div>
     </g-card>
-    <g-card persistent v-model="success" width="580" eager v-else>
-      <div class="dialog" style="padding: 24px 120px">
-        <div class="dialog-title">PAIR SUCCESSFULLY</div>
-        <img alt src="/plugins/pos-plugin/assets/chain.svg"/>
-        <div class="dialog-message">
-          We have added some sample data to help you get started with our product.
-        </div>
-        <g-btn-bs style="margin: 16px" width="120" background-color="#2979FF" @click="start">Start</g-btn-bs>
-      </div>
-    </g-card>
     <dialog-text-filter v-model="dialog.input" label="Code" :defaul-value="code" @submit="changeCode"/>
     <g-btn style="position: absolute; bottom: 10px; right: 10px" @click="$emit('skipPairing')">Skip pairing</g-btn>
   </div>
@@ -54,7 +44,6 @@
           input: false,
         },
         code: '',
-        success: false,
         error: false,
         errorMessage: 'No internet connection',
         pairing: false,
@@ -91,10 +80,9 @@
             this.error = true
             this.errorMessage = 'Pair failed. Please try again.'
           } else {
-            this.success = true
             this.error = false
             this.code = ''
-            this.success && this.$emit('completeSetup')
+            this.$emit('completeSetup')
           }
           this.pairing = false
         })

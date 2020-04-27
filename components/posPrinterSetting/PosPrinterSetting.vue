@@ -150,7 +150,7 @@
       return {
         printerTypes: [
           {name: this.$t('settings.networkPrinter'), value: 'ip'},
-          {name: this.$t('settings.serialPrinter'), value: 'com'},
+          // {name: this.$t('settings.serialPrinter'), value: 'com'},
           {name: this.$t('settings.usb'), value: 'usb'}
         ],
         selectedPrinterType: null,
