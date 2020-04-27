@@ -9,7 +9,7 @@ const DeviceModel = cms.getModel('Device');
 const StoreModel = cms.getModel('Store')
 
 function generateDeviceCode() {
-  return randomstring.generate({length: 6}).toLowerCase()
+  return randomstring.generate({length: 9, charset: 'numeric'})
 }
 
 async function generateUniqueDeviceCode() {
