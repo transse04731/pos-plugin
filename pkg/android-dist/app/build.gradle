@@ -95,6 +95,31 @@ android.applicationVariants.all { variant ->
                     exec {
                         commandLine 'jarsigner', '-verbose', '-sigalg', 'SHA1withRSA', '-digestalg', 'SHA1', '-keystore', 'release.keystore', '-storepass', '123456', '../originalBuild/app-release-unsigned.apk', 'key0'
                     }
+                    exec {
+                        commandLine 'mv', '../originalBuild/app-release-unsigned.apk', '../originalBuild/app-release.apk'
+                    }
+                    if (uploadFile) {
+                        def flag = ""
+                        if (variant.getName().contains("dev")) {
+                            flag += " --mode=android-local-server"
+                            flag += " --androidWebshop=http://192.168.10.13:8888"
+                        } else if (variant.getName().contains("pro")) {
+                            flag += "--mode=android"
+                        }
+                        new ByteArrayOutputStream().withStream { os ->
+                            exec {
+                                commandLine "node", '../../getConfig.js'
+                                args(flag.split(' '))
+                                standardOutput = os
+                                ignoreExitValue = true
+                            }
+                            println 'Uploading'
+                            exec {
+                                commandLine "node", '../../uploadNewVersionAndPatch.js', "--domain=${os.toString().replace('\n', '')}"
+                                ignoreExitValue = true
+                            }
+                        }
+                    }
                 }
             } catch (Exception e) {
                 throw new GradleScriptException("Something went wrong when adding patch to apk", e);
