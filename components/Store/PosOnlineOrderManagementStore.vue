@@ -92,7 +92,7 @@
           ],
           listType: [
             {text: 'APK', value: 'APK'},
-            {text: 'Patch', value: 'Patch'}
+            {text: 'PATCH', value: 'PATCH'}
           ],
         }
       },
