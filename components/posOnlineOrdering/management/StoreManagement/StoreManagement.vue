@@ -183,6 +183,9 @@
       setSelectedStore(store) {
         this.$set(this, 'selectedStore', store)
       },
+      setSelectedDevice(device) {
+        this.$set(this, 'selectedDevice', device)
+      },
       
       viewStoreSetting(store) {
         this.setSelectedStore(store)
@@ -198,17 +201,17 @@
       // delete device
       showDeleteDeviceDialog(device) {
         this.dialog.deleteDevice = true
-        this.selectedDevice = device
+        this.setSelectedDevice(device)
       },
       async deleteDevice() {
         await this.removeDevice(this.selectedDevice._id)
-        this.selectedDevice = null
+        this.setSelectedDevice(null)
       },
       
       // device features
       showFeatureControlDialog(store, device) {
-        this.selectedStoreId = store._id
-        this.selectedDevice = device
+        this.setSelectedStore(store)
+        this.setSelectedDevice(device)
         this.dialog.featureControl = true
       },
       closeFeatureControlDialog() {
@@ -222,7 +225,7 @@
       
       // device name
       showEditDeviceNameDialog(device) {
-        this.selectedDevice = device
+        this.setSelectedDevice(device)
         this.dialog.editDeviceName = true
       },
       closeEditDeviceNameDialog() {
