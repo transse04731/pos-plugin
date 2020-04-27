@@ -32,7 +32,7 @@
           <div v-if="aliasErrMessage" class="error-message">{{aliasErrMessage}}</div>
         </div>
       </div>
-      <div>
+      <div class="r">
         <p>Client's domain</p>
         <g-text-field-bs large v-model="clientDomain" @input="updateClientDomainDebounce"/>
         <div v-if="clientDomainErrMessage" class="error-message">{{clientDomainErrMessage}}</div>
@@ -157,7 +157,7 @@
           return false
         }
         if (/([^a-zA-Z0-9\-])/g.exec(alias)) {
-          this.aliasErrMessage = 'WebShop url must not contain invalid character! Valid character set is a-z, A-Z, 0-9 and \'-\' character'
+          this.aliasErrMessage = 'Valid characters are a-z, A-Z, 0-9 and \'-\' character'
           return false
         }
         const res = (await axios.post('/store/validate-alias', { store: this._id, alias })).data

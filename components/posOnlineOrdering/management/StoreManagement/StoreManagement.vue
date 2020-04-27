@@ -182,6 +182,7 @@
 </script>
 <style scoped lang="scss">
   .store-management {
+    height: 100%;
   
     .btn-sort {
       background: #FFFFFF;
