@@ -3,13 +3,14 @@
     <template v-if="renderPage">
       <div class="menu-setting__title mb-3">Menu Settings</div>
       <div v-if="!categories || !categories.length" class="menu-setting--empty">
-        <img src="/plugins/pos-plugin/assets/folk_knife.svg">
+        <img draggable="false" src="/plugins/pos-plugin/assets/folk_knife.svg">
         <p>Menu is currently empty.</p>
         <p><span style="color: #536DFE">"Add new category"</span> to get started.</p>
         <div class="btn-add" @click="dialog.addNewCategory = true">+ Add New Category</div>
       </div>
       <div class="menu-setting__main" v-else>
         <div class="row-flex justify-end mb-2">
+          <g-btn-bs @click="openWebShop" border-color="gray">Preview</g-btn-bs>
           <g-btn-bs background-color="#2979FF" icon="add_circle"
                     @click="dialog.addNewCategory = true">
             Add new category
@@ -171,6 +172,9 @@
       openDeleteProductDialog(productId) {
         this.selectedProductId = productId
         this.dialog.deleteProduct = true
+      },
+      openWebShop() {
+        window.open(`${location.origin}/store/${this.store.alias || this.store._id}`)
       }
     }
   }

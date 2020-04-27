@@ -9,14 +9,15 @@ const DeviceModel = cms.getModel('Device');
 const StoreModel = cms.getModel('Store')
 
 function generateDeviceCode() {
-  return randomstring.generate({length: 6}).toLowerCase()
+  return randomstring.generate({length: 9, charset: 'numeric'})
 }
 
 async function generateUniqueDeviceCode() {
   const deviceCodes = _.map(await DeviceModel.find({}, {deviceCode: 1}), device => device.deviceCode)
-  let newDeviceCode = generateDeviceCode()
-  while (_.includes(deviceCodes, newDeviceCode))
+  let newDeviceCode
+  do {
     newDeviceCode = generateDeviceCode()
+  } while (_.includes(deviceCodes, newDeviceCode))
   return newDeviceCode
 }
 
@@ -38,6 +39,8 @@ async function removePairedDeviceFromStore(deviceId, storeId) {
 router.get('/pairing-code', async (req, res) => {
   const {storeId} = req.query
 
+  if (!storeId) return res.status(400).json({message: 'Missing storeId in request'});
+
   // Only 1 store can have "onlineOrder" feature
   const device = await DeviceModel.findOne({storeId, paired: false})
   if (device) return res.status(200).json({pairingCode: device.pairingCode})
@@ -58,19 +61,9 @@ router.post('/register', async (req, res) => {
   // hardware: Sunmi, Kindle-Fire, etc, ...
   // appName: Pos-Germany.apk
   // appVersion: 1.51
-  // feature: onlineOrder | remoteControl | updatable | proxy
-  // const {pairingCode, hardware, appName, appVersion, features} = req.body;
-  let {pairingCode, hardware, appName, appVersion, features } = req.body;
-
+  let {pairingCode, hardware, appName, appVersion } = req.body;
   if (!pairingCode) return res.status(400).json({message: 'Missing pairingCode in request body'});
-
   const deviceInfo = await DeviceModel.findOne({pairingCode, paired: false});
-
-  // TODO: This is for testing, remove this when pairing logic in pos-restaurant is completed
-  // features = Array.isArray(features) ? features : [];
-  // if (!features.includes('onlineOrder')) features.push('onlineOrder');
-  // if (!features.includes('proxy')) features.push('proxy');
-
   if (deviceInfo) {
     // TODO: custom value depend on features provided by request
     // online status will be updated when client connects to external Socket.io server (see backend/socket-io-server.js file)

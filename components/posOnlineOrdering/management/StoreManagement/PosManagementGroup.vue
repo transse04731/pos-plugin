@@ -38,7 +38,7 @@
                 <div class="row-flex mb-1" v-for="(device, index) in store.devices" :key="`device_${store.id}_${index}`">
                   <div class="row-flex col-2">
                     <g-icon>{{getDeviceIcon(device)}}</g-icon>
-                    <span class="ml-1">{{device.name}}</span>
+                    <span class="ml-1">{{device.name}} <span v-if="device.features.onlineOrdering"> (Online ordering)</span></span>
                   </div>
                   <div class="col-2">
                     {{device.hardware}}
@@ -82,7 +82,8 @@
             </div>
             <div class="pos-management-group__content-action">
               <g-btn-bs v-if="settingsPerm" small border-color="grey-darken-1" @click="$emit('view:settings', store)">Settings</g-btn-bs>
-              <g-btn-bs v-if="configOnlineOrderingPerm" small border-color="grey-darken-1" @click="openWebShopConfig(store)">Online Ordering</g-btn-bs>
+              <g-btn-bs v-if="configOnlineOrderingPerm" small border-color="grey-darken-1" @click="openWebShopSetting(store)">Online Ordering</g-btn-bs>
+              <g-btn-bs v-if="configOnlineOrderingPerm" small border-color="grey-darken-1" @click="openWebShopStore(store)">Online Ordering</g-btn-bs>
               <g-btn-bs v-if="settingsPerm" small border-color="grey-darken-1" @click="$emit('open:pairDeviceDialog', store)">Pair New Device</g-btn-bs>
             </div>
           </div>
@@ -166,8 +167,11 @@
         return (status === 'online') ? 'pos-management-group__status--online' : (status === 'offline') ? 'pos-management-group__status--offline' : ''
       },
       //
-      openWebShopConfig(store) {
+      openWebShopSetting(store) {
         window.open(`${location.origin}/setting/${store.alias || store._id}`)
+      },
+      openWebShopStore(store) {
+        window.open(`${location.origin}/store/${store.alias || store._id}`)
       },
       startRemoteControl(storeId, deviceId) {
         if (this.disableRemoteControlBtn) return

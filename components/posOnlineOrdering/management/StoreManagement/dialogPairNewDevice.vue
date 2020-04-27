@@ -2,7 +2,7 @@
   <g-dialog v-model="intervalValue" width="40%" eager>
     <div class="dialog">
       <div class="dialog__title">Connect your device to store</div>
-      <g-text-field-bs large class="bs-tf__pos" :value="pairingCode" placeholder="Retrieving pairing code..." readonly label="Pairing code:"/>
+      <g-text-field-bs large class="bs-tf__pos" :value="pairingCode | readable" placeholder="Retrieving pairing code..." readonly label="Pairing code:"/>
       <div class="dialog__buttons">
         <g-btn-bs width="100" text-color="#424242" @click="intervalValue = false">Cancel</g-btn-bs>
       </div>
@@ -15,6 +15,12 @@
     props: {
       value: Boolean,
       store: Object,
+    },
+    filters: {
+      readable(code) {
+        if (code)
+          return `${code.substr(0, 3)} ${code.substr(3, 3)} ${code.substr(6, 3)}`
+      }
     },
     data: function () {
       return {

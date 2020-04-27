@@ -94,7 +94,7 @@
     <!-- dialogs -->
     <dialog-new-group v-if="manageGroupPerm && storeGroups && dialog.newGroup" v-model="dialog.newGroup" @submit="addGroup($event)" :groups="storeGroups"/>
     <dialog-new-store v-if="manageStorePerm && storeGroups && dialog.newStore" v-model="dialog.newStore" @submit="addStore($event)" :groups="storeGroups"/>
-    <dialog-delete-item v-if="settingsPerm && dialog.deleteDevice" v-model="dialog.deleteDevice" type="device"/>
+    <dialog-delete-item v-if="settingsPerm && dialog.deleteDevice" v-model="dialog.deleteDevice" type="device" @confirm="deleteDevice"/>
     <dialog-pair-new-device v-if="selectedStore && dialog.pairNewDevice" v-model="dialog.pairNewDevice" :store="selectedStore"/>
     <dialog-pair-new-device-success v-if="selectedStore && dialog.pairNewDeviceSuccess" v-model="dialog.pairNewDeviceSuccess" :store="selectedStore"/>
     <dialog-feature-control
@@ -183,6 +183,9 @@
       setSelectedStore(store) {
         this.$set(this, 'selectedStore', store)
       },
+      setSelectedDevice(device) {
+        this.$set(this, 'selectedDevice', device)
+      },
       
       viewStoreSetting(store) {
         this.setSelectedStore(store)
@@ -198,17 +201,17 @@
       // delete device
       showDeleteDeviceDialog(device) {
         this.dialog.deleteDevice = true
-        this.selectedDevice = device
+        this.setSelectedDevice(device)
       },
       async deleteDevice() {
         await this.removeDevice(this.selectedDevice._id)
-        this.selectedDevice = null
+        this.setSelectedDevice(null)
       },
       
       // device features
       showFeatureControlDialog(store, device) {
-        this.selectedStoreId = store._id
-        this.selectedDevice = device
+        this.setSelectedStore(store)
+        this.setSelectedDevice(device)
         this.dialog.featureControl = true
       },
       closeFeatureControlDialog() {
@@ -222,7 +225,7 @@
       
       // device name
       showEditDeviceNameDialog(device) {
-        this.selectedDevice = device
+        this.setSelectedDevice(device)
         this.dialog.editDeviceName = true
       },
       closeEditDeviceNameDialog() {
