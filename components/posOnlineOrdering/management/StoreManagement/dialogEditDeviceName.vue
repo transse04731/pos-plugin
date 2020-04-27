@@ -1,5 +1,5 @@
 <template>
-  <g-dialog v-model="dialog.editDeviceName" @input="internalValue = false">
+  <g-dialog v-model="internalValue" @input="internalValue = false">
     <div class="dialog">
       <div class="dialog__title">Edit Device Name</div>
       <g-text-field-bs label="Device Name:" v-model="internalName"/>

@@ -124,6 +124,8 @@
         @save="updateDeviceAppFeature"/>
     
     <dialog-edit-device-name
+        v-if="selectedDevice"
+        v-model="dialog.editDeviceName"
         :device="selectedDevice"
         @cancel="closeEditDeviceNameDialog"
         @save="$emit('update:deviceName', $event)"/>
