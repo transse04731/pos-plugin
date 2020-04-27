@@ -1,6 +1,6 @@
 <template>
-  <div class="background">
-    <g-dialog persistent v-model="dialog.pairing" width="580">
+  <div class="background row-flex align-items-center justify-center">
+    <g-card persistent width="580" v-if="!success">
       <div class="dialog" style="padding: 24px">
         <div class="dialog-title">Welcome to Gigasource POS</div>
         <div class="dialog-title--sub">Pairing Code</div>
@@ -28,8 +28,8 @@
           </div>
         </div>
       </div>
-    </g-dialog>
-    <g-dialog persistent v-model="dialog.success" width="580" eager>
+    </g-card>
+    <g-card persistent v-model="success" width="580" eager v-else>
       <div class="dialog" style="padding: 24px 120px">
         <div class="dialog-title">PAIR SUCCESSFULLY</div>
         <img alt src="/plugins/pos-plugin/assets/chain.svg"/>
@@ -38,8 +38,9 @@
         </div>
         <g-btn-bs style="margin: 16px" width="120" background-color="#2979FF" @click="start">Start</g-btn-bs>
       </div>
-    </g-dialog>
+    </g-card>
     <dialog-text-filter v-model="dialog.input" label="Code" :defaul-value="code" @submit="changeCode"/>
+    <g-btn style="position: absolute; bottom: 10px; right: 10px" @click="$emit('skipPairing')">Skip pairing</g-btn>
   </div>
 </template>
 
@@ -53,10 +54,10 @@
       return {
         dialog: {
           pairing: true,
-          success: false,
           input: false,
         },
         code: '',
+        success: false,
         error: false,
         errorMessage: 'No internet connection',
         pairing: false,
@@ -105,7 +106,6 @@
     watch: {
       isFirstTimeSetup: {
         handler(val) {
-          console.log(val)
           if (!val) this.$router.push('/pos-login')
         },
         immediate: true

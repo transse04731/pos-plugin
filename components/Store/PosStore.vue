@@ -22,6 +22,7 @@
         locale: 'en',
         device: 'Terminal1',
         isFirstTimeSetup: true,
+        skipPair: false,
         enabledFeatures: [],
         version: '0.0.0',
         dashboardSidebar: [
@@ -156,6 +157,10 @@
       firstTimeSetup() {
         this.isFirstTimeSetup = true
       },
+      skipPairing() {
+        this.skipPair = true
+        this.$router.go(-1)
+      },
       async getEnabledFeatures() {
         const enabledFeatures = await cms.getModel('Feature').find({ enabled: true })
         this.enabledFeatures = enabledFeatures.map(item => item.name)
@@ -197,6 +202,7 @@
     watch: {
       isFirstTimeSetup: {
         handler(val) {
+          if (this.skipPair) return
           const { path } = this.$router.currentRoute;
           if (path === '/admin' || path === '/plugins/' || path === '/pos-setup') return
           if (val) this.$router.push('/pos-setup')

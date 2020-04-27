@@ -23,6 +23,11 @@
           "service": "PosStore:completeSetup",
           "local": "completeSetup",
           "type": "event"
+        },
+        {
+          "service": "PosStore:skipPairing",
+          "local": "skipPairing",
+          "type": "event"
         }
       ],
       "url": "plugins/pos-plugin/components/Login/FirstTimeSetUp.vue",
