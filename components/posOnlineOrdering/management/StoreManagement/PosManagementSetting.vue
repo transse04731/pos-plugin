@@ -34,7 +34,7 @@
       </div>
       <div>
         <p>Client's domain</p>
-        <g-text-field-bs large v-model="clientDomain" @input="updateClientDomainDebounce({ clientDomain: $event })"/>
+        <g-text-field-bs large v-model="clientDomain" @input="updateClientDomainDebounce"/>
         <div v-if="clientDomainErrMessage" class="error-message">{{clientDomainErrMessage}}</div>
       </div>
     </div>
