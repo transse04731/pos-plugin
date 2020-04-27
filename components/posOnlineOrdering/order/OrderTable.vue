@@ -190,8 +190,8 @@
         }
         
         // other zip code will get default fee if store accept order from another zip code
-        if (this.store.delivery.acceptOrderInOtherZipCodes)
-          return this.store.delivery.defaultFee
+        if (this.store.deliveryFee.acceptOrderInOtherZipCodes)
+          return this.store.deliveryFee.defaultFee
         
         return 0
       },
