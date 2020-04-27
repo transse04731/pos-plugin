@@ -1123,6 +1123,17 @@
       "schemaType": "number",
       "key": "shippingFee",
       "type": "input@number"
+    },
+    {
+      "_id": "5ea6b580f6cea7234d3f4d10",
+      "schemaType": "array",
+      "key": "printer",
+      "type": "array",
+      "fields": [
+        {
+          "schemaType": "string"
+        }
+      ]
     }
   ],
   "id": "5c42fb05c016df1bbe8cc7ae",
