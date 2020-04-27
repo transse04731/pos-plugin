@@ -92,20 +92,20 @@
     </template>
     
     <!-- dialogs -->
-    <dialog-new-group v-if="manageGroupPerm" v-model="dialog.newGroup" @submit="addGroup($event)" :groups="storeGroups"/>
-    <dialog-new-store v-if="manageStorePerm" v-model="dialog.newStore" @submit="addStore($event)" :groups="storeGroups"/>
-    <dialog-delete-item v-if="settingsPerm" v-model="dialog.deleteDevice" type="device"/>
-    <dialog-pair-new-device v-if="selectedStore" v-model="dialog.pairNewDevice" :store="selectedStore"/>
-    <dialog-pair-new-device-success v-if="selectedStore" v-model="dialog.pairNewDeviceSuccess" :store="selectedStore"/>
+    <dialog-new-group v-if="manageGroupPerm && storeGroups && dialog.newGroup" v-model="dialog.newGroup" @submit="addGroup($event)" :groups="storeGroups"/>
+    <dialog-new-store v-if="manageStorePerm && storeGroups && dialog.newStore" v-model="dialog.newStore" @submit="addStore($event)" :groups="storeGroups"/>
+    <dialog-delete-item v-if="settingsPerm && dialog.deleteDevice" v-model="dialog.deleteDevice" type="device"/>
+    <dialog-pair-new-device v-if="selectedStore && dialog.pairNewDevice" v-model="dialog.pairNewDevice" :store="selectedStore"/>
+    <dialog-pair-new-device-success v-if="selectedStore && dialog.pairNewDeviceSuccess" v-model="dialog.pairNewDeviceSuccess" :store="selectedStore"/>
     <dialog-feature-control
-        v-if="selectedStore && selectedDevice"
+        v-if="selectedStore && selectedDevice && dialog.featureControl"
         v-model="dialog.featureControl"
         :store="selectedStore"
         :device="selectedDevice"
         @cancel="closeFeatureControlDialog"
         @save="updateDeviceAppFeature"/>
     <dialog-edit-device-name
-        v-if="selectedDevice"
+        v-if="selectedDevice && dialog.editDeviceName"
         v-model="dialog.editDeviceName"
         :device="selectedDevice"
         @cancel="closeEditDeviceNameDialog"
