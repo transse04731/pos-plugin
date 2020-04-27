@@ -80,7 +80,6 @@
       availablePrinters: Array,
       useMultiplePrinters: Boolean,
     },
-    injectService:['SettingsStore:(getAllTaxCategory)'],
     data: function () {
       let internalPrinter
       if (this.useMultiplePrinters) {
@@ -117,6 +116,10 @@
       }
     },
     methods: {
+      async getAllTaxCategory() {
+        const settings = await cms.getModel('PosSetting').findOne();
+        return settings.taxCategory;
+      },
       getImage(url) {
         this.internalImage = url
       },

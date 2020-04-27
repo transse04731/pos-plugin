@@ -5,11 +5,20 @@
   "items": [
     {
       "choice": "view",
+      "component": "PosOnlineOrderStore",
+      "binding": [],
+      "slotScopeBinding": [],
+      "url": "plugins/pos-plugin/components/Store/PosOnlineOrderStore.vue",
+      "path": "components/Store/PosOnlineOrderStore.vue",
+      "pluginName": "pos-plugin"
+    },
+    {
+      "choice": "view",
       "component": "OrderView",
       "binding": [],
       "slotScopeBinding": [],
-      "url": "plugins/pos-plugin/components/posOnlineOrdering/PosOrder.vue",
-      "path": "components/posOnlineOrdering/PosOrder.vue",
+      "url": "plugins/pos-plugin/components/posOnlineOrdering/order/OrderView.vue",
+      "path": "components/posOnlineOrdering/order/OrderView.vue",
       "pluginName": "pos-plugin"
     }
   ],

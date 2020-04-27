@@ -1,11 +1,11 @@
 module.exports = {
   files: [
-    {
-      loader: {
-        type: 'vue-singleton'
-      },
-      path: 'components/Store/PermissionStore.vue',
-    },
+    // {
+    //   loader: {
+    //     type: 'vue-singleton'
+    //   },
+    //   path: 'components/Store/PermissionStore.vue',
+    // },
     {
       loader: {
         type: 'vue-singleton'
@@ -30,24 +30,24 @@ module.exports = {
     //   },
     //   path: 'components/Store/SettingsStore.vue',
     // },
-    {
-      loader: {
-        type: 'vue-singleton'
-      },
-      path: 'components/Store/PosOnlineOrderStore.vue',
-    },
-    {
-      loader: {
-        type: 'vue-singleton'
-      },
-      path: 'components/Store/FileUploadStore.vue',
-    },
-    {
-      loader: {
-        type: 'vue-singleton'
-      },
-      path: 'components/Store/PosOnlineOrderManagementStore.vue',
-    },
+    // {
+    //   loader: {
+    //     type: 'vue-singleton'
+    //   },
+    //   path: 'components/Store/PosOnlineOrderStore.vue',
+    // },
+    // {
+    //   loader: {
+    //     type: 'vue-singleton'
+    //   },
+    //   path: 'components/Store/FileUploadStore.vue',
+    // },
+    // {
+    //   loader: {
+    //     type: 'vue-singleton'
+    //   },
+    //   path: 'components/Store/PosOnlineOrderManagementStore.vue',
+    // },
     // {
     //   loader: {
     //     type: 'backend-api'

@@ -4,11 +4,20 @@
   "items": [
     {
       "choice": "view",
+      "component": "FileUploadStore",
+      "binding": [],
+      "slotScopeBinding": [],
+      "url": "plugins/pos-plugin/components/Store/FileUploadStore.vue",
+      "path": "components/Store/FileUploadStore.vue",
+      "pluginName": "pos-plugin"
+    },
+    {
+      "choice": "view",
       "component": "SettingView",
       "binding": [],
       "slotScopeBinding": [],
-      "url": "plugins/pos-plugin/components/posOnlineOrdering/PosODSettings.vue",
-      "path": "components/posOnlineOrdering/PosODSettings.vue",
+      "url": "plugins/pos-plugin/components/posOnlineOrdering/settings/SettingView.vue",
+      "path": "components/posOnlineOrdering/settings/SettingView.vue",
       "pluginName": "pos-plugin"
     }
   ],

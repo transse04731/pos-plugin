@@ -5,11 +5,38 @@
   "items": [
     {
       "choice": "view",
+      "component": "FileUploadStore",
+      "binding": [],
+      "slotScopeBinding": [],
+      "url": "plugins/pos-plugin/components/Store/FileUploadStore.vue",
+      "path": "components/Store/FileUploadStore.vue",
+      "pluginName": "pos-plugin"
+    },
+    {
+      "choice": "view",
+      "component": "PermissionStore",
+      "binding": [],
+      "slotScopeBinding": [],
+      "url": "plugins/pos-plugin/components/Store/PermissionStore.vue",
+      "path": "components/Store/PermissionStore.vue",
+      "pluginName": "pos-plugin"
+    },
+    {
+      "choice": "view",
+      "component": "PosOnlineOrderManagementStore",
+      "binding": [],
+      "slotScopeBinding": [],
+      "url": "plugins/pos-plugin/components/Store/PosOnlineOrderManagementStore.vue",
+      "path": "components/Store/PosOnlineOrderManagementStore.vue",
+      "pluginName": "pos-plugin"
+    },
+    {
+      "choice": "view",
       "component": "ManagementView",
       "binding": [],
       "slotScopeBinding": [],
-      "url": "plugins/pos-plugin/components/posOnlineOrdering/posManagement/PosManagement.vue",
-      "path": "components/posOnlineOrdering/posManagement/PosManagement.vue",
+      "url": "plugins/pos-plugin/components/posOnlineOrdering/management/ManagementView.vue",
+      "path": "components/posOnlineOrdering/management/ManagementView.vue",
       "pluginName": "pos-plugin"
     }
   ],
