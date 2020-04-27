@@ -247,6 +247,10 @@
         await this.loadStoreGroups()
         cb && cb(true)
       },
+      async deleteStoreGroup(_id) {
+        await cms.getModel('StoreGroup').remove({_id})
+        await this.loadStoreGroups()
+      },
 
       // stores
       async loadStores() {
@@ -303,16 +307,35 @@
         await this.loadStores()
       },
       
+      // devices
+      
       async removeDevice(_id) {
         await axios.post(`/device/unregister`, { _id })
         await this.loadStores()
       },
       
       async updateDevice(_id, change) {
-        debugger
         await cms.getModel('Device').updateOne({_id}, change)
         // load store will reload devices
         await this.loadStores()
+      },
+
+      async updateDeviceFeatures(_id, features, cb) {
+        const {socket} = window.cms
+        socket.emit('updateAppFeature', _id, features)
+        await cms.getModel('Device').updateOne({_id}, { features })
+        cb && cb()
+        // TODO: update device version UI
+      },
+
+      async updateDeviceAppVersion(device) {
+        if (!device.updateVersion)
+          return
+        const {socket} = window.cms
+        socket.emit('updateApp', device._id, device.updateVersion)
+        const versionInfo = _.find(device.versions, version => version.value === device.updateVersion)
+        await cms.getModel('Device').updateOne({_id: device._id}, versionInfo)
+        // TODO: update UI
       },
       
       // apps
@@ -457,6 +480,7 @@
         loadStoreGroups: this.loadStoreGroups,
         addGroup: this.addGroup,
         changeStoreGroupName: this.changeStoreGroupName,
+        deleteStoreGroup: this.deleteStoreGroup,
 
         // stores
         stores: this.stores,
@@ -474,6 +498,8 @@
         // devices
         removeDevice: this.removeDevice,
         updateDevice: this.updateDevice,
+        updateDeviceFeatures: this.updateDeviceFeatures,
+        updateDeviceAppVersion: this.updateDeviceAppVersion,
         
         // apps
         apps: this.apps,
