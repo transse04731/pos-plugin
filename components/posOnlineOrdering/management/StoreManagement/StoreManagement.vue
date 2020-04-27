@@ -120,7 +120,7 @@
       return {
         view: 'list',
         showFilterMenu: false,
-        selectedStoreId: null,
+        selectedStore: null,
         deviceIdList: [],
         selectedDevice: null,
         dialog: {
