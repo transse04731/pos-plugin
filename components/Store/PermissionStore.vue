@@ -42,7 +42,7 @@
     data() {
       return {
         userPermissions: [],
-        allPermissions: [ "manageGroup", "manageStore", "remoteControl", "configOnlineOrdering", "settings", "updateApp", "featureControl" ]
+        allPermissions: [ "manageGroup", "settings", "manageStore", "updateApp", "remoteControl", "configOnlineOrdering", "featureControl" ]
       }
     },
     async created() {
