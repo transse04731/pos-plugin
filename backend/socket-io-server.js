@@ -102,6 +102,10 @@ module.exports = function (cms) {
       deviceStatusSubscribers[socket.id] = _.uniq((deviceStatusSubscribers[socket.id] || []).filter(id => !clientIdList.includes(id)));
     });
 
+    socket.on('updateAppFeature', async (deviceId, features) => {
+      externalSocketIOServer.emitTo(deviceId, 'updateAppFeature', features);
+    });
+
     socket.on('createOrder', async (storeId, orderData) => {
       storeId = ObjectId(storeId);
       const device = await DeviceModel.findOne({storeId});
