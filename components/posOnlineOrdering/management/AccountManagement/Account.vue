@@ -58,7 +58,7 @@
       </div>
       <div class="account__table-content">
         <template v-if="!accountViewModel || accountViewModel.length === 0">
-          <div class="version-control__table-content--empty">
+          <div class="account__table-content--empty">
             <img alt src="/plugins/pos-plugin/assets/empty_group.svg"/>
             <p class="text-grey-darken-1 mt-2">Account is currently empty</p>
             <g-btn-bs text-color="indigo accent-2" icon="add@16" class="fw-700" @click="openDialogAccount()">
