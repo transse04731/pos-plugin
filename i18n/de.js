@@ -6,7 +6,9 @@ module.exports = {
       support: 'Support',
       version: 'Version',
       internet: 'Internet',
-      errorPasscode: 'Passcode is incorrect'
+      errorPasscode: 'Passcode is incorrect',
+      english: 'English',
+      german: 'German'
     },
     //dashboard
     dashboard: {

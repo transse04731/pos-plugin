@@ -41,6 +41,13 @@ module.exports = {
       loader: {
         type: 'backend-api'
       },
+      path: 'backend/get-version/get-version.js',
+      type: 'backend'
+    },
+    {
+      loader: {
+        type: 'backend-api'
+      },
       path: 'backend/print-report/index.js',
       type: 'backend'
     },

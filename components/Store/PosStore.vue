@@ -23,6 +23,7 @@
         device: 'Terminal1',
         isFirstTimeSetup: true,
         enabledFeatures: [],
+        version: '0.0.0',
         dashboardSidebar: [
           {
             icon: 'icon-restaurant',
@@ -179,6 +180,10 @@
       await this.getEnabledFeatures()
       cms.socket.on('updateAppFeature', async () => {
         await this.getEnabledFeatures()
+      })
+
+      cms.socket.emit('get-app-version', version => {
+        if (version) this.version = version
       })
 
       this.$router.beforeEach((to, from, next) => {

@@ -2,9 +2,10 @@
   <div class="row-flex align-items-center">
     <g-menu v-model="menu" close-on-content-click top content-class="menu-language">
       <template v-slot:activator="{on}">
-        <g-btn-bs icon-after="arrow_drop_down" text-color="#3B3B3B" @click="on.click">
+        <g-btn flat :uppercase="false" icon-after="arrow_drop_down" text-color="#3B3B3B" @click="on.click" height="100%">
           {{language}}
-        </g-btn-bs>
+          <g-icon>arrow_drop_down</g-icon>
+        </g-btn>
       </template>
       <div class="menu">
         <g-btn-bs v-for="(lang, i) in languages" :key="i"
@@ -26,8 +27,8 @@
         menu: false,
         language: '',
         languages: [
-          { icon: 'icon-germany', title: 'Germany'},
-          { icon: 'icon-english', title: 'English'},
+          { icon: 'icon-germany', title: this.$t('login.german')},
+          { icon: 'icon-english', title: this.$t('login.english')},
         ]
       }
     },
