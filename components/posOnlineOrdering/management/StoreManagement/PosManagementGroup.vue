@@ -102,18 +102,18 @@
         </div>
       </template>
     </g-expand-transition>
-    
+
     <!-- dialog -- TODO: Bring all dialog to StoreManagement.vue -->
     <dialog-pair-new-device
         v-if="dialog.pairNewDevice"
         v-model="dialog.pairNewDevice"
         :store="selectedStore"/>
-    
+
     <dialog-pair-new-device-success
         v-if="dialog.pairNewDeviceSuccess"
         v-model="dialog.dialog.pairNewDeviceSuccess"
         :store="selectedStore"/>
-    
+
     <dialog-feature-control
         v-if="selectedDevice"
         v-model="dialog.featureControl"
@@ -216,7 +216,7 @@
 
             this.iframeRefreshInterval = setInterval(() => {
               this.iframeSrc = ''
-              this.$nextTick(() => this.iframeSrc = `${location.protocol}//${location.hostname}:${proxyPort}/view/pos-dashboard`)
+              this.$nextTick(() => this.iframeSrc = `http://${location.hostname}:${proxyPort}/view/pos-dashboard`)
             }, 10000)
           } else {
             // TODO: handle error
