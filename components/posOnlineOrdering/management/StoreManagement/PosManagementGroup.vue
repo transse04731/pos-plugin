@@ -83,7 +83,7 @@
             <div class="pos-management-group__content-action">
               <g-btn-bs v-if="settingsPerm" small border-color="grey-darken-1" @click="$emit('view:settings', store)">Settings</g-btn-bs>
               <g-btn-bs v-if="configOnlineOrderingPerm" small border-color="grey-darken-1" @click="openWebShopConfig(store)">Online Ordering</g-btn-bs>
-              <g-btn-bs small border-color="grey-darken-1" @click="showPairDeviceDialog(store)">Pair New Device</g-btn-bs>
+              <g-btn-bs v-if="settingsPerm" small border-color="grey-darken-1" @click="showPairDeviceDialog(store)">Pair New Device</g-btn-bs>
             </div>
           </div>
 
