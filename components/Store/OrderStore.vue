@@ -342,6 +342,7 @@
           });
         })
       },
+
       //<!--</editor-fold>-->
 
       //<!--<editor-fold desc="Button functions">-->
@@ -523,7 +524,8 @@
           Object.assign({}, order, {
             status: 'kitchen'
           }))
-        this.printKitchen(order)
+        this.printKitchen(order).catch(e => console.error(e))
+        this.printOrderReport(order._id).catch(e => console.error(e))
         await this.updateOnlineOrders()
       },
       async setPendingOrder(order) {
@@ -534,15 +536,11 @@
         await this.updateOnlineOrders()
       },
       async completeOrder(order) {
-        await cms.getModel('Order').findOneAndUpdate({ _id: order._id},
-          Object.assign({}, order, {
-            status: 'completed'
-          }));
+        await cms.getModel('Order').findOneAndUpdate({_id: order._id},
+            Object.assign({}, order, {
+              status: 'completed'
+            }))
         await this.updateOnlineOrders()
-
-        cms.socket.emit('printReport', 'OrderReport', { orderId: order._id }, this.device, ({ success, message }) => {
-          if (!success) console.error(message)
-        });
       },
       async getOnlineOrdersWithStatus(status) {
         this.onlineOrders = await cms.getModel('Order').find({

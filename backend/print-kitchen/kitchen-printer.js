@@ -94,7 +94,7 @@ module.exports = async function (cms) {
         items: value,
         table: order.table,
         printer: printer.name,
-        user: _.last(order.user).name,
+        user: _.last(order.user) && _.last(order.user).name,
         time: dayjs(order.date).format('HH:mm'),
         fontSize: printer.fontSize,
         marginTop: printer.marginTop,
@@ -153,7 +153,7 @@ module.exports = async function (cms) {
         printer.bold(true);
         printer.alignCenter();
         if (course && course > 1) printer.println(`Course ${course}`);
-        if (isKitchenReceipt) printer.println(`${printerInfo.name} Printer - ${user}`);
+        if (isKitchenReceipt) printer.println(`${printerInfo.name} Printer${user ? ` - ${user}` : ''}`);
         else printer.println('Entire Receipt');
 
         await printer.print();

@@ -21,7 +21,7 @@
     </div>
     <div class="divider-dashed"/>
     <div class="footer text-center" v-if="course && course > 1">Course {{course}}</div>
-    <div class="footer text-center" v-if="isKitchenReceipt">{{`${printer} Printer - ${user}`}}</div>
+    <div class="footer text-center" v-if="isKitchenReceipt">{{`${printer} Printer${user ? ` - ${user}` : ''}`}}</div>
     <div class="footer text-center" v-else>Entire Receipt</div>
   </div>
 </template>
