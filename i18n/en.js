@@ -246,6 +246,8 @@ module.exports = {
       itemCancellation: 'Item Cancellation',
       iBtn: 'Employee iButton Key',
       registered: 'Registered!',
+      accessStaffReport: 'Access Staff Report',
+      editTablePlan: 'Edit Table Plan',
       //company
       companyName: 'Company Name',
       address: 'Address',

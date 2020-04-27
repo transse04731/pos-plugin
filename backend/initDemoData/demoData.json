@@ -29,7 +29,7 @@
         {
           "_id": "5dfb217296714b382ee3ed83",
           "printerType": "ip",
-          "ip": "192.168.1.1",
+          "ip": "192.168.10.60",
           "merge": "true"
         }
       ]
@@ -1144,7 +1144,7 @@
           "hardwares": [],
           "includes": [],
           "_id": "5e81631d85fb2d03dda918c1",
-          "printerType": "com",
+          "printerType": "ip",
           "ip": "192.168.10.60",
           "merge": true,
           "fontSize": 1,
@@ -1163,8 +1163,8 @@
           "hardwares": [],
           "includes": [],
           "_id": "5e81614c85fb2d03dda91809",
-          "printerType": "com",
-          "ip": "192.168.10.6",
+          "printerType": "ip",
+          "ip": "192.168.10.60",
           "merge": true,
           "sound": true,
           "escPOS": true,
