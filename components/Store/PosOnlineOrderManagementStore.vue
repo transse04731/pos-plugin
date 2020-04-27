@@ -69,7 +69,9 @@
           ..._.pick(group, '_id', 'name'),
           stores: _.map(_.filter(this.storeSearchSortResult, store => this.storeInStoreGroup(store, group)), this.convertStoreToViewModel)
         }))
-        return storeGroupVMs // return _.filter(storeGroupVMs, this.storeGroupHasStores)
+        if (this.searchText)
+          return _.filter(storeGroupVMs, this.storeGroupHasStores)
+        return storeGroupVMs
       },
       
       // version control
