@@ -2,10 +2,6 @@ const _ = require('lodash')
 const express = require('express')
 const router = express.Router()
 const https = require('https');
-const fs = require('fs');
-const path = require('path')
-const tmp = require('tmp-promise')
-const ObjectId = require('mongoose').ObjectId
 
 router.post('/subscribe', async (req, res) => {
     const subscriptionModel = cms.getModel('Subscription')
