@@ -41,4 +41,11 @@ router.post('/validate-alias', async (req, res) => {
   res.json(urlTaken ? {message: 'WebShop URL has been taken!'} : {ok: true})
 })
 
+router.post('/validate-client-domain', async (req, res) => {
+  const { store, clientDomain } = req.body
+  const storeWithClientDomain = await cms.getModel('Store').findOne({ clientDomain })
+  const urlTaken = (storeWithClientDomain && storeWithClientDomain._id.toString() !== store)
+  res.json(urlTaken ? {message: 'Client domain has been taken!'} : {ok: true})
+})
+
 module.exports = router

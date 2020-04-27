@@ -34,7 +34,8 @@
       </div>
       <div>
         <p>Client's domain</p>
-        <g-text-field-bs large v-model="clientDomain" @input="updateDebounce({ clientDomain: $event })"/>
+        <g-text-field-bs large v-model="clientDomain" @input="updateClientDomainDebounce({ clientDomain: $event })"/>
+        <div v-if="clientDomainErrMessage" class="error-message">{{clientDomainErrMessage}}</div>
       </div>
     </div>
     
@@ -103,12 +104,14 @@
     injectService: ['PosOnlineOrderManagementStore:(stores)'],
     data() {
       return {
-        aliasErrMessage: ''
+        aliasErrMessage: '',
+        clientDomainErrMessage: ''
       }
     },
     created() {
       this.updateDebounce = _.debounce(this.update, 1000)
       this.updateAliasDebounce = _.debounce(this.updateAlias, 1000)
+      this.updateClientDomainDebounce = _.debounce(this.updateClientDomain, 1000)
     },
     computed: {
       webShopUrlPrefix() {
@@ -148,33 +151,39 @@
       }
     },
     methods: {
-      async aliasInvalid(alias) {
-        console.log('validate alias')
+      async storeAliasValid(alias) {
         if (_.trim(alias) === '') {
           this.aliasErrMessage = 'WebShop url must not empty!!'
-          return true
+          return false
         }
-        
         if (/([^a-zA-Z0-9\-])/g.exec(alias)) {
           this.aliasErrMessage = 'WebShop url must not contain invalid character! Valid character set is a-z, A-Z, 0-9 and \'-\' character'
-          return true
+          return false
         }
-        
         const res = (await axios.post('/store/validate-alias', { store: this._id, alias })).data
-        console.log('res', res)
         if (!res.ok) {
           this.aliasErrMessage = res.message
-          return true
+          return false
         }
+        return true
       },
       async updateAlias(value) {
         this.aliasErrMessage = ''
-        
-        if (await this.aliasInvalid(value))
-          return
-        
-        console.log({ alias: value })
-        this.update({ alias: value })
+        if (await this.storeAliasValid(value))
+          this.update({ alias: value })
+      },
+      async clientDomainValid(clientDomain) {
+        this.clientDomainErrMessage = ''
+        const res = (await axios.post('/store/validate-client-domain', { store: this._id, clientDomain })).data
+        if (!res.ok) {
+          this.clientDomainErrMessage = res.message
+          return false
+        }
+        return true
+      },
+      async updateClientDomain(value) {
+        if (await this.clientDomainValid(value))
+          this.update({clientDomain: value})
       },
       update(change) {
         this.$emit('update', change)
