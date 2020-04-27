@@ -89,7 +89,7 @@ function createOnlineOrderSocket(deviceId) {
       if (!proxyClient) {
         proxyClient = new ProxyClient({
           clientId: `${deviceId}-proxy-client`,
-          proxyServerHost: `${url.parse(webshopUrl).protocol}//${url.parse(webshopUrl).hostname}`,
+          proxyServerHost: `http://${url.parse(webshopUrl).hostname}`,
           socketIOPort: proxyServerPort,
           remoteHost: 'localhost',
           remotePort: backendPort,
