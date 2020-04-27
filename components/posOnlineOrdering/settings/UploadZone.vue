@@ -104,7 +104,7 @@
         },
       }
     },
-    injectService: ['FileUploadStore:(openUploadFileDialog,uploadImage)'],
+    injectService: ['FileUploadStore:(openUploadFileDialog, uploadImage, showFileUploadProgressDialog, uploadingItems)'],
     computed: {
       fileName() {
         return this.file ? this.file.name : 'No file chosen'
@@ -187,6 +187,10 @@
           }
           this.$emit('url', uploadedUrl)
           this.dialog.uploading = false
+          setTimeout(() => {
+            this.showFileUploadProgressDialog = false
+            this.uploadingItems = []
+          }, 3000)
         })
         this.cropper && this.cropper.destroy()
         this.dialog.upload = false

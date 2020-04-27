@@ -244,7 +244,7 @@
         this.$set(this, 'products', await cms.getModel('Product').find({ store: this.store._id }, { store: 0 }))
       },
       getCategoryStyle(cate) {
-        const common = {cursor: 'pointer', padding: '16px 24px', whiteSpace: 'nowrap', '-webkit-tap-highlight-color': 'transparent'};
+        const common = {cursor: 'pointer', padding: '20px 24px', whiteSpace: 'nowrap', '-webkit-tap-highlight-color': 'transparent'};
         return cate._id === this.selectedCategoryId ? {
           fontWeight: 'bold',
           borderBottom: '2px solid #000',
