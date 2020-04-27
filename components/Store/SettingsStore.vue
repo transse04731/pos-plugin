@@ -9,7 +9,7 @@
   export default {
     name: 'SettingsStore',
     domain: 'SettingsStore',
-    injectService: ['PosStore:(user, device, isFirstTimeSetup)'],
+    injectService: ['PosStore:(user, device)'],
     data() {
       const i18n = this.$i18n;
       const { sidebar } = i18n.messages[i18n.locale] || i18n.messages[i18n.fallbackLocale]
@@ -105,7 +105,7 @@
       }
 
       if (posSettings.onlineDevice) {
-        this.isFirstTimeSetup = !posSettings.onlineDevice.paired
+        if (!posSettings.onlineDevice.paired) this.$router.push('/pos-setup')
       }
     },
     watch: {

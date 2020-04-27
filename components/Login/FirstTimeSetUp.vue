@@ -47,9 +47,6 @@
 <script>
   export default {
     name: "FirstTimeSetUp",
-    props: {
-      isFirstTimeSetup: Boolean
-    },
     data() {
       return {
         dialog: {
@@ -101,14 +98,6 @@
           }
           this.pairing = false
         })
-      }
-    },
-    watch: {
-      isFirstTimeSetup: {
-        handler(val) {
-          if (!val) this.$router.push('/pos-login')
-        },
-        immediate: true
       }
     }
   }

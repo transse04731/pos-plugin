@@ -21,8 +21,6 @@
         dateFormat: this.$t('dates.dateFormat'),
         locale: 'en',
         device: 'Terminal1',
-        isFirstTimeSetup: true,
-        skipPair: false,
         enabledFeatures: [],
         version: '0.0.0',
         dashboardSidebar: [
@@ -152,22 +150,38 @@
         }
       },
       completeSetup() {
-        this.isFirstTimeSetup = false
-      },
-      firstTimeSetup() {
-        this.isFirstTimeSetup = true
+        this.$router.push('/pos-login')
       },
       skipPairing() {
-        this.skipPair = true
         this.$router.go(-1)
       },
       async getEnabledFeatures() {
         const enabledFeatures = await cms.getModel('Feature').find({ enabled: true })
         this.enabledFeatures = enabledFeatures.map(item => item.name)
-      }
+      },
       //<!--</editor-fold>-->
+      initSocket() {
+        cms.socket.on('updateAppFeature', async () => {
+          await this.getEnabledFeatures()
+        })
+
+        cms.socket.emit('get-app-version', version => {
+          if (version) this.version = version
+        })
+
+        cms.socket.on('device-paired', () => {
+          //todo on pair device
+        })
+
+        cms.socket.on('device-unpaired', () => {
+          //todo on pair device
+          this.$router.push('/pos-setup')
+        })
+
+      }
     },
     async created() {
+      this.initSocket()
       this.setDateInterval = setInterval(() => this.systemDate = new Date(), 10000)
 
       const i18nConfig = cms.getList('SystemConfig').find(i => i.type === 'I18n')
@@ -183,13 +197,6 @@
       }
 
       await this.getEnabledFeatures()
-      cms.socket.on('updateAppFeature', async () => {
-        await this.getEnabledFeatures()
-      })
-
-      cms.socket.emit('get-app-version', version => {
-        if (version) this.version = version
-      })
 
       this.$router.beforeEach((to, from, next) => {
         if (to.path === '/admin' || to.path === '/plugins' || to.path === '/pos-login' || to.path === '/pos-setup') {
@@ -198,17 +205,6 @@
           next('/pos-login')
         } else next()
       })
-    },
-    watch: {
-      isFirstTimeSetup: {
-        handler(val) {
-          if (this.skipPair) return
-          const { path } = this.$router.currentRoute;
-          if (path === '/admin' || path === '/plugins/' || path === '/pos-setup') return
-          if (val) this.$router.push('/pos-setup')
-        },
-        immediate: true
-      }
     },
     beforeDestroy() {
       this.setDateInterval && clearInterval(this.setDateInterval)

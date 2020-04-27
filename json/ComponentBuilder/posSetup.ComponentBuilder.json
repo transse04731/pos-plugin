@@ -10,11 +10,6 @@
       "slotScopeBinding": [],
       "inject": [
         {
-          "service": "PosStore:isFirstTimeSetup",
-          "local": "isFirstTimeSetup",
-          "type": "prop"
-        },
-        {
           "service": "SettingsStore:registerOnlineOrder",
           "local": "registerOnlineOrder",
           "type": "event"
