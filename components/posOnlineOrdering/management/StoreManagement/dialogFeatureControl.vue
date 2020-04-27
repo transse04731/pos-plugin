@@ -9,44 +9,44 @@
       </div>
       <div class="dlg-feature-control__body row-flex">
         <div class="col-6">
-          <g-switch v-model="featureControl.fastCheckout" label="Fast Checkout"/>
+          <g-switch v-model="features.fastCheckout" label="Fast Checkout"/>
         </div>
         <div class="col-6">
-          <g-switch v-model="featureControl.manualTable" label="Manual Table"/>
+          <g-switch v-model="features.manualTable" label="Manual Table"/>
         </div>
         <div class="col-6">
-          <g-switch v-model="featureControl.delivery" label="Delivery"/>
+          <g-switch v-model="features.delivery" label="Delivery"/>
         </div>
         <div class="col-6">
-          <g-switch v-model="featureControl.editMenuCard" label="Edit Menu Card"/>
+          <g-switch v-model="features.editMenuCard" label="Edit Menu Card"/>
         </div>
         <div class="col-6">
-          <g-switch v-model="featureControl.tablePlan" label="Table Plan"/>
+          <g-switch v-model="features.tablePlan" label="Table Plan"/>
         </div>
         <div class="col-6">
-          <g-switch v-model="featureControl.editTablePlan" label="Edit Table Plan"/>
+          <g-switch v-model="features.editTablePlan" label="Edit Table Plan"/>
         </div>
         <div class="dlg-feature-control__body__line"></div>
         <div class="col-12">
-          <g-switch v-model="featureControl.onlineOrdering" label="Online Ordering"/>
+          <g-switch :disabled="!canUseOnlineOrdering" v-model="features.onlineOrdering" label="Online Ordering"/>
           <div style="font-size: 12px;">Note: Only one device can connect to online ordering at a time.</div>
         </div>
         <div class="dlg-feature-control__body__line"></div>
         <div class="col-6">
-          <g-switch v-model="featureControl.staffReport" label="Staff Report"/>
+          <g-switch v-model="features.staffReport" label="Staff Report"/>
         </div>
         <div class="col-6">
-          <g-switch v-model="featureControl.eodReport" label="End of Day"/>
+          <g-switch v-model="features.eodReport" label="End of Day"/>
         </div>
         <div class="col-6">
-          <g-switch v-model="featureControl.monthlyReport" label="Monthly Report"/>
+          <g-switch v-model="features.monthlyReport" label="Monthly Report"/>
         </div>
         <div class="dlg-feature-control__body__line"></div>
         <div class="col-6">
-          <g-switch v-model="featureControl.remoteControl" label="Remote Control"/>
+          <g-switch v-model="features.remoteControl" label="Remote Control"/>
         </div>
         <div class="col-6">
-          <g-switch v-model="featureControl.proxy" label="Proxy"/>
+          <g-switch v-model="features.proxy" label="Proxy"/>
         </div>
       </div>
       <div class="dlg-feature-control__actions">
@@ -65,26 +65,18 @@
       store: Object
     },
     data: function () {
-      return {
-        featureControl: {
-          fastCheckout: true,
-          manualTable: true,
-          delivery: true,
-          editMenuCard: true,
-          tablePlan: true,
-          onlineOrdering: true,
-          editTablePlan: true,
-          staffReport: true,
-          eodReport: true,
-          monthlyReport: true,
-          remoteControl: true,
-          proxy: true
-        }
-      }
+      return {}
     },
     computed: {
       deviceInfo() {
         return `${this.device.name}, ${this.device.hardware}, ${this.device.appName}, ${this.device.appVersion}, ${this.device.appRelease}`
+      },
+      canUseOnlineOrdering() {
+        const onlineOrderingDevice = _.find(this.store.devices, d => d.features.onlineOrdering)
+        return onlineOrderingDevice == null || onlineOrderingDevice._id === this.device._id
+      },
+      features() {
+        return this.device.features
       }
     },
     methods: {
@@ -92,7 +84,7 @@
         this.$emit('input', false)
       },
       save() {
-        this.$emit('save', this.featureControl)
+        this.$emit('save', this.features)
       }
     }
   }
