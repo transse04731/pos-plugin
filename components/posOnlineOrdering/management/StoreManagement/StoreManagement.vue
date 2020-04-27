@@ -60,7 +60,7 @@
                 @view:settings="viewStoreSetting($event)"
                 @open:dialogDelete="showDeleteDeviceDialog"
                 @changeGroupName="changeStoreGroupName"
-            />
+                @update:deviceName="(_id, name) => updateDevice(_id, { name })"/>
           </template>
         </div>
       </div>

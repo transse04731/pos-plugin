@@ -73,6 +73,7 @@
                       </template>
                       <div class="menu-action">
                         <div v-if="featureControlPerm" class="menu-action__option" @click="openFeatureControlDialog(store, device)">Feature control</div>
+                        <div v-if="settingsPerm" class="menu-action__option" @click="openEditDeviceNameDialog(device)">Edit name</div>
                         <div v-if="settingsPerm" class="menu-action__option" @click="$emit('open:dialogDelete', device)">Delete device</div>
                       </div>
                     </g-menu>
@@ -121,6 +122,11 @@
         :store="selectedStore"
         @cancel="closeFeatureControlDialog"
         @save="updateDeviceAppFeature"/>
+    
+    <dialog-edit-device-name
+        :device="selectedDevice"
+        @cancel="closeEditDeviceNameDialog"
+        @save="$emit('update:deviceName', $event)"/>
   </div>
 </template>
 
@@ -128,10 +134,11 @@
   import _ from 'lodash'
   import DialogFeatureControl from './dialogFeatureControl';
   import DialogPairNewDeviceSuccess from './dialogPairNewDeviceSuccess';
+  import DialogEditDeviceName from './dialogEditDeviceName';
 
   export default {
     name: "PosManagementGroup",
-    components: { DialogPairNewDeviceSuccess, DialogFeatureControl },
+    components: { DialogEditDeviceName, DialogPairNewDeviceSuccess, DialogFeatureControl },
     props: {
       _id: String,
       name: String,
@@ -163,6 +170,7 @@
           deleteDevice: false,
           pairNewDevice: false,
           pairNewDeviceSuccess: false,
+          editDeviceName: false,
         }
       }
     },
@@ -257,6 +265,14 @@
         this.selectedStore = null
         this.selectedDevice = null
         this.dialog.featureControl = false
+      },
+      openEditDeviceNameDialog(device) {
+        this.selectedDevice = device
+        this.dialog.editDeviceName = true
+      },
+      closeEditDeviceNameDialog(device) {
+        this.selectedDevice = null
+        this.dialog.editDeviceName = false
       },
       async updateDeviceAppFeature(features) {
         const {socket} = window.cms

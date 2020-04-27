@@ -303,18 +303,15 @@
         await this.loadStores()
       },
       
-      // devices
-      async addDevice({pairingCode}) {
-        // TODO: addDevice
-      },
-      
       async removeDevice(_id) {
         await axios.post(`/device/unregister`, { _id })
         await this.loadStores()
       },
       
       async updateDevice(_id, change) {
-        // TODO: updateDevice
+        await cms.getModel('Device').updateOne({_id}, change)
+        // load store will reload devices
+        await this.loadStores()
       },
       
       // apps
@@ -474,7 +471,6 @@
         orderBy: this.orderBy,
         
         // devices
-        addDevice: this.addDevice,
         removeDevice: this.removeDevice,
         updateDevice: this.updateDevice,
         
