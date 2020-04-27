@@ -38,7 +38,7 @@
                 <div class="row-flex mb-1" v-for="(device, index) in store.devices" :key="`device_${store.id}_${index}`">
                   <div class="row-flex col-2">
                     <g-icon>{{getDeviceIcon(device)}}</g-icon>
-                    <span class="ml-1">{{device.name}}</span>
+                    <span class="ml-1">{{device.name}} <span v-if="device.features.onlineOrdering"> (Online ordering)</span></span>
                   </div>
                   <div class="col-2">
                     {{device.hardware}}
