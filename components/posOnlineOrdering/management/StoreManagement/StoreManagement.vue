@@ -216,6 +216,7 @@
       display: flex;
       align-items: center;
       margin-bottom: 16px;
+      margin-right: -8px;
     
       .bs-tf-wrapper {
         width: auto;
