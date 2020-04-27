@@ -7,8 +7,8 @@
           :value="name"
           @click.native.stop.prevent="() => {}"
           @input="(value, cb) => $emit('changeGroupName', _id, value, cb)">
-        <template v-if="manageGroupPerm" v-slot:action="{mode, switchToEditMode, applyChange, resetValue}">
-          <g-menu v-if="mode !== 'edit'" v-model="nameEditMenu" close-on-content-click nudge-bottom="5" nudge-left="30">
+        <template v-slot:action="{mode, switchToEditMode, applyChange, resetValue}">
+          <g-menu v-if="mode !== 'edit' && manageGroupPerm" v-model="nameEditMenu" close-on-content-click nudge-bottom="5" nudge-left="30">
             <template v-slot:activator="{on}">
               <div class="btn-edit" :style="[nameEditMenu && {background: '#F4F5FA'}]">
                 <g-icon :class="[nameEditMenu && 'btn-edit--active']" size="16" @click="on.click">mdi-pencil-outline</g-icon>
