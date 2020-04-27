@@ -18,7 +18,8 @@
     },
     filters: {
       readable(code) {
-        return `${code.substr(0, 3)} ${code.substr(3, 3)} ${code.substr(6, 3)}`
+        if (code)
+          return `${code.substr(0, 3)} ${code.substr(3, 3)} ${code.substr(6, 3)}`
       }
     },
     data: function () {
