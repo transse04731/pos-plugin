@@ -264,8 +264,6 @@
         this.dialog.featureControl = true
       },
       closeFeatureControlDialog() {
-        this.selectedStore = null
-        this.selectedDevice = null
         this.dialog.featureControl = false
       },
       openEditDeviceNameDialog(device) {
@@ -273,7 +271,6 @@
         this.dialog.editDeviceName = true
       },
       closeEditDeviceNameDialog(device) {
-        this.selectedDevice = null
         this.dialog.editDeviceName = false
       },
       async updateDeviceAppFeature(features) {
