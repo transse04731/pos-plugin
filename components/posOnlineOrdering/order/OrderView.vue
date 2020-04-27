@@ -306,13 +306,13 @@
       chooseCategory(id) {
         this.selectedCategoryId = id
         const content = document.getElementById(`category_content_${id}`)
-        content && content.scrollIntoView({behavior: "smooth"});
+        content && content.scrollIntoView();
       }
     },
     watch: {
       selectedCategoryId(val) {
         const tab = document.getElementById(`tab_${val}`)
-        tab && tab.scrollIntoView({behavior: "smooth"});
+        tab && tab.scrollIntoView();
       }
     }
   }
