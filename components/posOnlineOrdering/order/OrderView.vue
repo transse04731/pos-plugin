@@ -201,8 +201,8 @@
       },
       merchantMessage() {
         if (this.nextOpenHour)
-          return `The merchant is temporarily closed and will not accept orders until ${this.nextOpenHour.hour } ${ this.nextOpenHour.day }. Please come back after that. We apologize for any inconvenience caused`
-        return  'The merchant is temporarily closed. We apologize for any inconvenience caused'
+          return `The merchant is temporarily closed and will not accept orders until ${this.nextOpenHour.hour } ${ this.nextOpenHour.day }. Please come back after that. We apologize for any inconvenience caused.`
+        return  'The merchant is temporarily closed. We apologize for any inconvenience caused.'
       },
       isStoreOpening() {
         if (this.todayOpenHour) {
