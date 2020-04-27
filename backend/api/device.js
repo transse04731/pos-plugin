@@ -14,9 +14,10 @@ function generateDeviceCode() {
 
 async function generateUniqueDeviceCode() {
   const deviceCodes = _.map(await DeviceModel.find({}, {deviceCode: 1}), device => device.deviceCode)
-  let newDeviceCode = generateDeviceCode()
-  while (_.includes(deviceCodes, newDeviceCode))
+  let newDeviceCode
+  do {
     newDeviceCode = generateDeviceCode()
+  } while (_.includes(deviceCodes, newDeviceCode))
   return newDeviceCode
 }
 
