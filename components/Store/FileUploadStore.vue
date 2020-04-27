@@ -28,7 +28,6 @@
       return {
         uploadingItems: [],
         showFileUploadProgressDialog: false,
-        fileApi: `${location.origin}/cms-files/files/view/`
       }
     },
     computed: {},

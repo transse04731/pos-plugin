@@ -3,10 +3,8 @@
 </template>
 
 <script>
-  import _ from 'lodash'
   import customParseFormat from 'dayjs/plugin/customParseFormat'
   import { getProvided } from '../logic/commonUtils';
-
   dayjs.extend(customParseFormat)
 
   export default {
@@ -15,10 +13,10 @@
     data() {
       return {
         systemDate: new Date(),
-        //payment screen variables
-        paymentAmountTendered: '',
-        paymentTip: 0,
-        lastPayment: 0,
+        // payment screen variables
+        // paymentAmountTendered: '',
+        // paymentTip: 0,
+        // lastPayment: 0,
         timeFormat: this.$t('dates.timeFormat'),
         dateFormat: this.$t('dates.dateFormat'),
         locale: 'en'
@@ -49,7 +47,3 @@
     }
   }
 </script>
-
-<style scoped>
-
-</style>
