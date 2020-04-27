@@ -58,8 +58,8 @@
             <template v-if="confirmView">
               <div class="section-header">CONTACT INFORMATION</div>
               <g-radio-group v-model="orderType" row class="radio-option">
-                <g-radio color="#1271ff" label="Pick-up" value="pick-up" :disabled="!store.pickup"/>
-                <g-radio color="#1271ff" label="Delivery" value="delivery" :disabled="!store.delivery"/>
+                <g-radio small color="#1271ff" label="Pick-up" value="pick-up" :disabled="!store.pickup"/>
+                <g-radio small color="#1271ff" label="Delivery" value="delivery" :disabled="!store.delivery"/>
               </g-radio-group>
               <div class="section-form">
                 <g-text-field v-model="customer.name" label="Name" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-person@16"/>
@@ -141,7 +141,7 @@
     data: function () {
       return {
         view: 'order',
-        orderType: 'delivery', // delivery || pick-up
+        orderType: this.store.delivery ? 'delivery' : 'pick-up', // delivery || pick-up
         paymentType: 'cash', // cash || credit
         customer: {
           name: '',
@@ -337,23 +337,8 @@
           margin-right: 40px;
           margin-left: 20px;
 
-          ::v-deep {
-            .g-radio {
-              padding-left: 16px;
-            }
-
-            .g-radio-label {
-              font-weight: 600;
-              font-size: 15px;
-              margin-left: 2px;
-            }
-
-            .g-radio-checkmark {
-              &:before, &:after {
-                font-size: 12px;
-                top: 2px;
-              }
-            }
+          ::v-deep .g-radio-label {
+            font-weight: 600;
           }
         }
       }

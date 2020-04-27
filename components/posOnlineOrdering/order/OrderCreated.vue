@@ -2,7 +2,6 @@
   <g-dialog v-model="internalValue" width="464" overlayOpacity="0.2" eager persistent>
     <div class="cpn-order-created">
       <div class="cpn-order-created__header">
-        <img src="/plugins/pos-plugin/assets/empty-order.svg">
         <div class="mt-2">Order Successfully</div>
       </div>
       <div class="cpn-order-created__content">
@@ -31,8 +30,7 @@
         <g-text-field v-model="email" prepend-icon="email" label="Email"/>
       </div>
       <div class="cpn-order-created__actions">
-        <g-btn-bs text-color="#424242" @click="close">Close</g-btn-bs>
-        <g-btn-bs background-color="#536DFE" text-color="#FFF" rounded @click="subscribe">Subscribe</g-btn-bs>
+        <g-btn-bs width="98" background-color="#536DFE" text-color="#FFF" rounded @click="confirm">OK</g-btn-bs>
       </div>
     </div>
   </g-dialog>
@@ -67,12 +65,11 @@
       }
     },
     methods: {
-      close() {
-        this.$emit('close')
-        this.internalValue = false
-      },
-      subscribe() {
-        this.$emit('subscribe', this.email)
+      confirm() {
+        if (this.email)
+          this.$emit('subscribe', this.email)
+        else
+          this.$emit('close')
         this.internalValue = false
       }
     }
@@ -88,10 +85,11 @@
     
     &__header {
       font-weight: bold;
-      font-size: 14px;
-      line-height: 18px;
+      font-size: 20px;
+      line-height: 25px;
       color: #536DFE;
-      margin-bottom: 16px;
+      margin-top: 16px;
+      margin-bottom: 32px;
       display: flex;
       flex-direction: column;
       align-items: center;
