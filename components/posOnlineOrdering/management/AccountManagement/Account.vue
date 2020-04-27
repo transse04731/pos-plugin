@@ -15,7 +15,7 @@
             <!--  <div>Create by</div>-->
             <!--  <g-select text-field-component="GTextFieldBs" v-model="accountFilter.createdBy" :items="managerUsersViewModel"/>-->
             <div>Group</div>
-            <g-select multiple class="combobox--large" multiple deletable-chips text-field-component="GTextFieldBs" v-model="filter.storeGroups" :items="availableGroupsViewModel"/>
+            <g-combobox multiple class="combobox--large" multiple deletable-chips text-field-component="GTextFieldBs" v-model="filter.storeGroups" :items="availableGroupsViewModel"/>
           </div>
           <div class="filter-permission">
             <div class="filter-permission__title">Permission</div>
@@ -345,15 +345,18 @@
     font-weight: 600;
 
     &-input {
-      flex: 1 1 auto;
-      display: grid;
-      grid-template-columns: 70px 250px;
-      grid-auto-rows: 45px 80px;
+      flex: 1 1 0;
+      /*display: grid;*/
+      /*grid-template-columns: 70px 250px;*/
+      /*grid-auto-rows: 45px 80px;*/
+      display: flex;
       align-items: center;
+      justify-content: space-evenly;
 
       .combobox--large ::v-deep {
         .input {
-          height: 70px;
+          /*height: 70px;*/
+          height: 120px;
           overflow: auto;
           width: 100%;
 

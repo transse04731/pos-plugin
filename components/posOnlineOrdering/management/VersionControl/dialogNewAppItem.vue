@@ -31,7 +31,7 @@
       </div>
       <div class="dialog__action">
         <g-btn-bs large text-color="#424242" @click="internalValue = false">Cancel</g-btn-bs>
-        <g-btn-bs :disabled="!internalName || !internalGroup || !internalType || !internalVersion || !internalRelease"
+        <g-btn-bs :disabled="(!edit && !internalName) || !internalGroup || !internalType || !internalVersion || !internalRelease"
                   large background-color="indigo accent-2" text-color="white" @click="upload">
           Upload
         </g-btn-bs>

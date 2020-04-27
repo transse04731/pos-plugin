@@ -28,7 +28,7 @@
         </div>
         <div class="col-2 pl-1" @click="sortAppItem('uploadDate')">
           Upload date
-          <g-icon v-if="sort.type === 'uploadTime'" size="16">{{sort.order === 'asc' ? 'fas fa-long-arrow-alt-up' : 'fas fa-long-arrow-alt-down'}}</g-icon>
+          <g-icon v-if="sort.type === 'uploadDate'" size="16">{{sort.order === 'asc' ? 'fas fa-long-arrow-alt-up' : 'fas fa-long-arrow-alt-down'}}</g-icon>
         </div>
         <div class="flex-equal pl-2">Note</div>
         <div class="col-1"></div>
