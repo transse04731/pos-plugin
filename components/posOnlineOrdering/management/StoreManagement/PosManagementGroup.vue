@@ -24,81 +24,83 @@
         </template>
       </g-edit-view-input>
     </div>
-    <template v-if="showContent">
-      <div class="pos-management-group__content">
-        <div v-for="(store, i) in stores" :class="getStoreRowClass(i)">
-          <div class="pos-management-group__content-info" @click="toggleStoreSetting(store)">
-            <div style="flex: 0 0 25%; padding-left: 16px">
-              <div class="fw-700 text-blue-accent-3">ID: {{store.id}}</div>
-              <div>{{store.settingName}}</div>
-              <div>{{store.settingAddress}}</div>
-            </div>
-            <div style="flex: 1">
-              <div class="row-flex mb-1" v-for="(device, index) in store.devices" :key="`device_${store.id}_${index}`">
-                <div class="row-flex col-2">
-                  <g-icon>{{getDeviceIcon(device)}}</g-icon>
-                  <span class="ml-1">{{device.name}}</span>
-                </div>
-                <div class="col-2">
-                  {{device.hardware}}
-                </div>
-                <div class="row-flex col-3">
-                  {{ `${device.appVersion} (${device.appName}, ${device.appRelease})` }}
-                </div>
-                <div class="row-flex col-4">
-                  <template v-if="updateAppPerm">
-                    <g-select class="w-60" :items="device.versions" v-model="device.updateVersion"/>
-                    <p v-if="device.updateVersion" class="ml-3 text-indigo-accent-2" style="cursor: pointer" @click="updateAppVersion(device)">Update</p>
-                  </template>
-                </div>
-                <div class="col-1 row-flex align-items-center">
-                  <!-- remote control -->
-                  <g-tooltip v-if="remoteControlPerm"
-                      :open-on-hover="true" top speech-bubble color="#000" transition="0.3">
-                    <template v-slot:activator="{on}">
-                      <div :class="device.online && device.paired && device.features && device.features.proxy && !disableRemoteControlBtn
+    <g-expand-transition>
+      <template v-if="showContent">
+        <div class="pos-management-group__content">
+          <div v-for="(store, i) in stores" :class="getStoreRowClass(i)">
+            <div class="pos-management-group__content-info" @click="toggleStoreSetting(store)">
+              <div style="flex: 0 0 25%; padding-left: 16px">
+                <div class="fw-700 text-blue-accent-3">ID: {{store.id}}</div>
+                <div>{{store.settingName}}</div>
+                <div>{{store.settingAddress}}</div>
+              </div>
+              <div style="flex: 1">
+                <div class="row-flex mb-1" v-for="(device, index) in store.devices" :key="`device_${store.id}_${index}`">
+                  <div class="row-flex col-2">
+                    <g-icon>{{getDeviceIcon(device)}}</g-icon>
+                    <span class="ml-1">{{device.name}}</span>
+                  </div>
+                  <div class="col-2">
+                    {{device.hardware}}
+                  </div>
+                  <div class="row-flex col-3">
+                    {{ `${device.appVersion} (${device.appName}, ${device.appRelease})` }}
+                  </div>
+                  <div class="row-flex col-4">
+                    <template v-if="updateAppPerm">
+                      <g-select class="w-60" :items="device.versions" v-model="device.updateVersion"/>
+                      <p v-if="device.updateVersion" class="ml-3 text-indigo-accent-2" style="cursor: pointer" @click="updateAppVersion(device)">Update</p>
+                    </template>
+                  </div>
+                  <div class="col-1 row-flex align-items-center">
+                    <!-- remote control -->
+                    <g-tooltip v-if="remoteControlPerm"
+                               :open-on-hover="true" top speech-bubble color="#000" transition="0.3">
+                      <template v-slot:activator="{on}">
+                        <div :class="device.online && device.paired && device.features && device.features.proxy && !disableRemoteControlBtn
                                   ? 'pos-management-group__content-btn' : 'pos-management-group__content-btn--disabled'"
-                           @mouseenter="on.mouseenter"
-                           @mouseleave="on.mouseleave"
-                           @click="() => {startRemoteControl(device.storeId, device._id); on.mouseleave()}">
+                             @mouseenter="on.mouseenter"
+                             @mouseleave="on.mouseleave"
+                             @click="() => {startRemoteControl(device.storeId, device._id); on.mouseleave()}">
+                        </div>
+                      </template>
+                      <span>Remote Control</span>
+                    </g-tooltip>
+                    <!-- extra actions -->
+                    <g-menu v-model="device.menu" close-on-content-click nudge-bottom="5">
+                      <template v-slot:activator="{on}">
+                        <g-icon :class="[device.menu && 'menu--active', 'ml-2']" @click="on.click">more_horiz</g-icon>
+                      </template>
+                      <div class="menu-action">
+                        <div v-if="featureControlPerm" class="menu-action__option" @click="openFeatureControlDialog(store, device)">Feature control</div>
+                        <div v-if="settingsPerm" class="menu-action__option" @click="$emit('open:dialogDelete', device)">Delete device</div>
                       </div>
-                    </template>
-                    <span>Remote Control</span>
-                  </g-tooltip>
-                  <!-- extra actions -->
-                  <g-menu v-model="device.menu" close-on-content-click nudge-bottom="5">
-                    <template v-slot:activator="{on}">
-                      <g-icon :class="[device.menu && 'menu--active', 'ml-2']" @click="on.click">more_horiz</g-icon>
-                    </template>
-                    <div class="menu-action">
-                      <div v-if="featureControlPerm" class="menu-action__option" @click="openFeatureControlDialog(store, device)">Feature control</div>
-                      <div v-if="settingsPerm" class="menu-action__option" @click="$emit('open:dialogDelete', device)">Delete device</div>
-                    </div>
-                  </g-menu>
+                    </g-menu>
+                  </div>
                 </div>
               </div>
             </div>
+            <div class="pos-management-group__content-action">
+              <g-btn-bs v-if="settingsPerm" small border-color="grey-darken-1" @click="$emit('view:settings', store)">Settings</g-btn-bs>
+              <g-btn-bs v-if="configOnlineOrderingPerm" small border-color="grey-darken-1" @click="openWebShopConfig(store)">WebShop Config</g-btn-bs>
+            </div>
           </div>
-          <div class="pos-management-group__content-action">
-            <g-btn-bs v-if="settingsPerm" small border-color="grey-darken-1" @click="$emit('view:settings', store)">Settings</g-btn-bs>
-            <g-btn-bs v-if="configOnlineOrderingPerm" small border-color="grey-darken-1" @click="openWebShopConfig(store)">WebShop Config</g-btn-bs>
-          </div>
+
+          <g-dnd-dialog v-if="remoteControlPerm" v-model="showIframe" :width="iframeWidth"
+                        :height="iframeHeight" lazy @close="stopRemoteControl"
+                        @dragStart="iframeDragging = true" @dragEnd="iframeDragging = false"
+                        @resizeStart="iframeDragging = true" @resizeEnd="iframeDragging = false">
+            <template #title>
+              Remote Control
+            </template>
+
+            <div v-if="showIframe && iframeDragging"
+                 style="height: 100%; width: 100%; position: absolute; background: transparent"/>
+            <iframe v-if="showIframe" :src="iframeSrc" width="100%" height="100%" @load="onIframeLoad" ref="iframe"/>
+          </g-dnd-dialog>
         </div>
-
-        <g-dnd-dialog v-if="remoteControlPerm" v-model="showIframe" :width="iframeWidth"
-                      :height="iframeHeight" lazy @close="stopRemoteControl"
-                      @dragStart="iframeDragging = true" @dragEnd="iframeDragging = false"
-                      @resizeStart="iframeDragging = true" @resizeEnd="iframeDragging = false">
-          <template #title>
-            Remote Control
-          </template>
-
-          <div v-if="showIframe && iframeDragging"
-               style="height: 100%; width: 100%; position: absolute; background: transparent"/>
-          <iframe v-if="showIframe" :src="iframeSrc" width="100%" height="100%" @load="onIframeLoad" ref="iframe"/>
-        </g-dnd-dialog>
-      </div>
-    </template>
+      </template>
+    </g-expand-transition>
     
     <dialog-feature-control
         v-if="selectedDevice"

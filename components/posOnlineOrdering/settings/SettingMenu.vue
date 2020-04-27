@@ -28,41 +28,43 @@
               <g-icon v-if="showProducts[cate._id]">fas fa-chevron-up</g-icon>
               <g-icon v-else>fas fa-chevron-down</g-icon>
             </div>
-            <template v-if="showProducts[cate._id]">
-              <div style="border-bottom: 1px solid #E0E0E0">
-                <template v-if="cate.products && cate.products.length > 0">
-                  <setting-menu-item
-                      v-for="(product, index) in cate.products"
-                      v-bind="product"
-                      :index="index"
-                      :available-printers="store.printers"
-                      :use-multiple-printers="store.useMultiplePrinters"
-                      :key="`item_${index}`"
-                      @editing="setEditing(product._id, $event)"
-                      @save="updateProduct(product._id, $event)"
-                      @delete="openDeleteProductDialog(product._id)"/>
-                </template>
-                <div v-else-if="!showAddNewProductPanel[cate._id]" style="height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #fff;">
-                  <img src="/plugins/pos-plugin/assets/no-items.svg" class="mb-2"/>
-                  <div class="text-grey">No item in this group.</div>
+            <g-expand-transition>
+              <template v-if="showProducts[cate._id]">
+                <div style="border-bottom: 1px solid #E0E0E0">
+                  <template v-if="cate.products && cate.products.length > 0">
+                    <setting-menu-item
+                        v-for="(product, index) in cate.products"
+                        v-bind="product"
+                        :index="index"
+                        :available-printers="store.printers"
+                        :use-multiple-printers="store.useMultiplePrinters"
+                        :key="`item_${index}`"
+                        @editing="setEditing(product._id, $event)"
+                        @save="updateProduct(product._id, $event)"
+                        @delete="openDeleteProductDialog(product._id)"/>
+                  </template>
+                  <div v-else-if="!showAddNewProductPanel[cate._id]" style="height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #fff;">
+                    <img src="/plugins/pos-plugin/assets/no-items.svg" class="mb-2"/>
+                    <div class="text-grey">No item in this group.</div>
+                  </div>
+                  <div v-if="showAddNewProductPanel[cate._id]">
+                    <setting-new-menu-item
+                        :index="cate.products.length"
+                        :available-printers="store.printers"
+                        :use-multiple-printers="store.useMultiplePrinters"
+                        @cancel="hideAddNewProductPanelForCategory(cate)"
+                        @save="addNewProduct({...$event, category: cate._id})"/>
+                  </div>
                 </div>
-                <div v-if="showAddNewProductPanel[cate._id]">
-                  <setting-new-menu-item
-                      :index="cate.products.length"
-                      :available-printers="store.printers"
-                      :use-multiple-printers="store.useMultiplePrinters"
-                      @cancel="hideAddNewProductPanelForCategory(cate)"
-                      @save="addNewProduct({...$event, category: cate._id})"/>
+                <div style="height: 40px; background-color: #fff; display: flex; align-items: center; justify-content: center;">
+                  <g-btn-bs text-color="#2979FF"
+                            @click="showAddNewProductPanelForCategory(cate)"
+                            :disabled="showAddNewProductPanel[cate._id]">
+                    + Add New Item
+                  </g-btn-bs>
                 </div>
-              </div>
-              <div style="height: 40px; background-color: #fff; display: flex; align-items: center; justify-content: center;">
-                <g-btn-bs text-color="#2979FF"
-                          @click="showAddNewProductPanelForCategory(cate)"
-                          :disabled="showAddNewProductPanel[cate._id]">
-                  + Add New Item
-                </g-btn-bs>
-              </div>
-            </template>
+              </template>
+            </g-expand-transition>
           </div>
         </div>
       </div>

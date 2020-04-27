@@ -180,7 +180,7 @@
         if (this.todayOpenHour) {
           if (this.get24HourValue(this.todayOpenHour.openTime) > this.now)
             return {
-              day: this.dayInWeeks[dayInWeekIndex],
+              day: this.dayInWeeks[this.dayInWeekIndex],
               hour: this.todayOpenHour.openTime
           }
         }
@@ -244,7 +244,7 @@
         this.$set(this, 'products', await cms.getModel('Product').find({ store: this.store._id }, { store: 0 }))
       },
       getCategoryStyle(cate) {
-        const common = {cursor: 'pointer', padding: '20px', whiteSpace: 'nowrap', '-webkit-tap-highlight-color': 'transparent'};
+        const common = {cursor: 'pointer', padding: '16px 24px', whiteSpace: 'nowrap', '-webkit-tap-highlight-color': 'transparent'};
         return cate._id === this.selectedCategoryId ? {
           fontWeight: 'bold',
           borderBottom: '2px solid #000',
@@ -345,7 +345,7 @@
       }
 
       .sub-title {
-        font-size: 24px;
+        font-size: 20px;
         font-weight: 700;
       }
 
@@ -361,7 +361,7 @@
     &__tab {
       display: flex;
       background-color: #F8F8F8;
-      flex: 0 0 72px;
+      flex: 0 0 64px;
       margin-top: 16px;
       align-items: center;
       border-top-right-radius: 24px;
@@ -369,6 +369,7 @@
       overflow: auto hidden;
       position: relative;
       border-right: 16px solid #F8F8F8;
+      font-size: 15px;
       scrollbar-width: none; // firefox
 
       &::-webkit-scrollbar {

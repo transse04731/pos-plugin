@@ -10,7 +10,7 @@
         <div class="po-order-table__header__text">
           <g-icon class="po-order-table__header__icon--mobile" @click="changeView">arrow_back</g-icon>
           <g-icon class="po-order-table__header__icon" v-if="confirmView" color="#424242" @click="view = 'order'" size="20">arrow_back_ios</g-icon>
-          <div class="po-order-table__header__text--main">{{ confirmView ? 'Confirm Order' : 'Order List' }}</div>
+          <div class="po-order-table__header__text--main">{{ confirmView ? 'Confirm Your Order' : 'Order List' }}</div>
           <div class="po-order-table__header__total" v-if="orderView">Total items: {{ totalItems }}</div>
         </div>
       
@@ -304,6 +304,7 @@
         &--main {
           display: flex;
           flex: 1;
+          font-size: 25px;
         }
       }
 
@@ -331,6 +332,30 @@
       .radio-option {
         padding-top: 20px;
         text-align: center;
+
+        .g-radio-wrapper {
+          margin-right: 40px;
+          margin-left: 20px;
+
+          ::v-deep {
+            .g-radio {
+              padding-left: 16px;
+            }
+
+            .g-radio-label {
+              font-weight: 600;
+              font-size: 15px;
+              margin-left: 2px;
+            }
+
+            .g-radio-checkmark {
+              &:before, &:after {
+                font-size: 12px;
+                top: 2px;
+              }
+            }
+          }
+        }
       }
 
       .section-header {
@@ -525,6 +550,7 @@
 
           &--main {
             justify-content: center;
+            font-size: 15px;
           }
         }
 
