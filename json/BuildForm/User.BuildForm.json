@@ -107,7 +107,8 @@
       "key": "createdBy",
       "ref": "User",
       "type": "ref-select",
-      "labelProp": "username"
+      "labelProp": "username",
+      "autopopulate": true
     },
     {
       "_id": "5e9ffe065bd44e437e647424",

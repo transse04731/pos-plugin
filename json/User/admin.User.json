@@ -1,0 +1,72 @@
+{
+  "storeGroups": [
+    {
+      "_id": "5e9ef1e75365ba001badeb78",
+      "name": "Gigaorder"
+    },
+    {
+      "_id": "5e9f11f15365ba001badee0f",
+      "name": "ikasse247"
+    },
+    {
+      "_id": "5ea01af3e23460001a4e79cf",
+      "name": "Gigasource"
+    },
+    {
+      "_id": "5ea2530150cda6001b2cba7d",
+      "name": "Xuan Anh Store"
+    },
+    {
+      "_id": "5ea65a770006460546a6a018",
+      "name": "SnackOrder"
+    }
+  ],
+  "_id": "5c88842f1591d506a250b2a5",
+  "password": "admin",
+  "role": {
+    "_id": "5c8a28801ae07e1cae366e09",
+    "collectionPermission": [],
+    "name": "admin"
+  },
+  "username": "admin",
+  "permissions": [
+    {
+      "_id": "5ea2bc8f70a2b325a192c66a",
+      "permission": "manageGroup",
+      "value": null
+    },
+    {
+      "_id": "5ea2bd4970a2b325a192c679",
+      "permission": "manageStore",
+      "value": true
+    },
+    {
+      "_id": "5ea2bd6e70a2b325a192c684",
+      "permission": "updateApp",
+      "value": true
+    },
+    {
+      "_id": "5ea2be0870a2b325a192c69b",
+      "permission": "settings",
+      "value": true
+    },
+    {
+      "_id": "5ea2becb70a2b325a192c6a8",
+      "permission": "featureControl",
+      "value": true
+    },
+    {
+      "_id": "5ea2c51faa40e927f690df75",
+      "permission": "remoteControl",
+      "value": true
+    },
+    {
+      "_id": "5ea2c51faa40e927f690df76",
+      "permission": "configOnlineOrdering",
+      "value": true
+    }
+  ],
+  "name": "\u001dadmin",
+  "createdBy": null,
+  "active": true
+}
