@@ -50,24 +50,27 @@
               </div>
             </div>
             <span v-for="(category, index) in categoriesViewModel"
-                  :key="index"
-                  @click="selectedCategoryId = category._id"
+                  :key="`tab_${index}`"
+                  :id="`tab_${category._id}`"
+                  @click="chooseCategory(category._id)"
                   :style="getCategoryStyle(category)">
               {{ category.name }}
             </span>
           </div>
-          <div class="pos-order__tab--content">
-            <div class="sub-title">{{ selectedCategory && selectedCategory.name }}</div>
-            <div class="pos-order__tab--content-main">
-              <div v-for="(item, index) in categoryItems" :key="index">
-                <menu-item
-                    v-bind="item"
-                    :is-opening="isStoreOpening"
-                    :currency-unit="store.currency"
-                    :quantity="getQuantityInOrder(item)"
-                    @menu-item-selected="addItemToOrder(item)"
-                    @increase="addItemToOrder(item)"
-                    @decrease="removeItemFromOrder(item)"/>
+          <div class="pos-order__tab--content" id="tab-content" ref="tab-content">
+            <div v-for="(category, i) in categoriesViewModel" :id="`category_content_${category._id}`" :key="`category_${i}`" class="mt-2">
+              <div class="sub-title">{{ category && category.name }}</div>
+              <div class="pos-order__tab--content-main">
+                <div v-for="(item, index) in category.items" :key="index">
+                  <menu-item
+                      v-bind="item"
+                      :is-opening="isStoreOpening"
+                      :currency-unit="store.currency"
+                      :quantity="getQuantityInOrder(item)"
+                      @menu-item-selected="addItemToOrder(item)"
+                      @increase="addItemToOrder(item)"
+                      @decrease="removeItemFromOrder(item)"/>
+                </div>
               </div>
             </div>
           </div>
@@ -111,7 +114,8 @@
         now: dayjs().format('HH:mm'),
         dialog: {
           closed: false
-        }
+        },
+        debouceHandleScroll: null
       }
     },
     filters: {
@@ -141,8 +145,28 @@
       }, 1000)
       this.dialog.closed = !this.isStoreOpening
     },
+    mounted() {
+      //scroll
+      this.debounceHandleScroll = _.debounce(this.handleScroll, 200)
+      this.$nextTick(() => {
+        if(this.$refs) {
+          if(!this.$refs.keys) {
+            setTimeout(() => {
+              const contentRef = this.$refs['tab-content']
+              contentRef && contentRef.addEventListener('scroll', this.debounceHandleScroll)
+            }, 500)
+          } else {
+            const contentRef = this.$refs['tab-content']
+            contentRef && contentRef.addEventListener('scroll', () => {
+              console.log('scroll')
+            })
+          }
+        }
+      })
+    },
     beforeDestroy() {
       clearInterval(this.dayInterval)
+      this.$refs['tab-content'].removeEventListener('scroll', this.debounceHandleScroll)
     },
     computed: {
       shippingFee() {
@@ -263,7 +287,34 @@
           return this.orderItems[indexOfItem].quantity
         return 0
       },
+      elementInWrapper(el) {
+        const {top} = el.getBoundingClientRect()
+
+        const wrapper = document.getElementById('tab-content').getBoundingClientRect()
+
+        return top >= wrapper.top;
+      },
+      handleScroll() {
+        const categoryInViewPort = this.categories.map(c => c._id).map(id => {
+          const el = document.getElementById(`category_content_${id}`);
+          if(this.elementInWrapper(el)) {
+            return id
+          }
+        })
+        this.selectedCategoryId = categoryInViewPort.filter(c => !!c)[0]
+      },
+      chooseCategory(id) {
+        this.selectedCategoryId = id
+        const content = document.getElementById(`category_content_${id}`)
+        content && content.scrollIntoView({behavior: "smooth"});
+      }
     },
+    watch: {
+      selectedCategoryId(val) {
+        const tab = document.getElementById(`tab_${val}`)
+        tab && tab.scrollIntoView({behavior: "smooth"});
+      }
+    }
   }
 </script>
 <style scoped lang="scss">
@@ -390,10 +441,13 @@
       }
 
       &--content {
-        padding-top: 30px;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
+        margin-top: 30px;
+        overflow: hidden auto;
+        scrollbar-width: none; // firefox
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
 
         &-main {
           flex: 1;
@@ -401,11 +455,6 @@
           flex-direction: column;
           overflow: hidden auto;
           margin-bottom: 5px;
-          scrollbar-width: none; // firefox
-
-          &::-webkit-scrollbar {
-            display: none;
-          }
         }
       }
     }
