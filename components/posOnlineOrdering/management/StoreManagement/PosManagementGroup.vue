@@ -82,7 +82,8 @@
             </div>
             <div class="pos-management-group__content-action">
               <g-btn-bs v-if="settingsPerm" small border-color="grey-darken-1" @click="$emit('view:settings', store)">Settings</g-btn-bs>
-              <g-btn-bs v-if="configOnlineOrderingPerm" small border-color="grey-darken-1" @click="openWebShopConfig(store)">WebShop Config</g-btn-bs>
+              <g-btn-bs v-if="configOnlineOrderingPerm" small border-color="grey-darken-1" @click="openWebShopConfig(store)">Online Ordering</g-btn-bs>
+              <g-btn-bs small border-color="grey-darken-1" @click="showPairDeviceDialog(store)">Pair New Device</g-btn-bs>
             </div>
           </div>
 
@@ -102,6 +103,17 @@
       </template>
     </g-expand-transition>
     
+    <!-- dialog -- TODO: Bring all dialog to StoreManagement.vue -->
+    <dialog-pair-new-device
+        v-if="dialog.pairNewDevice"
+        v-model="dialog.pairNewDevice"
+        :store="selectedStore"/>
+    
+    <dialog-pair-new-device-success
+        v-if="dialog.pairNewDeviceSuccess"
+        v-model="dialog.dialog.pairNewDeviceSuccess"
+        :store="selectedStore"/>
+    
     <dialog-feature-control
         v-if="selectedDevice"
         v-model="dialog.featureControl"
@@ -115,10 +127,11 @@
 <script>
   import _ from 'lodash'
   import DialogFeatureControl from './dialogFeatureControl';
+  import DialogPairNewDeviceSuccess from './dialogPairNewDeviceSuccess';
 
   export default {
     name: "PosManagementGroup",
-    components: { DialogFeatureControl },
+    components: { DialogPairNewDeviceSuccess, DialogFeatureControl },
     props: {
       _id: String,
       name: String,
@@ -147,7 +160,9 @@
         selectedDevice: null,
         dialog: {
           featureControl: false,
-          deleteDevice: false
+          deleteDevice: false,
+          pairNewDevice: false,
+          pairNewDeviceSuccess: false,
         }
       }
     },
@@ -248,6 +263,10 @@
         socket.emit('updateAppFeature', this.selectedDevice._id, features)
         await cms.getModel('Device').updateOne({_id: this.selectedDevice._id}, { features })
         this.dialog.featureControl = false
+      },
+      showPairDeviceDialog(store) {
+        this.selectedStore = store
+        this.dialog.pairNewDevice = true
       }
     },
     beforeDestroy() {

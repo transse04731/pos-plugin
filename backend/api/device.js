@@ -36,17 +36,16 @@ async function removePairedDeviceFromStore(deviceId, storeId) {
 }
 
 router.get('/pairing-code', async (req, res) => {
-  const {storeId, name} = req.query
+  const {storeId} = req.query
 
   // Only 1 store can have "onlineOrder" feature
-  const device = await DeviceModel.findOne({storeId, paired: false, name})
+  const device = await DeviceModel.findOne({storeId, paired: false})
   if (device) return res.status(200).json({pairingCode: device.pairingCode})
 
   // Create new device if none exists
   const pairingCode = await generateUniqueDeviceCode()
   await DeviceModel.create({
     pairingCode,
-    name,
     storeId: ObjectId(storeId),
     paired: false,
     online: false,
@@ -75,7 +74,7 @@ router.post('/register', async (req, res) => {
   if (deviceInfo) {
     // TODO: custom value depend on features provided by request
     // online status will be updated when client connects to external Socket.io server (see backend/socket-io-server.js file)
-    await DeviceModel.updateOne({pairingCode}, {paired: true, online: false, hardware, appName, appVersion, features: {
+    await DeviceModel.updateOne({pairingCode}, { name: 'New Device', paired: true, online: false, hardware, appName, appVersion, features: {
         fastCheckout: true,
         manualTable: true,
         delivery: true,
