@@ -28,13 +28,11 @@
     methods: {
       async login(username, password, errCb) {
         cms.login(username, password, '/management').catch(err => errCb && errCb(err.response.data.message))
-        this.incorrectPasscode = true
       },
       logout() {
         cms.logout()
         document.cookie = ''
         this.$router.push('/sign-in')
-        this.user = null
       }
     },
     async created() {

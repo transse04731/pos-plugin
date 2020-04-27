@@ -69,15 +69,11 @@
         this.view = 'sign-up'
         this.errorMessage = ''
       },
-      showForgotPassword() {
-        this.view = 'reset-password'
-        this.errorMessage = ''
-      },
       signIn() {
         this.signInMessage = ''
         if(_.trim(this.email) === '')
           return
-        this.login(this.email, this.password)
+        this.login(this.email, this.password, (errMessage) => this.signInMessage = errMessage)
       },
       async signUp() {
         if (this.password === this.retypePassword) {
