@@ -28,7 +28,6 @@
             @add-new-product="addNewProduct"
             @update-product="updateProduct"
             @delete-product="deleteProduct"/>
-        <device v-if="view === 'setting-device'" :store="store"/>
         <delivery-fee v-if="view === 'setting-delivery-fee'" :store="store" @update="updateStore"/>
         <multiple-printer v-if="view === 'setting-multiple-printer'" :store="store" @update="updateStore"/>
       </div>
@@ -55,7 +54,6 @@
             onClick: () => this.changeView('service-and-open-hours')
           },
           {title: 'Menu', icon: 'filter_list', onClick: () => this.changeView('settings-menu')},
-          {title: 'Pair to POS', icon: 'icon-setting-device', onClick: () => this.changeView('setting-device', 'Pair to POS')},
           {title: 'Delivery Fee', icon: 'icon-setting-delivery', onClick: () => this.changeView('setting-delivery-fee', 'Delivery Fee')},
           {title: 'Multiple Printer', icon: 'icon-setting-multiple', onClick: () => this.changeView('setting-multiple-printer', 'Multiple Printer')},
         ],
