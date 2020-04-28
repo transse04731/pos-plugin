@@ -39,13 +39,17 @@
         <div class="dashed-gradient"/>
         <div class="row-flex justify-between mt-2">
           <div>Total <b>{{orderQuantity}}</b> item(s)</div>
-          <div class="ta-right">€ {{order.vSum}}</div>
+          <div class="ta-right">€ {{order.vSum.toFixed(2)}}</div>
         </div>
         <div class="row-flex justify-between mb-2">
           <div>{{$t('onlineOrder.shippingFee')}}:</div>
-          <div class="ta-right">€ {{order.shippingFee || 0}}</div>
+          <div class="ta-right">€ {{order.shippingFee ? order.shippingFee.toFixed(2) : 0}}</div>
         </div>
         <div class="dashed-gradient"/>
+        <div class="row-flex justify-between mt-2" style="font-size: 15px; font-weight: 700; font-family: Verdana, sans-serif">
+          <div>Total</div>
+          <div class="ta-right">€ {{(order.vSum + (order.shippingFee || 0)).toFixed(2)}}</div>
+        </div>
       </g-card-text>
       <g-card-actions>
         <g-btn-bs background-color="#E57373" text-color="white" @click.stop="declineOrder(order)">Cancel & move to declined orders</g-btn-bs>

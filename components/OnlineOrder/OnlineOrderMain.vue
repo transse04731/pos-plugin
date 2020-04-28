@@ -20,7 +20,7 @@
           <g-card elevation="0" v-for="(order, index) in internalOrders" :key="index">
             <g-card-title>
               <g-icon v-if="order.type === 'delivery'">icon-delivery-man</g-icon>
-              <g-icon v-if="order.type === 'pick-up'">icon-pickup</g-icon>
+              <g-icon v-if="order.type === 'pickup'">icon-pickup</g-icon>
               <span class="fs-small-2 ml-1">
                 <span class="fs-small fw-700 text-indigo-accent-2">#{{order.id}}</span>
                 {{order.customer ? order.customer.name : 'No customer name'}} - {{order.customer ? order.customer.phone : 'No customer phone'}}
