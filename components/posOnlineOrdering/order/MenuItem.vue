@@ -81,7 +81,7 @@
     
     &__name {
       font-weight: bold;
-      font-size: 18px;
+      font-size: 15px;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
@@ -93,7 +93,7 @@
     }
     
     &__desc {
-      font-size: 14px;
+      font-size: 13px;
       color: #757575;
       max-width: 350px;
       word-break: break-word;

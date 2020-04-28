@@ -58,7 +58,7 @@
             </span>
           </div>
           <div class="pos-order__tab--content" id="tab-content" ref="tab-content">
-            <div v-for="(category, i) in categoriesViewModel" :id="`category_content_${category._id}`" :key="`category_${i}`" :class="[i > 0 && 'mt-4']">
+            <div v-for="(category, i) in categoriesViewModel" :id="`category_content_${category._id}`" :key="`category_${i}`" :class="[i > 0 && 'mt-5']">
               <div class="sub-title">{{ category && category.name }}</div>
               <div class="pos-order__tab--content-main">
                 <menu-item
