@@ -225,6 +225,8 @@
         this.increaseOrAddNewItems(item)
       },
       confirmPayment() {
+        if(this.unavailableConfirm()) return
+
         const {socket} = window.cms
 
         const {note, deliveryTime, ...customer} = this.customer;

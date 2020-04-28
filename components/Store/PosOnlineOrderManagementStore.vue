@@ -1,5 +1,5 @@
 <template>
-  <g-snackbar v-model="showSnackbar" top right color="#536dfe">{{message}}</g-snackbar>
+  <g-snackbar v-model="snackbar.show" top right :color="`${snackbar.error ? '#ff4452' : '#536dfe'}`">{{snackbar.message}}</g-snackbar>
 </template>
 <script>
   import _ from 'lodash'
@@ -9,8 +9,11 @@
     data: function () {
       return {
         // common
-        showSnackbar: false,
-        message: '',
+        snackbar: {
+          show: false,
+          message: '',
+          error: false
+        },
         
         // store management
         storeGroups: [],
@@ -173,12 +176,13 @@
     },
     methods: {
       // common
-      showMessage(message) {
-        this.message = message
-        this.showSnackbar = true
+      showMessage(message, error = true) {
+        this.snackbar.message = message
+        this.snackbar.error = error
+        this.snackbar.show = true
       },
       showSavedMessage() {
-        this.showMessage('Saved')
+        this.showMessage('Saved', false)
       },
       
       // view model helper methods
@@ -229,7 +233,7 @@
       },
       async addGroup(name) {
         if (_.includes(this.storeGroupNames, name)) {
-          alert('This name is already taken!')
+          this.showMessage('This name is already taken!')
           return
         }
         const createdGroup = await cms.getModel('StoreGroup').create({ name })
@@ -240,7 +244,7 @@
       },
       async changeStoreGroupName(_id, name, cb) {
         if (_.includes(this.storeGroupNames, name)) {
-          alert('This name is already taken!')
+          this.showMessage('This name is already taken!')
           cb && cb(false)
         }
         await cms.getModel('StoreGroup').updateOne({_id}, {name})
