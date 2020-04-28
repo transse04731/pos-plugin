@@ -58,11 +58,11 @@
             </span>
           </div>
           <div class="pos-order__tab--content" id="tab-content" ref="tab-content">
-            <div v-for="(category, i) in categoriesViewModel" :id="`category_content_${category._id}`" :key="`category_${i}`" class="mt-2">
+            <div v-for="(category, i) in categoriesViewModel" :id="`category_content_${category._id}`" :key="`category_${i}`" :class="[i > 0 && 'mt-5']">
               <div class="sub-title">{{ category && category.name }}</div>
               <div class="pos-order__tab--content-main">
-                <div v-for="(item, index) in category.items" :key="index">
-                  <menu-item
+                <menu-item
+                      v-for="(item, index) in category.items" :key="index"
                       v-bind="item"
                       :is-opening="isStoreOpening"
                       :currency-unit="store.currency"
@@ -71,7 +71,6 @@
                       @increase="addItemToOrder(item)"
                       @decrease="removeItemFromOrder(item)"/>
                 </div>
-              </div>
             </div>
           </div>
           <order-table v-if="showOrder" @back="showOrder = false" :store="store" :is-opening="isStoreOpening"/>
@@ -115,6 +114,7 @@
         dialog: {
           closed: false
         },
+        debounce: null,
       }
     },
     filters: {
@@ -146,12 +146,13 @@
     },
     mounted() {
       //scroll
+      this.debounce = _.debounce(this.handleScroll, 100)
       this.$nextTick(() => {
         if(this.$refs) {
           if(!this.$refs.keys) {
             setTimeout(() => {
               const contentRef = this.$refs['tab-content']
-              contentRef && contentRef.addEventListener('scroll', this.handleScroll)
+              contentRef && contentRef.addEventListener('scroll', this.debounce)
             }, 500)
           } else {
             const contentRef = this.$refs['tab-content']
@@ -164,7 +165,7 @@
     },
     beforeDestroy() {
       clearInterval(this.dayInterval)
-      this.$refs['tab-content'].removeEventListener('scroll', this.handleScroll)
+      this.$refs['tab-content'].removeEventListener('scroll', this.debounce)
     },
     computed: {
       shippingFee() {
@@ -316,7 +317,8 @@
         if(tab) {
           const wrapper = tab.offsetParent
           const icon = wrapper.firstChild
-          wrapper.scrollLeft = (tab.offsetLeft - icon.offsetWidth)
+          const sibling = tab.previousSibling
+          wrapper.scrollLeft = (tab.offsetLeft - icon.offsetWidth - sibling.offsetWidth/2)
         }
       }
     }
@@ -465,6 +467,11 @@
           flex-direction: column;
           overflow: hidden auto;
           margin-bottom: 5px;
+
+
+          & .po-menu-item:not(:last-child) {
+            border-bottom: 1px solid rgba(204, 204, 204, 0.4);
+          }
         }
       }
     }
@@ -546,6 +553,12 @@
           .sub-title {
             font-size: 18px;
           }
+
+          & > div:last-child {
+            .pos-order__tab--content-main {
+              margin-bottom: 80px;
+            }
+          }
         }
       }
 
@@ -564,10 +577,6 @@
           font-weight: 700;
           align-self: center;
           margin-left: 16px;
-        }
-
-        & ~ .pos-order__tab--content .pos-order__tab--content-main {
-          margin-bottom: 80px;
         }
       }
 
