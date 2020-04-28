@@ -134,11 +134,6 @@
           return
         }
 
-        if (!this.internalId) {
-          alert('Product\'s id is missing')
-          return
-        }
-
         if (!this.internalPrinter) {
           alert('Product\'s printer is missing')
           return

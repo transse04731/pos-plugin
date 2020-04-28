@@ -472,3 +472,31 @@ body::-webkit-scrollbar {
   background-size: contain;
   background-position: center;
 }
+
+.icon-cog2 {
+  background-image: url("../assets/cog2.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-chain {
+  background-image: url("../assets/chain.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-preview {
+  background-image: url("../assets/preview.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-fork_knife_setting {
+  background-image: url("../assets/fork_knife_setting.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}

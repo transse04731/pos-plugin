@@ -103,5 +103,8 @@
     }
   }
 </script>
-<style scoped>
+<style>
+  .file-upload-dialog {
+    transform: scale(0.75) translate(100px, 50px);
+  }
 </style>

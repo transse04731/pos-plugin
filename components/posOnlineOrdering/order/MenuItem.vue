@@ -83,6 +83,10 @@
     &__name {
       font-weight: bold;
       font-size: 18px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      max-width: 350px;
     }
 
     &__content {

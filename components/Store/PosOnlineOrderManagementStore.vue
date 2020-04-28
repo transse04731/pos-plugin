@@ -401,10 +401,13 @@
       async removeAppItem(_id) {
         const appItem = await cms.getModel('AppItem').findOne({_id})
         // delete file in file explorer
-        await this.$getService('FileUploadStore').removeFile(appItem.uploadPath)
-        // delete document in collection
-        await cms.getModel('AppItem').remove({_id})
-        await this.loadAppItems()
+        try {
+          await this.$getService('FileUploadStore').removeFile(appItem.uploadPath)
+        } catch(e) {} finally {
+          // delete document in collection
+          await cms.getModel('AppItem').remove({_id})
+          await this.loadAppItems()
+        }
       },
       
       toggleHideShowApp(_id) {

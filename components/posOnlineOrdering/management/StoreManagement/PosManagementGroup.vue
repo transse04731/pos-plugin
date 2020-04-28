@@ -81,10 +81,58 @@
               </div>
             </div>
             <div class="pos-management-group__content-action">
-              <g-btn-bs v-if="settingsPerm" small border-color="grey-darken-1" @click="$emit('view:settings', store)">Settings</g-btn-bs>
-              <g-btn-bs v-if="configOnlineOrderingPerm" small border-color="grey-darken-1" @click="openWebShopSetting(store)">Online Ordering</g-btn-bs>
-              <g-btn-bs v-if="configOnlineOrderingPerm" small border-color="grey-darken-1" @click="openWebShopStore(store)">Online Ordering</g-btn-bs>
-              <g-btn-bs v-if="settingsPerm" small border-color="grey-darken-1" @click="$emit('open:pairDeviceDialog', store)">Pair New Device</g-btn-bs>
+              <div v-if="settingsPerm" class="action-item">
+                <g-tooltip open-on-hover bottom speech-bubble color="#000" transition="0.3" remove-content-on-close>
+                  <template v-slot:activator="{on}">
+                    <div class="action-item__btn"
+                         @mouseenter="on.mouseenter"
+                         @mouseleave="on.mouseleave"
+                         @click.stop.prevent="$emit('view:settings', store)">
+                      <g-icon size="16">icon-cog2</g-icon>
+                    </div>
+                  </template>
+                  <span>Settings</span>
+                </g-tooltip>
+              </div>
+              <div v-if="configOnlineOrderingPerm" class="action-item">
+                <g-tooltip open-on-hover bottom speech-bubble color="#000" transition="0.3" remove-content-on-close>
+                  <template v-slot:activator="{on}">
+                    <div class="action-item__btn"
+                         @mouseenter="on.mouseenter"
+                         @mouseleave="on.mouseleave"
+                         @click.stop.prevent="openWebShopSetting(store)">
+                      <g-icon size="16">icon-fork_knife_setting</g-icon>
+                    </div>
+                  </template>
+                  <span>Online Ordering Config</span>
+                </g-tooltip>
+              </div>
+              <div v-if="configOnlineOrderingPerm" class="action-item">
+                <g-tooltip open-on-hover bottom speech-bubble color="#000" transition="0.3" remove-content-on-close>
+                  <template v-slot:activator="{on}">
+                    <div class="action-item__btn"
+                         @mouseenter="on.mouseenter"
+                         @mouseleave="on.mouseleave"
+                         @click.stop.prevent="openWebShopStore(store)">
+                      <g-icon size="16">icon-preview</g-icon>
+                    </div>
+                  </template>
+                  <span>Online Ordering Preview</span>
+                </g-tooltip>
+              </div>
+              <div v-if="settingsPerm" class="action-item">
+                <g-tooltip open-on-hover bottom speech-bubble color="#000" transition="0.3" remove-content-on-close>
+                  <template v-slot:activator="{on}">
+                    <div class="action-item__btn"
+                         @mouseenter="on.mouseenter"
+                         @mouseleave="on.mouseleave"
+                         @click.stop.prevent="$emit('open:pairDeviceDialog', store)">
+                      <g-icon size="16">icon-chain</g-icon>
+                    </div>
+                  </template>
+                  <span>Pair New Device</span>
+                </g-tooltip>
+              </div>
             </div>
           </div>
 
@@ -312,16 +360,33 @@
         display: flex;
         align-items: center;
         margin-left: 16px;
-        padding-bottom: 14px;
 
-        .g-btn-bs {
-          margin: 0 2px;
+        .action-item {
+          margin: 8px 0;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
 
-          &:hover {
-            background: #EFEFEF !important;
-            border-color: #536DFE !important;
-            color: #536DFE !important;
+          &:not(:last-child):after {
+            content: '|';
+            margin: 8px;
+            color: #9E9E9E;
           }
+
+          &__btn {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%
+          }
+
+          &:hover .action-item__btn{
+            background: #eeeeee;
+          }
+
         }
       }
     }

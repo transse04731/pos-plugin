@@ -115,7 +115,6 @@
         dialog: {
           closed: false
         },
-        debouceHandleScroll: null
       }
     },
     filters: {
@@ -147,13 +146,12 @@
     },
     mounted() {
       //scroll
-      this.debounceHandleScroll = _.debounce(this.handleScroll, 200)
       this.$nextTick(() => {
         if(this.$refs) {
           if(!this.$refs.keys) {
             setTimeout(() => {
               const contentRef = this.$refs['tab-content']
-              contentRef && contentRef.addEventListener('scroll', this.debounceHandleScroll)
+              contentRef && contentRef.addEventListener('scroll', this.handleScroll)
             }, 500)
           } else {
             const contentRef = this.$refs['tab-content']
@@ -166,7 +164,7 @@
     },
     beforeDestroy() {
       clearInterval(this.dayInterval)
-      this.$refs['tab-content'].removeEventListener('scroll', this.debounceHandleScroll)
+      this.$refs['tab-content'].removeEventListener('scroll', this.handleScroll)
     },
     computed: {
       shippingFee() {
@@ -305,14 +303,21 @@
       },
       chooseCategory(id) {
         this.selectedCategoryId = id
+        const wrapper = document.getElementById('tab-content')
         const content = document.getElementById(`category_content_${id}`)
-        content && content.scrollIntoView();
+        if(wrapper && content) {
+          wrapper.scrollTop = (content.offsetTop - wrapper.offsetTop)
+        }
       }
     },
     watch: {
       selectedCategoryId(val) {
         const tab = document.getElementById(`tab_${val}`)
-        tab && tab.scrollIntoView();
+        if(tab) {
+          const wrapper = tab.offsetParent
+          const icon = wrapper.firstChild
+          wrapper.scrollLeft = (tab.offsetLeft - icon.offsetWidth)
+        }
       }
     }
   }
@@ -398,6 +403,9 @@
       .sub-title {
         font-size: 20px;
         font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .pos-order__info {
@@ -421,6 +429,7 @@
       position: relative;
       border-right: 16px solid #F8F8F8;
       font-size: 15px;
+      scroll-behavior: smooth;
       scrollbar-width: none; // firefox
 
       &::-webkit-scrollbar {
@@ -443,6 +452,7 @@
       &--content {
         margin-top: 30px;
         overflow: hidden auto;
+        scroll-behavior: smooth;
         scrollbar-width: none; // firefox
 
         &::-webkit-scrollbar {
