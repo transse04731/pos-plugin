@@ -13,7 +13,7 @@
           <div class="po-order-table__header__text--main">{{ confirmView ? 'Confirm Your Order' : 'Order List' }}</div>
           <div class="po-order-table__header__total" v-if="orderView">Total items: {{ totalItems }}</div>
         </div>
-      
+
         <!-- content -->
         <div class="po-order-table__content">
           <template v-if="!isOpening">
@@ -120,7 +120,7 @@
         <g-btn-bs v-if="confirmView" :disabled="availableConfirm" rounded background-color="#2979FF" @click="confirmPayment" style="padding: 8px 16px" elevation="5">CONFIRM</g-btn-bs>
       </div>
     </div>
-    
+
     <!-- Order created -->
     <order-created v-model="dialog.value" :order="dialog.order" @close="closeOrderSuccess" @subscribe="subscribe"/>
   </div>
@@ -177,21 +177,21 @@
       shippingFee() {
         if (this.orderBy === 'pick-up')
           return 0
-        
+
         // empty order list
         if (!this.orderItems.length)
           return 0
-        
+
         // calculate zip code from store setting
         for(let deliveryFee of this.store.deliveryFee.fees) {
          if (_.lowerCase(_.trim(deliveryFee.zipCode)) === _.lowerCase(_.trim(this.customer.zipCode)))
            return deliveryFee.fee
         }
-        
+
         // other zip code will get default fee if store accept order from another zip code
-        if (this.store.deliveryFee.acceptOrderInOtherZipCodes)
+        if (this.store.deliveryFee && this.store.deliveryFee.acceptOrderInOtherZipCodes)
           return this.store.deliveryFee.defaultFee
-        
+
         return 0
       },
       availableConfirm() {
@@ -258,7 +258,7 @@
           shippingFee: this.shippingFee,
           totalPrice: this.totalPrice,
         }
-        
+
         this.dialog.value = true
       },
       closeOrderSuccess() {
@@ -519,12 +519,12 @@
     padding: 30px;
     border-radius: 5px;
     margin: 0 auto;
-  
+
     &--mobile {
       display: none;
     }
   }
-  
+
   @media screen and (max-width: 1040px) {
     .po-order-table {
       background: #F2F2F2;
@@ -598,13 +598,13 @@
         }
       }
     }
-  
+
     .dlg-order-created {
       display: none;
     }
     .order-created {
       display: none;
-    
+
       &--mobile {
         position: absolute;
         top: 0;
@@ -621,7 +621,7 @@
           padding-left: 40px;
           padding-right: 40px;
         }
-      
+
         &__actions {
           box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
           padding: 20px;

@@ -94,6 +94,8 @@ module.exports = function (cms) {
   internalSocketIOServer.on('connect', socket => {
     let remoteControlDeviceId = null;
 
+    socket.on('getProxyHost', callback => callback(global.APP_CONFIG.proxyHost));
+
     socket.on('watchDeviceStatus', clientIdList => {
       deviceStatusSubscribers[socket.id] = _.uniq((deviceStatusSubscribers[socket.id] || []).concat(clientIdList));
     });
