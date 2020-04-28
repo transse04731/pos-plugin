@@ -58,7 +58,7 @@
             <template v-if="confirmView">
               <div class="section-header">CONTACT INFORMATION</div>
               <g-radio-group v-model="orderType" row class="radio-option">
-                <g-radio small color="#1271ff" label="Pick-up" value="pick-up" :disabled="!store.pickup"/>
+                <g-radio small color="#1271ff" label="Pick-up" value="pickup" :disabled="!store.pickup"/>
                 <g-radio small color="#1271ff" label="Delivery" value="delivery" :disabled="!store.delivery"/>
               </g-radio-group>
               <div class="section-form">
@@ -140,7 +140,7 @@
     data: function () {
       return {
         view: 'order',
-        orderType: this.store.delivery ? 'delivery' : 'pick-up', // delivery || pick-up
+        orderType: this.store.delivery ? 'delivery' : 'pickup', // delivery || pick-up
         paymentType: 'cash', // cash || credit
         customer: {
           name: '',
@@ -175,7 +175,7 @@
         return _.sumBy(this.orderItems, item => item.price * item.quantity)
       },
       shippingFee() {
-        if (this.orderBy === 'pick-up')
+        if (this.orderBy === 'pickup')
           return 0
 
         // empty order list
