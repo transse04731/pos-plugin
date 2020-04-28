@@ -1127,6 +1127,7 @@
           "_id": "5e81774685fb2d03dda95cd0",
           "printerType": "ip",
           "ip": "192.168.10.60",
+          "escPOS": true,
           "merge": "true"
         }
       ],
@@ -1147,6 +1148,7 @@
           "printerType": "ip",
           "ip": "192.168.10.60",
           "merge": true,
+          "escPOS": true,
           "fontSize": 1,
           "marginTop": 0
         }

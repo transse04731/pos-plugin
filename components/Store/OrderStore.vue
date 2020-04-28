@@ -507,6 +507,24 @@
       //<!--</editor-fold>-->
 
       // online ordering
+      printOnlineOrderReport(orderId) {
+        return new Promise((resolve, reject) => {
+          if (_.isNil(orderId)) reject()
+          cms.socket.emit('printReport', 'OnlineOrderReport', { orderId }, this.device, ({ success, message }) => {
+            if (success) resolve()
+            else reject(message)
+          });
+        })
+      },
+      printOnlineOrderKitchen(orderId) {
+        return new Promise((resolve, reject) => {
+          if (_.isNil(orderId)) reject()
+          cms.socket.emit('printReport', 'OnlineOrderKitchen', { orderId }, this.device, ({ success, message }) => {
+            if (success) resolve()
+            else reject(message)
+          });
+        })
+      },
       async updateOnlineOrders() {
         let orderModel = cms.getModel('Order');
         this.pendingOrders = await orderModel.find({ online: true, status: 'inProgress' })
@@ -524,8 +542,8 @@
           Object.assign({}, order, {
             status: 'kitchen'
           }))
-        this.printKitchen(order).catch(e => console.error(e))
-        this.printOrderReport(order._id).catch(e => console.error(e))
+        this.printOnlineOrderKitchen(order._id).catch(e => console.error(e))
+        this.printOnlineOrderReport(order._id).catch(e => console.error(e))
         await this.updateOnlineOrders()
       },
       async setPendingOrder(order) {
