@@ -63,7 +63,6 @@ router.post('/register', async (req, res) => {
   if (!pairingCode) return res.status(400).json({message: 'Missing pairingCode in request body'});
   const deviceInfo = await DeviceModel.findOne({pairingCode, paired: false});
   if (deviceInfo) {
-    // TODO: custom value depend on features provided by request
     // online status will be updated when client connects to external Socket.io server (see backend/socket-io-server.js file)
     await DeviceModel.updateOne({pairingCode}, { name: 'New Device', paired: true, online: false, hardware, appName, appVersion, features: {
         fastCheckout: true,
