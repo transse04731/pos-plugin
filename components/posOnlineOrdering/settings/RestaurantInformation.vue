@@ -67,7 +67,6 @@
     },
     methods: {
       async update(change) {
-        console.log('update', change)
         this.$emit('update', change)
       },
     }

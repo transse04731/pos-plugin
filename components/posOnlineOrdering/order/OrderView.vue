@@ -156,9 +156,7 @@
             }, 500)
           } else {
             const contentRef = this.$refs['tab-content']
-            contentRef && contentRef.addEventListener('scroll', () => {
-              console.log('scroll')
-            })
+            contentRef && contentRef.addEventListener('scroll', this.debounce)
           }
         }
       })

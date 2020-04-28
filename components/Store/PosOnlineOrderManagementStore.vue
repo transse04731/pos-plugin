@@ -462,7 +462,6 @@
         await this.loadAccounts()
       },
       async editAccount(_id, change) {
-        console.log(change)
         if (change.username && _.find(this.accounts, acc => acc.username === change.username && acc._id !== _id)) {
           this.showMessage('Email address has been taken!')
           return

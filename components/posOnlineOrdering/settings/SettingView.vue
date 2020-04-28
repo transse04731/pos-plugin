@@ -97,7 +97,6 @@
         this.$set(this, 'store', await cms.getModel('Store').findOne({_id: this.store._id}))
       },
       async updateStore(change) {
-        console.log('update store', change)
         await cms.getModel('Store').updateOne({_id: this.store._id}, change)
         await this.loadStore()
       },
@@ -176,7 +175,6 @@
         await this.loadProducts()
       },
       async updateProduct(_id, change) {
-        console.log('update product', change)
         await cms.getModel('Product').updateOne({_id, store: this.store._id}, change)
         await this.loadProducts()
       },

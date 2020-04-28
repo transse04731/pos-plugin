@@ -159,7 +159,6 @@
         this.$emit('delete-category', this.selectedCategoryId)
       },
       addNewProduct(product) {
-        console.log('product', product)
         this.$emit('add-new-product', product )
         this.showAddNewProductPanel[product.category] = false
       },
