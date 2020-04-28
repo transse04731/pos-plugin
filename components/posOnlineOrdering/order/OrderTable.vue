@@ -67,7 +67,7 @@
                 <template v-if="orderType === 'delivery'">
                   <g-text-field v-model="customer.address" label="Address" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-place@16"/>
                   <g-text-field v-model="customer.zipCode" label="Zip code" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
-                  <g-time-picker-input v-model="customer.deliveryTime" label="Delivery time" required prepend-icon="icon-delivery-truck@16"/>
+<!--                  <g-time-picker-input v-model="customer.deliveryTime" label="Delivery time" required prepend-icon="icon-delivery-truck@16"/>-->
                 </template>
                 <g-textarea v-model="customer.note" placeholder="Note..." rows="3" no-resize/>
               </div>
@@ -82,7 +82,6 @@
               <div v-for="(item, index) in orderItems" :key="index" class="order-item-detail">
                 <div class="order-item-detail__index" >{{ item.quantity || 1}}</div>
                 <div class="order-item-detail__name">{{ item.name }}</div>
-                <g-spacer/>
                 <div>{{ item.price * (item.quantity || 1) | currency }}</div>
               </div>
               <div class="order-item-summary">
@@ -231,16 +230,16 @@
         })
 
         //convert delivery time to date
-        const period = deliveryTime.substr(deliveryTime.length - 2, deliveryTime.length)
-        const time = deliveryTime.slice(0, deliveryTime.length - 2).trim().split(':')
-        const date = dayjs().second(0).minute(+time[1]).hour(+time[0]).add(period.toUpperCase() === 'PM' ? 12 : 0, 'hour')
+        // const period = deliveryTime.substr(deliveryTime.length - 2, deliveryTime.length)
+        // const time = deliveryTime.slice(0, deliveryTime.length - 2).trim().split(':')
+        // const date = dayjs().second(0).minute(+time[1]).hour(+time[0]).add(period.toUpperCase() === 'PM' ? 12 : 0, 'hour')
 
         const orderData = {
           orderType: this.orderType,
           paymentType: this.paymentType,
           customer,
           products,
-          deliveryTime: date.toDate(),
+          // deliveryTime: date.toDate(),
           note,
           createdDate: new Date(),
           shippingFee: this.shippingFee,
@@ -409,6 +408,8 @@
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          flex: 1;
+          min-width: 0;
         }
       }
 
@@ -455,6 +456,11 @@
         font-weight: bold;
         font-size: 15px;
         line-height: 19px;
+        word-break: break-word;
+        -webkit-line-clamp: 2;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
 
       &__price {

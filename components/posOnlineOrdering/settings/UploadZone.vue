@@ -178,20 +178,24 @@
       async _uploadImage() {
         this.dialog.uploading = true
         const options = { imageSmoothingEnabled: true, imageSmoothingQuality: 'high', ... this.option}
-        this.cropper.getCroppedCanvas(options).toBlob(async (blob) => {
-          let uploadedUrl
-          if (this.tab === 'url') {
-            uploadedUrl = await this.uploadImage(new File([blob], this.photoUrl.substr(this.photoUrl.lastIndexOf('/') + 1)), { type: 'image/*' })
-          } else {
-            uploadedUrl = await this.uploadImage(new File([blob], this.file.name, { type: this.file.type }))
-          }
-          this.$emit('url', uploadedUrl)
+        try {
+          this.cropper.getCroppedCanvas(options).toBlob(async (blob) => {
+            let uploadedUrl
+            if (this.tab === 'url') {
+              uploadedUrl = await this.uploadImage(new File([blob], this.photoUrl.substr(this.photoUrl.lastIndexOf('/') + 1)), { type: 'image/*' })
+            } else {
+              uploadedUrl = await this.uploadImage(new File([blob], this.file.name, { type: this.file.type }))
+            }
+            this.$emit('url', uploadedUrl)
+            this.dialog.uploading = false
+            setTimeout(() => {
+              this.showFileUploadProgressDialog = false
+              this.uploadingItems = []
+            }, 3000)
+          })
+        } catch(e) {
           this.dialog.uploading = false
-          setTimeout(() => {
-            this.showFileUploadProgressDialog = false
-            this.uploadingItems = []
-          }, 3000)
-        })
+        }
         this.cropper && this.cropper.destroy()
         this.dialog.upload = false
       }

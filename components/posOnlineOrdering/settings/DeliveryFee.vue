@@ -22,7 +22,7 @@
           <g-icon size="40" color="#2979FF">add</g-icon>
         </div>
       </div>
-      <g-switch v-model="acceptOrderInOtherZipCodes" label="Accept orders with other zip codes" @change="updateAcceptOrderInOtherZipCode"/>
+      <g-switch v-model="acceptOrderInOtherZipCodes" label="Accept orders with other zip codes"/>
       <div class="row-flex align-items-center">
         <span class="fw-700 mr-2 nowrap">Shipping fee for other zip codes</span>
         <g-text-field-bs type="number" class="bs-tf__pos col-2" v-model="defaultFee"/>
@@ -58,8 +58,13 @@
       items() {
         return this.store.deliveryFee.fees
       },
-      acceptOrderInOtherZipCodes() {
-        return this.store.deliveryFee.acceptOrderInOtherZipCodes
+      acceptOrderInOtherZipCodes: {
+        get() {
+          return this.store.deliveryFee.acceptOrderInOtherZipCodes
+        },
+        set(val) {
+          this.updateAcceptOrderInOtherZipCode(val)
+        }
       },
       defaultFee: {
         get() {

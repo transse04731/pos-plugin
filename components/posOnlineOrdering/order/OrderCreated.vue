@@ -8,7 +8,6 @@
         <div v-for="(item, index) in order.items" :key="index" class="order-detail">
           <div class="order-detail__index" >{{ item.quantity || 1}}</div>
           <div class="order-detail__name">{{ item.name }}</div>
-          <g-spacer/>
           <div>{{ item.price * (item.quantity || 1) | currency }}</div>
         </div>
         <div class="mt-2 row-flex fs-small">
@@ -135,6 +134,7 @@
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          flex: 1;
         }
       }
 

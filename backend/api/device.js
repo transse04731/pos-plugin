@@ -39,6 +39,8 @@ async function removePairedDeviceFromStore(deviceId, storeId) {
 router.get('/pairing-code', async (req, res) => {
   const {storeId} = req.query
 
+  if (!storeId) return res.status(400).json({message: 'Missing storeId in request'});
+
   // Only 1 store can have "onlineOrder" feature
   const device = await DeviceModel.findOne({storeId, paired: false})
   if (device) return res.status(200).json({pairingCode: device.pairingCode})

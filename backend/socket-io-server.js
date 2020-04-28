@@ -106,6 +106,10 @@ module.exports = function (cms) {
       externalSocketIOServer.emitTo(deviceId, 'updateAppFeature', features);
     });
 
+    socket.on('unpairDevice', async deviceId => {
+      externalSocketIOServer.emitTo(deviceId, 'unpairDevice')
+    })
+
     socket.on('createOrder', async (storeId, orderData) => {
       storeId = ObjectId(storeId);
       const device = await DeviceModel.findOne({storeId});

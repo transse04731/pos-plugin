@@ -34,7 +34,7 @@
       </div>
       <div class="r">
         <p>Client's domain</p>
-        <g-text-field-bs large v-model="clientDomain" @input="updateClientDomainDebounce"/>
+        <g-text-field-bs large :class="[clientDomainErrMessage && 'error']" :value="clientDomain" @input="updateClientDomainDebounce"/>
         <div v-if="clientDomainErrMessage" class="error-message">{{clientDomainErrMessage}}</div>
       </div>
     </div>
@@ -148,7 +148,7 @@
         set(value) {
           this.updateDebounce({ onlineOrdering: value === "1" })
         }
-      }
+      },
     },
     methods: {
       async storeAliasValid(alias) {
@@ -174,6 +174,10 @@
       },
       async clientDomainValid(clientDomain) {
         this.clientDomainErrMessage = ''
+        if(clientDomain.includes(' ')) {
+          this.clientDomainErrMessage = 'Client Domain must not have space in it!'
+          return false
+        }
         const res = (await axios.post('/store/validate-client-domain', { store: this._id, clientDomain })).data
         if (!res.ok) {
           this.clientDomainErrMessage = res.message
@@ -228,22 +232,22 @@
       &--url {
         display: flex;
         align-items: center;
+      }
 
-        .error-message {
-          position: absolute;
-          bottom: -4px;
-          right: 8px;
-          color: #ff4452;
-          font-size: 12px;
-          font-style: italic;
-        }
+      .error-message {
+        position: absolute;
+        bottom: -4px;
+        right: 8px;
+        color: #ff4452;
+        font-size: 12px;
+        font-style: italic;
+      }
 
-        .error ::v-deep {
-          .bs-tf-input-group {
-            .bs-tf-inner-input-group {
-              border-color: #ff4452 !important;
-              box-shadow: 0 0 0 3px rgba(233, 0, 0, 0.25)
-            }
+      .error ::v-deep {
+        .bs-tf-input-group {
+          .bs-tf-inner-input-group {
+            border-color: #ff4452 !important;
+            box-shadow: 0 0 0 3px rgba(233, 0, 0, 0.25)
           }
         }
       }
