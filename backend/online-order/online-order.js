@@ -130,6 +130,22 @@ function createOnlineOrderSocket(deviceId) {
       }
     })
 
+    onlineOrderSocket.on('startGigaScreenCastService', async() => {
+      try {
+        await axios.post('http://localhost:5000/start-stream')
+      } catch (e) {
+        console.log("Cannot start GigaScreenCastService")
+      }
+    })
+
+    onlineOrderSocket.on('stopGigaScreenCastService', async() => {
+      try {
+        await axios.post('http://localhost:5000/stop-stream')
+      } catch (e) {
+        console.log("Cannot stop GigaScreenCastService")
+      }
+    })
+
     onlineOrderSocket.on('disconnect', () => {
       activeProxies = 0;
       if (proxyClient) {
