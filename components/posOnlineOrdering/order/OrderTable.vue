@@ -198,7 +198,7 @@
         const check = !this.customer.name || !this.customer.phone
         if (this.orderType === 'delivery') {
           if(typeof this.validateZipcode[0](this.customer.zipCode) === 'boolean') return true
-          return check || !this.customer.address || !this.customer.zipCode || !this.customer.deliveryTime
+          return check || !this.customer.address || !this.customer.zipCode
         }
         return check
       },
