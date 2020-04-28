@@ -71,7 +71,6 @@
     align-items: flex-start;
     padding-top: 8px;
     height: 80px;
-    border-bottom: 1px solid rgba(204, 204, 204, 0.4);
     
     &__thumbnail {
       border-radius: 15px;
