@@ -191,12 +191,13 @@
                 "justifyContent": "",
                 "columns": [
                   "1fr",
-                  "auto",
-                  "4px",
                   "20%",
                   "4px",
                   "20%",
-                  "20px"
+                  "4px",
+                  "20%",
+                  "4px",
+                  "20%"
                 ],
                 "rows": [
                   "1fr",
@@ -207,7 +208,7 @@
                 "rowGap": 0,
                 "subAreas": [
                   {
-                    "name": "support-button",
+                    "name": "id-button",
                     "top": 2,
                     "left": 6,
                     "width": 1,
@@ -263,6 +264,30 @@
                     "margin": "",
                     "padding": "",
                     "bgColor": "hsl(72, 100%, 50%, 50%)",
+                    "alignSelf": "",
+                    "justifySelf": "",
+                    "wrapInDiv": false,
+                    "displayFlex": false,
+                    "flexDirection": "row",
+                    "flexWrap": false,
+                    "flexJustifyContent": "",
+                    "flexAlignItems": "",
+                    "flexAlignContent": "",
+                    "flexOrder": "",
+                    "flexGrow": "",
+                    "flexShrink": "",
+                    "flexBasis": "",
+                    "flexAlignSelf": ""
+                  },
+                  {
+                    "name": "support-button",
+                    "top": 2,
+                    "left": 8,
+                    "width": 1,
+                    "height": 1,
+                    "margin": "",
+                    "padding": "",
+                    "bgColor": "hsl(53, 100%, 50%, 50%)",
                     "alignSelf": "",
                     "justifySelf": "",
                     "wrapInDiv": false,
@@ -664,6 +689,13 @@
           "url": "plugins/pos-plugin/components/Login/PosLoginBtnLanguage.vue",
           "path": "components/Login/PosLoginBtnLanguage.vue",
           "pluginName": "pos-plugin"
+        },
+        {
+          "choice": "view",
+          "component": "StoreIdBtn",
+          "binding": [],
+          "slotScopeBinding": [],
+          "slot": "id-button"
         }
       ],
       "slot": null

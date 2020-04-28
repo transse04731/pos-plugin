@@ -205,6 +205,13 @@ module.exports = async cms => {
       onlineOrderSocket.emit('getWebshopName', deviceId, callback);
     });
 
+    socket.on('getWebshopId', async callback => {
+      const deviceId = await getDeviceId();
+      if (!onlineOrderSocket || !deviceId) return callback(null);
+
+      onlineOrderSocket.emit('getWebshopId', deviceId, callback);
+    });
+
     socket.on('registerOnlineOrderDevice', async (pairingCode, callback) => {
       const deviceId = await getDeviceId(pairingCode)
 
