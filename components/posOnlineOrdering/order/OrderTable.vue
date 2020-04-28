@@ -197,7 +197,7 @@
       unavailableConfirm() {
         const check = !this.customer.name || !this.customer.phone
         if (this.orderType === 'delivery') {
-          if(typeof this.validateZipcode[0](this.customer.zipCode) === 'string') return true
+          if(this,validateZipcode.length > 0 && typeof this.validateZipcode[0](this.customer.zipCode) === 'string') return true
           return check || !this.customer.address || !this.customer.zipCode
         }
         return check
