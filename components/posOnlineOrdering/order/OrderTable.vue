@@ -66,7 +66,7 @@
                 <g-text-field v-model="customer.phone" label="Phone" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-phone2@16"/>
                 <template v-if="orderType === 'delivery'">
                   <g-text-field v-model="customer.address" label="Address" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-place@16"/>
-                  <g-text-field :rules="validateZipcode" v-model="customer.zipCode" label="Zip code" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
+                  <g-text-field :rules="validateZipcode" type="number" v-model="customer.zipCode" label="Zip code" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
 <!--                  <g-time-picker-input v-model="customer.deliveryTime" label="Delivery time" required prepend-icon="icon-delivery-truck@16"/>-->
                 </template>
                 <g-textarea v-model="customer.note" placeholder="Note..." rows="3" no-resize/>
@@ -197,7 +197,7 @@
       unavailableConfirm() {
         const check = !this.customer.name || !this.customer.phone
         if (this.orderType === 'delivery') {
-          if(typeof this.validateZipcode[0](this.customer.zipCode) === 'boolean') return true
+          if(typeof this.validateZipcode[0](this.customer.zipCode) === 'string') return true
           return check || !this.customer.address || !this.customer.zipCode
         }
         return check
