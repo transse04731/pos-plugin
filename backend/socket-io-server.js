@@ -83,6 +83,16 @@ module.exports = function (cms) {
       callback(store.settingName);
     });
 
+    socket.on('getWebshopId', async (deviceId, callback) => {
+      const device = await cms.getModel('Device').findById(deviceId);
+      if (!device) return callback(null);
+
+      const store = await cms.getModel('Store').findById(device.storeId);
+      if (!store) return callback(null);
+
+      callback(store.id);
+    })
+
     if (socket.request._query && socket.request._query.clientId) {
       const clientId = socket.request._query.clientId;
       updateDeviceAndNotify(true, clientId);
