@@ -206,7 +206,7 @@
         const rules = []
         if (this.store.deliveryFee && !this.store.deliveryFee.acceptOrderInOtherZipCodes) {
           const zipCodes = this.store.deliveryFee.fees.map(f => f.zipCode)
-          rules.push((val) => zipCodes.includes(val) || 'We do not provide shipping service to your location!')
+          rules.push((val) => zipCodes.includes(val) || 'Shipping service is not available to your zip code!')
         }
         return rules
       }
