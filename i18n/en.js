@@ -381,7 +381,7 @@ module.exports = {
       amount: 'Amount',
       received: 'Received',
       delivery: 'Delivery',
-      'pick-up': 'Pick-up',
+      pickup: 'Pick-up',
       type: 'Type',
       status: 'Status',
       completed: 'Completed',
