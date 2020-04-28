@@ -553,6 +553,12 @@
           .sub-title {
             font-size: 18px;
           }
+
+          & > div:last-child {
+            .pos-order__tab--content-main {
+              margin-bottom: 80px;
+            }
+          }
         }
       }
 
@@ -571,10 +577,6 @@
           font-weight: 700;
           align-self: center;
           margin-left: 16px;
-        }
-
-        & ~ .pos-order__tab--content .pos-order__tab--content-main {
-          margin-bottom: 80px;
         }
       }
 
