@@ -7,7 +7,7 @@
         <g-spacer/>
         <div class="btn-add" @click="addNewOpenHour()">+ Add new</div>
       </div>
-      <div v-for="(openHour, index) in openHours" :key="index"
+      <div v-for="(openHour, index) in computedOpenHours" :key="index"
            class="open-hour__row">
         <g-checkbox
             v-for="(day, i) in days"
@@ -18,16 +18,17 @@
             @change="updateOpenHours"
             color="#536DFE"/>
         <g-spacer/>
-        <div class="open-hour__row--hour left">
-          <g-time-picker-input v-model="openHour.openTime"  @input="updateOpenHours"/>
+        <div :class="['open-hour__row--hour', 'left', errors[index] && errors[index].open && 'error']">
+          <g-time-picker-input use24Hours :value="openHour.openTime"  @input="updateHours($event, index, true)"/>
         </div>
-        <div class="open-hour__row--hour right">
-          <g-time-picker-input v-model="openHour.closeTime"  @input="updateOpenHours"/>
+        <div :class="['open-hour__row--hour', 'right', errors[index] && errors[index].close && 'error']">
+          <g-time-picker-input use24Hours :value="openHour.closeTime"  @input="updateHours($event, index, false)"/>
         </div>
         <g-spacer/>
         <div @click="removeOpenHour(openHour)" class="open-hour__row--btn">
           <g-icon size="16">icon-close</g-icon>
         </div>
+        <div v-if="errors[index] && errors[index].message" class="error-message">{{errors[index].message}}</div>
       </div>
     </div>
     <div class="service-setting__content w-50">
@@ -35,14 +36,14 @@
       <div class="row-flex">
         <div class="col-6">
           <div class="mb-2">Delivery</div>
-          <g-radio-group v-model="delivery" row>
+          <g-radio-group v-model="computedDelivery" row>
             <g-radio small color="#536DFE" label="Yes" value="1" :class="[delivery === '1' && 'selected']"/>
             <g-radio small color="#536DFE" label="No" value="0" :class="[delivery === '0' && 'selected']"/>
           </g-radio-group>
         </div>
         <div class="col-6">
           <div class="mb-2">Allow pick-up</div>
-          <g-radio-group v-model="pickup" row>
+          <g-radio-group v-model="computedPickup" row>
             <g-radio small color="#536DFE" label="Yes" value="1" :class="[pickup === '1' && 'selected']"/>
             <g-radio small color="#536DFE" label="No" value="0" :class="[pickup === '0' && 'selected']"/>
           </g-radio-group>
@@ -52,35 +53,42 @@
   </div>
 </template>
 <script>
+  const _24HourTimeRegex = /^(?<hours>2[0-3]|[0-1]?[0-9]):(?<minutes>[0-5][0-9])(:(?<seconds>[0-5][0-9]))?$/i
+
   import _ from 'lodash'
   // TODO: Debounce update openHours open, close time
   export default {
     name: 'ServiceAndOpenHours',
-    props: { store: Object },
+    props: {
+      delivery: Boolean,
+      pickup: Boolean,
+      openHours: Array,
+    },
     data: function () {
       return {
-        days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+        days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        errors: []
       }
     },
     computed: {
-      delivery: {
+      computedDelivery: {
         get() {
-          return this.store.delivery ? "1" : "0"
+          return this.delivery ? "1" : "0"
         },
         set(value) {
           this.$emit('update', { delivery: value === "1" })
         }
       },
-      pickup: {
+      computedPickup: {
         get() {
-          return this.store.pickup ? "1" : "0"
+          return this.pickup ? "1" : "0"
         },
         set(value) {
           this.$emit('update', { pickup: value === "1" })
         }
       },
-      openHours() {
-        return this.store.openHours
+      computedOpenHours() {
+        return this.openHours
       },
       availableDays() {
         const availableDays = [true, true, true, true, true, true, true]
@@ -93,23 +101,64 @@
         return availableDays
       }
     },
+    created() {
+      this.errors = this.openHours.map(() => ({
+        open: false,
+        close: false,
+        message: ''
+      }))
+    },
     methods: {
       addNewOpenHour() {
         const newOpenHour = {
           dayInWeeks: [false, false, false, false, false, false, false],
-          openTime: '06:30 AM',
-          closeTime: '11:30 PM'
+          openTime: '06:30',
+          closeTime: '23:30'
         }
-        const newOpenHours = [...this.store.openHours, newOpenHour]
+        const newOpenHours = [...this.openHours, newOpenHour]
         this.$emit('update', { openHours: newOpenHours })
+        this.errors.push({
+          open: false,
+          close: false,
+          message: ''
+        })
       },
       removeOpenHour(openHour) {
-        const i = _.findIndex(this.store.openHours, oh => oh._id === openHour._id)
-        this.store.openHours.splice(i, 1)
-        this.$emit('update', { openHours: this.store.openHours })
+        const openHours = _.cloneDeep(this.openHours)
+        const i = _.findIndex(openHours, oh => oh._id === openHour._id)
+        openHours.splice(i, 1)
+        this.$emit('update', {openHours})
+        this.errors.splice(i, 1)
       },
       updateOpenHours() {
-        this.$emit('update', { openHours: this.store.openHours })
+        this.$emit('update', { openHours: this.openHours })
+      },
+      updateHours(time, index, isOpenTime) {
+        const openHour = this.openHours[index]
+        this.$set(this.errors[index], 'message', '')
+        if(!_24HourTimeRegex.exec(time)) {
+          this.$set(this.errors[index], `${isOpenTime ? 'open' : 'close'}`, true)
+          this.$set(this.errors[index], 'message', `${isOpenTime ? 'Open' : 'Close'} time is invalid!`)
+          return
+        }
+        if(isOpenTime) {
+          this.$set(this.errors[index], 'open', false)
+          if(time < openHour.closeTime)
+            this.$set(openHour, `openTime`, time)
+          else {
+            this.$set(this.errors[index], 'open', true)
+            this.$set(this.errors[index], 'message', 'Open time must be before close time!')
+          }
+        } else {
+          this.$set(this.errors[index], 'close', false)
+          if(time > openHour.openTime)
+            this.$set(openHour, `closeTime`, time)
+          else{
+            this.$set(this.errors[index], 'close', true)
+            this.$set(this.errors[index], 'message', 'Open time must be before close time!')
+          }
+        }
+        this.$emit('update', {openHours: this.openHours})
       }
     }
   }
@@ -142,15 +191,16 @@
         border: 1px solid #EFEFEF;
         border-radius: 6px;
         height: 43px;
-        margin-top: 6px;
-        margin-bottom: 6px;
+        margin-top: 8px;
+        margin-bottom: 20px;
+        position: relative;
 
         &--hour {
           background: #E0E0E0;
-          padding: 0 12px;
           font-weight: 700;
           font-size: 15px;
           line-height: 1.9;
+          border: 2px solid #E0E0E0;
 
           &.left {
             border-top-left-radius: 37px;
@@ -161,6 +211,14 @@
           &.right {
             border-top-right-radius: 37px;
             border-bottom-right-radius: 37px;
+          }
+
+          &.error {
+            border-color: #ff4452;
+
+            ::v-deep .g-tf-input {
+              color: #ff4452;
+            }
           }
         }
 
@@ -185,7 +243,17 @@
           .g-tf-input {
             width: 80px;
             font-weight: 700;
+            text-align: center;
           }
+        }
+
+        .error-message {
+          color: red;
+          font-size: 12px;
+          font-style: italic;
+          position: absolute;
+          bottom: -18px;
+          right: 0;
         }
       }
 

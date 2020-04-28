@@ -66,7 +66,7 @@
                 <g-text-field v-model="customer.phone" label="Phone" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-phone2@16"/>
                 <template v-if="orderType === 'delivery'">
                   <g-text-field v-model="customer.address" label="Address" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-place@16"/>
-                  <g-text-field v-model="customer.zipCode" label="Zip code" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
+                  <g-text-field :rules="validateZipcode" v-model="customer.zipCode" label="Zip code" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
 <!--                  <g-time-picker-input v-model="customer.deliveryTime" label="Delivery time" required prepend-icon="icon-delivery-truck@16"/>-->
                 </template>
                 <g-textarea v-model="customer.note" placeholder="Note..." rows="3" no-resize/>
@@ -103,7 +103,7 @@
         <div>Total: <span style="font-weight: 700; font-size: 18px; margin-left: 4px">{{ (totalPrice + shippingFee) | currency }}</span></div>
         <g-spacer/>
         <g-btn-bs v-if="orderView" large rounded background-color="#2979FF" @click="view = 'confirm'" :disabled="orderItems.length === 0">PAYMENT</g-btn-bs>
-        <g-btn-bs v-if="confirmView" :disabled="availableConfirm" large rounded background-color="#2979FF" @click="confirmPayment" elevation="5">CONFIRM</g-btn-bs>
+        <g-btn-bs v-if="confirmView" :disabled="unavailableConfirm" large rounded background-color="#2979FF" @click="confirmPayment" elevation="5">CONFIRM</g-btn-bs>
       </div>
       <div class="po-order-table__footer--mobile" v-if="orderItems.length > 0">
         <g-badge :value="true" color="#4CAF50" overlay>
@@ -117,7 +117,7 @@
         <div class="po-order-table__footer--mobile--total">{{(totalPrice + shippingFee) | currency}}</div>
         <g-spacer/>
         <g-btn-bs v-if="orderView" rounded background-color="#2979FF" @click="view = 'confirm'" style="padding: 8px 16px">PAYMENT</g-btn-bs>
-        <g-btn-bs v-if="confirmView" :disabled="availableConfirm" rounded background-color="#2979FF" @click="confirmPayment" style="padding: 8px 16px" elevation="5">CONFIRM</g-btn-bs>
+        <g-btn-bs v-if="confirmView" :disabled="unavailableConfirm" rounded background-color="#2979FF" @click="confirmPayment" style="padding: 8px 16px" elevation="5">CONFIRM</g-btn-bs>
       </div>
     </div>
 
@@ -194,12 +194,21 @@
 
         return 0
       },
-      availableConfirm() {
+      unavailableConfirm() {
         const check = !this.customer.name || !this.customer.phone
         if (this.orderType === 'delivery') {
+          if(typeof this.validateZipcode[0](this.customer.zipCode) === 'boolean') return true
           return check || !this.customer.address || !this.customer.zipCode || !this.customer.deliveryTime
         }
         return check
+      },
+      validateZipcode() {
+        const rules = []
+        if (this.store.deliveryFee && !this.store.deliveryFee.acceptOrderInOtherZipCodes) {
+          const zipCodes = this.store.deliveryFee.fees.map(f => f.zipCode)
+          rules.push((val) => zipCodes.includes(val) || 'We do not provide shipping service to your location!')
+        }
+        return rules
       }
     },
     methods: {

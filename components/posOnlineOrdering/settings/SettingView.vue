@@ -15,7 +15,7 @@
             @update="updateStore"/>
         <service-and-open-hours
             v-if="view === 'service-and-open-hours'"
-            :store="store"
+            v-bind="store"
             @update="updateStore"/>
         <setting-menu
             v-if="view === 'settings-menu'"
@@ -98,7 +98,7 @@
       },
       async updateStore(change) {
         await cms.getModel('Store').updateOne({_id: this.store._id}, change)
-        await this.loadStore()
+        Object.assign(this.store, change)
       },
       changeView(view, title) {
         if(view) {
