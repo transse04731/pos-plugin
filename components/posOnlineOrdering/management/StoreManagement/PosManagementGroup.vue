@@ -182,7 +182,7 @@
 
         socket.emit('startRemoteControl', this.remoteControlDeviceId, proxyPort => {
           if (proxyPort) {
-            this.iframeSrc = `${location.protocol}//${location.hostname}:${proxyPort}/view/pos-dashboard`
+            this.iframeSrc = `http://${location.hostname}:${proxyPort}/view/pos-dashboard`
             this.showIframe = true
 
             this.iframeRefreshInterval = setInterval(() => {
