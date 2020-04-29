@@ -21,22 +21,25 @@
             <g-card-title>
               <g-icon v-if="order.type === 'delivery'">icon-delivery-man</g-icon>
               <g-icon v-if="order.type === 'pickup'">icon-pickup</g-icon>
-              <span class="fs-small-2 ml-1">
+              <div class="fs-small-2 ml-1" style="max-width: calc(100% - 70px); line-height: 1.2">
                 <span class="fs-small fw-700 text-indigo-accent-2">#{{order.id}}</span>
                 {{order.customer ? order.customer.name : 'No customer name'}} - {{order.customer ? order.customer.phone : 'No customer phone'}}
-              </span>
+              </div>
               <g-spacer/>
               <span class="fw-700 fs-small">{{order.date | formatDate}}</span>
             </g-card-title>
             <g-card-text>
-              <div class="row-flex" v-if="order.customer">
+              <div v-if="order.note" class="text-grey-darken-1 i mb-1" style="font-size: 13px; line-height: 16px">
+                Note: {{order.note}}
+              </div>
+              <div class="row-flex" v-if="order.type === 'delivery'">
                 <div class="w-10">
                   <g-icon color="#9E9E9E" size="20">icon-place</g-icon>
                 </div>
                 <div class="flex-equal pl-1">{{`${order.customer.address} ${order.customer.zipCode}`}}</div>
               </div>
               <div v-if="order.items">
-                <div class="row-flex align-items-end" v-for="item in order.items">
+                <div class="row-flex align-items-start" v-for="item in order.items">
                   <div class="w-10 fw-700">{{item.quantity}}x</div>
                   <div class="flex-equal fs-small-2 pl-1" style="line-height: 20px">
                     {{item.id}}. {{item.name}}
@@ -102,10 +105,10 @@
           <g-card elevation="0" v-for="(order, index) in sortedKitchenOrders" :key="index"
                   :style="[order.prepareTime < 10 && {border: '1px solid #FF4452'}]">
             <g-card-title>
-              <span class="fs-small-2 ml-1">
+              <div class="fs-small-2 ml-1" style="max-width: calc(100% - 90px); line-height: 1.2">
                 <span class="fs-small fw-700 text-indigo-accent-2">#{{order.id}}</span>
                 {{order.customer ? order.customer.name : 'No customer name'}} - {{order.customer ? order.customer.phone : 'No customer phone'}}
-              </span>
+              </div>
               <g-spacer/>
               <div class="kitchen-orders__timer" @click.stop="openDialog(order)">
                 <g-icon v-if="order.type === 'delivery'">icon-delivery-man</g-icon>
@@ -114,7 +117,10 @@
               </div>
             </g-card-title>
             <g-card-text>
-              <div class="row-flex" v-if="order.customer">
+              <div v-if="order.note" class="text-grey-darken-1 i mb-1" style="font-size: 13px; line-height: 16px">
+                Note: {{order.note}}
+              </div>
+              <div class="row-flex" v-if="order.type === 'delivery'">
                 <div class="col-1">
                   <g-icon color="#9E9E9E" size="20">icon-place</g-icon>
                 </div>
@@ -124,16 +130,16 @@
                 <div class="col-1">
                   <g-icon color="#9E9E9E" size="20">icon-food</g-icon>
                 </div>
-                <div class="row-flex flex-wrap">
-                  <p v-for="item in order.items">
-                    <span class="fw-700 mr-1">{{item.quantity}}x</span>
-                    <span class="mr-3" style="white-space: nowrap">
+                <div>
+                  <span v-for="item in order.items">
+                    <span class="fw-700">{{item.quantity}}x </span>
+                    <span class="mr-3">
                       {{item.id}}. {{item.name}}
                       <template v-if="item.modifiers.length > 0">
-                        <span class="i text-grey">(<span v-for="modifier in item.modifiers">{{modifier}}</span>)</span>
+                        <span class="i text-grey">({{item.modifiers.map(m => m.name).join(', ')}})</span>
                       </template>
                     </span>
-                  </p>
+                  </span>
                 </div>
               </div>
             </g-card-text>
