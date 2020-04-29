@@ -225,6 +225,24 @@
         }
       ],
       "type": "array"
+    },
+    {
+      "_id": "5ea95b6f78a8c35392586ca4",
+      "schemaType": "object",
+      "key": "country",
+      "type": "object",
+      "fields": [
+        {
+          "schemaType": "string",
+          "key": "name",
+          "type": "input"
+        },
+        {
+          "schemaType": "string",
+          "key": "locale",
+          "type": "input"
+        }
+      ]
     }
   ],
   "name": "Store",
