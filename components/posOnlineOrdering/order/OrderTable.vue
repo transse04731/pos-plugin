@@ -175,11 +175,7 @@
         return _.sumBy(this.orderItems, item => item.price * item.quantity)
       },
       shippingFee() {
-        if (this.orderBy === 'pickup')
-          return 0
-
-        // empty order list
-        if (!this.orderItems.length)
+        if (this.orderBy === 'pickup' || this.orderBy === 'pickup' || !this.store.deliveryFee)
           return 0
 
         // calculate zip code from store setting
@@ -197,7 +193,10 @@
       unavailableConfirm() {
         const check = !this.customer.name || !this.customer.phone
         if (this.orderType === 'delivery') {
-          if(this,validateZipcode.length > 0 && typeof this.validateZipcode[0](this.customer.zipCode) === 'string') return true
+          for(const fn of this.validateZipcode) {
+            if(typeof fn === 'function' && typeof fn(this.customer.zipCode) === "string")
+              return true
+          }
           return check || !this.customer.address || !this.customer.zipCode
         }
         return check
