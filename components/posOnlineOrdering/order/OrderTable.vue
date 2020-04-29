@@ -10,8 +10,8 @@
         <div class="po-order-table__header__text">
           <g-icon class="po-order-table__header__icon--mobile" @click="changeView">arrow_back</g-icon>
           <g-icon class="po-order-table__header__icon" v-if="confirmView" color="#424242" @click="view = 'order'" size="20">arrow_back_ios</g-icon>
-          <div class="po-order-table__header__text--main">{{ confirmView ? 'Confirm Your Order' : 'Order List' }}</div>
-          <div class="po-order-table__header__total" v-if="orderView">Total items: {{ totalItems }}</div>
+          <div class="po-order-table__header__text--main">{{ confirmView ? $t('store.confirmOrder') : $t('store.orderList') }}</div>
+          <div class="po-order-table__header__total" v-if="orderView">{{$t('store.totalItems')}}: {{ totalItems }}</div>
         </div>
 
         <!-- content -->
@@ -56,20 +56,20 @@
 
             <!-- Confirm -->
             <template v-if="confirmView">
-              <div class="section-header">CONTACT INFORMATION</div>
+              <div class="section-header">{{$t('store.contactInfo')}}</div>
               <g-radio-group v-model="orderType" row class="radio-option">
-                <g-radio small color="#1271ff" label="Pick-up" value="pickup" :disabled="!store.pickup"/>
-                <g-radio small color="#1271ff" label="Delivery" value="delivery" :disabled="!store.delivery"/>
+                <g-radio small color="#1271ff" :label="$t('store.pickup')" value="pickup" :disabled="!store.pickup"/>
+                <g-radio small color="#1271ff" :label="$t('store.delivery')" value="delivery" :disabled="!store.delivery"/>
               </g-radio-group>
               <div class="section-form">
-                <g-text-field v-model="customer.name" label="Name" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-person@16"/>
-                <g-text-field v-model="customer.phone" label="Phone" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-phone2@16"/>
+                <g-text-field v-model="customer.name" :label="$t('store.name')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-person@16"/>
+                <g-text-field v-model="customer.phone" :label="$t('store.telephone')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-phone2@16"/>
                 <template v-if="orderType === 'delivery'">
-                  <g-text-field v-model="customer.address" label="Address" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-place@16"/>
-                  <g-text-field :rules="validateZipcode" type="number" v-model="customer.zipCode" label="Zip code" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
+                  <g-text-field v-model="customer.address" :label="$t('store.address')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-place@16"/>
+                  <g-text-field :rules="validateZipcode" type="number" v-model="customer.zipCode" :label="$t('store.zipCode')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
 <!--                  <g-time-picker-input v-model="customer.deliveryTime" label="Delivery time" required prepend-icon="icon-delivery-truck@16"/>-->
                 </template>
-                <g-textarea v-model="customer.note" placeholder="Note..." rows="3" no-resize/>
+                <g-textarea v-model="customer.note" :placeholder="`${$t('store.note')}...`" rows="3" no-resize/>
               </div>
 
               <!--            <div class="section-header">PAYMENT</div>-->
@@ -85,12 +85,12 @@
                 <div>{{ item.price * (item.quantity || 1) | currency }}</div>
               </div>
               <div class="order-item-summary">
-                <span>Total <b>{{ totalItems }}</b> items</span>
+                <span>{{$t('store.total')}}: <b>{{ totalItems }}</b> {{$t('store.items')}}</span>
                 <g-spacer/>
                 <span>{{ totalPrice | currency }}</span>
               </div>
               <div class="order-item-summary order-item-summary--end" >
-                <span>Shipping fee:</span>
+                <span>{{$t('store.shippingFee')}}:</span>
                 <g-spacer/>
                 <span>{{ shippingFee | currency }}</span>
               </div>
@@ -100,10 +100,10 @@
       </div>
       <!-- footer -->
       <div :class="['po-order-table__footer', !isOpening && 'disabled']">
-        <div>Total: <span style="font-weight: 700; font-size: 18px; margin-left: 4px">{{ (totalPrice + shippingFee) | currency }}</span></div>
+        <div>{{$t('store.total')}}: <span style="font-weight: 700; font-size: 18px; margin-left: 4px">{{ (totalPrice + shippingFee) | currency }}</span></div>
         <g-spacer/>
-        <g-btn-bs v-if="orderView" large rounded background-color="#2979FF" @click="view = 'confirm'" :disabled="orderItems.length === 0">PAYMENT</g-btn-bs>
-        <g-btn-bs v-if="confirmView" :disabled="unavailableConfirm" large rounded background-color="#2979FF" @click="confirmPayment" elevation="5">CONFIRM</g-btn-bs>
+        <g-btn-bs v-if="orderView" large rounded background-color="#2979FF" @click="view = 'confirm'" :disabled="orderItems.length === 0">{{$t('store.payment')}}</g-btn-bs>
+        <g-btn-bs v-if="confirmView" :disabled="unavailableConfirm" large rounded background-color="#2979FF" @click="confirmPayment" elevation="5">{{$t('store.confirm')}}</g-btn-bs>
       </div>
       <div class="po-order-table__footer--mobile" v-if="orderItems.length > 0">
         <g-badge :value="true" color="#4CAF50" overlay>
@@ -116,8 +116,10 @@
         </g-badge>
         <div class="po-order-table__footer--mobile--total">{{(totalPrice + shippingFee) | currency}}</div>
         <g-spacer/>
-        <g-btn-bs v-if="orderView" rounded background-color="#2979FF" @click="view = 'confirm'" style="padding: 8px 16px">PAYMENT</g-btn-bs>
-        <g-btn-bs v-if="confirmView" :disabled="unavailableConfirm" rounded background-color="#2979FF" @click="confirmPayment" style="padding: 8px 16px" elevation="5">CONFIRM</g-btn-bs>
+        <g-btn-bs v-if="orderView" rounded background-color="#2979FF" @click="view = 'confirm'" style="padding: 8px 16px">{{$t('store.payment')}}</g-btn-bs>
+        <g-btn-bs v-if="confirmView" :disabled="unavailableConfirm" rounded background-color="#2979FF" @click="confirmPayment" style="padding: 8px 16px" elevation="5">
+          {{$t('store.confirm')}}
+        </g-btn-bs>
       </div>
     </div>
 

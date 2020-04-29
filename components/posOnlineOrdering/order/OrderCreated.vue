@@ -2,7 +2,7 @@
   <g-dialog v-model="internalValue" width="464" overlayOpacity="0.2" eager persistent>
     <div class="cpn-order-created">
       <div class="cpn-order-created__header">
-        <div class="mt-2">Order Successfully</div>
+        <div class="mt-2">{{$t('store.orderSuccessfully')}}</div>
       </div>
       <div class="cpn-order-created__content">
         <div v-for="(item, index) in order.items" :key="index" class="order-detail">
@@ -11,17 +11,17 @@
           <div>{{ item.price * (item.quantity || 1) | currency }}</div>
         </div>
         <div class="mt-2 row-flex fs-small">
-          <span>Total <b>{{ order.items && order.items.length }}</b> items</span>
+          <span>{{$t('store.total')}} <b>{{ order.items && order.items.length }}</b> {{$t('store.items')}}</span>
           <g-spacer/>
           <span>{{ order.totalPrice | currency }}</span>
         </div>
         <div class="order-detail">
-          <span>Shipping fee:</span>
+          <span>{{$t('store.shippingFee')}}:</span>
           <g-spacer/>
           <span>{{ order.shippingFee | currency }}</span>
         </div>
         <div class="mt-2 row-flex fw-700 fs-small">
-          <span>Total</span>
+          <span>{{$t('store.total')}}</span>
           <g-spacer/>
           <span>{{ (order.totalPrice + order.shippingFee) | currency}}</span>
         </div>

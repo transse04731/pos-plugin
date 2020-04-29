@@ -1,2 +1,25 @@
 module.exports = {
+  de: {
+    store: {
+      open: 'Geöffnet',
+      orderList: 'Warenkorb',
+      totalItems: 'Artikel',
+      note: 'Hinweis',
+      payment: 'Bestellung',
+      confirmOrder: 'Confirm Order',
+      contactInfo: 'KONTAKT INFO',
+      pickup: 'Abholen',
+      delivery: 'Lieferung',
+      name: 'Name',
+      telephone: 'Telefon',
+      address: 'Adresse',
+      zipCode: 'Postleitzahl',
+      deliveryTime: 'Lieferzeit',
+      total: 'Gesamt',
+      confirm: 'Bestätigen',
+      orderSuccessfully: 'Bestellung erfolgreich',
+      items: 'Artikel',
+      shippingFee: 'Liefergebühr'
+    }
+  }
 }
