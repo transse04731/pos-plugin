@@ -2,6 +2,7 @@ module.exports = {
   de: {
     store: {
       open: 'Geöffnet',
+      closed: 'Closed',
       orderList: 'Warenkorb',
       totalItems: 'Artikel',
       note: 'Hinweis',

@@ -1,18 +1,21 @@
 <template>
   <div class="pos-management-group">
-    <div class="pos-management-group__header" @click="toggleContent">
+    <div class="pos-management-group__header"
+         @click="toggleContent"
+         @mouseenter="showEditBtn = true"
+         @mouseleave="showEditBtn = false">
       <g-icon class="icon-first" size="20" v-if="showContent">expand_less</g-icon>
       <g-icon class="icon-first" size="20" v-else>expand_more</g-icon>
       <g-edit-view-input
           :value="name"
-          @click.native.stop.prevent="() => {}"
+          @click.native.stop.prevent="toggleContent"
           @input="(value, cb) => $emit('update:groupName', _id, value, cb)">
         <template v-slot:action="{mode, switchToEditMode, applyChange, resetValue}">
           <g-menu v-if="mode !== 'edit' && manageGroupPerm" v-model="nameEditMenu" close-on-content-click
                   nudge-bottom="5" nudge-left="30">
             <template v-slot:activator="{on}">
               <div class="btn-edit" :style="[nameEditMenu && {background: '#F4F5FA'}]">
-                <g-icon :class="[nameEditMenu && 'btn-edit--active']" size="16" @click="on.click">mdi-pencil-outline
+                <g-icon v-if="showEditBtn || nameEditMenu" :class="[nameEditMenu && 'btn-edit--active']" size="16" @click="on.click">mdi-pencil-outline
                 </g-icon>
               </div>
             </template>
@@ -202,6 +205,7 @@
         selectedStore: null,
         selectedDevice: null,
         proxyHost: null,
+        showEditBtn: false,
       }
     },
     computed: {},

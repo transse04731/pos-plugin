@@ -7,7 +7,7 @@
         <img v-else alt draggable="false" src="/plugins/pos-plugin/assets/empty_dish.svg" class="menu-setting-item__image"/>
         <div class="menu-setting-item__content px-2">
           <div class="menu-setting-item__name row-flex">
-            <span class="col-1">{{id}}.</span>
+            <span class="col-1">{{id ? id + '.' : ''}}</span>
             <span class="flex-equal">{{name}}</span>
             <span class="col-3" v-if="useMultiplePrinters">{{groupPrinterStr}}</span>
           </div>

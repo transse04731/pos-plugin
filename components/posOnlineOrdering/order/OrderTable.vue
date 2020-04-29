@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="po-order-table">
-      <div v-if="store.orderHeaderImageSrc" class="po-order-table__header">
+      <div  class="po-order-table__header">
         <!-- header image -->
-        <img :src="store.orderHeaderImageSrc" class="po-order-table__header__image"/>
+        <img :src="store.orderHeaderImageSrc || '/plugins/pos-plugin/assets/images/header.png'" class="po-order-table__header__image"/>
       </div>
       <div class="po-order-table__main">
         <!-- header text -->
@@ -39,7 +39,7 @@
                 <div class="po-order-table__item__name">{{ item.name }}</div>
                 <div class="po-order-table__item__note">
                   <g-icon size="16">icon-note</g-icon>
-                  {{ item.note || 'Note ...' }}
+                  {{ item.note || `${$t('store.note')}...` }}
                 </div>
               </div>
 
@@ -226,7 +226,7 @@
         this.increaseOrAddNewItems(item)
       },
       confirmPayment() {
-        if(this.unavailableConfirm()) return
+        if(this.unavailableConfirm) return
 
         const {socket} = window.cms
 

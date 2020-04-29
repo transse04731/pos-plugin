@@ -90,6 +90,7 @@
 
     &__content {
       margin-right: 16px;
+      max-width: calc(100% - 180px);
     }
     
     &__desc {

@@ -273,6 +273,7 @@ module.exports = {
 
     store: {
       open: 'Open',
+      closed: 'Closed',
       orderList: 'Order List',
       totalItems: 'Total items',
       note: 'Note',

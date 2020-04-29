@@ -4,7 +4,7 @@
       <template  v-if="store">
         <div class="pos-order__left">
           <div class="pos-order__left__header">
-            <img :src="store.logoImageSrc"/>
+            <img :src="store.logoImageSrc || '/plugins/pos-plugin/assets/images/logo.png'"/>
             <div class="pos-order__left__header--info">
               <div>
                 <div class="row-flex align-items-center justify-end">
@@ -43,7 +43,7 @@
             <g-spacer/>
             <g-btn-bs background-color="#2979FF" rounded style="padding: 8px 16px" @click="showOrder = true">CHECK OUT</g-btn-bs>
           </div>
-          <div class="pos-order__tab">
+          <div class="pos-order__tab" id="tab">
             <div class="pos-order__tab--icon">
               <div class="pos-order__tab--icon-wrapper">
                 <g-icon>icon-fork</g-icon>
@@ -95,6 +95,7 @@
   import _ from 'lodash';
   import OrderTable from './OrderTable';
   import MenuItem from './MenuItem';
+  import {smoothScrolling} from 'pos-vue-framework'
 
   export default {
     name: 'OrderView',
@@ -159,6 +160,7 @@
             contentRef && contentRef.addEventListener('scroll', this.debounce)
           }
         }
+        smoothScrolling && smoothScrolling()
       })
     },
     beforeDestroy() {
@@ -232,7 +234,7 @@
         return false
       },
       storeOpenStatus() {
-        return this.isStoreOpening ? '• Open' : '• Closed'
+        return this.isStoreOpening ? `• ${this.$t('store.open')}` : `• ${this.$t('store.closed')}`
       },
       storeOpenStatusStyle() {
         return {
@@ -305,7 +307,7 @@
         const wrapper = document.getElementById('tab-content')
         const content = document.getElementById(`category_content_${id}`)
         if(wrapper && content) {
-          wrapper.scrollTop = (content.offsetTop - wrapper.offsetTop)
+          wrapper.scroll({top: content.offsetTop - wrapper.offsetTop, left: 0, behavior: "smooth"})
         }
       }
     },
@@ -316,7 +318,7 @@
           const wrapper = tab.offsetParent
           const icon = wrapper.firstChild
           const sibling = tab.previousSibling
-          wrapper.scrollLeft = (tab.offsetLeft - icon.offsetWidth - sibling.offsetWidth/2)
+          wrapper.scroll({top: 0, left: (tab.offsetLeft - icon.offsetWidth - sibling.offsetWidth/2), behavior: "smooth"})
         }
       }
     }
@@ -429,7 +431,7 @@
       position: relative;
       border-right: 16px solid #F8F8F8;
       font-size: 15px;
-      scroll-behavior: smooth;
+      /*scroll-behavior: smooth;*/
       scrollbar-width: none; // firefox
 
       &::-webkit-scrollbar {
@@ -452,7 +454,7 @@
       &--content {
         margin-top: 30px;
         overflow: hidden auto;
-        scroll-behavior: smooth;
+        /*scroll-behavior: smooth;*/
         scrollbar-width: none; // firefox
 
         &::-webkit-scrollbar {
