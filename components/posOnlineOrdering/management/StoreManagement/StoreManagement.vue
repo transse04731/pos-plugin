@@ -88,12 +88,14 @@
           :online-ordering="selectedStore.onlineOrdering"
           :devices="selectedStore.devices"
           :groups="storeGroups"
+          :country="selectedStore.country"
+          :countries="countries"
           @update="updateStore(selectedStore._id, $event)"/>
     </template>
     
     <!-- dialogs -->
     <dialog-new-group v-if="manageGroupPerm && storeGroups && dialog.newGroup" v-model="dialog.newGroup" @submit="addGroup($event)" :groups="storeGroups"/>
-    <dialog-new-store v-if="manageStorePerm && storeGroups && dialog.newStore" v-model="dialog.newStore" @submit="addStore($event)" :groups="storeGroups"/>
+    <dialog-new-store v-if="manageStorePerm && storeGroups && dialog.newStore" v-model="dialog.newStore" @submit="addStore($event)" :groups="storeGroups" :countries="countries"/>
     <dialog-delete-item v-if="settingsPerm && dialog.deleteDevice" v-model="dialog.deleteDevice" type="device" @confirm="deleteDevice"/>
     <dialog-pair-new-device v-if="selectedStore && dialog.pairNewDevice" v-model="dialog.pairNewDevice" :store="selectedStore"/>
     <dialog-pair-new-device-success v-if="selectedStore && dialog.pairNewDeviceSuccess" v-model="dialog.pairNewDeviceSuccess" :store="selectedStore"/>
@@ -132,6 +134,7 @@
           pairNewDeviceSuccess: false,
           editDeviceName: false,
         },
+        countries: ['Germany', 'United State', 'United Kingdom', 'Australia', 'Canada', 'France', 'Italy', 'Singapore'],
       }
     },
     injectService: [

@@ -107,6 +107,9 @@
     }
 
     &__content {
+      overflow: hidden scroll;
+      max-height: calc(100% - 140px);
+
       .order-detail {
         display: flex;
         border-bottom: 1px solid #D8D8D8;
@@ -147,6 +150,12 @@
       display: flex;
       flex-direction: row;
       justify-content: flex-end;
+    }
+  }
+
+  @media screen and (max-width: 1040px) {
+    .cpn-order-created {
+      padding: 24px;
     }
   }
 </style>

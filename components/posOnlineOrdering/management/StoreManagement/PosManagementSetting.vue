@@ -10,6 +10,7 @@
                 v-model="computedGroup"/>
       <g-text-field-bs large label="Name" v-model="computedSettingName"/>
       <g-text-field-bs large label="Address" v-model="computedSettingAddress"/>
+      <g-select large text-field-component="GTextFieldBs" label="Country" :items="countries" v-model="computedCountry"/>
     </div>
     
     <!-- ONLINE ORDER STORE -->
@@ -100,6 +101,8 @@
       devices: Array,
       groups: Array,
       aliases: Array,
+      country: String,
+      countries: Array,
     },
     injectService: ['PosOnlineOrderManagementStore:(stores)'],
     data() {
@@ -149,6 +152,14 @@
           this.updateDebounce({ onlineOrdering: value === "1" })
         }
       },
+      computedCountry: {
+        get() {
+          return this.country
+        },
+        set(val) {
+          this.updateDebounce({country: val})
+        }
+      }
     },
     methods: {
       async storeAliasValid(alias) {

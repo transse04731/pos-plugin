@@ -19,10 +19,10 @@
             color="#536DFE"/>
         <g-spacer/>
         <div :class="['open-hour__row--hour', 'left', errors[index] && errors[index].open && 'error']">
-          <g-time-picker-input use24Hours :value="openHour.openTime"  @input="updateHours($event, index, true)"/>
+          <g-time-picker-input use24Hours :disabled="errors[index] && errors[index].close" :value="openHour.openTime"  @input="updateHours($event, index, true)"/>
         </div>
         <div :class="['open-hour__row--hour', 'right', errors[index] && errors[index].close && 'error']">
-          <g-time-picker-input use24Hours :value="openHour.closeTime"  @input="updateHours($event, index, false)"/>
+          <g-time-picker-input use24Hours :disabled="errors[index] && errors[index].open" :value="openHour.closeTime"  @input="updateHours($event, index, false)"/>
         </div>
         <g-spacer/>
         <div @click="removeOpenHour(openHour)" class="open-hour__row--btn">
@@ -155,11 +155,11 @@
           this.$set(this.errors[index], 'close', false)
           if(time > openHour.openTime) {
             this.$set(openHour, `closeTime`, time)
-            this.$set(this.errors[index], 'open', true)
+            this.$set(this.errors[index], 'open', false)
           }
           else{
             this.$set(this.errors[index], 'close', true)
-            this.$set(this.errors[index], 'message', 'Open time must be before close time!')
+            this.$set(this.errors[index], 'message', 'Close time must be after open time!')
           }
         }
         this.$emit('update', {openHours: this.openHours})

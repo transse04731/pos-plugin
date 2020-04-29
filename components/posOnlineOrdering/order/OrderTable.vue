@@ -204,7 +204,7 @@
             if(typeof fn === 'function' && typeof fn(this.customer.zipCode) === "string")
               return true
           }
-          return check || !this.customer.address || !this.customer.zipCode
+          return check || !this.customer.address || !this.customer.zipCode || this.customer.zipCode.length < 5
         }
         return check
       },
@@ -212,7 +212,7 @@
         const rules = []
         if (this.store.deliveryFee && !this.store.deliveryFee.acceptOrderInOtherZipCodes) {
           const zipCodes = this.store.deliveryFee.fees.map(f => f.zipCode)
-          rules.push((val) => zipCodes.includes(val) || 'Shipping service is not available to your zip code!')
+          rules.push((val) => val.length < 5 || zipCodes.includes(val) || 'Shipping service is not available to your zip code!')
         }
         return rules
       }
