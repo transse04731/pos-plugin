@@ -134,7 +134,16 @@
           pairNewDeviceSuccess: false,
           editDeviceName: false,
         },
-        countries: ['Germany', 'United State', 'United Kingdom', 'Australia', 'Canada', 'France', 'Italy', 'Singapore'],
+        countries: [
+          {name: 'Germany', locale: 'de'},
+          {name: 'United State', locale: 'en'},
+          {name: 'United Kingdom', locale: 'en'},
+          {name: 'Australia', locale: 'en'},
+          {name: 'Canada', locale: 'en'},
+          {name: 'France', locale: 'fr'},
+          {name: 'Italy', locale: 'it'},
+          {name: 'Singapore', locale: 'en'},
+        ],
       }
     },
     injectService: [

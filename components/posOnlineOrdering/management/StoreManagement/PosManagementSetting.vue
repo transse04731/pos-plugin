@@ -10,7 +10,7 @@
                 v-model="computedGroup"/>
       <g-text-field-bs large label="Name" v-model="computedSettingName"/>
       <g-text-field-bs large label="Address" v-model="computedSettingAddress"/>
-      <g-select large text-field-component="GTextFieldBs" label="Country" :items="countries" v-model="computedCountry"/>
+      <g-select returnObject item-text="name" large text-field-component="GTextFieldBs" label="Country" :items="countries" v-model="computedCountry"/>
     </div>
     
     <!-- ONLINE ORDER STORE -->
