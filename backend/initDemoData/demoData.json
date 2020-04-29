@@ -1179,5 +1179,14 @@
       "defaultTakeAwayTax": 7,
       "showDineInTax": true
     }
+  ],
+  "SystemConfig": [
+    {
+      "_id": "5ea90953448aba19d0b0e7d3",
+      "type": "I18n",
+      "content": {
+        "locale": "de"
+      }
+    }
   ]
 }

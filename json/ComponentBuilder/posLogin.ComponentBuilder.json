@@ -688,7 +688,19 @@
           "slot": "language-button",
           "url": "plugins/pos-plugin/components/Login/PosLoginBtnLanguage.vue",
           "path": "components/Login/PosLoginBtnLanguage.vue",
-          "pluginName": "pos-plugin"
+          "pluginName": "pos-plugin",
+          "inject": [
+            {
+              "service": "PosStore:locale",
+              "local": "locale",
+              "type": "prop"
+            },
+            {
+              "service": "PosStore:changeLocale",
+              "local": "changeLocale",
+              "type": "event"
+            }
+          ]
         },
         {
           "choice": "view",
