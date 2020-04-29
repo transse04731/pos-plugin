@@ -130,6 +130,22 @@ function createOnlineOrderSocket(deviceId) {
       }
     })
 
+    onlineOrderSocket.on('startStream', async () => {
+      try {
+        await axios.post('http://localhost:5000/start-stream', { screencastId: deviceId })
+      } catch (e) {
+        console.log('start stream error', e);
+      }
+    })
+
+    onlineOrderSocket.on('stopStream', async () => {
+      try {
+        await axios.post('http://localhost:5000/stop-stream')
+      } catch (e) {
+        console.log('stop stream error', e)
+      }
+    })
+
     onlineOrderSocket.on('disconnect', () => {
       activeProxies = 0;
       if (proxyClient) {
