@@ -5,7 +5,7 @@
       <div style="display: flex">
         <div class="mb-3 fw-700">Open hours</div>
         <g-spacer/>
-        <div class="btn-add" @click="addNewOpenHour()">+ Add new</div>
+        <g-btn-bs class="btn-add" @click="addNewOpenHour()">+ Add new</g-btn-bs>
       </div>
       <div v-for="(openHour, index) in computedOpenHours" :key="index"
            class="open-hour__row">
