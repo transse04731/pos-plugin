@@ -130,18 +130,22 @@ function createOnlineOrderSocket(deviceId) {
       }
     })
 
-    onlineOrderSocket.on('startStream', async () => {
+    onlineOrderSocket.on('startStream', async (ackFn) => {
       try {
-        await axios.post('http://localhost:5000/start-stream', { screencastId: deviceId })
+        const responseData = (await axios.post('http://localhost:5000/start-stream', { screencastId: deviceId })).data
+        ackFn && ackFn(responseData)
       } catch (e) {
+        ackFn && ackFn({ok: false, message: e})
         console.log('start stream error', e);
       }
     })
 
-    onlineOrderSocket.on('stopStream', async () => {
+    onlineOrderSocket.on('stopStream', async (ackFn) => {
       try {
-        await axios.post('http://localhost:5000/stop-stream')
+        const responseData = (await axios.post('http://localhost:5000/stop-stream')).data
+        ackFn && ackFn(responseData)
       } catch (e) {
+        ackFn && ackFn({ok: false, message: e})
         console.log('stop stream error', e)
       }
     })
