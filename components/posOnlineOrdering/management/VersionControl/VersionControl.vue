@@ -153,7 +153,7 @@
       }
     },
     created() {
-      this.editBtn = this.listVersionControl.map(g => false)
+      this.editBtn = this.listVersionControl ? this.listVersionControl.map(g => false) : []
     },
     watch: {
       listVersionControl(val) {

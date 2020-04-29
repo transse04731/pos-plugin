@@ -25,9 +25,9 @@
           <template v-else>
             <!-- 0 items -->
             <div v-if="orderView && noMenuItem" style="margin-top: 100px; display: flex; justify-content: center; flex-direction: column">
-              <img src="/plugins/pos-plugin/assets/empty-order.svg">
-              <div style="margin-top: 10px; font-size: 15px; text-align: center; color: #757575;">
-                You haven't ordered any food yet. Click "<span stype="color: #2979FF; font-weight: bold;">List Food</span>" to get started.
+              <img src="/plugins/pos-plugin/assets/empty_order2.svg">
+              <div style="margin-top: 10px; font-size: 15px; text-align: center; color: #616161;">
+                Your order list is currently empty.
               </div>
             </div>
 
@@ -102,8 +102,13 @@
       <div :class="['po-order-table__footer', !isOpening && 'disabled']">
         <div>{{$t('store.total')}}: <span style="font-weight: 700; font-size: 18px; margin-left: 4px">{{ (totalPrice + shippingFee) | currency }}</span></div>
         <g-spacer/>
-        <g-btn-bs v-if="orderView" large rounded background-color="#2979FF" @click="view = 'confirm'" :disabled="orderItems.length === 0">{{$t('store.payment')}}</g-btn-bs>
-        <g-btn-bs v-if="confirmView" :disabled="unavailableConfirm" large rounded background-color="#2979FF" @click="confirmPayment" elevation="5">{{$t('store.confirm')}}</g-btn-bs>
+        <g-btn-bs v-if="orderView" class="r" width="180" large rounded background-color="#2979FF" @click="view = 'confirm'" :disabled="orderItems.length === 0">
+          {{$t('store.payment')}}
+          <div class="icon-payment">
+            <g-icon size="16" color="white" class="ml-1">fas fa-chevron-right</g-icon>
+          </div>
+        </g-btn-bs>
+        <g-btn-bs v-if="confirmView" width="180" :disabled="unavailableConfirm" large rounded background-color="#2979FF" @click="confirmPayment" elevation="5">{{$t('store.confirm')}}</g-btn-bs>
       </div>
       <div class="po-order-table__footer--mobile" v-if="orderItems.length > 0">
         <g-badge :value="true" color="#4CAF50" overlay>
@@ -312,9 +317,11 @@
       &__text {
         display: flex;
         align-items: center;
+        padding-bottom: 4px;
         margin-bottom: 4px;
         font-size: 18px;
         font-weight: 700;
+        border-bottom: 1px solid #D8D8D8;
 
         &--main {
           display: flex;
@@ -642,6 +649,18 @@
       }
     }
   }
+
+  .icon-payment {
+    position: absolute;
+    width: 33px;
+    height: 33px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    right: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 </style>
 
 <style lang="scss">
@@ -665,6 +684,20 @@
         background: transparent;
         color: inherit;
       }
+    }
+  }
+
+  .g-btn-bs {
+    position: relative;
+
+    &:hover:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.12);
     }
   }
 </style>

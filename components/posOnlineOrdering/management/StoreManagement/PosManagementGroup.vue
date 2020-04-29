@@ -99,7 +99,7 @@
               <div v-if="settingsPerm" class="action-item">
                 <g-tooltip open-on-hover bottom speech-bubble color="#000" transition="0.3" remove-content-on-close>
                   <template v-slot:activator="{on}">
-                    <div class="action-item__btn"
+                    <div class="action-item__btn cog"
                          @mouseenter="on.mouseenter"
                          @mouseleave="on.mouseleave"
                          @click.stop.prevent="$emit('view:settings', store)">
@@ -112,7 +112,7 @@
               <div v-if="configOnlineOrderingPerm" class="action-item">
                 <g-tooltip open-on-hover bottom speech-bubble color="#000" transition="0.3" remove-content-on-close>
                   <template v-slot:activator="{on}">
-                    <div class="action-item__btn"
+                    <div class="action-item__btn fork_knife"
                          @mouseenter="on.mouseenter"
                          @mouseleave="on.mouseleave"
                          @click.stop.prevent="openWebShopSetting(store)">
@@ -125,7 +125,7 @@
               <div v-if="configOnlineOrderingPerm" class="action-item">
                 <g-tooltip open-on-hover bottom speech-bubble color="#000" transition="0.3" remove-content-on-close>
                   <template v-slot:activator="{on}">
-                    <div class="action-item__btn"
+                    <div class="action-item__btn preview"
                          @mouseenter="on.mouseenter"
                          @mouseleave="on.mouseleave"
                          @click.stop.prevent="openWebShopStore(store)">
@@ -138,7 +138,7 @@
               <div v-if="settingsPerm" class="action-item">
                 <g-tooltip open-on-hover bottom speech-bubble color="#000" transition="0.3" remove-content-on-close>
                   <template v-slot:activator="{on}">
-                    <div class="action-item__btn"
+                    <div class="action-item__btn chain"
                          @mouseenter="on.mouseenter"
                          @mouseleave="on.mouseleave"
                          @click.stop.prevent="$emit('open:pairDeviceDialog', store)">
@@ -400,7 +400,23 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%
+            border-radius: 50%;
+
+            &.cog:hover > .icon-cog2 {
+              background-image: url("/plugins/pos-plugin/assets/cog2_blue.svg");
+            }
+
+            &.chain:hover > .icon-chain {
+              background-image: url("/plugins/pos-plugin/assets/chain_blue.svg");
+            }
+
+            &.preview:hover > .icon-preview {
+              background-image: url("/plugins/pos-plugin/assets/preview_blue.svg");
+            }
+
+            &.fork_knife:hover > .icon-fork_knife_setting {
+              background-image: url("/plugins/pos-plugin/assets/fork_knife_setting_blue.svg");
+            }
           }
 
           &:hover .action-item__btn {
@@ -454,6 +470,10 @@
       & > div {
         padding: 6px 12px;
         cursor: pointer;
+
+        &:hover {
+          background-color: #EFEFEF;
+        }
       }
     }
 
@@ -473,6 +493,10 @@
         white-space: nowrap;
         font-size: 14px;
         cursor: pointer;
+
+        &:hover {
+          background-color: #EFEFEF;
+        }
       }
     }
   }

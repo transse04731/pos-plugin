@@ -6,7 +6,7 @@
         <img draggable="false" src="/plugins/pos-plugin/assets/folk_knife.svg">
         <p>Menu is currently empty.</p>
         <p><span style="color: #536DFE">"Add new category"</span> to get started.</p>
-        <div class="btn-add" @click="dialog.addNewCategory = true">+ Add New Category</div>
+        <g-btn-bs class="btn-add" @click="dialog.addNewCategory = true">+ Add New Category</g-btn-bs>
       </div>
       <div class="menu-setting__main" v-else>
         <div class="row-flex justify-end mb-2">
@@ -116,7 +116,7 @@
         alert('Navigate to "Multiple Printers" and add a printer before editing menu item')
         this.renderPage = false
       }
-      this.editBtn = this.categoriesViewModel.map(g => false)
+      this.editBtn = this.categoriesViewModel ? this.categoriesViewModel.map(g => false) : []
     },
     computed: {
       categoriesViewModel() {
