@@ -72,6 +72,7 @@
                       </template>
                       <div class="menu-action">
                         <div v-if="featureControlPerm" class="menu-action__option" @click="$emit('open:editDeviceFeatureDialog', store, device)">Feature control</div>
+                        <div v-if="featureControlPerm" class="menu-action__option" @click="openWebRTCRemoteControl(store, device)">Open WebRTC Remote Control</div>
                         <div v-if="settingsPerm" class="menu-action__option" @click="$emit('open:editDeviceNameDialog', device)">Edit name</div>
                         <div v-if="settingsPerm" class="menu-action__option" @click="$emit('open:deleteDeviceDialog', device)">Delete device</div>
                       </div>
@@ -136,6 +137,7 @@
             </div>
           </div>
 
+          <!-- Proxy -->
           <g-dnd-dialog v-if="remoteControlPerm" v-model="showIframe" :width="iframeWidth"
                         :height="iframeHeight" lazy @close="stopRemoteControl"
                         @dragStart="iframeDragging = true" @dragEnd="iframeDragging = false"
@@ -147,6 +149,20 @@
             <div v-if="showIframe && iframeDragging"
                  style="height: 100%; width: 100%; position: absolute; background: transparent"/>
             <iframe v-if="showIframe" :src="iframeSrc" width="100%" height="100%" @load="onIframeLoad" ref="iframe"/>
+          </g-dnd-dialog>
+  
+          <!-- WebRTC remote control -->
+          <g-dnd-dialog v-if="webRTCiframeSrc" v-model="showWebRTCIframe" :width="iframeWidth"
+                        :height="iframeHeight" lazy @close="stopRemoteControl"
+                        @dragStart="iframeDragging = true" @dragEnd="iframeDragging = false"
+                        @resizeStart="iframeDragging = true" @resizeEnd="iframeDragging = false">
+            <template #title>
+              Remote Control Web RTC
+            </template>
+    
+            <div v-if="showWebRTCIframe && iframeDragging"
+                 style="height: 100%; width: 100%; position: absolute; background: transparent"/>
+            <iframe v-if="showWebRTCIframe" :src="webRTCiframeSrc" width="100%" height="100%"/>
           </g-dnd-dialog>
         </div>
       </template>
@@ -189,6 +205,10 @@
         nameEditMenu: false,
         selectedStore: null,
         selectedDevice: null,
+        
+        //
+        webRTCiframeSrc: 'about:blank',
+        showWebRTCIframe: false,
       }
     },
     computed: {
@@ -220,6 +240,17 @@
       },
       openWebShopStore(store) {
         window.open(`${location.origin}/store/${store.alias || store._id}`)
+      },
+      openWebRTCRemoteControl(store, device) {
+        window.cms.socket.emit('startStream', device._id, (responseData) => {
+          console.log(responseData)
+          if (responseData.ok) {
+            this.webRTCiframeSrc = `https://mtfk.herokuapp.com/remoteControl.html?deviceId=device_${device._id}`
+            this.showWebRTCIframe = true
+          } else {
+            alert(responseData.message)
+          }
+        });
       },
       startRemoteControl(storeId, deviceId) {
         if (this.disableRemoteControlBtn) return

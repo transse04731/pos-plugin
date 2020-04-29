@@ -143,6 +143,18 @@ module.exports = function (cms) {
       })
     });
 
+    socket.on('startStream', async (deviceId, ack) => {
+      if (!deviceId) return
+      externalSocketIOServer.emitTo(deviceId, 'startStream', (res) => {
+        ack && ack(res)
+      })
+    })
+
+    socket.on('stopStream', async (deviceId, ack) => {
+      if (!deviceId) return
+      externalSocketIOServer.emitTo(deviceId, 'stopStream', ack)
+    })
+
     socket.once('disconnect', () => {
       delete deviceStatusSubscribers[socket.id]
 
