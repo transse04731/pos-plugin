@@ -20,7 +20,7 @@
           "type": "event"
         },
         {
-          "service": "PosStore:skipPairing",
+          "service": "SettingsStore:skipPairing",
           "local": "skipPairing",
           "type": "event"
         }

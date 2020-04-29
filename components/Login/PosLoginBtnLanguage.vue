@@ -3,7 +3,7 @@
     <g-menu v-model="menu" close-on-content-click top content-class="menu-language">
       <template v-slot:activator="{on}">
         <g-btn flat :uppercase="false" icon-after="arrow_drop_down" text-color="#3B3B3B" @click="on.click" height="100%">
-          {{language}}
+          {{currentLang.title}}
           <g-icon>arrow_drop_down</g-icon>
         </g-btn>
       </template>
@@ -22,22 +22,26 @@
 <script>
   export default {
     name: "PosLoginBtnLanguage",
+    props: {
+      locale: String
+    },
     data() {
       return {
         menu: false,
-        language: '',
         languages: [
-          { icon: 'icon-germany', title: this.$t('login.german')},
-          { icon: 'icon-english', title: this.$t('login.english')},
+          { icon: 'icon-germany', title: this.$t('login.german'), locale: 'de'},
+          { icon: 'icon-english', title: this.$t('login.english'), locale: 'en'},
         ]
       }
     },
-    created() {
-      this.chooseLanguage(this.languages[0])
+    computed: {
+      currentLang() {
+        return this.languages.find(i => i.locale === this.locale)
+      }
     },
     methods: {
       chooseLanguage(language) {
-        this.language = language.title
+        this.$emit('changeLocale', language.locale)
       }
     }
   }

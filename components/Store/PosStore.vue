@@ -178,6 +178,11 @@
           this.$router.push('/pos-setup')
         })
 
+      },
+      async changeLocale(locale) {
+        await cms.getModel('SystemConfig').updateOne({ type: 'I18n'}, {'content.locale': locale }, { upsert: true })
+        this.locale = locale
+        this.$router.go()
       }
     },
     async created() {
