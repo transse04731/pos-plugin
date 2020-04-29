@@ -63,7 +63,7 @@
               </g-radio-group>
               <div class="section-form">
                 <g-text-field v-model="customer.name" :label="$t('store.name')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-person@16"/>
-                <g-text-field v-model="customer.phone" :label="$t('store.telephone')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-phone2@16"/>
+                <g-text-field type="number" v-model="customer.phone" :label="$t('store.telephone')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-phone2@16"/>
                 <template v-if="orderType === 'delivery'">
                   <g-text-field v-model="customer.address" :label="$t('store.address')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-place@16"/>
                   <g-text-field :rules="validateZipcode" type="number" v-model="customer.zipCode" :label="$t('store.zipCode')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
@@ -198,7 +198,7 @@
         return 0
       },
       unavailableConfirm() {
-        const check = !this.customer.name || !this.customer.phone
+        const check = !this.customer.name || !this.customer.phone || isNaN(this.customer.phone)
         if (this.orderType === 'delivery') {
           for(const fn of this.validateZipcode) {
             if(typeof fn === 'function' && typeof fn(this.customer.zipCode) === "string")
