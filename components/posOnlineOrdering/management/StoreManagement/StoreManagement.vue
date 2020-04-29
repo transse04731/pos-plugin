@@ -68,7 +68,7 @@
         </div>
       </div>
     </template>
-    
+
     <!-- setting [consider] move to another vue component -->
     <template v-else-if="view === 'settings' && settingsPerm">
       <div class="store-management__breadcrumbs">
@@ -92,7 +92,7 @@
           :countries="countries"
           @update="updateStore(selectedStore._id, $event)"/>
     </template>
-    
+
     <!-- dialogs -->
     <dialog-new-group v-if="manageGroupPerm && storeGroups && dialog.newGroup" v-model="dialog.newGroup" @submit="addGroup($event)" :groups="storeGroups"/>
     <dialog-new-store v-if="manageStorePerm && storeGroups && dialog.newStore" v-model="dialog.newStore" @submit="addStore($event)" :groups="storeGroups" :countries="countries"/>
@@ -143,7 +143,7 @@
       // store groups
       'PosOnlineOrderManagementStore:(storeGroups,loadStoreGroups,addGroup,changeStoreGroupName,deleteStoreGroup)',
       // stores
-      'PosOnlineOrderManagementStore:(stores,loadStores,addStore,removeStore,updateStore,storeAlias)',
+      'PosOnlineOrderManagementStore:(stores,loadStores,addStore,removeStore,updateStore,storeAlias,checkDeviceOnlineStatus)',
       // devices
       'PosOnlineOrderManagementStore:(addDevice,removeDevice,updateDevice,updateDeviceFeatures,updateDeviceAppVersion)',
       // app
@@ -152,15 +152,12 @@
       'PermissionStore:(manageGroupPerm,manageStorePerm,settingsPerm)'
     ],
     mounted() {
-      window.cms.socket.on('updateDeviceStatus', storeId => {
-        if (storeId) {
-          const storeIdList = _.flatten(this.storeManagementViewModel.map(e => e.stores)).map(e => e._id)
-
-          if (storeIdList.includes(storeId)) this.loadStores()
-        } else {
-          this.loadStores()
-        }
+      window.cms.socket.on('reloadStores', storeId => {
+        const storeIdList = _.flatten(this.storeManagementViewModel.map(e => e.stores)).map(e => e._id)
+        if (storeIdList.includes(storeId)) this.loadStores()
       })
+
+      window.cms.socket.on('updateDeviceStatus', this.checkDeviceOnlineStatus)
 
       this.$watch('storeManagementViewModel', val => {
         const stores = _.flatten(val.map(e => e.stores))
@@ -189,18 +186,18 @@
       setSelectedDevice(device) {
         this.$set(this, 'selectedDevice', device)
       },
-      
+
       viewStoreSetting(store) {
         this.setSelectedStore(store)
         this.view = 'settings'
       },
-      
+
       // pair device
       showPairDeviceDialog(store) {
         this.setSelectedStore(store)
         this.dialog.pairNewDevice = true
       },
-      
+
       // delete device
       showDeleteDeviceDialog(device) {
         this.dialog.deleteDevice = true
@@ -210,7 +207,7 @@
         await this.removeDevice(this.selectedDevice._id)
         this.setSelectedDevice(null)
       },
-      
+
       // device features
       showFeatureControlDialog(store, device) {
         this.setSelectedStore(store)
@@ -225,7 +222,7 @@
           this.dialog.featureControl = false
         })
       },
-      
+
       // device name
       showEditDeviceNameDialog(device) {
         this.setSelectedDevice(device)
@@ -243,14 +240,14 @@
 <style scoped lang="scss">
   .store-management {
     height: 100%;
-  
+
     .btn-sort {
       background: #FFFFFF;
       border: 1px solid #536DFE !important;
       border-radius: 2px;
       color: #536DFE !important;
     }
-    
+
     &__title {
       font-size: 20px;
       line-height: 25px;
@@ -258,42 +255,42 @@
       color: #000000;
       margin-bottom: 24px;
     }
-  
+
     &__breadcrumbs {
       font-size: 20px;
       line-height: 25px;
       font-weight: 700;
       color: #000000;
       margin-bottom: 24px;
-    
+
       span:first-child {
         color: #9e9e9e;
         cursor: pointer;
       }
     }
-  
+
     &__actions-bar {
       display: flex;
       align-items: center;
       margin-bottom: 16px;
       margin-right: -8px;
-    
+
       .bs-tf-wrapper {
         width: auto;
-      
+
         ::v-deep .bs-tf-input-group {
           background: white;
         }
       }
     }
-  
+
     &__table {
       height: calc(100% - 120px);
       overflow: hidden;
       background: #FFFFFF;
       box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1398);
       border-radius: 2px;
-    
+
       &-header {
         background: #EFEFEF;
         height: 38px;
@@ -303,11 +300,11 @@
         font-weight: 700;
         color: #757575;
       }
-    
+
       &-content {
         height: calc(100% - 38px);
         overflow: hidden scroll;
-      
+
         &--empty {
           display: flex;
           flex-direction: column;
@@ -323,7 +320,7 @@
     background: #FFFFFF;
     border: 1px solid #D3D3D3;
     border-radius: 2px;
-  
+
     .option {
       background-color: #FFF;
       font-size: 14px;
@@ -333,11 +330,11 @@
       user-select: none;
       cursor: pointer;
       color: #201F2B;
-    
+
       &--selected {
         background-color: #EFEFEF;
       }
-    
+
       &:hover {
         background-color: #EFEFEF;
       }
