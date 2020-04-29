@@ -90,35 +90,16 @@
     async created() {
       const cachedArticlePageSize = localStorage.getItem('viewArticlePageSize')
       if (cachedArticlePageSize) this.productPagination.limit = parseInt(cachedArticlePageSize)
-      await this.getOnlineDevice()
+
       const posSettings = await this.getPosSetting()
-      if (posSettings) {
-        this.defaultPrepareTime = posSettings.defaultPrepareTime
-        this.onlineOrderSorting = posSettings.onlineOrderSorting
+      if (!posSettings) return
 
-        let hardwares = posSettings.hardwares
-        if (hardwares && hardwares instanceof Array) {
-          if (!hardwares.find(i => i.name === this.device)) hardwares = [...hardwares, {name: this.device}]
-        } else hardwares = [{name: this.device}]
+      this.defaultPrepareTime = posSettings.defaultPrepareTime
+      this.onlineOrderSorting = posSettings.onlineOrderSorting
 
-        await this.updatePosSetting('hardwares', hardwares)
-      }
-
-      if (posSettings.onlineDevice && this.$router.currentRoute.path === '/pos-login') {
-        this.onlineDevice = posSettings.onlineDevice
-        if (!posSettings.onlineDevice.paired) this.$router.push('/pos-setup')
-      }
-
-      // listens for unpair event
-      cms.socket.on('unpairDevice', () => {
-        this.unregisterOnlineOrder(async () => {
-          this.onlineDevice = Object.assign({}, this.onlineDevice, {
-            paired: false
-          })
-          await this.updateOnlineDevice(this.onlineDevice)
-          this.$router.push('/pos-setup')
-        })
-      })
+      await this.getOnlineDevice()
+      await this.registerHardware()
+      await this.setupPairDevice()
     },
     watch: {
       'productPagination.limit'(newVal) {
@@ -806,7 +787,45 @@
         window.cms.socket.emit('unregisterOnlineOrderDevice', callback)
       },
 
+      async setupPairDevice() {
+        const posSettings = await this.getPosSetting()
+        if (!posSettings) return
+
+        if (posSettings.onlineDevice && this.$router.currentRoute.path === '/pos-login') {
+          this.onlineDevice = posSettings.onlineDevice
+          if (!posSettings.onlineDevice.paired && !posSettings.skipPairing) this.$router.push('/pos-setup')
+        }
+
+        // listens for unpair event
+        cms.socket.on('unpairDevice', () => {
+          this.unregisterOnlineOrder(async () => {
+            this.onlineDevice = Object.assign({}, this.onlineDevice, {
+              paired: false
+            })
+            await this.updateOnlineDevice(this.onlineDevice)
+            this.$router.push('/pos-setup')
+          })
+        })
+      },
+
+      async skipPairing() {
+        await this.updatePosSetting('skipPairing', true)
+        this.$router.go(-1)
+      },
+
       //generic
+      async registerHardware() {
+        const posSettings = await this.getPosSetting()
+        if (!posSettings) return
+
+        let hardwares = posSettings.hardwares
+        if (hardwares && hardwares instanceof Array) {
+          if (!hardwares.find(i => i.name === this.device)) hardwares = [...hardwares, { name: this.device }]
+        } else {
+          hardwares = [{ name: this.device }]
+        }
+        await this.updatePosSetting('hardwares', hardwares)
+      },
       async updateGroupPrinter(_id, key, value) {
         try {
           const model = cms.getModel('GroupPrinter')

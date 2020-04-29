@@ -870,6 +870,12 @@
       "schemaType": "boolean",
       "key": "showDineInTax",
       "type": "input@checkbox"
+    },
+    {
+      "_id": "5ea901742fbeda3b5c37fb55",
+      "schemaType": "boolean",
+      "key": "skipPairing",
+      "type": "input@switch"
     }
   ],
   "id": "5ddb985ff26bb37e5ccc5c43",
