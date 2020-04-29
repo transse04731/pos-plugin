@@ -143,16 +143,20 @@
         }
         if(isOpenTime) {
           this.$set(this.errors[index], 'open', false)
-          if(time < openHour.closeTime)
+          if(time < openHour.closeTime) {
             this.$set(openHour, `openTime`, time)
+            this.$set(this.errors[index], 'close', false)
+          }
           else {
             this.$set(this.errors[index], 'open', true)
             this.$set(this.errors[index], 'message', 'Open time must be before close time!')
           }
         } else {
           this.$set(this.errors[index], 'close', false)
-          if(time > openHour.openTime)
+          if(time > openHour.openTime) {
             this.$set(openHour, `closeTime`, time)
+            this.$set(this.errors[index], 'open', true)
+          }
           else{
             this.$set(this.errors[index], 'close', true)
             this.$set(this.errors[index], 'message', 'Open time must be before close time!')
