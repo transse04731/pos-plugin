@@ -155,11 +155,11 @@
     created() {
       this.editBtn = this.listVersionControl ? this.listVersionControl.map(g => false) : []
     },
-    watch: {
-      listVersionControl(val) {
-        this.editBtn = val.map(g => false)
-      }
-    },
+    // watch: {
+    //   listVersionControl(val) {
+    //     this.editBtn = val.map(g => false)
+    //   }
+    // },
     methods: {
       // app
       changeGroupName(group, name, cb) {
