@@ -71,7 +71,6 @@
     align-items: flex-start;
     padding-top: 8px;
     height: 80px;
-    border-bottom: 1px solid rgba(204, 204, 204, 0.4);
     
     &__thumbnail {
       border-radius: 15px;
@@ -82,7 +81,7 @@
     
     &__name {
       font-weight: bold;
-      font-size: 18px;
+      font-size: 15px;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
@@ -91,10 +90,11 @@
 
     &__content {
       margin-right: 16px;
+      max-width: calc(100% - 180px);
     }
     
     &__desc {
-      font-size: 14px;
+      font-size: 13px;
       color: #757575;
       max-width: 350px;
       word-break: break-word;

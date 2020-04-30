@@ -51,7 +51,6 @@ router.get('/pairing-code', async (req, res) => {
     pairingCode,
     storeId: ObjectId(storeId),
     paired: false,
-    online: false,
   })
 
   res.status(200).json({pairingCode})
@@ -66,7 +65,7 @@ router.post('/register', async (req, res) => {
   const deviceInfo = await DeviceModel.findOne({pairingCode, paired: false});
   if (deviceInfo) {
     // online status will be updated when client connects to external Socket.io server (see backend/socket-io-server.js file)
-    await DeviceModel.updateOne({pairingCode}, { name: 'New Device', paired: true, online: false, hardware, appName, appVersion, features: {
+    await DeviceModel.updateOne({pairingCode}, { name: 'New Device', paired: true, hardware, appName, appVersion, features: {
         fastCheckout: true,
         manualTable: true,
         delivery: true,
@@ -82,7 +81,7 @@ router.post('/register', async (req, res) => {
       }
     });
     await addPairedDeviceToStore(deviceInfo._id, deviceInfo.storeId);
-    cms.socket.emit('updateDeviceStatus', deviceInfo.storeId);
+    cms.socket.emit('reloadStores', deviceInfo.storeId);
     res.status(200).json({deviceId: deviceInfo._id})
   } else {
     res.status(400).json({message: 'Invalid pairing code or pairing code has been used by another device'})

@@ -5,7 +5,7 @@
       <div>
         <div class="restaurant-info__main--left">
           <div class="mb-3 fw-700">Basic info</div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto 1fr; grid-gap: 5px">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto 1fr 1fr; grid-gap: 5px">
             <g-text-field-bs large label="Store Name"
                              placeholder="Store Name"
                              :value="store.name"
@@ -21,12 +21,15 @@
                           :value="store.address"
                           @input="updateDebounce({ address: $event })"/>
             </div>
-            <g-text-field-bs label="Zip code"
+            <g-text-field-bs large label="Zip code"
                              :value="store.zipCode"
                              @input="updateDebounce({zipCode: $event})"/>
-            <g-text-field-bs label="Town/City"
+            <g-text-field-bs large label="Town/City"
                              :value="store.townCity"
                              @input="updateDebounce({townCity: $event})"/>
+            <div class="span-2">
+              <g-select returnObject item-text="name" text-field-component="GTextFieldBs" label="Country" :items="countries" :value="store.country" @input="updateDebounce({country: $event})"/>
+            </div>
           </div>
         </div>
       </div>
@@ -59,7 +62,18 @@
       store: Object
     },
     data: function () {
-      return {}
+      return {
+        countries: [
+          {name: 'Germany', locale: 'de'},
+          {name: 'United State', locale: 'en'},
+          {name: 'United Kingdom', locale: 'en'},
+          {name: 'Australia', locale: 'en'},
+          {name: 'Canada', locale: 'en'},
+          {name: 'France', locale: 'fr'},
+          {name: 'Italy', locale: 'it'},
+          {name: 'Singapore', locale: 'en'},
+        ],
+      }
     },
     computed: {},
     created() {
@@ -67,7 +81,6 @@
     },
     methods: {
       async update(change) {
-        console.log('update', change)
         this.$emit('update', change)
       },
     }

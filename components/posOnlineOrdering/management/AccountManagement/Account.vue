@@ -430,6 +430,10 @@
         white-space: nowrap;
         font-size: 14px;
         cursor: pointer;
+
+        &:hover {
+          background-color: #EFEFEF;
+        }
       }
     }
   }

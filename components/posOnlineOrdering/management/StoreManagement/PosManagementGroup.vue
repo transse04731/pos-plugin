@@ -1,17 +1,22 @@
 <template>
   <div class="pos-management-group">
-    <div class="pos-management-group__header" @click="toggleContent">
+    <div class="pos-management-group__header"
+         @click="toggleContent"
+         @mouseenter="showEditBtn = true"
+         @mouseleave="showEditBtn = false">
       <g-icon class="icon-first" size="20" v-if="showContent">expand_less</g-icon>
       <g-icon class="icon-first" size="20" v-else>expand_more</g-icon>
       <g-edit-view-input
           :value="name"
-          @click.native.stop.prevent="() => {}"
+          @click.native.stop.prevent="toggleContent"
           @input="(value, cb) => $emit('update:groupName', _id, value, cb)">
         <template v-slot:action="{mode, switchToEditMode, applyChange, resetValue}">
-          <g-menu v-if="mode !== 'edit' && manageGroupPerm" v-model="nameEditMenu" close-on-content-click nudge-bottom="5" nudge-left="30">
+          <g-menu v-if="mode !== 'edit' && manageGroupPerm" v-model="nameEditMenu" close-on-content-click
+                  nudge-bottom="5" nudge-left="30">
             <template v-slot:activator="{on}">
               <div class="btn-edit" :style="[nameEditMenu && {background: '#F4F5FA'}]">
-                <g-icon :class="[nameEditMenu && 'btn-edit--active']" size="16" @click="on.click">mdi-pencil-outline</g-icon>
+                <g-icon v-if="showEditBtn || nameEditMenu" :class="[nameEditMenu && 'btn-edit--active']" size="16" @click="on.click">mdi-pencil-outline
+                </g-icon>
               </div>
             </template>
             <div class="menu-edit">
@@ -35,10 +40,12 @@
                 <div>{{store.settingAddress}}</div>
               </div>
               <div style="flex: 1">
-                <div class="row-flex mb-1" v-for="(device, index) in store.devices" :key="`device_${store.id}_${index}`">
+                <div class="row-flex mb-1" v-for="(device, index) in store.devices"
+                     :key="`device_${store.id}_${index}`">
                   <div class="row-flex col-2">
-                    <g-icon>{{getDeviceIcon(device)}}</g-icon>
-                    <span class="ml-1">{{device.name}} <span v-if="device.features.onlineOrdering"> (Online ordering)</span></span>
+                    <g-icon style="min-width: 24px">{{getDeviceIcon(device)}}</g-icon>
+                    <span class="ml-1">{{device.name}} <span
+                        v-if="device.features.onlineOrdering"> (Online ordering)</span></span>
                   </div>
                   <div class="col-2">
                     {{device.hardware}}
@@ -49,12 +56,14 @@
                   <div class="row-flex col-4">
                     <template v-if="updateAppPerm">
                       <g-select class="w-60" :items="device.versions" v-model="device.updateVersion"/>
-                      <p v-if="device.updateVersion" class="ml-3 text-indigo-accent-2" style="cursor: pointer" @click="$emit('update:deviceAppVersion', device)">Update</p>
+                      <p v-if="device.updateVersion" class="ml-3 text-indigo-accent-2" style="cursor: pointer"
+                         @click="$emit('update:deviceAppVersion', device)">Update</p>
                     </template>
                   </div>
                   <div class="col-1 row-flex align-items-center">
                     <!-- remote control -->
-                    <g-tooltip v-if="remoteControlPerm" :open-on-hover="true" top speech-bubble color="#000" transition="0.3">
+                    <g-tooltip v-if="remoteControlPerm" :open-on-hover="true" top speech-bubble color="#000"
+                               transition="0.3">
                       <template v-slot:activator="{on}">
                         <div :class="device.online && device.paired && device.features && device.features.proxy && !disableRemoteControlBtn
                                   ? 'pos-management-group__content-btn' : 'pos-management-group__content-btn--disabled'"
@@ -71,9 +80,15 @@
                         <g-icon :class="[device.menu && 'menu--active', 'ml-2']" @click="on.click">more_horiz</g-icon>
                       </template>
                       <div class="menu-action">
-                        <div v-if="featureControlPerm" class="menu-action__option" @click="$emit('open:editDeviceFeatureDialog', store, device)">Feature control</div>
-                        <div v-if="settingsPerm" class="menu-action__option" @click="$emit('open:editDeviceNameDialog', device)">Edit name</div>
-                        <div v-if="settingsPerm" class="menu-action__option" @click="$emit('open:deleteDeviceDialog', device)">Delete device</div>
+                        <div v-if="featureControlPerm" class="menu-action__option"
+                             @click="$emit('open:editDeviceFeatureDialog', store, device)">Feature control
+                        </div>
+                        <div v-if="settingsPerm" class="menu-action__option"
+                             @click="$emit('open:editDeviceNameDialog', device)">Edit name
+                        </div>
+                        <div v-if="settingsPerm" class="menu-action__option"
+                             @click="$emit('open:deleteDeviceDialog', device)">Delete device
+                        </div>
                       </div>
                     </g-menu>
                   </div>
@@ -84,7 +99,7 @@
               <div v-if="settingsPerm" class="action-item">
                 <g-tooltip open-on-hover bottom speech-bubble color="#000" transition="0.3" remove-content-on-close>
                   <template v-slot:activator="{on}">
-                    <div class="action-item__btn"
+                    <div class="action-item__btn cog"
                          @mouseenter="on.mouseenter"
                          @mouseleave="on.mouseleave"
                          @click.stop.prevent="$emit('view:settings', store)">
@@ -97,7 +112,7 @@
               <div v-if="configOnlineOrderingPerm" class="action-item">
                 <g-tooltip open-on-hover bottom speech-bubble color="#000" transition="0.3" remove-content-on-close>
                   <template v-slot:activator="{on}">
-                    <div class="action-item__btn"
+                    <div class="action-item__btn fork_knife"
                          @mouseenter="on.mouseenter"
                          @mouseleave="on.mouseleave"
                          @click.stop.prevent="openWebShopSetting(store)">
@@ -110,7 +125,7 @@
               <div v-if="configOnlineOrderingPerm" class="action-item">
                 <g-tooltip open-on-hover bottom speech-bubble color="#000" transition="0.3" remove-content-on-close>
                   <template v-slot:activator="{on}">
-                    <div class="action-item__btn"
+                    <div class="action-item__btn preview"
                          @mouseenter="on.mouseenter"
                          @mouseleave="on.mouseleave"
                          @click.stop.prevent="openWebShopStore(store)">
@@ -123,7 +138,7 @@
               <div v-if="settingsPerm" class="action-item">
                 <g-tooltip open-on-hover bottom speech-bubble color="#000" transition="0.3" remove-content-on-close>
                   <template v-slot:activator="{on}">
-                    <div class="action-item__btn"
+                    <div class="action-item__btn chain"
                          @mouseenter="on.mouseenter"
                          @mouseleave="on.mouseleave"
                          @click.stop.prevent="$emit('open:pairDeviceDialog', store)">
@@ -162,7 +177,7 @@
 
   export default {
     name: "PosManagementGroup",
-    components: { DialogEditDeviceName, DialogPairNewDeviceSuccess, DialogFeatureControl },
+    components: {DialogEditDeviceName, DialogPairNewDeviceSuccess, DialogFeatureControl},
     props: {
       _id: String,
       name: String,
@@ -189,10 +204,11 @@
         nameEditMenu: false,
         selectedStore: null,
         selectedDevice: null,
+        proxyHost: null,
+        showEditBtn: false,
       }
     },
-    computed: {
-    },
+    computed: {},
     methods: {
       getDeviceIcon(device) {
         return device.online ? 'icon-screen_blue' : 'icon-screen'
@@ -229,13 +245,15 @@
         const {socket} = window.cms
 
         socket.emit('startRemoteControl', this.remoteControlDeviceId, proxyPort => {
+          const proxyHost = this.proxyHost || `${location.protocol}//${location.hostname}`
+
           if (proxyPort) {
-            this.iframeSrc = `http://${location.hostname}:${proxyPort}/view/pos-dashboard`
+            this.iframeSrc = `${proxyHost}:${proxyPort}/view/pos-dashboard`
             this.showIframe = true
 
             this.iframeRefreshInterval = setInterval(() => {
               this.iframeSrc = ''
-              this.$nextTick(() => this.iframeSrc = `http://${location.hostname}:${proxyPort}/view/pos-dashboard`)
+              this.$nextTick(() => this.iframeSrc = `${proxyHost}:${proxyPort}/view/pos-dashboard`)
             }, 10000)
           } else {
             // TODO: handle error
@@ -248,13 +266,15 @@
         if (this.iframeRefreshInterval) clearInterval(this.iframeRefreshInterval)
         if (!this.remoteControlDeviceId) return
 
-        const {socket} = window.cms
-        socket.emit('stopRemoteControl', this.remoteControlDeviceId)
+        window.cms.socket.emit('stopRemoteControl', this.remoteControlDeviceId)
         this.remoteControlDeviceId = null
       },
       onIframeLoad() {
         if (this.iframeRefreshInterval) clearInterval(this.iframeRefreshInterval)
       },
+    },
+    created() {
+      window.cms.socket.emit('getProxyHost', proxyHost => this.proxyHost = proxyHost)
     },
     beforeDestroy() {
       this.stopRemoteControl()
@@ -380,10 +400,26 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%
+            border-radius: 50%;
+
+            &.cog:hover > .icon-cog2 {
+              background-image: url("/plugins/pos-plugin/assets/cog2_blue.svg");
+            }
+
+            &.chain:hover > .icon-chain {
+              background-image: url("/plugins/pos-plugin/assets/chain_blue.svg");
+            }
+
+            &.preview:hover > .icon-preview {
+              background-image: url("/plugins/pos-plugin/assets/preview_blue.svg");
+            }
+
+            &.fork_knife:hover > .icon-fork_knife_setting {
+              background-image: url("/plugins/pos-plugin/assets/fork_knife_setting_blue.svg");
+            }
           }
 
-          &:hover .action-item__btn{
+          &:hover .action-item__btn {
             background: #eeeeee;
           }
 
@@ -434,6 +470,10 @@
       & > div {
         padding: 6px 12px;
         cursor: pointer;
+
+        &:hover {
+          background-color: #EFEFEF;
+        }
       }
     }
 
@@ -453,6 +493,10 @@
         white-space: nowrap;
         font-size: 14px;
         cursor: pointer;
+
+        &:hover {
+          background-color: #EFEFEF;
+        }
       }
     }
   }

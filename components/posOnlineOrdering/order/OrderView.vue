@@ -4,7 +4,7 @@
       <template  v-if="store">
         <div class="pos-order__left">
           <div class="pos-order__left__header">
-            <img :src="store.logoImageSrc"/>
+            <img :src="store.logoImageSrc || '/plugins/pos-plugin/assets/images/logo.png'"/>
             <div class="pos-order__left__header--info">
               <div>
                 <div class="row-flex align-items-center justify-end">
@@ -43,7 +43,7 @@
             <g-spacer/>
             <g-btn-bs background-color="#2979FF" rounded style="padding: 8px 16px" @click="showOrder = true">CHECK OUT</g-btn-bs>
           </div>
-          <div class="pos-order__tab">
+          <div class="pos-order__tab" id="tab">
             <div class="pos-order__tab--icon">
               <div class="pos-order__tab--icon-wrapper">
                 <g-icon>icon-fork</g-icon>
@@ -58,11 +58,11 @@
             </span>
           </div>
           <div class="pos-order__tab--content" id="tab-content" ref="tab-content">
-            <div v-for="(category, i) in categoriesViewModel" :id="`category_content_${category._id}`" :key="`category_${i}`" class="mt-2">
+            <div v-for="(category, i) in categoriesViewModel" :id="`category_content_${category._id}`" :key="`category_${i}`" :class="[i > 0 && 'mt-5']">
               <div class="sub-title">{{ category && category.name }}</div>
               <div class="pos-order__tab--content-main">
-                <div v-for="(item, index) in category.items" :key="index">
-                  <menu-item
+                <menu-item
+                      v-for="(item, index) in category.items" :key="index"
                       v-bind="item"
                       :is-opening="isStoreOpening"
                       :currency-unit="store.currency"
@@ -71,7 +71,6 @@
                       @increase="addItemToOrder(item)"
                       @decrease="removeItemFromOrder(item)"/>
                 </div>
-              </div>
             </div>
           </div>
           <order-table v-if="showOrder" @back="showOrder = false" :store="store" :is-opening="isStoreOpening"/>
@@ -96,6 +95,7 @@
   import _ from 'lodash';
   import OrderTable from './OrderTable';
   import MenuItem from './MenuItem';
+  import {smoothScrolling} from 'pos-vue-framework'
 
   export default {
     name: 'OrderView',
@@ -115,6 +115,7 @@
         dialog: {
           closed: false
         },
+        debounce: null,
       }
     },
     filters: {
@@ -146,25 +147,25 @@
     },
     mounted() {
       //scroll
+      this.debounce = _.debounce(this.handleScroll, 100)
       this.$nextTick(() => {
         if(this.$refs) {
           if(!this.$refs.keys) {
             setTimeout(() => {
               const contentRef = this.$refs['tab-content']
-              contentRef && contentRef.addEventListener('scroll', this.handleScroll)
+              contentRef && contentRef.addEventListener('scroll', this.debounce)
             }, 500)
           } else {
             const contentRef = this.$refs['tab-content']
-            contentRef && contentRef.addEventListener('scroll', () => {
-              console.log('scroll')
-            })
+            contentRef && contentRef.addEventListener('scroll', this.debounce)
           }
         }
+        smoothScrolling && smoothScrolling()
       })
     },
     beforeDestroy() {
       clearInterval(this.dayInterval)
-      this.$refs['tab-content'].removeEventListener('scroll', this.handleScroll)
+      this.$refs['tab-content'].removeEventListener('scroll', this.debounce)
     },
     computed: {
       shippingFee() {
@@ -233,7 +234,7 @@
         return false
       },
       storeOpenStatus() {
-        return this.isStoreOpening ? '• Open' : '• Closed'
+        return this.isStoreOpening ? `• ${this.$t('store.open')}` : `• ${this.$t('store.closed')}`
       },
       storeOpenStatusStyle() {
         return {
@@ -306,7 +307,7 @@
         const wrapper = document.getElementById('tab-content')
         const content = document.getElementById(`category_content_${id}`)
         if(wrapper && content) {
-          wrapper.scrollTop = (content.offsetTop - wrapper.offsetTop)
+          wrapper.scroll({top: content.offsetTop - wrapper.offsetTop, left: 0, behavior: "smooth"})
         }
       }
     },
@@ -316,7 +317,8 @@
         if(tab) {
           const wrapper = tab.offsetParent
           const icon = wrapper.firstChild
-          wrapper.scrollLeft = (tab.offsetLeft - icon.offsetWidth)
+          const sibling = tab.previousSibling
+          wrapper.scroll({top: 0, left: (tab.offsetLeft - icon.offsetWidth - sibling.offsetWidth/2), behavior: "smooth"})
         }
       }
     }
@@ -429,7 +431,7 @@
       position: relative;
       border-right: 16px solid #F8F8F8;
       font-size: 15px;
-      scroll-behavior: smooth;
+      /*scroll-behavior: smooth;*/
       scrollbar-width: none; // firefox
 
       &::-webkit-scrollbar {
@@ -452,7 +454,7 @@
       &--content {
         margin-top: 30px;
         overflow: hidden auto;
-        scroll-behavior: smooth;
+        /*scroll-behavior: smooth;*/
         scrollbar-width: none; // firefox
 
         &::-webkit-scrollbar {
@@ -465,6 +467,11 @@
           flex-direction: column;
           overflow: hidden auto;
           margin-bottom: 5px;
+
+
+          & .po-menu-item:not(:last-child) {
+            border-bottom: 1px solid rgba(204, 204, 204, 0.4);
+          }
         }
       }
     }
@@ -546,6 +553,12 @@
           .sub-title {
             font-size: 18px;
           }
+
+          & > div:last-child {
+            .pos-order__tab--content-main {
+              margin-bottom: 80px;
+            }
+          }
         }
       }
 
@@ -564,10 +577,6 @@
           font-weight: 700;
           align-self: center;
           margin-left: 16px;
-        }
-
-        & ~ .pos-order__tab--content .pos-order__tab--content-main {
-          margin-bottom: 80px;
         }
       }
 

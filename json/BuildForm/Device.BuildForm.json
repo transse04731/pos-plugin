@@ -55,13 +55,6 @@
       "flex": "md4"
     },
     {
-      "_id": "5ea16979e02e5d58141801e9",
-      "schemaType": "boolean",
-      "key": "online",
-      "default": "false",
-      "type": "input@switch"
-    },
-    {
       "_id": "5ea2a2d17dd5671f139bc2b4",
       "schemaType": "object",
       "key": "features",

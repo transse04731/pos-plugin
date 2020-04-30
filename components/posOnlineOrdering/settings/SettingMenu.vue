@@ -6,7 +6,7 @@
         <img draggable="false" src="/plugins/pos-plugin/assets/folk_knife.svg">
         <p>Menu is currently empty.</p>
         <p><span style="color: #536DFE">"Add new category"</span> to get started.</p>
-        <div class="btn-add" @click="dialog.addNewCategory = true">+ Add New Category</div>
+        <g-btn-bs class="btn-add" @click="dialog.addNewCategory = true">+ Add New Category</g-btn-bs>
       </div>
       <div class="menu-setting__main" v-else>
         <div class="row-flex justify-end mb-2">
@@ -18,12 +18,18 @@
         </div>
         <div class="menu-setting__category">
           <div v-for="(cate, index) in categoriesViewModel" :key="index" class="mb-1">
-            <div @click="toggleCollapse(cate)" class="menu-setting__category__header">
+            <div @click="toggleCollapse(cate)" class="menu-setting__category__header" @mouseenter="toggleEditBtn(index, true)" @mouseleave="toggleEditBtn(index, false)">
               <g-edit-view-input
                   @click.native.stop.prevent="() => {}"
                   :value="cate.name"
                   class="menu-setting__title"
-                  @input="(name, cb) => changeCategoryName(cate._id, name, cb)"/>
+                  @input="(name, cb) => changeCategoryName(cate._id, name, cb)">
+                <template v-slot:action="{mode, switchToEditMode, applyChange, resetValue}">
+                  <g-icon v-if="editBtn[index] && mode !== 'edit'" @click="switchToEditMode()" size="18" class="ml-1">mdi-pencil-outline</g-icon>
+                  <g-icon v-if="mode === 'edit'" @click="applyChange()" class="ml-1">mdi-check</g-icon>
+                  <g-icon v-if="mode === 'edit'" @click="resetValue()" class="ml-1">mdi-close</g-icon>
+                </template>
+              </g-edit-view-input>
               <g-spacer/>
               <g-icon @click.prevent.stop="openDeleteCategoryDialog(cate)" class="mr-2">mdi-trash-can-outline</g-icon>
               <g-icon v-if="showProducts[cate._id]">fas fa-chevron-up</g-icon>
@@ -101,7 +107,8 @@
           addNewCategory: false,
           deleteCategory: false,
           deleteProduct: false,
-        }
+        },
+        editBtn: []
       }
     },
     created() {
@@ -109,6 +116,7 @@
         alert('Navigate to "Multiple Printers" and add a printer before editing menu item')
         this.renderPage = false
       }
+      this.editBtn = this.categoriesViewModel ? this.categoriesViewModel.map(g => false) : []
     },
     computed: {
       categoriesViewModel() {
@@ -118,6 +126,11 @@
           cate.products = _.filter(products, p => p.category._id === cate._id)
         })
         return categories
+      }
+    },
+    watch: {
+      categoriesViewModel(val) {
+        this.editBtn = val.map(g => false)
       }
     },
     methods: {
@@ -159,7 +172,6 @@
         this.$emit('delete-category', this.selectedCategoryId)
       },
       addNewProduct(product) {
-        console.log('product', product)
         this.$emit('add-new-product', product )
         this.showAddNewProductPanel[product.category] = false
       },
@@ -175,6 +187,11 @@
       },
       openWebShop() {
         window.open(`${location.origin}/store/${this.store.alias || this.store._id}`)
+      },
+      toggleEditBtn(index, mode) {
+        if(this.editBtn && this.editBtn.length > 0) {
+          this.$set(this.editBtn, index, mode)
+        }
       }
     }
   }

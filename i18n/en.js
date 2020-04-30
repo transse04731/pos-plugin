@@ -269,6 +269,29 @@ module.exports = {
       payment: 'Payment',
       tax: 'Tax',
       license: 'License'
+    },
+
+    store: {
+      open: 'Open',
+      closed: 'Closed',
+      orderList: 'Order List',
+      totalItems: 'Total items',
+      note: 'Note',
+      payment: 'PAYMENT',
+      confirmOrder: 'Confirm Order',
+      contactInfo: 'CONTACT INFORMATION',
+      pickup: 'Pick Up',
+      delivery: 'Delivery',
+      name: 'Name',
+      telephone: 'Telephone',
+      address: 'Address',
+      zipCode: 'Zip Code',
+      deliveryTime: 'Delivery Time',
+      total: 'Total',
+      confirm: 'CONFIRM',
+      orderSuccessfully: 'Order Successfully',
+      items: 'Items',
+      shippingFee: 'Shipping Fee'
     }
   }
 }

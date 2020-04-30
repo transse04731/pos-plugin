@@ -49,10 +49,7 @@
       },
       async prepareUploadAppFolder(fileName, version) {
         const baseName = this.getBaseName(fileName)
-        console.log(`creating /update/${baseName} folder`)
         await this.createFolder('/update', baseName)
-
-        console.log(`creating /update/${baseName}/${version} folder`)
         await this.createFolder(`/update/${baseName}`, version)
       },
       getBaseName(fileName) {
@@ -75,7 +72,9 @@
 
       async removeFile(filePath /*view path or download path*/) {
         const path = filePath.substr(filePath.indexOf('//') + 1)
-        await this.gridFsHandler.deleteFileByPath(path)
+        try {
+          await this.gridFsHandler.deleteFileByPath(path)
+        } catch (e) {}
       },
       async isFolderExist(folderPath) {
         try {

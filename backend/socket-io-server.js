@@ -40,6 +40,7 @@ function loadMessages(targetClientId) {
 
 module.exports = function (cms) {
   const DeviceModel = cms.getModel('Device');
+  let onlineDeviceIds = [];
 
   const proxyServer = new ProxyServer({
     expressServerPort: remoteControlExpressServerPort,
@@ -54,18 +55,16 @@ module.exports = function (cms) {
   });
 
   function updateDeviceAndNotify(online, clientId) {
-    const DeviceModel = cms.getModel('Device');
-    DeviceModel.updateOne({_id: clientId}, {online}, err => {
-      if (err) console.error(err);
+    if (online) onlineDeviceIds.push(clientId);
+    else onlineDeviceIds = onlineDeviceIds.filter(e => e !== clientId);
 
-      Object.keys(deviceStatusSubscribers).forEach(socketId => {
-        const deviceWatchList = deviceStatusSubscribers[socketId]
+    Object.keys(deviceStatusSubscribers).forEach(socketId => {
+      const deviceWatchList = deviceStatusSubscribers[socketId]
 
-        if (deviceWatchList && deviceWatchList.includes(clientId)) {
-          internalSocketIOServer.connected[socketId].emit('updateDeviceStatus');
-        }
-      });
-    })
+      if (deviceWatchList && deviceWatchList.includes(clientId)) {
+        internalSocketIOServer.connected[socketId].emit('updateDeviceStatus');
+      }
+    });
   }
 
   // externalSocketIOServer is Socket.io namespace for store/restaurant app to connect (use default namespace)
@@ -83,6 +82,16 @@ module.exports = function (cms) {
       callback(store.settingName);
     });
 
+    socket.on('getWebshopId', async (deviceId, callback) => {
+      const device = await cms.getModel('Device').findById(deviceId);
+      if (!device) return callback(null);
+
+      const store = await cms.getModel('Store').findById(device.storeId);
+      if (!store) return callback(null);
+
+      callback(store.id);
+    })
+
     if (socket.request._query && socket.request._query.clientId) {
       const clientId = socket.request._query.clientId;
       updateDeviceAndNotify(true, clientId);
@@ -93,6 +102,10 @@ module.exports = function (cms) {
   // internalSocketIOServer is another Socket.io namespace for frontend to connect (use /app namespace)
   internalSocketIOServer.on('connect', socket => {
     let remoteControlDeviceId = null;
+
+    socket.on('getOnlineDeviceIds', callback => callback(onlineDeviceIds));
+
+    socket.on('getProxyHost', callback => callback(global.APP_CONFIG.proxyHost));
 
     socket.on('watchDeviceStatus', clientIdList => {
       deviceStatusSubscribers[socket.id] = _.uniq((deviceStatusSubscribers[socket.id] || []).concat(clientIdList));

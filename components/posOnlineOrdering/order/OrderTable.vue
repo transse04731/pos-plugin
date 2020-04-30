@@ -1,19 +1,19 @@
 <template>
   <div>
     <div class="po-order-table">
-      <div v-if="store.orderHeaderImageSrc" class="po-order-table__header">
+      <div  class="po-order-table__header">
         <!-- header image -->
-        <img :src="store.orderHeaderImageSrc" class="po-order-table__header__image"/>
+        <img :src="store.orderHeaderImageSrc || '/plugins/pos-plugin/assets/images/header.png'" class="po-order-table__header__image"/>
       </div>
       <div class="po-order-table__main">
         <!-- header text -->
         <div class="po-order-table__header__text">
           <g-icon class="po-order-table__header__icon--mobile" @click="changeView">arrow_back</g-icon>
           <g-icon class="po-order-table__header__icon" v-if="confirmView" color="#424242" @click="view = 'order'" size="20">arrow_back_ios</g-icon>
-          <div class="po-order-table__header__text--main">{{ confirmView ? 'Confirm Your Order' : 'Order List' }}</div>
-          <div class="po-order-table__header__total" v-if="orderView">Total items: {{ totalItems }}</div>
+          <div class="po-order-table__header__text--main">{{ confirmView ? $t('store.confirmOrder') : $t('store.orderList') }}</div>
+          <div class="po-order-table__header__total" v-if="orderView">{{$t('store.totalItems')}}: {{ totalItems }}</div>
         </div>
-      
+
         <!-- content -->
         <div class="po-order-table__content">
           <template v-if="!isOpening">
@@ -25,9 +25,9 @@
           <template v-else>
             <!-- 0 items -->
             <div v-if="orderView && noMenuItem" style="margin-top: 100px; display: flex; justify-content: center; flex-direction: column">
-              <img src="/plugins/pos-plugin/assets/empty-order.svg">
-              <div style="margin-top: 10px; font-size: 15px; text-align: center; color: #757575;">
-                You haven't ordered any food yet. Click "<span stype="color: #2979FF; font-weight: bold;">List Food</span>" to get started.
+              <img src="/plugins/pos-plugin/assets/empty_order2.svg">
+              <div style="margin-top: 10px; font-size: 15px; text-align: center; color: #616161;">
+                Your order list is currently empty.
               </div>
             </div>
 
@@ -39,7 +39,7 @@
                 <div class="po-order-table__item__name">{{ item.name }}</div>
                 <div class="po-order-table__item__note">
                   <g-icon size="16">icon-note</g-icon>
-                  {{ item.note || 'Note ...' }}
+                  {{ item.note || `${$t('store.note')}...` }}
                 </div>
               </div>
 
@@ -56,20 +56,20 @@
 
             <!-- Confirm -->
             <template v-if="confirmView">
-              <div class="section-header">CONTACT INFORMATION</div>
+              <div class="section-header">{{$t('store.contactInfo')}}</div>
               <g-radio-group v-model="orderType" row class="radio-option">
-                <g-radio small color="#1271ff" label="Pick-up" value="pick-up" :disabled="!store.pickup"/>
-                <g-radio small color="#1271ff" label="Delivery" value="delivery" :disabled="!store.delivery"/>
+                <g-radio small color="#1271ff" :label="$t('store.pickup')" value="pickup" :disabled="!store.pickup"/>
+                <g-radio small color="#1271ff" :label="$t('store.delivery')" value="delivery" :disabled="!store.delivery"/>
               </g-radio-group>
               <div class="section-form">
-                <g-text-field v-model="customer.name" label="Name" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-person@16"/>
-                <g-text-field v-model="customer.phone" label="Phone" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-phone2@16"/>
+                <g-text-field v-model="customer.name" :label="$t('store.name')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-person@16"/>
+                <g-text-field type="number" v-model="customer.phone" :label="$t('store.telephone')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-phone2@16"/>
                 <template v-if="orderType === 'delivery'">
-                  <g-text-field v-model="customer.address" label="Address" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-place@16"/>
-                  <g-text-field v-model="customer.zipCode" label="Zip code" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
+                  <g-text-field v-model="customer.address" :label="$t('store.address')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-place@16"/>
+                  <g-text-field :rules="validateZipcode" type="number" v-model="customer.zipCode" :label="$t('store.zipCode')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
 <!--                  <g-time-picker-input v-model="customer.deliveryTime" label="Delivery time" required prepend-icon="icon-delivery-truck@16"/>-->
                 </template>
-                <g-textarea v-model="customer.note" placeholder="Note..." rows="3" no-resize/>
+                <g-textarea v-model="customer.note" :placeholder="`${$t('store.note')}...`" rows="3" no-resize/>
               </div>
 
               <!--            <div class="section-header">PAYMENT</div>-->
@@ -85,12 +85,12 @@
                 <div>{{ item.price * (item.quantity || 1) | currency }}</div>
               </div>
               <div class="order-item-summary">
-                <span>Total <b>{{ totalItems }}</b> items</span>
+                <span>{{$t('store.total')}}: <b>{{ totalItems }}</b> {{$t('store.items')}}</span>
                 <g-spacer/>
                 <span>{{ totalPrice | currency }}</span>
               </div>
               <div class="order-item-summary order-item-summary--end" >
-                <span>Shipping fee:</span>
+                <span>{{$t('store.shippingFee')}}:</span>
                 <g-spacer/>
                 <span>{{ shippingFee | currency }}</span>
               </div>
@@ -100,10 +100,15 @@
       </div>
       <!-- footer -->
       <div :class="['po-order-table__footer', !isOpening && 'disabled']">
-        <div>Total: <span style="font-weight: 700; font-size: 18px; margin-left: 4px">{{ (totalPrice + shippingFee) | currency }}</span></div>
+        <div>{{$t('store.total')}}: <span style="font-weight: 700; font-size: 18px; margin-left: 4px">{{ (totalPrice + shippingFee) | currency }}</span></div>
         <g-spacer/>
-        <g-btn-bs v-if="orderView" large rounded background-color="#2979FF" @click="view = 'confirm'" :disabled="orderItems.length === 0">PAYMENT</g-btn-bs>
-        <g-btn-bs v-if="confirmView" :disabled="availableConfirm" large rounded background-color="#2979FF" @click="confirmPayment" elevation="5">CONFIRM</g-btn-bs>
+        <g-btn-bs v-if="orderView" class="r" width="180" large rounded background-color="#2979FF" @click="view = 'confirm'" :disabled="orderItems.length === 0">
+          {{$t('store.payment')}}
+          <div class="icon-payment">
+            <g-icon size="16" color="white" class="ml-1">fas fa-chevron-right</g-icon>
+          </div>
+        </g-btn-bs>
+        <g-btn-bs v-if="confirmView" width="180" :disabled="unavailableConfirm" large rounded background-color="#2979FF" @click="confirmPayment" elevation="5">{{$t('store.confirm')}}</g-btn-bs>
       </div>
       <div class="po-order-table__footer--mobile" v-if="orderItems.length > 0">
         <g-badge :value="true" color="#4CAF50" overlay>
@@ -116,11 +121,13 @@
         </g-badge>
         <div class="po-order-table__footer--mobile--total">{{(totalPrice + shippingFee) | currency}}</div>
         <g-spacer/>
-        <g-btn-bs v-if="orderView" rounded background-color="#2979FF" @click="view = 'confirm'" style="padding: 8px 16px">PAYMENT</g-btn-bs>
-        <g-btn-bs v-if="confirmView" :disabled="availableConfirm" rounded background-color="#2979FF" @click="confirmPayment" style="padding: 8px 16px" elevation="5">CONFIRM</g-btn-bs>
+        <g-btn-bs v-if="orderView" rounded background-color="#2979FF" @click="view = 'confirm'" style="padding: 8px 16px">{{$t('store.payment')}}</g-btn-bs>
+        <g-btn-bs v-if="confirmView" :disabled="unavailableConfirm" rounded background-color="#2979FF" @click="confirmPayment" style="padding: 8px 16px" elevation="5">
+          {{$t('store.confirm')}}
+        </g-btn-bs>
       </div>
     </div>
-    
+
     <!-- Order created -->
     <order-created v-model="dialog.value" :order="dialog.order" @close="closeOrderSuccess" @subscribe="subscribe"/>
   </div>
@@ -140,7 +147,7 @@
     data: function () {
       return {
         view: 'order',
-        orderType: this.store.delivery ? 'delivery' : 'pick-up', // delivery || pick-up
+        orderType: this.store.delivery ? 'delivery' : 'pickup', // delivery || pick-up
         paymentType: 'cash', // cash || credit
         customer: {
           name: '',
@@ -175,31 +182,39 @@
         return _.sumBy(this.orderItems, item => item.price * item.quantity)
       },
       shippingFee() {
-        if (this.orderBy === 'pick-up')
+        if (this.orderBy === 'pickup' || this.orderBy === 'pickup' || !this.store.deliveryFee)
           return 0
-        
-        // empty order list
-        if (!this.orderItems.length)
-          return 0
-        
+
         // calculate zip code from store setting
         for(let deliveryFee of this.store.deliveryFee.fees) {
          if (_.lowerCase(_.trim(deliveryFee.zipCode)) === _.lowerCase(_.trim(this.customer.zipCode)))
            return deliveryFee.fee
         }
-        
+
         // other zip code will get default fee if store accept order from another zip code
-        if (this.store.deliveryFee.acceptOrderInOtherZipCodes)
+        if (this.store.deliveryFee && this.store.deliveryFee.acceptOrderInOtherZipCodes)
           return this.store.deliveryFee.defaultFee
-        
+
         return 0
       },
-      availableConfirm() {
-        const check = !this.customer.name || !this.customer.phone
+      unavailableConfirm() {
+        const check = !this.customer.name || !this.customer.phone || isNaN(this.customer.phone)
         if (this.orderType === 'delivery') {
-          return check || !this.customer.address || !this.customer.zipCode || !this.customer.deliveryTime
+          for(const fn of this.validateZipcode) {
+            if(typeof fn === 'function' && typeof fn(this.customer.zipCode) === "string")
+              return true
+          }
+          return check || !this.customer.address || !this.customer.zipCode || this.customer.zipCode.length < 5
         }
         return check
+      },
+      validateZipcode() {
+        const rules = []
+        if (this.store.deliveryFee && !this.store.deliveryFee.acceptOrderInOtherZipCodes) {
+          const zipCodes = this.store.deliveryFee.fees.map(f => f.zipCode)
+          rules.push((val) => val.length < 5 || zipCodes.includes(val) || 'Shipping service is not available to your zip code!')
+        }
+        return rules
       }
     },
     methods: {
@@ -216,6 +231,8 @@
         this.increaseOrAddNewItems(item)
       },
       confirmPayment() {
+        if(this.unavailableConfirm) return
+
         const {socket} = window.cms
 
         const {note, deliveryTime, ...customer} = this.customer;
@@ -258,7 +275,7 @@
           shippingFee: this.shippingFee,
           totalPrice: this.totalPrice,
         }
-        
+
         this.dialog.value = true
       },
       closeOrderSuccess() {
@@ -300,9 +317,11 @@
       &__text {
         display: flex;
         align-items: center;
+        padding-bottom: 4px;
         margin-bottom: 4px;
         font-size: 18px;
         font-weight: 700;
+        border-bottom: 1px solid #D8D8D8;
 
         &--main {
           display: flex;
@@ -519,12 +538,12 @@
     padding: 30px;
     border-radius: 5px;
     margin: 0 auto;
-  
+
     &--mobile {
       display: none;
     }
   }
-  
+
   @media screen and (max-width: 1040px) {
     .po-order-table {
       background: #F2F2F2;
@@ -598,13 +617,13 @@
         }
       }
     }
-  
+
     .dlg-order-created {
       display: none;
     }
     .order-created {
       display: none;
-    
+
       &--mobile {
         position: absolute;
         top: 0;
@@ -621,7 +640,7 @@
           padding-left: 40px;
           padding-right: 40px;
         }
-      
+
         &__actions {
           box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
           padding: 20px;
@@ -629,6 +648,18 @@
         }
       }
     }
+  }
+
+  .icon-payment {
+    position: absolute;
+    width: 33px;
+    height: 33px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    right: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 </style>
 
@@ -653,6 +684,20 @@
         background: transparent;
         color: inherit;
       }
+    }
+  }
+
+  .g-btn-bs {
+    position: relative;
+
+    &:hover:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.12);
     }
   }
 </style>
