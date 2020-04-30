@@ -60,12 +60,12 @@ router.post('/register', async (req, res) => {
   // hardware: Sunmi, Kindle-Fire, etc, ...
   // appName: Pos-Germany.apk
   // appVersion: 1.51
-  let {pairingCode, hardware, appName, appVersion } = req.body;
+  let {pairingCode, hardware, appName, appVersion, release } = req.body;
   if (!pairingCode) return res.status(400).json({message: 'Missing pairingCode in request body'});
   const deviceInfo = await DeviceModel.findOne({pairingCode, paired: false});
   if (deviceInfo) {
     // online status will be updated when client connects to external Socket.io server (see backend/socket-io-server.js file)
-    await DeviceModel.updateOne({pairingCode}, { name: 'New Device', paired: true, hardware, appName, appVersion, features: {
+    await DeviceModel.updateOne({pairingCode}, { name: 'New Device', paired: true, hardware, appName, appVersion, release, features: {
         fastCheckout: true,
         manualTable: true,
         delivery: true,
