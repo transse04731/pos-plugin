@@ -17,8 +17,6 @@
   },
   "homepage": "https://github.com/gigasource/pos-plugin#readme",
   "dependencies": {
-    "@gigasource/nodejs-proxy-server": "^1.0.5",
-    "@gigasource/socket.io-p2p-plugin": "^1.7.5",
     "clone-buffer": "^1.0.0",
     "cropperjs": "^1.5.6",
     "dayjs": "^1.8.17",
