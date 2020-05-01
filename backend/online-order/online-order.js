@@ -114,7 +114,7 @@ function createOnlineOrderSocket(deviceId) {
         proxyClient = null;
       }
 
-      callback();
+      if (typeof callback === 'function') callback();
     });
 
     onlineOrderSocket.on('updateApp', async (uploadPath, ackFn) => {
