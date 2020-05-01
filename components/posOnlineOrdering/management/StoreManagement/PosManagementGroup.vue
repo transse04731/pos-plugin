@@ -253,7 +253,7 @@
 
             this.iframeRefreshInterval = setInterval(() => {
               this.iframeSrc = ''
-              this.$nextTick(() => this.iframeSrc = `${proxyHost}:${proxyPort}/view/pos-dashboard`)
+              this.$nextTick(() => this.iframeSrc = `${proxyHost}${proxyPort}/pos-dashboard`)
             }, 10000)
           } else {
             // TODO: handle error
