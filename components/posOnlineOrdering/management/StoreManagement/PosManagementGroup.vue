@@ -245,10 +245,10 @@
         const {socket} = window.cms
 
         socket.emit('startRemoteControl', this.remoteControlDeviceId, proxyPort => {
-          const proxyHost = this.proxyHost || `${location.protocol}//${location.hostname}`
+          const proxyHost = this.proxyHost || `${location.protocol}//${location.hostname}:`
 
           if (proxyPort) {
-            this.iframeSrc = `${proxyHost}:${proxyPort}/view/pos-dashboard`
+            this.iframeSrc = `${proxyHost}${proxyPort}/pos-dashboard`
             this.showIframe = true
 
             this.iframeRefreshInterval = setInterval(() => {
@@ -257,6 +257,7 @@
             }, 10000)
           } else {
             // TODO: handle error
+            console.error('Error occurred: proxyPort === null')
           }
         })
       },

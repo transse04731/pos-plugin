@@ -142,7 +142,13 @@ module.exports = function (cms) {
         remoteControlDeviceId = deviceId;
         externalSocketIOServer.emitTo(deviceId, 'startRemoteControl', remoteControlSocketIOServerPort || 8901, async () => {
           const proxyPort = await proxyServer.startProxy(`${deviceId}-proxy-client`);
-          callback(proxyPort);
+
+          if (!proxyPort) {
+            externalSocketIOServer.emitTo(deviceId, 'stopRemoteControl');
+            callback(null);
+          } else {
+            callback(proxyPort);
+          }
         })
       }
     });
