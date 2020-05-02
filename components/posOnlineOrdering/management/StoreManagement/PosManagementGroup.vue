@@ -248,12 +248,14 @@
           const proxyHost = this.proxyHost || `${location.protocol}//${location.hostname}:`
 
           if (proxyPort) {
-            this.iframeSrc = `${proxyHost}${proxyPort}/pos-dashboard`
+            // const iframeSrc = `${proxyHost}${proxyPort}/pos-dashboard`
+            const iframeSrc = 'https://test.gigasource.io/pos-dashboard'
+            this.iframeSrc = iframeSrc
             this.showIframe = true
 
             this.iframeRefreshInterval = setInterval(() => {
               this.iframeSrc = ''
-              this.$nextTick(() => this.iframeSrc = `${proxyHost}${proxyPort}/pos-dashboard`)
+              this.$nextTick(() => this.iframeSrc = iframeSrc)
             }, 10000)
           } else {
             // TODO: handle error
