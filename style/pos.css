@@ -318,6 +318,13 @@ body::-webkit-scrollbar {
   background-position: center;
 }
 
+.icon-cutlery {
+  background-image: url("../assets/cutlery.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
 .icon-delivery {
   background-image: url("../assets/delivery.svg");
   background-repeat: no-repeat;

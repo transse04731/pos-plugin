@@ -190,10 +190,12 @@ module.exports = {
       promotionalApplied: 'Promotional Applied',
       barcode: 'Barcode',
       amount: 'Amount',
-      staff: 'Staff',
+      staff: 'User',
       info: 'Info',
       filter: 'Filter',
-      deleteOrder: 'Delete Order'
+      deleteOrder: 'Delete Order',
+      type: 'Type',
+      tableNo: 'Table No.'
     },
 
     payment: {

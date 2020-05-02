@@ -302,7 +302,9 @@
       },
       async getOrderHistory() {
         const orderModel = cms.getModel('Order');
-        const condition = this.orderHistoryFilters.reduce((acc, filter) => ({ ...acc, ...filter['condition'] }), { status: 'paid' });
+        const condition = this.orderHistoryFilters.reduce((acc, filter) => (
+          { ...acc, ...filter['condition'] }),
+          { $or: [{ status: 'paid' }, { status: 'completed' }] });
         const { limit, currentPage } = this.orderHistoryPagination;
         const orders = await orderModel.find(condition).sort({ date: -1 }).skip(limit * (currentPage - 1)).limit(limit);
         this.orderHistoryOrders = orders.map(order => ({
@@ -533,14 +535,16 @@
       async declineOrder(order) {
         await cms.getModel('Order').findOneAndUpdate({ _id: order._id},
           Object.assign({}, order, {
-            status: 'declined'
+            status: 'declined',
+            user: this.user
           }))
         await this.updateOnlineOrders()
       },
       async acceptPendingOrder(order) {
         await cms.getModel('Order').findOneAndUpdate({ _id: order._id},
           Object.assign({}, order, {
-            status: 'kitchen'
+            status: 'kitchen',
+            user: this.user
           }))
         this.printOnlineOrderKitchen(order._id).catch(e => console.error(e))
         this.printOnlineOrderReport(order._id).catch(e => console.error(e))
