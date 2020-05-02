@@ -204,7 +204,7 @@
         nameEditMenu: false,
         selectedStore: null,
         selectedDevice: null,
-        proxyHost: null,
+        proxyInfo: null,
         showEditBtn: false,
       }
     },
@@ -246,18 +246,21 @@
 
         socket.emit('startRemoteControl', this.remoteControlDeviceId, proxyPort => {
           let proxyHost = `${location.protocol}//${location.hostname}:${proxyPort}`
+          const {proxyHost: pHost, proxyRetryInterval} = this.proxyInfo
 
-          if (this.proxyHost) proxyHost = this.proxyHost.replace('${port}', proxyPort)
+          if (pHost) proxyHost = pHost.replace('${port}', proxyPort)
 
           if (proxyPort) {
             const iframeSrc = `${proxyHost}/pos-dashboard`
             this.iframeSrc = iframeSrc
             this.showIframe = true
 
-            this.iframeRefreshInterval = setInterval(() => {
-              this.iframeSrc = ''
-              this.$nextTick(() => this.iframeSrc = iframeSrc)
-            }, 10000)
+            if (proxyRetryInterval > 0) {
+              this.iframeRefreshInterval = setInterval(() => {
+                this.iframeSrc = ''
+                this.$nextTick(() => this.iframeSrc = iframeSrc)
+              }, proxyRetryInterval)
+            }
           } else {
             // TODO: handle error
             console.error('Error occurred: proxyPort === null')
@@ -278,7 +281,7 @@
       },
     },
     created() {
-      window.cms.socket.emit('getProxyHost', proxyHost => this.proxyHost = proxyHost)
+      window.cms.socket.emit('getProxyInfo', proxyInfo => this.proxyInfo = proxyInfo)
     },
     beforeDestroy() {
       this.stopRemoteControl()

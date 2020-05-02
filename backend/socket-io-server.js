@@ -105,7 +105,10 @@ module.exports = function (cms) {
 
     socket.on('getOnlineDeviceIds', callback => callback(onlineDeviceIds));
 
-    socket.on('getProxyHost', callback => callback(global.APP_CONFIG.proxyHost));
+    socket.on('getProxyInfo', callback => callback({
+      proxyHost: global.APP_CONFIG.proxyHost,
+      proxyRetryInterval: global.APP_CONFIG.proxyRetryInterval,
+    }));
 
     socket.on('watchDeviceStatus', clientIdList => {
       deviceStatusSubscribers[socket.id] = _.uniq((deviceStatusSubscribers[socket.id] || []).concat(clientIdList));
