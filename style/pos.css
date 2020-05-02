@@ -515,3 +515,24 @@ body::-webkit-scrollbar {
   background-size: contain;
   background-position: center;
 }
+
+.icon-wlan {
+  background-image: url("../assets/wlan.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-wlan-disconnected {
+  background-image: url("../assets/wlan-disconnected.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-wlan-error {
+  background-image: url("../assets/wlan-error.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}

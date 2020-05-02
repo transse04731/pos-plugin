@@ -522,6 +522,11 @@
                   "service": "PosStore:firstTimeSetup",
                   "local": "firstTimeSetup",
                   "type": "event"
+                },
+                {
+                  "service": "SettingsStore:healthCheck",
+                  "local": "healthCheck",
+                  "type": "event"
                 }
               ]
             }
