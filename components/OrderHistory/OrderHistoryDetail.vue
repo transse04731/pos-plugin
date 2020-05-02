@@ -31,8 +31,13 @@
     <g-simple-table striped>
       <tr v-for="product in orderHistoryCurrentOrder.items">
         <td>{{product.quantity}}x</td>
-        <td>{{product.name}}</td>
+        <td>{{product.id}}. {{product.name}}</td>
         <td class="ta-right">€ {{product.originalPrice | formatNumber}}</td>
+      </tr>
+      <tr v-if="orderHistoryCurrentOrder.type">
+        <td></td>
+        <td>Shipping Fee</td>
+        <td class="ta-right">€ {{orderHistoryCurrentOrder.shippingFee | formatNumber}}</td>
       </tr>
     </g-simple-table>
     <g-divider/>
