@@ -245,11 +245,12 @@
         const {socket} = window.cms
 
         socket.emit('startRemoteControl', this.remoteControlDeviceId, proxyPort => {
-          const proxyHost = this.proxyHost || `${location.protocol}//${location.hostname}:`
+          let proxyHost = `${location.protocol}//${location.hostname}:${proxyPort}`
+
+          if (this.proxyHost) proxyHost = this.proxyHost.replace('${port}', proxyPort)
 
           if (proxyPort) {
-            // const iframeSrc = `${proxyHost}${proxyPort}/pos-dashboard`
-            const iframeSrc = 'https://test.gigasource.io/pos-dashboard'
+            const iframeSrc = `${proxyHost}/pos-dashboard`
             this.iframeSrc = iframeSrc
             this.showIframe = true
 
