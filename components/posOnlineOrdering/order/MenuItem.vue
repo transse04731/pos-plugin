@@ -1,6 +1,6 @@
 <template>
   <div class="po-menu-item">
-    <img v-if="image" alt draggable="false" :src="image" class="po-menu-item__thumbnail"/>
+    <img v-if="image" alt draggable="false" :src="menuItemThumbnail" class="po-menu-item__thumbnail"/>
     <img v-else alt draggable="false" src="/plugins/pos-plugin/assets/empty_dish.svg" class="po-menu-item__thumbnail"/>
     <div class="po-menu-item__content">
       <div class="po-menu-item__name">{{ name }}</div>
@@ -17,7 +17,7 @@
     </div>
     <g-icon @click="addToOrder" v-if="isOpening"
             size="28" color="#424242"
-           class="po-menu-item__add">
+            class="po-menu-item__add">
       add_circle
     </g-icon>
     <div class="po-menu-item__action" v-if="isOpening">
@@ -46,6 +46,13 @@
       quantity: Number,
       currencyUnit: String,
       isOpening: Boolean,
+      imageThumbnailSize: {
+        type: Object,
+        default: () => ({
+          width: 60,
+          height: 60,
+        }),
+      }
     },
     filters: {
       currency(val) {
@@ -62,7 +69,14 @@
       increaseQuantity() {
         this.$emit('increase', this._id)
       }
-    }
+    },
+    computed: {
+      menuItemThumbnail() {
+        const {width, height} = this.imageThumbnailSize
+
+        return `${this.image}?w=${width}&h=${height}`
+      }
+    },
   }
 </script>
 <style scoped lang="scss">
@@ -71,14 +85,14 @@
     align-items: flex-start;
     padding-top: 8px;
     height: 80px;
-    
+
     &__thumbnail {
       border-radius: 15px;
       margin-right: 18px;
       width: 60px;
       height: 60px;
     }
-    
+
     &__name {
       font-weight: bold;
       font-size: 15px;
@@ -93,7 +107,7 @@
       margin-right: 16px;
       max-width: calc(100% - 180px);
     }
-    
+
     &__desc {
       font-size: 13px;
       color: #757575;
@@ -105,7 +119,7 @@
       overflow: hidden;
       user-select: auto;
     }
-    
+
     &__prices {
       display: flex;
       flex-direction: column;
@@ -130,7 +144,7 @@
         margin-top: 4px;
       }
     }
-    
+
     &__add {
       margin-left: 10px;
       margin-right: 30px;
