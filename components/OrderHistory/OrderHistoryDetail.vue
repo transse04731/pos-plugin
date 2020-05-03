@@ -1,18 +1,18 @@
 <template>
   <div v-if="orderHistoryCurrentOrder" class="wrapper">
     <div class="row-flex" style="padding-bottom: 14px">
-      <div style="width: 50%;">
+      <div class="pl-2 flex-grow-1">
         <div class="order-title">{{$t('orderHistory.orderNo')}}</div>
         <div class="order-id">{{orderHistoryCurrentOrder.id}}</div>
       </div>
-      <div style="width: 50%;" v-if="orderHistoryCurrentOrder.table">
+      <div class="pl-2 flex-grow-1" v-if="orderHistoryCurrentOrder.table">
         <div class="order-title">Table No</div>
         <div class="order-id">{{orderHistoryCurrentOrder.table}}</div>
       </div>
     </div>
     <g-divider/>
-    <div style="font-size: 12px">
-      <div class="row-flex" style="padding: 6px 0">
+    <div style="font-size: 12px; padding: 6px 0">
+      <div class="row-flex">
         <div class="flex-grow-1" style="opacity: 0.5">Created time</div>
         <div>{{orderHistoryCurrentOrder.date | formatDate}}</div>
       </div>
@@ -59,7 +59,6 @@
       <span>{{$t('common.total')}} </span>
       <span class="total__important">€ {{orderHistoryCurrentOrder.amount | formatNumber}}</span>
     </div>
-    <g-divider/>
   </div>
 </template>
 
@@ -106,6 +105,8 @@
     box-shadow: -1px 0px 6px rgba(0, 0, 0, 0.25);
     overflow: auto;
     z-index: 2;
+    display: flex;
+    flex-direction: column;
 
     &::-webkit-scrollbar {
       display: none;
@@ -128,6 +129,7 @@
     .g-table {
       margin-top: 16px;
       margin-bottom: 16px;
+      flex-grow: 1;
 
       tr td {
         height: 28px;
