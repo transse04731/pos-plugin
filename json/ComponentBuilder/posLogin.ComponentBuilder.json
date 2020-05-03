@@ -190,13 +190,13 @@
                 "justifyItems": "",
                 "justifyContent": "",
                 "columns": [
+                  "1fr",
+                  "4px",
+                  "20%",
+                  "4px",
+                  "20%",
+                  "4px",
                   "15%",
-                  "4px",
-                  "20%",
-                  "4px",
-                  "20%",
-                  "4px",
-                  "20%",
                   "4px",
                   "20%"
                 ],
@@ -498,7 +498,8 @@
           "style": {
             "height": "100%"
           }
-        }
+        },
+        "events": {}
       },
       "binding": [],
       "slotScopeBinding": [],

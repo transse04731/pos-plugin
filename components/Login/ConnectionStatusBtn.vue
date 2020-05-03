@@ -1,16 +1,13 @@
 <template>
-  <g-btn flat :uppercase="false" height="100%" v-if="online && connected">
-      <g-icon>icon-wlan</g-icon>
-      <span style="color: #2979FF"> Internet</span>
-  </g-btn>
-  <g-btn flat :uppercase="false" height="100%" v-else-if="online && !connected">
-    <g-icon>icon-wlan-error</g-icon>
-    <span style="color: #FF4452"> Error</span>
-  </g-btn>
-  <g-btn flat :uppercase="false" height="100%" v-else>
-    <g-icon>icon-wlan-disconnected</g-icon>
-    <span style="color: #FF4452"> No Internet</span>
-  </g-btn>
+  <g-btn-bs icon="icon-wlan@20" text-color="#2979FF" v-if="online && connected">
+      Internet
+  </g-btn-bs>
+  <g-btn-bs icon="icon-wlan-error@20" text-color="#FF4452" v-else-if="online && !connected">
+    Error
+  </g-btn-bs>
+  <g-btn-bs icon="icon-wlan-disconnected@20" text-color="#FF4452" height="100%" v-else>
+    No Internet
+  </g-btn-bs>
 </template>
 
 <script>
@@ -41,6 +38,8 @@
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+ .g-btn-bs {
+   font-size: 14px;
+ }
 </style>
