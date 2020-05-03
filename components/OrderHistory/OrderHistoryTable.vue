@@ -9,10 +9,10 @@
         <th @click="openDateTimePicker">{{$t('common.datetime')}}
           <g-icon size="12">mdi-filter</g-icon>
         </th>
-        <th class="ta-center" @click="openBarcodeLookup">{{$t('orderHistory.type')}}
+        <th class="ta-center" @click="dialog.type = true">{{$t('orderHistory.type')}}
           <g-icon size="12">mdi-magnify</g-icon>
         </th>
-        <th class="ta-left">{{$t('orderHistory.tableNo')}}
+        <th class="ta-left" @click="dialog.table = true">{{$t('orderHistory.tableNo')}}
           <g-icon size="12">mdi-filter</g-icon>
         </th>
         <th class="ta-right" @click="openAmountFilter">{{$t('orderHistory.amount')}}
@@ -62,6 +62,8 @@
                           :total-document="totalOrders"
                           :limit.sync="limit"
                           :current-page.sync="currentPage"/>
+    <dialog-selection-filter v-model="dialog.type" :label="$t('orderHistory.type')" :items="items" @submit="setTypeFilter"/>
+    <dialog-number-filter v-model="dialog.table" :label="$t('orderHistory.tableNo')" @submit="setTableFilter"/>
   </div>
 </template>
 <script>
@@ -71,8 +73,21 @@
       value: null,
     },
     injectService: [
-      'OrderStore:(orderHistoryOrders,orderHistoryFilters,orderHistoryCurrentOrder,getOrderHistory,orderHistoryPagination,getTotalOrders,totalOrders)'
+      'OrderStore:(orderHistoryOrders,orderHistoryFilters,orderHistoryCurrentOrder,getOrderHistory,orderHistoryPagination,getTotalOrders,totalOrders,updateOrderHistoryFilter)',
     ],
+    data() {
+      return {
+        dialog: {
+          type: false,
+          table: false,
+        },
+        items: [
+          {text: 'Delivery', value: 'delivery'},
+          {text: 'Pick-up', value: 'pickup'},
+          {text: 'Dine-in', value: 'dinein'}
+        ]
+      }
+    },
     computed: {
       limit: {
         get() {
@@ -128,6 +143,26 @@
       },
       getStaffName(staffs) {
         return staffs.map(s => s.name).join(', ')
+      },
+      setTypeFilter(type) {
+        const filter = {
+          title: this.$t('orderHistory.type'),
+          text: this.items.find(item => item.value === type)['text'],
+          condition: type === 'dinein' ? {type: null} : {type}
+        }
+        this.updateOrderHistoryFilter(filter)
+        this.getOrderHistory()
+        this.getTotalOrders()
+      },
+      setTableFilter(table) {
+        const filter = {
+          title: this.$t('orderHistory.tableNo'),
+          text: table,
+          condition: {table}
+        }
+        this.updateOrderHistoryFilter(filter)
+        this.getOrderHistory()
+        this.getTotalOrders()
       }
     },
     async created() {
