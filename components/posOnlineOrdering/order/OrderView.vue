@@ -238,7 +238,7 @@
       },
       storeOpenStatusStyle() {
         return {
-          color: this.isStoreOpening ? '#4CAF50' : "#424242",
+          color: this.isStoreOpening ? '#4CAF50' : "#FF4452",
           'margin-right': '5px'
         }
       },

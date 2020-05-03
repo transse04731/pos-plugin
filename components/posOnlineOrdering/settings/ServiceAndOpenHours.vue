@@ -19,10 +19,10 @@
             color="#536DFE"/>
         <g-spacer/>
         <div :class="['open-hour__row--hour', 'left', errors[index] && errors[index].open && 'error']">
-          <g-time-picker-input use24Hours :disabled="errors[index] && errors[index].close" :value="openHour.openTime"  @input="updateHours($event, index, true)"/>
+          <g-time-picker-input :use24Hours="country.name !== 'United State'" :disabled="errors[index] && errors[index].close" :value="openHour.openTime"  @input="updateHours($event, index, true)"/>
         </div>
         <div :class="['open-hour__row--hour', 'right', errors[index] && errors[index].close && 'error']">
-          <g-time-picker-input use24Hours :disabled="errors[index] && errors[index].open" :value="openHour.closeTime"  @input="updateHours($event, index, false)"/>
+          <g-time-picker-input :use24Hours="country.name !== 'United State'" :disabled="errors[index] && errors[index].open" :value="openHour.closeTime"  @input="updateHours($event, index, false)"/>
         </div>
         <g-spacer/>
         <div @click="removeOpenHour(openHour)" class="open-hour__row--btn">
@@ -63,6 +63,13 @@
       delivery: Boolean,
       pickup: Boolean,
       openHours: Array,
+      country: {
+        type: Object,
+        default: () => ({
+          name: '',
+          locale: ''
+        })
+      }
     },
     data: function () {
       return {

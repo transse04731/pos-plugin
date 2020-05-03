@@ -86,6 +86,7 @@
       text-overflow: ellipsis;
       overflow: hidden;
       max-width: 350px;
+      user-select: auto;
     }
 
     &__content {
@@ -102,6 +103,7 @@
       display: -webkit-box;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      user-select: auto;
     }
     
     &__prices {

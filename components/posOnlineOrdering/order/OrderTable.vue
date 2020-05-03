@@ -276,6 +276,15 @@
           totalPrice: this.totalPrice,
         }
 
+        this.customer = {
+          name: '',
+          phone: '',
+          address: '',
+          zipCode: '',
+          deliveryTime: '',
+          note: ''
+        }
+
         this.dialog.value = true
       },
       closeOrderSuccess() {

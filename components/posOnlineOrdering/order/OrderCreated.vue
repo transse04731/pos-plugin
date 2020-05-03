@@ -108,7 +108,7 @@
 
     &__content {
       overflow: hidden scroll;
-      max-height: calc(100% - 140px);
+      max-height: calc(100% - 120px);
 
       .order-detail {
         display: flex;
@@ -150,6 +150,7 @@
       display: flex;
       flex-direction: row;
       justify-content: flex-end;
+      margin-top: 8px;
     }
   }
 
