@@ -301,6 +301,9 @@
           }
         })
         this.selectedCategoryId = categoryInViewPort.filter(c => !!c)[0]
+        if(!this.selectedCategoryId) {
+          this.selectedCategoryId = _.last(this.categories)._id
+        }
       },
       chooseCategory(id) {
         this.selectedCategoryId = id
