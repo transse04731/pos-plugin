@@ -500,3 +500,17 @@ body::-webkit-scrollbar {
   background-size: contain;
   background-position: center;
 }
+
+.icon-coupon {
+  background-image: url("../assets/coupon.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-coupon_white {
+  background-image: url("../assets/coupon_white.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}

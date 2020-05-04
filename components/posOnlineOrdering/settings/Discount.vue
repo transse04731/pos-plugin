@@ -1,0 +1,304 @@
+<template>
+  <div class="discount">
+    <div class="discount__title">Discount</div>
+    <div class="discount__action-bar">
+      <g-btn-bs background-color="indigo accent-2" text-color="white" icon="add@20" @click="openDialogDiscount()">Add New Discount</g-btn-bs>
+    </div>
+    <div class="discount__table">
+      <div class="discount__table-header">
+        <div class="w-20 pl-2">Name</div>
+        <div class="col-2 pl-1">Type</div>
+        <div class="col-2 pl-1">Amount</div>
+        <div class="flex-equal pl-1">Condition</div>
+        <div class="col-1 pl-1 ta-center">Status</div>
+        <div class="col-1"></div>
+      </div>
+      <div class="discount__table-content">
+        <template v-if="!listDiscount || listDiscount.length === 0">
+          <div class="discount__table-content--empty">
+            <img alt src="/plugins/pos-plugin/assets/empty_group.svg"/>
+            <p class="text-grey-darken-1 mt-2">Discount is currently empty</p>
+            <g-btn-bs text-color="indigo accent-2" icon="add@16" class="fw-700" @click="openDialogDiscount()">Add New Discount</g-btn-bs>
+          </div>
+        </template>
+        <template v-else>
+          <div v-for="(discount, i) in listDiscount" :key="i"
+               :class="['discount__table-row', i % 2 === 0 ? 'discount__table-row--even' : 'discount__table-row--odd']">
+            <div class="w-20 pl-2">{{discount.name}}</div>
+            <div class="col-2 pl-1">{{getType(discount.type)}}</div>
+            <div class="col-2 pl-1">{{getAmount(discount.amount)}}</div>
+            <div class="flex-equal pl-1">{{getCondition(discount.condition)}}</div>
+            <div class="col-1 pl-1">
+              <span :class="getStatusClass(discount.status)">{{discount.status}}</span>
+            </div>
+            <div class="col-1 row-flex justify-center">
+              <g-menu v-model="discount.menu" :close-on-content-click="true" nudge-left="40" nudge-bottom="10">
+                <template v-slot:activator="{on}">
+                  <g-icon :class="[discount.menu && 'menu--active']" @click="on.click">more_horiz</g-icon>
+                </template>
+                <div class="menu-action">
+                  <div class="menu-action__option" @click="openDialogDiscount(true, discount)">Edit</div>
+                  <div class="menu-action__option" @click="changeStatus(discount)">{{discount.status === 'active' ? 'Disable' : 'Active'}}</div>
+                  <div class="menu-action__option" @click="openDialogDelete(discount)">Delete</div>
+                </div>
+              </g-menu>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+    <dialog-new-discount v-model="dialog.discount" :edit="dialog.edit" :discount="selectedDiscount" @submit="addDiscount"/>
+    <dialog-delete-item v-model="dialog.delete" type="discount" @confirm="deleteDiscount"/>
+  </div>
+</template>
+
+<script>
+  import DialogNewDiscount from "./dialogNewDiscount";
+  import DialogDeleteItem from "./dialogDeleteItem";
+  export default {
+    name: "Discount",
+    components: {DialogDeleteItem, DialogNewDiscount},
+    props: {
+
+    },
+    data() {
+      return {
+        dialog: {
+          discount: false,
+          edit: false,
+          delete: false
+        },
+        listDiscount: [
+          {
+            name: 'Wednesday discount',
+            type: ['pickup', 'delivery'],
+            amount: {
+              type: 'percentage',
+              value: 20
+            },
+            condition: {
+              weekDay: {
+                days: ['Wed']
+              }
+            },
+            status: 'active',
+            menu: false
+          },
+          {
+            name: 'Freeship',
+            type: ['delivery'],
+            amount: {
+              type: 'freeShipping',
+              value: 0
+            },
+            condition: {
+              totalValue: {
+                type: 'greater',
+                value: 20,
+              },
+              coupon: {
+                title: 'freeship',
+                numberUse: 100
+              }
+            },
+            status: 'disabled',
+            menu: false
+          },
+        ],
+        selectedDiscount: null,
+      }
+    },
+    methods: {
+      openDialogDiscount(edit = false,discount = null) {
+        this.dialog.edit = edit
+        this.selectedDiscount = discount
+        this.dialog.discount = true
+      },
+      getType(type) {
+        if(type && type.length > 0) {
+          return type.join('; ')
+        }
+        return ''
+      },
+      getAmount(amount) {
+        if(amount.type === 'freeShipping') {
+          return 'Free Shipping'
+        } else if (amount.type === 'percentage') {
+          return `${amount.value}%`
+        } else {
+          return `${$t('common.currency')}${amount.value}`
+        }
+      },
+      getCondition(condition) {
+        let cdt = ''
+        for(const key in condition) {
+          if(key === 'totalValue') {
+            cdt += 'Total value '
+            if(condition[key].type === 'greater') {
+              cdt += `≥ ${condition[key].value}; `
+            } else {
+              cdt += `≤ ${condition[key].value}; `
+            }
+          }
+          if(key === 'weekDay') {
+            cdt += `Days of week: ${condition[key].days.join(', ')}; `
+          }
+          if(key === 'coupon') {
+            cdt += `Coupon: ${condition[key].title}(${condition[key].numberUse}); `
+          }
+        }
+        return cdt.slice(0, cdt.length - 2)
+      },
+      getStatusClass(status) {
+        if(status === 'active') {
+          return 'status status--active'
+        } else
+          return 'status status--disabled'
+      },
+      changeStatus(discount) {
+        if(discount.status === 'active')
+          this.$set(discount, 'status' , 'disabled')
+        else
+          this.$set(discount, 'status' , 'active')
+      },
+      openDialogDelete(discount) {
+        this.selectedDiscount = discount
+        this.dialog.delete = true
+      },
+      addDiscount() {
+
+      },
+      deleteDiscount() {
+
+      }
+    }
+  }
+</script>
+
+<style scoped lang="scss">
+  .discount {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+
+    &__title {
+      font-size: 20px;
+      line-height: 25px;
+      font-weight: 700;
+      color: #000000;
+      margin-bottom: 16px;
+      margin-left: 5px;
+    }
+
+    &__action-bar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-bottom: 16px;
+      margin-right: -8px;
+    }
+
+    &__table {
+      background: #FFFFFF;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1398);
+      border-radius: 2px;
+      overflow: hidden;
+      height: calc(100% - 120px);
+
+      &-header {
+        background: #EFEFEF;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        font-size: 12px;
+        font-weight: 700;
+        color: #757575;
+
+        & > div {
+          cursor: pointer;
+        }
+      }
+
+      &-content {
+        height: calc(100% - 38px);
+        overflow: hidden auto;
+        scrollbar-width: none; // firefox
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
+
+        &--empty {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-items: center;
+          margin-top: 64px;
+
+          .g-btn-bs ::v-deep > * {
+            font-weight: 700;
+          }
+        }
+      }
+
+      &-row {
+        display: flex;
+        align-items: center;
+        height: 55px;
+        font-size: 14px;
+        color: #424242;
+
+        &--odd {
+          background: #FAFAFC;
+        }
+
+        &--even {
+          background: #FFFFFF;
+        }
+
+        .status {
+          border-radius: 16px;
+          line-height: 2;
+          text-transform: capitalize;
+
+          &--disabled {
+            background: #FFF3E0;
+            color: #FF9800;
+            padding: 6px 8px;
+          }
+
+          &--active {
+            background: #DFF2DF;
+            color: #4CAF50;
+            padding: 6px 16px;
+          }
+        }
+      }
+    }
+  }
+
+  .menu {
+    &--active {
+      border-radius: 50%;
+      background: #F4F5FA;
+      color: #536DFE !important;
+    }
+
+    &-action {
+      background: white;
+      border-radius: 2px;
+
+      &__option {
+        color: #201F2B;
+        padding: 8px 36px 8px 12px;
+        white-space: nowrap;
+        font-size: 14px;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #EFEFEF;
+        }
+      }
+    }
+  }
+</style>

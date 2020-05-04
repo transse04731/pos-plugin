@@ -30,6 +30,7 @@
             @delete-product="deleteProduct"/>
         <delivery-fee v-if="view === 'setting-delivery-fee'" :store="store" @update="updateStore"/>
         <multiple-printer v-if="view === 'setting-multiple-printer'" :store="store" @update="updateStore"/>
+        <discount v-if="view === 'setting-discount'" />
       </div>
     </template>
   </div>
@@ -41,9 +42,10 @@
   import SettingMenu from './SettingMenu';
   import DeliveryFee from "./DeliveryFee";
   import MultiplePrinter from "./MultiplePrinter";
+  import Discount from "./Discount";
   export default {
     name: 'SettingView',
-    components: {MultiplePrinter, DeliveryFee, SettingMenu, ServiceAndOpenHours, RestaurantInformation},
+    components: {Discount, MultiplePrinter, DeliveryFee, SettingMenu, ServiceAndOpenHours, RestaurantInformation},
     data: function () {
       return {
         sidebarItems: [
@@ -56,6 +58,7 @@
           {title: 'Menu', icon: 'filter_list', onClick: () => this.changeView('settings-menu')},
           {title: 'Delivery Fee', icon: 'icon-setting-delivery', onClick: () => this.changeView('setting-delivery-fee', 'Delivery Fee')},
           {title: 'Multiple Printer', icon: 'icon-setting-multiple', onClick: () => this.changeView('setting-multiple-printer', 'Multiple Printer')},
+          {title: 'Discount', icon: 'icon-coupon', onClick: () => this.changeView('setting-discount', 'Discount')},
         ],
         view: 'restaurant-info',
         sidebar: '',
