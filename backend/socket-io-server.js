@@ -128,7 +128,7 @@ module.exports = function (cms) {
 
     socket.on('createOrder', async (storeId, orderData) => {
       storeId = ObjectId(storeId);
-      const device = await DeviceModel.findOne({storeId});
+      const device = await DeviceModel.findOne({storeId, 'features.onlineOrdering': true});
       const deviceId = device._id.toString();
 
       externalSocketIOServer.emitToPersistent(deviceId, 'createOrder', [orderData]);
