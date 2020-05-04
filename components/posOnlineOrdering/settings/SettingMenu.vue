@@ -250,6 +250,7 @@
         padding: 0 20px;
         background-color: #E1E8F0;
         cursor: pointer;
+        z-index: 2;
 
         .g-edit-view-input {
           ::v-deep .g-icon {
