@@ -12,9 +12,23 @@
     </div>
     <div class="divider-dashed"/>
     <div class="kitchen-items">
-      <div v-for="item in items">
+      <div v-for="(item, index) in items" :key="index">
         <div class="kitchen-item" :style="{fontSize: computedFontSize}">
-          {{`${item.id} x ${item.quantity}. ${item.name}`}}
+          <table>
+            <tbody>
+            <tr>
+              <td :style="{'padding-bottom': index === items.length - 1 ? '0' : '18px', width: calculateQuantityColumnWidth(item.quantity)}">
+                {{item.quantity}}
+              </td>
+              <td :style="{'padding-bottom': index === items.length - 1 ? '0' : '18px', width: '5%'}">
+                x
+              </td>
+              <td :style="{'padding-bottom': index === items.length - 1 ? '0' : '18px', width: calculateItemColumnWidth(item.quantity)}">
+                {{`${item.id}. ${item.name}`}}
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -46,7 +60,7 @@
     },
     computed: {
       wrapperStyle() {
-        return { marginTop: `${Math.floor((this.marginTop || 0) * 71)}px` }
+        return {marginTop: `${Math.floor((this.marginTop || 0) * 71)}px`}
       },
       computedFontSize() {
         if (this.fontSize === 1) {
@@ -59,8 +73,16 @@
           return `${(this.fontSize - 1) * 5 + 60}px`;
         }
         return '40px'
-      }
-    }
+      },
+    },
+    methods: {
+      calculateQuantityColumnWidth(itemQuantity) {
+        return `${itemQuantity.toString().length * 5}%`
+      },
+      calculateItemColumnWidth(itemQuantity) {
+        return `${92 - itemQuantity.toString().length * 5}%`
+      },
+    },
   }
 </script>
 
@@ -121,6 +143,31 @@
     .kitchen-items {
       margin-top: 20px;
       margin-bottom: 20px;
+
+      table {
+        text-align: left;
+        width: 100%;
+        border: none;
+        border-spacing: 0;
+
+        tbody, tr {
+          width: 100%;
+        }
+
+        tbody {
+          tr:not(:last-child) {
+            td {
+              padding-bottom: 12px;
+            }
+          }
+
+          td {
+            word-break: break-all;
+            padding: 0;
+            vertical-align: top;
+          }
+        }
+      }
     }
 
     .footer {

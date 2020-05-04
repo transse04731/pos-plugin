@@ -7,11 +7,26 @@
     </div>
     <div class="divider-dashed"/>
     <div class="kitchen-items">
-      <div v-for="item in items">
+      <div v-for="(item, index) in items">
         <div class="kitchen-item" :style="{fontSize: computedFontSize}">
-          {{`${item.quantity} x ${item.id}. ${item.name}`}}
+          <table>
+            <tbody>
+            <tr>
+              <td :style="{'padding-bottom': index === items.length - 1 || item.modifiers ? '0' : '18px', width: calculateQuantityColumnWidth(item.quantity)}">
+                {{item.quantity}}
+              </td>
+              <td :style="{'padding-bottom': index === items.length - 1 || item.modifiers ? '0' : '18px', width: '5%'}">
+                x
+              </td>
+              <td :style="{'padding-bottom': index === items.length - 1 || item.modifiers ? '0' : '18px', width: calculateItemColumnWidth(item.quantity)}">
+                {{`${item.id}. ${item.name}`}}
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="kitchen-item-modifiers" v-if="item.modifiers">
+        <div class="kitchen-item-modifiers" v-if="item.modifiers"
+             :style="{'padding-bottom': index === items.length - 1 ? '0' : '18px'}">
           <div v-for="mod in item.modifiers" class="inset">
             <span>* {{mod.name}}</span> <span v-if="mod.price">${{mod.price | convertMoney}}</span>
           </div>
@@ -62,7 +77,15 @@
         }
         return '40px'
       }
-    }
+    },
+    methods: {
+      calculateQuantityColumnWidth(itemQuantity) {
+        return `${itemQuantity.toString().length * 5}%`
+      },
+      calculateItemColumnWidth(itemQuantity) {
+        return `${92 - itemQuantity.toString().length * 5}%`
+      },
+    },
   }
 </script>
 
@@ -116,7 +139,7 @@
     }
 
     .inset {
-      padding-left: 80px;
+      padding-left: 60px;
     }
 
     .kitchen-items {
@@ -128,6 +151,31 @@
 
         &-modifiers {
           font-size: 30px;
+        }
+      }
+
+      table {
+        text-align: left;
+        width: 100%;
+        border: none;
+        border-spacing: 0;
+
+        tbody, tr {
+          width: 100%;
+        }
+
+        tbody {
+          tr:not(:last-child) {
+            td {
+              padding-bottom: 12px;
+            }
+          }
+
+          td {
+            word-break: break-all;
+            padding: 0;
+            vertical-align: top;
+          }
         }
       }
     }
