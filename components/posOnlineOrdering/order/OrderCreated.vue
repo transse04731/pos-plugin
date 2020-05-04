@@ -109,6 +109,11 @@
     &__content {
       overflow: hidden scroll;
       max-height: calc(100% - 120px);
+      scrollbar-width: none; // firefox
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
 
       .order-detail {
         display: flex;

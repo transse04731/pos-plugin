@@ -1,6 +1,5 @@
 <template>
-  <div style="width: 100vw; height: 100vh; background-color: #F2F2F2">
-    <div class="pos-order">
+  <div class="pos-order">
       <template  v-if="store">
         <div class="pos-order__left">
           <div class="pos-order__left__header">
@@ -89,13 +88,12 @@
         </g-dialog>
       </template>
     </div>
-  </div>
 </template>
 <script>
   import _ from 'lodash';
   import OrderTable from './OrderTable';
   import MenuItem from './MenuItem';
-  import {smoothScrolling} from 'pos-vue-framework'
+  import {smoothScrolling, disableBodyScroll, enableBodyScroll} from 'pos-vue-framework'
 
   export default {
     name: 'OrderView',
@@ -154,6 +152,7 @@
             setTimeout(() => {
               const contentRef = this.$refs['tab-content']
               contentRef && contentRef.addEventListener('scroll', this.debounce)
+              contentRef && disableBodyScroll(contentRef)
             }, 500)
           } else {
             const contentRef = this.$refs['tab-content']
@@ -166,6 +165,7 @@
     beforeDestroy() {
       clearInterval(this.dayInterval)
       this.$refs['tab-content'].removeEventListener('scroll', this.debounce)
+      enableBodyScroll(this.$refs['tab-content'])
     },
     computed: {
       shippingFee() {
@@ -329,14 +329,16 @@
 </script>
 <style scoped lang="scss">
   .pos-order {
-    box-sizing: border-box;
     display: flex;
-    width: 100vw;
+    width: 100%;
     max-width: 1140px;
     margin: 0 auto;
-    height: 100vh;
+    height: 100%;
+    max-height: 100%;
     background-color: #FFF;
     box-shadow: 0 0 2px 2px #D5D5D5;
+    overflow: hidden;
+    position: fixed;
 
     &__left {
       flex: 1;
@@ -455,10 +457,12 @@
       }
 
       &--content {
+        flex: 1;
         margin-top: 30px;
         overflow: hidden auto;
         /*scroll-behavior: smooth;*/
         scrollbar-width: none; // firefox
+        -webkit-overflow-scrolling: touch;
 
         &::-webkit-scrollbar {
           display: none;
