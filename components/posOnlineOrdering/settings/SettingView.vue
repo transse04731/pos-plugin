@@ -30,7 +30,8 @@
             @delete-product="deleteProduct"/>
         <delivery-fee v-if="view === 'setting-delivery-fee'" :store="store" @update="updateStore"/>
         <multiple-printer v-if="view === 'setting-multiple-printer'" :store="store" @update="updateStore"/>
-        <discount v-if="view === 'setting-discount'" />
+        <discount v-if="view === 'setting-discount'" :list-discount="listDiscount"
+                  @addDiscount="addDiscount" @getDiscounts="getDiscounts" @removeDiscount="removeDiscount" @updateDiscount="updateDiscount"/>
       </div>
     </template>
   </div>
@@ -68,6 +69,7 @@
         products: null,
         permissionDenied: true,
         permissionDeniedMessage: '',
+        listDiscount: []
       }
     },
     async created() {
@@ -185,6 +187,39 @@
         if (!_id) return
         await cms.getModel('Product').remove({_id: _id, store: this.store._id})
         await this.loadProducts()
+      },
+
+      // Discounts
+      async getDiscounts() {
+        try {
+          this.listDiscount = await cms.getModel('Discount').find()
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      async addDiscount(discount, cb) {
+        try {
+          await cms.getModel('Discount').findOneAndUpdate({_id: discount._id}, discount, {upsert: true})
+          await cb()
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      async updateDiscount(discount, cb) {
+        try {
+          await cms.getModel('Discount').findOneAndUpdate({ _id: discount._id }, discount)
+          await cb()
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      async removeDiscount({ _id }, cb) {
+        try {
+          await cms.getModel('Discount').deleteOne({ _id: _id })
+          await cb()
+        } catch (e) {
+          console.error(e)
+        }
       }
     }
   }

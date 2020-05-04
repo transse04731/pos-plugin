@@ -25,68 +25,68 @@
         <p class="mt-1 ml-1 mb-2">Condition</p>
         <div class="dialog__condition">
           <div>
-            <g-checkbox color="indigo accent-2" v-model="condition.totalValue.active" label="Total value"/>
+            <g-checkbox color="indigo accent-2" v-model="conditions.total.active" label="Total value"/>
           </div>
-          <div :class="['row-flex', 'br-2', 'b-grey', 'ba-thin', !condition.totalValue.active && 'disabled']">
+          <div :class="['row-flex', 'br-2', 'b-grey', 'ba-thin', !conditions.total.active && 'disabled']">
             <div class="col-6 b-grey brw-thin row-flex align-items-center justify-center pa-2"
                  @click="toggleTotalValue()">
-              <g-icon color="#212121" v-if="condition.totalValue.type === 'greater'" size="20">fas
+              <g-icon color="#212121" v-if="conditions.total.value.type === 'gte'" size="20">fas
                 fa-greater-than-equal
               </g-icon>
-              <g-icon color="#212121" v-if="condition.totalValue.type === 'less'" size="20">fas fa-less-than-equal
+              <g-icon color="#212121" v-if="conditions.total.value.type === 'lte'" size="20">fas fa-less-than-equal
               </g-icon>
             </div>
             <div class="col-6 row-flex align-items-center justify-center">
-              <input type="number" class="ta-center fw-700 fs-large" v-model="condition.totalValue.value"/>
+              <input type="number" class="ta-center fw-700 fs-large" v-model="conditions.total.value.value"/>
             </div>
           </div>
           <div>
-            <g-checkbox color="indigo accent-2" v-model="condition.time.active" label="Time period"/>
+            <g-checkbox color="indigo accent-2" v-model="conditions.timePeriod.active" label="Time period"/>
           </div>
-          <div :class="['row-flex', 'br-2', 'b-grey', 'ba-thin', !condition.time.active && 'disabled']">
+          <div :class="['row-flex', 'br-2', 'b-grey', 'ba-thin', !conditions.timePeriod.active && 'disabled']">
             <div class="col-6 b-grey brw-thin row-flex align-items-center justify-center pa-2">
-              <g-date-picker-input class="date-picker" v-model="condition.time.fromDate" :max="condition.time.toDate"/>
+              <g-date-picker-input class="date-picker" v-model="conditions.timePeriod.value.startDate" :max="conditions.timePeriod.value.endDate"/>
             </div>
             <div class="col-6 row-flex align-items-center justify-center pa-2">
-              <g-date-picker-input class="date-picker" v-model="condition.time.toDate" :min="condition.time.fromDate"/>
+              <g-date-picker-input class="date-picker" v-model="conditions.timePeriod.value.endDate" :min="conditions.timePeriod.value.startDate"/>
             </div>
           </div>
           <div>
-            <g-checkbox color="indigo accent-2" v-model="condition.weekDay.active" label="Days of the week"/>
+            <g-checkbox color="indigo accent-2" v-model="conditions.daysOfWeek.active" label="Days of the week"/>
           </div>
-          <div :class="['row-flex', 'br-2', 'flex-wrap', 'b-grey', 'ba-thin', !condition.weekDay.active && 'disabled']">
-            <g-checkbox color="indigo accent-2" class="col-4" v-model="condition.weekDay.days" value="Mon"
+          <div :class="['row-flex', 'br-2', 'flex-wrap', 'b-grey', 'ba-thin', !conditions.daysOfWeek.active && 'disabled']">
+            <g-checkbox color="indigo accent-2" class="col-4" v-model="conditions.daysOfWeek.value" value="Monday"
                         label="Mon"/>
-            <g-checkbox color="indigo accent-2" class="col-4" v-model="condition.weekDay.days" value="Thu"
+            <g-checkbox color="indigo accent-2" class="col-4" v-model="conditions.daysOfWeek.value" value="Thursday"
                         label="Thu"/>
-            <g-checkbox color="indigo accent-2" class="col-4" v-model="condition.weekDay.days" value="Sun"
+            <g-checkbox color="indigo accent-2" class="col-4" v-model="conditions.daysOfWeek.value" value="Sunday"
                         label="Sun"/>
-            <g-checkbox color="indigo accent-2" class="col-4" v-model="condition.weekDay.days" value="Tue"
+            <g-checkbox color="indigo accent-2" class="col-4" v-model="conditions.daysOfWeek.value" value="Tuesday"
                         label="Tue"/>
-            <g-checkbox color="indigo accent-2" class="col-8" v-model="condition.weekDay.days" value="Fri"
+            <g-checkbox color="indigo accent-2" class="col-8" v-model="conditions.daysOfWeek.value" value="Friday"
                         label="Fri"/>
-            <g-checkbox color="indigo accent-2" class="col-4" v-model="condition.weekDay.days" value="Wed"
+            <g-checkbox color="indigo accent-2" class="col-4" v-model="conditions.daysOfWeek.value" value="Wednesday"
                         label="Wed"/>
-            <g-checkbox color="indigo accent-2" class="col-8" v-model="condition.weekDay.days" value="Sat"
+            <g-checkbox color="indigo accent-2" class="col-8" v-model="conditions.daysOfWeek.value" value="Saturday"
                         label="Sat"/>
           </div>
           <div>
-            <g-checkbox color="indigo accent-2" v-model="condition.zipCode.active" label="Zip code"/>
+            <g-checkbox color="indigo accent-2" v-model="conditions.zipCode.active" label="Zip code"/>
           </div>
-          <div :class="[!condition.zipCode.active && 'disabled']">
+          <div :class="[!conditions.zipCode.active && 'disabled']">
             <g-combobox text-field-component="GTextFieldBs" deletable-chips multiple
-                        v-model="condition.zipCode.code"/>
+                        v-model="conditions.zipCode.value"/>
           </div>
           <div>
-            <g-checkbox color="indigo accent-2" v-model="condition.coupon.active" label="Coupon"/>
+            <g-checkbox color="indigo accent-2" v-model="conditions.coupon.active" label="Coupon"/>
           </div>
-          <div :class="['row-flex', !condition.coupon.active && 'disabled']">
+          <div :class="['row-flex', !conditions.coupon.active && 'disabled']">
             <div class="flex-equal row-flex align-items-center justify-center">
-              <g-text-field-bs v-model="condition.coupon.title"/>
+              <g-text-field-bs v-model="conditions.coupon.value.code"/>
             </div>
             <div class="col-3 row-flex align-items-center justify-end pr-2">No. of use</div>
             <div class="flex-equal row-flex align-items-center justify-center">
-              <g-text-field-bs type="number" v-model="condition.coupon.numberUse"/>
+              <g-text-field-bs type="number" v-model="conditions.coupon.value.usesRemaining"/>
             </div>
           </div>
         </div>
@@ -101,8 +101,10 @@
 </template>
 
 <script>
+  import _ from 'lodash'
+
   export default {
-    name: "dialogNewDiscount",
+    name: 'dialogNewDiscount',
     props: {
       value: Boolean,
       edit: Boolean,
@@ -116,35 +118,41 @@
           type: '',
           value: 0,
         },
-        condition: {
-          totalValue: {
+        conditions: {
+          total: {
             active: false,
-            type: 'greater',
-            value: 0
+            value: {
+              type: 'gte',
+              value: 0
+            }
           },
-          time: {
+          timePeriod: {
             active: false,
-            fromDate: '',
-            toDate: ''
+            value: {
+              startDate: '',
+              endDate: ''
+            }
           },
-          weekDay: {
+          daysOfWeek: {
             active: false,
-            days: []
+            value: []
           },
           zipCode: {
             active: false,
-            code: []
+            value: []
           },
           coupon: {
             active: false,
-            title: '',
-            numberUse: 0
+            value: {
+              code: '',
+              usesRemaining: 0
+            }
           }
         },
         amounts: [
-          {text: `Number (${$t('common.currency')})`, value: 'number'},
-          {text: 'Percentage', value: 'percentage'},
-          {text: 'Free shipping', value: 'freeShipping'}
+          { text: `Number (${$t('common.currency')})`, value: 'flat' },
+          { text: 'Percentage', value: 'percent' },
+          { text: 'Free shipping', value: 'freeShipping' }
         ]
       }
     },
@@ -160,19 +168,120 @@
     },
     methods: {
       toggleTotalValue() {
-        if (this.condition.totalValue.type === 'greater') {
-          this.condition.totalValue.type = 'less'
-        } else if (this.condition.totalValue.type === 'less') {
-          this.condition.totalValue.type = 'greater'
+        if (this.conditions.total.value.type === 'gte') {
+          this.conditions.total.value.type = 'lte'
+        } else if (this.conditions.total.value.type === 'lte') {
+          this.conditions.total.value.type = 'gte'
         }
       },
       close() {
         this.internalValue = false
+
+        this.name = ''
+        this.type = []
+        this.amount = {
+          type: '',
+          value: 0,
+        }
+        this.conditions = {
+          total: {
+            active: false,
+            value: {
+              type: 'gte',
+              value: 0
+            }
+          },
+          timePeriod: {
+            active: false,
+            value: {
+              startDate: '',
+              endDate: ''
+            }
+          },
+          daysOfWeek: {
+            active: false,
+            value: []
+          },
+          zipCode: {
+            active: false,
+            value: []
+          },
+          coupon: {
+            active: false,
+            value: {
+              code: '',
+              usesRemaining: 0
+            }
+          }
+        }
       },
       submit() {
-        const discount = {}
-        this.$emit('submit', discount)
+        this.$emit('submit', this.getDiscount())
         this.close()
+      },
+      getDiscount() {
+        return {
+          ... this.discount &&this.discount._id && { _id: this.discount._id },
+          name: this.name,
+          type: this.type,
+          amount: this.amount,
+          conditions: _.reduce(this.conditions, (conditions, { active, value }, key) => {
+            if (!active) return conditions
+            return Object.assign(conditions, {
+              [key]: key === 'timePeriod' ? {
+                startDate: dayjs(value.startDate).toDate(),
+                endDate: dayjs(value.endDate).toDate()
+              } : value
+            })
+          }, {}),
+          enabled: this.discount && !_.isNil(this.discount.enabled) ? this.discount.enabled : true
+        }
+      }
+    },
+    watch: {
+      discount(val) {
+        this.name = val.name
+        this.type = val.type
+        this.amount = {
+          type: val.amount.type,
+          value: val.amount.value,
+        }
+
+        const { daysOfWeek, total, coupon, timePeriod, zipCode } = val.conditions;
+        this.conditions = {
+          total: {
+            active: !!total,
+            value: total ? total : {
+              type: 'gte',
+              value: 0
+            }
+          },
+          timePeriod: {
+            active: !!timePeriod,
+            value: timePeriod ? {
+              startDate: dayjs(timePeriod.startDate).format('YYYY-MM-DD'),
+              endDate: dayjs(timePeriod.endDate).format('YYYY-MM-DD'),
+            } : {
+              startDate: '',
+              endDate: ''
+            }
+          },
+          daysOfWeek: {
+            active: !!daysOfWeek && !!daysOfWeek.length,
+            value: daysOfWeek && daysOfWeek.length ? daysOfWeek : []
+          },
+          zipCode: {
+            active: !!zipCode && !!zipCode.length,
+            value: zipCode && zipCode.length ? zipCode : []
+          },
+          coupon: {
+            active: !!coupon,
+            value: coupon ? coupon : {
+              code: '',
+              usesRemaining: 0
+            }
+          }
+        }
       }
     }
   }
