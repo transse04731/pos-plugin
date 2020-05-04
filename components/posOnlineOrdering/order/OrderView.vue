@@ -287,11 +287,11 @@
         return 0
       },
       elementInWrapper(el) {
-        const {top} = el.getBoundingClientRect()
+        const {top, bottom} = el.getBoundingClientRect()
 
         const wrapper = document.getElementById('tab-content').getBoundingClientRect()
 
-        return top >= wrapper.top;
+        return top >= wrapper.top || bottom >= wrapper.bottom - 100;
       },
       handleScroll() {
         const categoryInViewPort = this.categories.map(c => c._id).map(id => {
@@ -301,7 +301,8 @@
           }
         })
         this.selectedCategoryId = categoryInViewPort.filter(c => !!c)[0]
-        if(!this.selectedCategoryId) {
+        const wrapper = document.getElementById('tab-content')
+        if(!this.selectedCategoryId || (wrapper.offsetHeight + wrapper.scrollTop >= wrapper.scrollHeight)) {
           this.selectedCategoryId = _.last(this.categories)._id
         }
       },
