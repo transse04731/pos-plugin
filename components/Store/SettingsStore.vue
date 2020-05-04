@@ -733,13 +733,13 @@
         }
         await cms.getModel('GroupPrinter').create(printers)
         await this.genPrinterSidebar()
-        this.selectedPrinterMenu = this.printerSidebar.find(s => s.title === 'General Setting')
+        this.selectedPrinterMenu = this.printerSidebar.find(s => s.slot === 'general')
       },
       async removeEntirePrinter(lower, upper) {
         const regex = `EntireReceipt[${lower + 1}-${upper}]`
         await cms.getModel('GroupPrinter').deleteMany({name: {$regex: regex}, type: 'entire'})
         await this.genPrinterSidebar()
-        this.selectedPrinterMenu = this.printerSidebar.find(s => s.title === 'General Setting')
+        this.selectedPrinterMenu = this.printerSidebar.find(s => s.slot === 'general')
       },
       //keyboard Config
       async updateKeyboardConfig(keyboardConfig) {
