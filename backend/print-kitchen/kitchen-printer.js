@@ -129,24 +129,45 @@ module.exports = async function (cms) {
         printer.println(time);
         printer.drawLine();
 
-        printer.setTextQuadArea();
         printer.alignLeft();
-        items.forEach(item => {
+        items.forEach((item, index) => {
+          const quantityColumnWidth = item.quantity.toString().length * 0.05;
+          const itemsColumnWidth = 0.92 - item.quantity.toString().length * 0.05;
+
           printer.setTextQuadArea();
           printer.bold(true);
-          printer.printText(`${item.quantity} x ${item.id}. ${item.name}`);
+          printer.tableCustom([
+            {text: item.quantity, align: 'LEFT', width: quantityColumnWidth},
+            {text: 'x', align: 'LEFT', width: 0.05},
+            {text: `${item.id}. ${item.name}`, align: 'LEFT', width: itemsColumnWidth},
+          ], {textDoubleWith: true});
 
-          printer.setTextNormal();
+          printer.setTextDoubleWidth();
           printer.bold(true);
           if (item.modifiers) item.modifiers.forEach(mod => {
-            printer.text(`        * ${mod.name}`);
-            if (mod.price) printer.text(` $${convertMoney(mod.price)}`);
+            let modifierText = `* ${mod.name}`
+            if (mod.price) modifierText += ` $${convertMoney(mod.price)}`;
 
-            printer.newLine();
+            printer.tableCustom([
+              {text: '', align: 'LEFT', width: quantityColumnWidth},
+              {text: '', align: 'LEFT', width: 0.05},
+              {text: modifierText, align: 'LEFT', width: itemsColumnWidth},
+            ], {textDoubleWith: true});
           });
-          if (item.separate) printer.println('************************');
+
+          if (index < items.length - 1) {
+            printer.setTextNormal();
+            if (item.separate) {
+              printer.println('************************');
+            } else {
+              printer.newLine();
+              printer.newLine();
+            }
+          }
         });
 
+        printer.setTextNormal();
+        printer.bold(true);
         printer.drawLine();
 
         printer.setTextNormal();

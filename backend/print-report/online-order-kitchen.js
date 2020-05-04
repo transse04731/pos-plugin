@@ -63,15 +63,29 @@ async function printEscPos(escPrinter, printData, groupPrinter) {
   note && escPrinter.println(note)
   escPrinter.newLine()
 
+  escPrinter.bold(true);
   escPrinter.drawLine()
-  escPrinter.newLine()
-  filteredItems.forEach(i => {
-    escPrinter.setTextQuadArea()
-    escPrinter.bold(true)
-    escPrinter.printText(`${i.quantity} x ${i.id}. ${i.name}`)
+  filteredItems.forEach((item, index) => {
+    const quantityColumnWidth = item.quantity.toString().length * 0.05;
+    const itemsColumnWidth = 0.92 - item.quantity.toString().length * 0.05;
+
+    escPrinter.setTextQuadArea();
+    escPrinter.bold(true);
+    escPrinter.tableCustom([
+      {text: item.quantity, align: 'LEFT', width: quantityColumnWidth},
+      {text: 'x', align: 'LEFT', width: 0.05},
+      {text: `${item.id}. ${item.name}`, align: 'LEFT', width: itemsColumnWidth},
+    ], {textDoubleWith: true});
+
+    if (index < items.length - 1) {
+      escPrinter.setTextNormal();
+      escPrinter.newLine();
+      escPrinter.newLine();
+    }
   })
   escPrinter.newLine()
   escPrinter.setTextNormal()
+  escPrinter.bold(true);
   escPrinter.drawLine()
   escPrinter.newLine()
   escPrinter.alignCenter()
