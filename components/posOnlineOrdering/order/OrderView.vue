@@ -333,13 +333,12 @@
     display: flex;
     width: 100%;
     max-width: 1140px;
-    margin: 0 auto;
     height: 100%;
     max-height: 100%;
     background-color: #FFF;
     box-shadow: 0 0 2px 2px #D5D5D5;
     overflow: hidden;
-    position: fixed;
+    align-self: center;
 
     &__left {
       flex: 1;
