@@ -176,7 +176,7 @@
     injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems,clearOrder)'],
     filters: {
       currency(value) {
-        if (value)
+        if (value != null)
           return $t('common.currency') + value.toFixed(2)
         return 0
       }
@@ -199,7 +199,10 @@
         return _.sumBy(this.orderItems, item => item.price * item.quantity)
       },
       shippingFee() {
-        if (this.orderBy === 'pickup' || this.orderBy === 'pickup' || !this.store.deliveryFee)
+        if (!this.orderItems || this.orderItems.length === 0)
+          return 0;
+        
+        if (this.orderType === 'pickup' || this.orderType === 'pickup' || !this.store.deliveryFee)
           return 0
 
         // calculate zip code from store setting
