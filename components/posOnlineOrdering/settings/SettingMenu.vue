@@ -30,6 +30,8 @@
                   <g-icon v-if="mode === 'edit'" @click="resetValue()" class="ml-1">mdi-close</g-icon>
                 </template>
               </g-edit-view-input>
+              <g-icon v-if="editBtn[index]" style="cursor: pointer; margin-left: 8px" @click.stop="swapCategory(index, index-1)">fas fa-caret-square-up</g-icon>
+              <g-icon v-if="editBtn[index]" style="cursor: pointer; margin-left: 8px" @click.stop="swapCategory(index, index+1)">fas fa-caret-square-down</g-icon>
               <g-spacer/>
               <g-icon @click.prevent.stop="openDeleteCategoryDialog(cate)" class="mr-2">mdi-trash-can-outline</g-icon>
               <g-icon v-if="showProducts[cate._id]">fas fa-chevron-up</g-icon>
@@ -44,12 +46,14 @@
                           v-for="(product, index) in cate.products"
                           v-bind="product"
                           :index="index"
+                          :max-index="cate.products.length"
                           :available-printers="store.printers"
                           :use-multiple-printers="store.useMultiplePrinters"
                           :key="`item_${index}`"
                           @editing="setEditing(product._id, $event)"
                           @save="updateProduct(product._id, $event)"
-                          @delete="openDeleteProductDialog(product._id)"/>
+                          @delete="openDeleteProductDialog(product._id)"
+                          @swap="(oldIndex, newIndex) => swapProduct(cate, oldIndex, newIndex)"/>
                     </template>
                     <div v-else-if="!showAddNewProductPanel[cate._id]" style="height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #fff;">
                       <img src="/plugins/pos-plugin/assets/no-items.svg" class="mb-2"/>
@@ -61,7 +65,7 @@
                           :available-printers="store.printers"
                           :use-multiple-printers="store.useMultiplePrinters"
                           @cancel="hideAddNewProductPanelForCategory(cate)"
-                          @save="addNewProduct({...$event, category: cate._id})"/>
+                          @save="addNewProduct({...$event, category: cate._id, order: cate.products.length})"/>
                     </div>
                   </div>
                   <div style="height: 40px; background-color: #fff; display: flex; align-items: center; justify-content: center;">
@@ -123,14 +127,15 @@
         const categories = _.cloneDeep(this.categories)
         const products = _.cloneDeep(this.products)
         _.each(categories, cate => {
-          cate.products = _.filter(products, p => p.category._id === cate._id)
+          cate.products = _.orderBy(_.filter(products, p => p.category._id === cate._id), 'position', 'asc')
         })
         return categories
       }
     },
     watch: {
       categoriesViewModel(val) {
-        this.editBtn = val.map(g => false)
+        if(val)
+          this.editBtn = val.map(g => false)
       }
     },
     methods: {
@@ -191,6 +196,19 @@
       toggleEditBtn(index, mode) {
         if(this.editBtn && this.editBtn.length > 0) {
           this.$set(this.editBtn, index, mode)
+        }
+      },
+      swapProduct(category, oldIndex, newIndex) {
+        const product = category.products[oldIndex]
+        const swapProduct = category.products[newIndex]
+        this.updateProduct(product._id, {position: newIndex})
+        this.updateProduct(swapProduct._id, {position: oldIndex})
+      },
+      swapCategory(oldIndex, newIndex) {
+        const category = this.categories[oldIndex]
+        const swapCategory = this.categories[newIndex]
+        if(category && swapCategory) {
+          this.$emit('swap-category', category._id, swapCategory._id, oldIndex, newIndex)
         }
       }
     }

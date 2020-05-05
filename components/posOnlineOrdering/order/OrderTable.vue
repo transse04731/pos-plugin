@@ -182,12 +182,12 @@
       }
     },
     mounted() {
-      const content = document.getElementById('table-content')
-      content && disableBodyScroll(content)
+      // const content = document.getElementById('table-content')
+      // content && disableBodyScroll(content)
     },
     beforeDestroy() {
-      const content = document.getElementById('table-content')
-      content && enableBodyScroll(content)
+      // const content = document.getElementById('table-content')
+      // content && enableBodyScroll(content)
     },
     computed: {
       confirmView() { return !this.orderView },
