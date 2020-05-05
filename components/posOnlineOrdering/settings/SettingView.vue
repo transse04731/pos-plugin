@@ -197,12 +197,18 @@
           console.error(e)
         }
       },
-      async addDiscount(discount, update ,cb) {
+      async addDiscount(discount ,cb) {
         try {
-          await cms.getModel('Discount').findOneAndUpdate({_id: discount._id}, {
-            ...discount,
-            store: this.store._id
-          }, {upsert: !update})
+          if (discount._id) {
+            await cms.getModel('Discount').findOneAndUpdate({ _id: discount._id }, {
+              ...discount
+            })
+          } else {
+            await cms.getModel('Discount').create({
+              ...discount,
+              ...!discount.store && { store: this.store._id }
+            })
+          }
           await cb()
         } catch (e) {
           console.error(e)

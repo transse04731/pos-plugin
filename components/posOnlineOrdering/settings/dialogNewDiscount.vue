@@ -163,6 +163,7 @@
         },
         set(val) {
           this.$emit('input', val)
+          if (!val) this.resetDiscount()
         }
       }
     },
@@ -176,7 +177,30 @@
       },
       close() {
         this.internalValue = false
-
+      },
+      submit() {
+        this.$emit('submit', this.getDiscount())
+        this.close()
+      },
+      getDiscount() {
+        return {
+          ... this.discount && this.discount._id && { _id: this.discount._id },
+          name: this.name,
+          type: this.type,
+          amount: this.amount,
+          conditions: _.reduce(this.conditions, (conditions, { active, value }, key) => {
+            if (!active) return conditions
+            return Object.assign(conditions, {
+              [key]: key === 'timePeriod' ? {
+                startDate: dayjs(value.startDate).toDate(),
+                endDate: dayjs(value.endDate).toDate()
+              } : value
+            })
+          }, {}),
+          enabled: this.discount && !_.isNil(this.discount.enabled) ? this.discount.enabled : true
+        }
+      },
+      resetDiscount() {
         this.name = ''
         this.type = []
         this.amount = {
@@ -214,71 +238,51 @@
             }
           }
         }
-      },
-      submit() {
-        this.$emit('submit', this.getDiscount(), !!this.discount)
-        this.close()
-      },
-      getDiscount() {
-        return {
-          _id: this.discount ? this.discount._id : null,
-          name: this.name,
-          type: this.type,
-          amount: this.amount,
-          conditions: _.reduce(this.conditions, (conditions, { active, value }, key) => {
-            if (!active) return conditions
-            return Object.assign(conditions, {
-              [key]: key === 'timePeriod' ? {
-                startDate: dayjs(value.startDate).toDate(),
-                endDate: dayjs(value.endDate).toDate()
-              } : value
-            })
-          }, {}),
-          enabled: this.discount && !_.isNil(this.discount.enabled) ? this.discount.enabled : true
-        }
       }
     },
     watch: {
       discount(val) {
-        this.name = val.name
-        this.type = val.type
-        this.amount = {
-          type: val.amount.type,
-          value: val.amount.value,
-        }
+        if (val) {
+          this.name = val.name
+          this.type = val.type
+          this.amount = {
+            type: val.amount.type,
+            value: val.amount.value,
+          }
 
-        const { daysOfWeek, total, coupon, timePeriod, zipCode } = val.conditions;
-        this.conditions = {
-          total: {
-            active: !!total,
-            value: total ? total : {
-              type: 'gte',
-              value: 0
-            }
-          },
-          timePeriod: {
-            active: !!timePeriod,
-            value: timePeriod ? {
-              startDate: dayjs(timePeriod.startDate).format('YYYY-MM-DD'),
-              endDate: dayjs(timePeriod.endDate).format('YYYY-MM-DD'),
-            } : {
-              startDate: '',
-              endDate: ''
-            }
-          },
-          daysOfWeek: {
-            active: !!daysOfWeek && !!daysOfWeek.length,
-            value: daysOfWeek && daysOfWeek.length ? daysOfWeek : []
-          },
-          zipCode: {
-            active: !!zipCode && !!zipCode.length,
-            value: zipCode && zipCode.length ? zipCode : []
-          },
-          coupon: {
-            active: !!coupon,
-            value: coupon ? coupon : {
-              code: '',
-              usesRemaining: 0
+          const { daysOfWeek, total, coupon, timePeriod, zipCode } = val.conditions;
+          this.conditions = {
+            total: {
+              active: !!total,
+              value: total ? total : {
+                type: 'gte',
+                value: 0
+              }
+            },
+            timePeriod: {
+              active: !!timePeriod,
+              value: timePeriod ? {
+                startDate: dayjs(timePeriod.startDate).format('YYYY-MM-DD'),
+                endDate: dayjs(timePeriod.endDate).format('YYYY-MM-DD'),
+              } : {
+                startDate: '',
+                endDate: ''
+              }
+            },
+            daysOfWeek: {
+              active: !!daysOfWeek && !!daysOfWeek.length,
+              value: daysOfWeek && daysOfWeek.length ? daysOfWeek : []
+            },
+            zipCode: {
+              active: !!zipCode && !!zipCode.length,
+              value: zipCode && zipCode.length ? zipCode : []
+            },
+            coupon: {
+              active: !!coupon,
+              value: coupon ? coupon : {
+                code: '',
+                usesRemaining: 0
+              }
             }
           }
         }
