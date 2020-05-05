@@ -242,7 +242,7 @@
 
         const products = _.map(this.orderItems, orderItem => {
           return {
-            ..._.omit(orderItem, ['_id', 'desc', 'image', 'category', 'groupPrinters']),
+            ..._.omit(orderItem, ['_id', 'category', 'groupPrinters']),
             groupPrinter: orderItem.groupPrinters[0],
             groupPrinter2: this.store.useMultiplePrinters && orderItem.groupPrinters.length >= 2 && orderItem.groupPrinters[1],
             category: orderItem.category.name,

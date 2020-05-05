@@ -43,8 +43,9 @@
             <g-btn-bs background-color="#2979FF" rounded style="padding: 8px 16px" @click="showOrder = true">CHECK OUT</g-btn-bs>
           </div>
           <div class="pos-order__tab">
-            <div class="pos-order__tab--icon">
+            <div class="pos-order__tab--icon" @click="showTrackOrder = !showTrackOrder">
               <g-icon>icon-fork</g-icon>
+              Track Order
             </div>
             <div class="pos-order__tab--category" id="tab">
               <div v-for="(category, index) in categoriesViewModel"
@@ -56,11 +57,20 @@
               </div>
             </div>
           </div>
-          <div class="pos-order__tab--content" id="tab-content" ref="tab-content">
-            <div v-for="(category, i) in categoriesViewModel" :id="`category_content_${category._id}`" :key="`category_${i}`" :class="[i > 0 && 'mt-5']">
-              <div class="sub-title mb-2">{{ category && category.name }}</div>
-              <div class="pos-order__tab--content-main">
-                <menu-item
+          <template v-if="showTrackOrder">
+            <div style="font-family: Muli; font-style: normal;font-weight: 800;font-size: 20px; line-height: 25px; text-align: center; margin-top: 60px; margin-bottom: 20px;">Tracking Order</div>
+            <div style="display: flex; flex-direction: row; margin-bottom: 50px">
+              <g-text-field-bs v-model="trackPhoneNumber" placeholder="Your phone number"/>
+              <g-btn-bs @click="getCustomerOrderByPhoneNumber">TRACK</g-btn-bs>
+            </div>
+            <created-order v-for="(order, index) in customerCreatedOrders" :order="order" :key="index"/>
+          </template>
+          <template v-else>
+            <div class="pos-order__tab--content" id="tab-content" ref="tab-content">
+              <div v-for="(category, i) in categoriesViewModel" :id="`category_content_${category._id}`" :key="`category_${i}`" :class="[i > 0 && 'mt-5']">
+                <div class="sub-title mb-2">{{ category && category.name }}</div>
+                <div class="pos-order__tab--content-main">
+                  <menu-item
                       v-for="(item, index) in category.items" :key="index"
                       v-bind="item"
                       :is-opening="isStoreOpening"
@@ -70,9 +80,10 @@
                       @increase="addItemToOrder(item)"
                       @decrease="removeItemFromOrder(item)"/>
                 </div>
+              </div>
             </div>
-          </div>
-          <order-table v-if="showOrder" @back="showOrder = false" :store="store" :is-opening="isStoreOpening"/>
+            <order-table v-if="showOrder" @back="showOrder = false" :store="store" :is-opening="isStoreOpening"/>
+          </template>
         </div>
         <div class="pos-order__right">
           <order-table :store="store" :is-opening="isStoreOpening" :merchant-message="merchantMessage"/>
@@ -94,11 +105,14 @@
   import OrderTable from './OrderTable';
   import MenuItem from './MenuItem';
   import {smoothScrolling, disableBodyScroll, enableBodyScroll} from 'pos-vue-framework'
+  import TableExpansionRow from '../../Order/components/TableExpansionRow';
+  import OrderProgress from './OrderProgress';
+  import CreatedOrder from './CreatedOrder';
 
   export default {
     name: 'OrderView',
     injectService: ['PosOnlineOrderStore:(orderItems, increaseOrAddNewItems, decreaseOrRemoveItems)'],
-    components: { MenuItem, OrderTable},
+    components: { CreatedOrder, OrderProgress, TableExpansionRow, MenuItem, OrderTable},
     data: function () {
       return {
         selectedCategoryId: null,
@@ -114,7 +128,11 @@
           closed: false
         },
         throttle: null,
-        choosing: 0
+        choosing: 0,
+        // tracking order
+        showTrackOrder: false,
+        trackPhoneNumber: '',
+        customerCreatedOrders: []
       }
     },
     filters: {
@@ -319,6 +337,13 @@
             this.choosing--
           }, 1000)
         }
+      },
+      getCustomerOrderByPhoneNumber() {
+        const {socket} = window.cms
+        socket.emit('getCustomerCreatedOrders', this.store._id, this.trackPhoneNumber, (responseData) => {
+          console.log('Response Data', responseData)
+          this.$set(this, 'customerCreatedOrders', responseData)
+        })
       }
     },
     watch: {
@@ -367,7 +392,7 @@
           font-size: 15px;
           color: #424242;
           font-weight: 300;
-          margin-top: 8px;
+          padding-top: 8px;
 
           .phone-image {
             width: 24px;
@@ -445,12 +470,12 @@
 
       &--icon {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        background-color: #F8F8F8;
-        margin-top: 8px;
-        margin-bottom: 8px;
         padding: 8px 16px;
-        border-right: 1px solid #000;
+        margin-top: 8px;
+        background: #C5CAE9;
+        cursor: pointer;
       }
 
       &--category {

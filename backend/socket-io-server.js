@@ -134,6 +134,16 @@ module.exports = function (cms) {
       externalSocketIOServer.emitToPersistent(deviceId, 'createOrder', [orderData]);
     });
 
+    socket.on('getCustomerCreatedOrders', async(storeId, trackPhone, callback) => {
+      storeId = ObjectId(storeId);
+      const device = await DeviceModel.findOne({storeId, 'features.onlineOrdering': true});
+      const deviceId = device._id.toString();
+
+      externalSocketIOServer.emitTo(deviceId, 'getCustomerCreatedOrders', trackPhone, (res) => {
+        callback && callback(res)
+      })
+    })
+
     socket.on('updateApp', async (deviceId, uploadPath) => {
       externalSocketIOServer.emitToPersistent(deviceId, 'updateApp', [uploadPath]);
     })
