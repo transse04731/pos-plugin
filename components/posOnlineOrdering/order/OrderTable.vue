@@ -15,7 +15,7 @@
         </div>
 
         <!-- content -->
-        <div class="po-order-table__content">
+        <div id="table-content" class="po-order-table__content">
           <template v-if="!isOpening">
             <div class="message-closed">
               <div class="message-closed__title">Merchant is temporarily closed</div>
@@ -69,6 +69,10 @@
                   <g-text-field :rules="validateZipcode" type="number" v-model="customer.zipCode" :label="$t('store.zipCode')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
 <!--                  <g-time-picker-input v-model="customer.deliveryTime" label="Delivery time" required prepend-icon="icon-delivery-truck@16"/>-->
                 </template>
+                <div>
+                  <div v-if="!coupon.active" @click="coupon.active = true"><u>Apply coupon code</u></div>
+                  <g-text-field-bs v-if="coupon.active" :rules="validateCoupon" placeholder="COUPON CODE" suffix="Apply" @click:append-outer="applyCoupon" v-model="coupon.value"/>
+                </div>
                 <g-textarea v-model="customer.note" :placeholder="`${$t('store.note')}...`" rows="3" no-resize/>
               </div>
 
@@ -135,6 +139,7 @@
 <script>
   import _ from 'lodash'
   import OrderCreated from './OrderCreated';
+  import {disableBodyScroll, enableBodyScroll} from 'pos-vue-framework'
 
   export default {
     name: 'OrderTable',
@@ -161,6 +166,10 @@
         dialog: {
           value: false,
           order: {}
+        },
+        coupon: {
+          active: false,
+          value: ''
         }
       }
     },
@@ -171,6 +180,14 @@
           return $t('common.currency') + value.toFixed(2)
         return 0
       }
+    },
+    mounted() {
+      const content = document.getElementById('table-content')
+      content && disableBodyScroll(content)
+    },
+    beforeDestroy() {
+      const content = document.getElementById('table-content')
+      content && enableBodyScroll(content)
     },
     computed: {
       confirmView() { return !this.orderView },
@@ -214,6 +231,11 @@
           const zipCodes = this.store.deliveryFee.fees.map(f => f.zipCode)
           rules.push((val) => val.length < 5 || zipCodes.includes(val) || 'Shipping service is not available to your zip code!')
         }
+        return rules
+      },
+      validateCoupon() {
+        const rules = []
+
         return rules
       }
     },
@@ -297,6 +319,9 @@
         alert(response.message)
         this.closeOrderSuccess()
       },
+      applyCoupon() {
+
+      }
     }
   }
 </script>
@@ -352,8 +377,7 @@
     &__content {
       flex: 1;
       margin-bottom: 100px;
-      overflow-x: hidden;
-      overflow-y: auto;
+      overflow: auto;
       scrollbar-width: none; // firefox
 
       &::-webkit-scrollbar {
@@ -404,6 +428,32 @@
         .g-textarea ::v-deep textarea,
         .g-tf-wrapper ::v-deep input {
           user-select: text !important;
+        }
+
+        .bs-tf-wrapper {
+          margin: 0;
+          width: 100%;
+
+          ::v-deep .bs-tf-input-group,
+          ::v-deep .bs-tf-input-text {
+            background: white;
+          }
+
+          ::v-deep .bs-tf-input-group {
+            border-color: #efefef
+          }
+
+          ::v-deep .bs-tf-input-text {
+            font-weight: 600;
+            font-size: 15px;
+            color: #000000;
+            cursor: pointer;
+          }
+
+          ::v-deep .bs-tf-inner-input-group__active {
+            box-shadow: none;
+            border-color: #efefef !important;
+          }
         }
       }
 
