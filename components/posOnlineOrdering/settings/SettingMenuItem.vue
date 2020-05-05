@@ -2,8 +2,16 @@
   <div style="border-bottom: 1px solid #E0E0E0">
     <template v-if="mode === 'view'">
       <div class="menu-setting-item">
-        <div class="ta-center">{{ index + 1 }}</div>
-        <img v-if="image" :src="image" class="menu-setting-item__image" draggable="false"/>
+        <div class="ta-center" @mouseenter="positioning = true" @mouseleave="positioning = false">
+          <p v-if="positioning">
+            <g-icon style="cursor: pointer" @click="changePosition(true)">fas fa-caret-square-up</g-icon>
+          </p>
+          <p>{{ index + 1 }}</p>
+          <p v-if="positioning">
+            <g-icon style="cursor: pointer" @click="changePosition(false)">fas fa-caret-square-down</g-icon>
+          </p>
+        </div>
+        <img v-if="image" :src="`${image}?w=80&h=80`" class="menu-setting-item__image" draggable="false"/>
         <img v-else alt draggable="false" src="/plugins/pos-plugin/assets/empty_dish.svg" class="menu-setting-item__image"/>
         <div class="menu-setting-item__content px-2">
           <div class="menu-setting-item__name row-flex">
@@ -69,10 +77,11 @@
   export default {
     name: 'SettingMenuItem',
     components: { SettingNewMenuItem },
-    props: [ '_id', 'index', 'id', 'image', 'name', 'desc', 'price', 'groupPrinters', 'tax', 'availablePrinters', 'useMultiplePrinters'],
+    props: [ '_id', 'index', 'id', 'image', 'name', 'desc', 'price', 'groupPrinters', 'tax', 'availablePrinters', 'useMultiplePrinters', 'maxIndex'],
     data: function () {
       return {
-        mode: 'view'
+        mode: 'view',
+        positioning: false,
       }
     },
     filters: {
@@ -106,6 +115,15 @@
       },
       emitEditing(editing) {
         this.$emit('editing', editing)
+      },
+      changePosition(up) {
+        if(up) {
+          if (this.index === 0) return
+          this.$emit('swap', this.index, this.index-1)
+        } else {
+          if (this.index === this.maxIndex - 1) return
+          this.$emit('swap', this.index, this.index+1)
+        }
       }
     }
   }

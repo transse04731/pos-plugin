@@ -154,7 +154,7 @@
             setTimeout(() => {
               const contentRef = this.$refs['tab-content']
               contentRef && contentRef.addEventListener('scroll', this.throttle)
-              contentRef && disableBodyScroll(contentRef)
+              // contentRef && disableBodyScroll(contentRef)
             }, 500)
           } else {
             const contentRef = this.$refs['tab-content']
@@ -167,7 +167,7 @@
     beforeDestroy() {
       clearInterval(this.dayInterval)
       this.$refs['tab-content'].removeEventListener('scroll', this.throttle)
-      enableBodyScroll(this.$refs['tab-content'])
+      // enableBodyScroll(this.$refs['tab-content'])
     },
     computed: {
       shippingFee() {
@@ -191,7 +191,7 @@
         const categories = _.cloneDeep(this.categories)
         const products = _.cloneDeep(this.products)
         _.each(categories, cate => {
-          cate.items = _.filter(products, p => p.category._id === cate._id)
+          cate.items = _.orderBy(_.filter(products, p => p.category._id === cate._id), 'position', 'asc')
         })
         return categories
       },
@@ -263,7 +263,8 @@
         this.$set(this, 'store', await cms.getModel('Store').findOne({_id: this.store._id}))
       },
       async loadCategories() {
-        this.$set(this, 'categories', await cms.getModel('Category').find({ store: this.store._id }, { store: 0 }))
+        const categories = await cms.getModel('Category').find({ store: this.store._id }, { store: 0 })
+        this.$set(this, 'categories', _.orderBy(categories, 'position', 'asc'))
       },
       async loadProducts() {
         this.$set(this, 'products', await cms.getModel('Product').find({ store: this.store._id }, { store: 0 }))
