@@ -123,6 +123,12 @@
         }
       ],
       "type": "array"
+    },
+    {
+      "_id": "5eb125aec1ff1546fc822115",
+      "schemaType": "number",
+      "key": "position",
+      "type": "input@number"
     }
   ],
   "id": "5c46e1c05889c52fe001ab7b",

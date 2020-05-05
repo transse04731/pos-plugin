@@ -71,6 +71,7 @@
                       @decrease="removeItemFromOrder(item)"/>
                 </div>
             </div>
+            <div class="pos-order__tab--content-footer"></div>
           </div>
           <order-table v-if="showOrder" @back="showOrder = false" :store="store" :is-opening="isStoreOpening"/>
         </div>
@@ -153,7 +154,7 @@
             setTimeout(() => {
               const contentRef = this.$refs['tab-content']
               contentRef && contentRef.addEventListener('scroll', this.throttle)
-              contentRef && disableBodyScroll(contentRef)
+              // contentRef && disableBodyScroll(contentRef)
             }, 500)
           } else {
             const contentRef = this.$refs['tab-content']
@@ -166,7 +167,7 @@
     beforeDestroy() {
       clearInterval(this.dayInterval)
       this.$refs['tab-content'].removeEventListener('scroll', this.throttle)
-      enableBodyScroll(this.$refs['tab-content'])
+      // enableBodyScroll(this.$refs['tab-content'])
     },
     computed: {
       shippingFee() {
@@ -190,7 +191,7 @@
         const categories = _.cloneDeep(this.categories)
         const products = _.cloneDeep(this.products)
         _.each(categories, cate => {
-          cate.items = _.filter(products, p => p.category._id === cate._id)
+          cate.items = _.orderBy(_.filter(products, p => p.category._id === cate._id), 'position', 'asc')
         })
         return categories
       },
@@ -262,7 +263,8 @@
         this.$set(this, 'store', await cms.getModel('Store').findOne({_id: this.store._id}))
       },
       async loadCategories() {
-        this.$set(this, 'categories', await cms.getModel('Category').find({ store: this.store._id }, { store: 0 }))
+        const categories = await cms.getModel('Category').find({ store: this.store._id }, { store: 0 })
+        this.$set(this, 'categories', _.orderBy(categories, 'position', 'asc'))
       },
       async loadProducts() {
         this.$set(this, 'products', await cms.getModel('Product').find({ store: this.store._id }, { store: 0 }))
@@ -467,10 +469,9 @@
       &--content {
         flex: 1;
         margin-top: 30px;
-        overflow: hidden auto;
+        overflow: auto;
         /*scroll-behavior: smooth;*/
         scrollbar-width: none; // firefox
-        -webkit-overflow-scrolling: touch;
 
         &::-webkit-scrollbar {
           display: none;
@@ -495,6 +496,11 @@
   @media screen and (max-width: 1040px) {
     .pos-order__left {
       padding: 0;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
 
       .pos-order__left__header {
         & > img {
@@ -559,18 +565,13 @@
           .sub-title {
             font-size: 18px;
           }
-
-          & > div:last-child {
-            .pos-order__tab--content-main {
-              margin-bottom: 80px;
-            }
-          }
         }
       }
 
       .pos-order__info {
         display: flex;
         position: fixed;
+        z-index: 5;
         bottom: 0;
         width: 100%;
         border-top-right-radius: 32px;
@@ -584,6 +585,10 @@
           align-self: center;
           margin-left: 16px;
         }
+
+        & ~ .pos-order__tab--content .pos-order__tab--content-footer {
+          height: 80px;
+        }
       }
 
       ::v-deep .po-order-table {
@@ -593,6 +598,8 @@
         position: fixed;
         top: 0;
         left: 0;
+        bottom: 72px;
+        right: 0;
         height: calc(100% - 72px);
       }
     }
