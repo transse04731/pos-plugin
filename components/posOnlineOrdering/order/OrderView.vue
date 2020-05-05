@@ -42,23 +42,23 @@
             <g-spacer/>
             <g-btn-bs background-color="#2979FF" rounded style="padding: 8px 16px" @click="showOrder = true">CHECK OUT</g-btn-bs>
           </div>
-          <div class="pos-order__tab" id="tab">
+          <div class="pos-order__tab">
             <div class="pos-order__tab--icon">
-              <div class="pos-order__tab--icon-wrapper">
-                <g-icon>icon-fork</g-icon>
+              <g-icon>icon-fork</g-icon>
+            </div>
+            <div class="pos-order__tab--category" id="tab">
+              <div v-for="(category, index) in categoriesViewModel"
+                    :key="`tab_${index}`"
+                    :id="`tab_${category._id}`"
+                    @click="chooseCategory(category._id)"
+                    :style="getCategoryStyle(category)">
+                {{ category.name }}
               </div>
             </div>
-            <span v-for="(category, index) in categoriesViewModel"
-                  :key="`tab_${index}`"
-                  :id="`tab_${category._id}`"
-                  @click="chooseCategory(category._id)"
-                  :style="getCategoryStyle(category)">
-              {{ category.name }}
-            </span>
           </div>
           <div class="pos-order__tab--content" id="tab-content" ref="tab-content">
             <div v-for="(category, i) in categoriesViewModel" :id="`category_content_${category._id}`" :key="`category_${i}`" :class="[i > 0 && 'mt-5']">
-              <div class="sub-title">{{ category && category.name }}</div>
+              <div class="sub-title mb-2">{{ category && category.name }}</div>
               <div class="pos-order__tab--content-main">
                 <menu-item
                       v-for="(item, index) in category.items" :key="index"
@@ -113,7 +113,8 @@
         dialog: {
           closed: false
         },
-        debounce: null,
+        throttle: null,
+        choosing: 0
       }
     },
     filters: {
@@ -145,18 +146,18 @@
     },
     mounted() {
       //scroll
-      this.debounce = _.debounce(this.handleScroll, 100)
+      this.throttle = _.throttle(this.handleScroll, 100)
       this.$nextTick(() => {
         if(this.$refs) {
           if(!this.$refs.keys) {
             setTimeout(() => {
               const contentRef = this.$refs['tab-content']
-              contentRef && contentRef.addEventListener('scroll', this.debounce)
+              contentRef && contentRef.addEventListener('scroll', this.throttle)
               contentRef && disableBodyScroll(contentRef)
             }, 500)
           } else {
             const contentRef = this.$refs['tab-content']
-            contentRef && contentRef.addEventListener('scroll', this.debounce)
+            contentRef && contentRef.addEventListener('scroll', this.throttle)
           }
         }
         smoothScrolling && smoothScrolling()
@@ -164,7 +165,7 @@
     },
     beforeDestroy() {
       clearInterval(this.dayInterval)
-      this.$refs['tab-content'].removeEventListener('scroll', this.debounce)
+      this.$refs['tab-content'].removeEventListener('scroll', this.throttle)
       enableBodyScroll(this.$refs['tab-content'])
     },
     computed: {
@@ -294,6 +295,7 @@
         return top >= wrapper.top || bottom >= wrapper.bottom - 100;
       },
       handleScroll() {
+        if(this.choosing > 0) return
         const categoryInViewPort = this.categories.map(c => c._id).map(id => {
           const el = document.getElementById(`category_content_${id}`);
           if(this.elementInWrapper(el)) {
@@ -307,22 +309,25 @@
         }
       },
       chooseCategory(id) {
-        this.selectedCategoryId = id
+        this.choosing++
         const wrapper = document.getElementById('tab-content')
         const content = document.getElementById(`category_content_${id}`)
         if(wrapper && content) {
           wrapper.scroll({top: content.offsetTop - wrapper.offsetTop, left: 0, behavior: "smooth"})
+          this.selectedCategoryId = id
+          setTimeout(() => {
+            this.choosing--
+          }, 1000)
         }
       }
     },
     watch: {
       selectedCategoryId(val) {
         const tab = document.getElementById(`tab_${val}`)
+        const wrapper = document.getElementById('tab')
         if(tab) {
-          const wrapper = tab.offsetParent
-          const icon = wrapper.firstChild
-          const sibling = tab.previousSibling
-          wrapper.scroll({top: 0, left: (tab.offsetLeft - icon.offsetWidth - sibling.offsetWidth/2), behavior: "smooth"})
+          const siblingWidth = tab.previousSibling ? tab.previousSibling.offsetWidth : 0
+          wrapper.scroll({top: 0, left: (tab.offsetLeft - siblingWidth/2 - wrapper.offsetLeft), behavior: "smooth"})
         }
       }
     }
@@ -429,30 +434,33 @@
       background-color: #F8F8F8;
       flex: 0 0 64px;
       margin-top: 16px;
-      align-items: center;
+      align-items: stretch;
       border-top-right-radius: 24px;
       border-bottom-right-radius: 24px;
-      overflow: auto hidden;
+      overflow: hidden;
       position: relative;
       border-right: 16px solid #F8F8F8;
       font-size: 15px;
       /*scroll-behavior: smooth;*/
-      scrollbar-width: none; // firefox
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
 
       &--icon {
         display: flex;
         align-items: center;
-        height: 100%;
-        position: sticky;
-        left: 0;
         background-color: #F8F8F8;
+        margin-top: 8px;
+        margin-bottom: 8px;
+        padding: 8px 16px;
+        border-right: 1px solid #000;
+      }
 
-        &-wrapper {
-          margin-top: 8px; margin-bottom: 8px; padding: 8px 16px; border-right: 1px solid #000;
+      &--category {
+        height: 100%;
+        display: flex;
+        overflow: auto;
+        scrollbar-width: none; // firefox
+
+        &::-webkit-scrollbar {
+          display: none;
         }
       }
 
@@ -532,20 +540,11 @@
       
       .pos-order__tab {
         border-radius: 0;
-        overflow: auto;
+        overflow: hidden;
         position: relative;
 
-        &::-webkit-scrollbar {
-          display: none;
-        }
 
         &--icon {
-          position: sticky;
-          top: 0;
-          left: 0;
-          padding: 0;
-          background: #F8F8F8;
-
           img {
             width: 24px;
             height: 24px;
