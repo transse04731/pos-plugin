@@ -286,7 +286,12 @@
               closeTime: '22:30'
             }
           ],
-          pickup: true
+          pickup: true,
+          deliveryFee: {
+            acceptOrderInOtherZipCodes: true,
+            defaultFee: 0,
+            fees: []
+          }
         })
         await this.loadStores()
       },

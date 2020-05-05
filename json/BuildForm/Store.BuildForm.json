@@ -171,7 +171,9 @@
       "fields": [
         {
           "schemaType": "number",
-          "key": "defaultFee"
+          "key": "defaultFee",
+          "default": "0",
+          "type": "input@number"
         },
         {
           "schemaType": "array",
@@ -193,7 +195,8 @@
         {
           "schemaType": "boolean",
           "key": "acceptOrderInOtherZipCodes",
-          "type": "input@switch"
+          "type": "input@switch",
+          "default": "true"
         }
       ],
       "type": "object"
