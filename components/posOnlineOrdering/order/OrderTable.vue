@@ -70,8 +70,9 @@
 <!--                  <g-time-picker-input v-model="customer.deliveryTime" label="Delivery time" required prepend-icon="icon-delivery-truck@16"/>-->
                 </template>
                 <div>
-                  <div v-if="!coupon.active" @click="coupon.active = true"><u>Apply coupon code</u></div>
-                  <g-text-field-bs v-if="coupon.active" :rules="validateCoupon" placeholder="COUPON CODE" suffix="Apply" @click:append-outer="applyCoupon" v-model="coupon.value"/>
+                  <div v-if="!couponTf.active" @click="couponTf.active = true"><u>Apply coupon code</u></div>
+                  <g-text-field-bs v-if="couponTf.active" placeholder="COUPON CODE" suffix="Apply" @click:append-outer="applyCoupon" v-model="couponTf.value"/>
+                  <div class="error-message">{{couponTf.error}}</div>
                 </div>
                 <g-textarea v-model="customer.note" :placeholder="`${$t('store.note')}...`" rows="3" no-resize/>
               </div>
@@ -93,10 +94,15 @@
                 <g-spacer/>
                 <span>{{ totalPrice | currency }}</span>
               </div>
-              <div class="order-item-summary order-item-summary--end" >
+              <div class="order-item-summary" >
                 <span>{{$t('store.shippingFee')}}:</span>
                 <g-spacer/>
                 <span>{{ shippingFee | currency }}</span>
+              </div>
+              <div class="order-item-summary" v-for="{name, coupon, value} in discounts">
+                <span>{{coupon ? `Coupon (${coupon})` : `${name}`}}:</span>
+                <g-spacer/>
+                <span>-{{ value | currency }}</span>
               </div>
             </template>
           </template>
@@ -104,7 +110,7 @@
       </div>
       <!-- footer -->
       <div :class="['po-order-table__footer', !isOpening && 'disabled']">
-        <div>{{$t('store.total')}}: <span style="font-weight: 700; font-size: 18px; margin-left: 4px">{{ (totalPrice + shippingFee) | currency }}</span></div>
+        <div>{{$t('store.total')}}: <span style="font-weight: 700; font-size: 18px; margin-left: 4px">{{ effectiveTotal | currency }}</span></div>
         <g-spacer/>
         <g-btn-bs v-if="orderView" class="r" width="180" large rounded background-color="#2979FF" @click="view = 'confirm'" :disabled="orderItems.length === 0">
           {{$t('store.payment')}}
@@ -123,7 +129,7 @@
             <g-icon>icon-menu2</g-icon>
           </div>
         </g-badge>
-        <div class="po-order-table__footer--mobile--total">{{(totalPrice + shippingFee) | currency}}</div>
+        <div class="po-order-table__footer--mobile--total">{{effectiveTotal | currency}}</div>
         <g-spacer/>
         <g-btn-bs v-if="orderView" rounded background-color="#2979FF" @click="view = 'confirm'" style="padding: 8px 16px">{{$t('store.payment')}}</g-btn-bs>
         <g-btn-bs v-if="confirmView" :disabled="unavailableConfirm" rounded background-color="#2979FF" @click="confirmPayment" style="padding: 8px 16px" elevation="5">
@@ -149,7 +155,7 @@
       isOpening: Boolean,
       merchantMessage: String,
     },
-    data: function () {
+    data() {
       return {
         view: 'order',
         orderType: this.store.delivery ? 'delivery' : 'pickup', // delivery || pick-up
@@ -167,10 +173,12 @@
           value: false,
           order: {}
         },
-        coupon: {
+        couponTf: {
           active: false,
+          error: '',
           value: ''
-        }
+        },
+        couponCode: '',
       }
     },
     injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems,clearOrder)'],
@@ -201,12 +209,12 @@
       shippingFee() {
         if (!this.orderItems || this.orderItems.length === 0)
           return 0;
-        
+
         if (this.orderType === 'pickup' || this.orderType === 'pickup' || !this.store.deliveryFee)
           return 0
 
         // calculate zip code from store setting
-        for(let deliveryFee of this.store.deliveryFee.fees) {
+        for (let deliveryFee of this.store.deliveryFee.fees) {
          if (_.lowerCase(_.trim(deliveryFee.zipCode)) === _.lowerCase(_.trim(this.customer.zipCode)))
            return deliveryFee.fee
         }
@@ -236,10 +244,62 @@
         }
         return rules
       },
-      validateCoupon() {
-        const rules = []
+      discounts() {
+        let discounts = cms.getList('Discount')
+        discounts = discounts.filter(discount => {
+          return discount.store === this.store._id && discount.type.includes(this.orderType)
+        })
+        if (!discounts.length) return this.totalPrice + this.shippingFee
 
-        return rules
+        const applicableDiscounts = discounts.filter(({ conditions: { coupon, daysOfWeek, timePeriod, total, zipCode } }) => {
+          if (total && total.min && this.totalPrice < total.min) return false
+          if (total && total.max && this.totalPrice > total.max) return false
+          if (timePeriod) {
+            if (dayjs().isBefore(dayjs(timePeriod.startDate)) || dayjs().isAfter(dayjs(timePeriod.endDate))) {
+              return false
+            }
+          }
+          if (daysOfWeek && daysOfWeek.length) {
+            if (!daysOfWeek.includes(dayjs().format('dddd'))) return false
+          }
+          if (zipCode && zipCode.length) {
+            if (this.orderType !== 'delivery' || !zipCode.includes(this.customer.zipCode)) return false
+          }
+          if (coupon && coupon !== this.couponCode) {
+            this.couponCode && (this.couponTf.error = 'Invalid Coupon!')
+            return false
+          }
+
+          return true
+        })
+
+        return applicableDiscounts.map(({ amount, name, conditions: {coupon} }) => {
+          let value
+          if (amount.type === 'flat') value = amount.value
+          else if (amount.type === 'percent') value = amount.value * this.totalPrice / 100
+          else value = this.shippingFee
+
+          return {
+            name,
+            value,
+            coupon
+          }
+        })
+      },
+      effectiveTotal() {
+        if (!this.orderItems || !this.orderItems.length) return 0
+
+        const totalDiscount = this.discounts.reduce((total, {value}) => total + value, 0)
+        return this.totalPrice + this.shippingFee - totalDiscount
+      }
+    },
+    watch: {
+      discounts(val) {
+        if (!val || !val.length) return
+
+        if (val.some(discount => discount.coupon === this.couponCode)) {
+          this.couponTf.error = ''
+        }
       }
     },
     methods: {
@@ -323,7 +383,7 @@
         this.closeOrderSuccess()
       },
       applyCoupon() {
-
+        this.couponCode = this.couponTf.value
       }
     }
   }
@@ -722,6 +782,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .error-message {
+    display: block;
+    font-size: 80%;
+    font-weight: 400;
+    margin-top: 2px;
+    color: red;
   }
 </style>
 

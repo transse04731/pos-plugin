@@ -161,27 +161,9 @@
           "clipboardType": "cut"
         },
         {
-          "schemaType": "object",
+          "schemaType": "string",
           "key": "coupon",
-          "fields": [
-            {
-              "_id": "5eafd0b65f063646f605398f",
-              "schemaType": "string",
-              "key": "code",
-              "type": "input",
-              "addable": true,
-              "clipboardType": "cut"
-            },
-            {
-              "_id": "5eafd0b65f063646f6053990",
-              "schemaType": "number",
-              "key": "usesRemaining",
-              "type": "input@number",
-              "addable": true,
-              "clipboardType": "cut"
-            }
-          ],
-          "type": "object",
+          "type": "input",
           "addable": true
         }
       ]

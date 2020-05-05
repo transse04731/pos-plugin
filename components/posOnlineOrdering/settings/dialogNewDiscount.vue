@@ -25,14 +25,14 @@
         <p class="mt-1 ml-1 mb-2">Condition</p>
         <div class="dialog__condition">
           <div>
-            <g-checkbox color="indigo accent-2" v-model="conditions.total.active" label="Total value"/>
+            <g-checkbox color="indigo accent-2" v-model="conditions.total.active" label="Total value*"/>
           </div>
           <div :class="['row-flex', 'br-2', 'b-grey', 'ba-thin', !conditions.total.active && 'disabled']">
             <div class="col-6 b-grey brw-thin row-flex align-items-center justify-center pa-2">
-              <input type="number" class="ta-center fw-700 fs-large" v-model="conditions.total.value.min"/>
+              <input type="number" class="ta-center fw-700 fs-large" placeholder="MIN" v-model="conditions.total.value.min"/>
             </div>
             <div class="col-6 row-flex align-items-center justify-center pa-2">
-              <input type="number" class="ta-center fw-700 fs-large" v-model="conditions.total.value.max"/>
+              <input type="number" class="ta-center fw-700 fs-large" placeholder="MAX" v-model="conditions.total.value.max"/>
             </div>
           </div>
           <div>
@@ -76,12 +76,13 @@
             <g-checkbox color="indigo accent-2" v-model="conditions.coupon.active" label="Coupon"/>
           </div>
           <div :class="[!conditions.coupon.active && 'disabled']">
-            <g-text-field-bs v-model="conditions.coupon.value.code"/>
+            <g-text-field-bs v-model="conditions.coupon.value"/>
           </div>
         </div>
+        <span style="font-style: italic; color: #424242">*MIN or MAX value can be left empty</span>
         <div class="dialog__action">
           <g-btn-bs width="100" large text-color="#424242" @click="close()">Cancel</g-btn-bs>
-          <g-btn-bs width="100" large text-color="white" background-color="indigo-accent-2" @click="submit">Save
+          <g-btn-bs width="100" large text-color="white" background-color="indigo-accent-2" :disabled="isSaveBtnDisabled" @click="submit">Save
           </g-btn-bs>
         </div>
       </div>
@@ -132,9 +133,7 @@
           },
           coupon: {
             active: false,
-            value: {
-              code: ''
-            }
+            value:  ''
           }
         },
         amounts: [
@@ -153,16 +152,18 @@
           this.$emit('input', val)
           if (!val) this.resetDiscount()
         }
+      },
+      isSaveBtnDisabled() {
+        if (!this.name || !this.type.length || !this.amount.type) return true
+        // const activeConditions = _.reduce(this.conditions, (conditions, { active }, key) => {
+        //   if (active) return [...conditions, key]
+        //   return conditions
+        // }, [])
+        //
+        // return activeConditions.length === 0
       }
     },
     methods: {
-      toggleTotalValue() {
-        if (this.conditions.total.value.type === 'gte') {
-          this.conditions.total.value.type = 'lte'
-        } else if (this.conditions.total.value.type === 'lte') {
-          this.conditions.total.value.type = 'gte'
-        }
-      },
       close() {
         this.internalValue = false
       },
@@ -220,9 +221,7 @@
           },
           coupon: {
             active: false,
-            value: {
-              code: ''
-            }
+            value: ''
           }
         }
       }
@@ -266,9 +265,7 @@
             },
             coupon: {
               active: !!coupon,
-              value: coupon ? coupon : {
-                code: ''
-              }
+              value: coupon ? coupon : ''
             }
           }
         }

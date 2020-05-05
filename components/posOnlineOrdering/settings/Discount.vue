@@ -38,7 +38,7 @@
                 </template>
                 <div class="menu-action">
                   <div class="menu-action__option" @click="openDialogDiscount(true, discount)">Edit</div>
-                  <div class="menu-action__option" @click="changeStatus(discount)">{{discount.enabled ? 'Disable' : 'Active'}}</div>
+                  <div class="menu-action__option" @click="changeStatus(discount)">{{discount.enabled ? 'Disable' : 'Enable'}}</div>
                   <div class="menu-action__option" @click="openDialogDelete(discount)">Delete</div>
                 </div>
               </g-menu>
