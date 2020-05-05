@@ -192,14 +192,17 @@
       // Discounts
       async getDiscounts() {
         try {
-          this.listDiscount = await cms.getModel('Discount').find()
+          this.listDiscount = await cms.getModel('Discount').find({store: this.store._id})
         } catch (e) {
           console.error(e)
         }
       },
-      async addDiscount(discount, cb) {
+      async addDiscount(discount, update ,cb) {
         try {
-          await cms.getModel('Discount').findOneAndUpdate({_id: discount._id}, discount, {upsert: true})
+          await cms.getModel('Discount').findOneAndUpdate({_id: discount._id}, {
+            ...discount,
+            store: this.store._id
+          }, {upsert: !update})
           await cb()
         } catch (e) {
           console.error(e)

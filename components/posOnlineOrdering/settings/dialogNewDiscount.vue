@@ -216,12 +216,12 @@
         }
       },
       submit() {
-        this.$emit('submit', this.getDiscount())
+        this.$emit('submit', this.getDiscount(), !!this.discount)
         this.close()
       },
       getDiscount() {
         return {
-          ... this.discount &&this.discount._id && { _id: this.discount._id },
+          _id: this.discount ? this.discount._id : null,
           name: this.name,
           type: this.type,
           amount: this.amount,

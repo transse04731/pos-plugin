@@ -132,9 +132,9 @@
         this.selectedDiscount = discount
         this.dialog.delete = true
       },
-      addDiscount(discount) {
-        console.log(discount)
-        this.$emit('addDiscount', discount, () => {
+      addDiscount(discount, update = false) {
+        console.log(discount, update)
+        this.$emit('addDiscount', discount, update, () => {
           this.$emit('getDiscounts')
         })
       },
