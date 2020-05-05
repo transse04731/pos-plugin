@@ -3,7 +3,7 @@
     <div class="po-order-table">
       <div  class="po-order-table__header">
         <!-- header image -->
-        <img :src="store.orderHeaderImageSrc || '/plugins/pos-plugin/assets/images/header.png'" class="po-order-table__header__image"/>
+        <img :src="`${store.orderHeaderImageSrc}?w=340&h=164` || '/plugins/pos-plugin/assets/images/header.png'" class="po-order-table__header__image"/>
       </div>
       <div class="po-order-table__main">
         <!-- header text -->

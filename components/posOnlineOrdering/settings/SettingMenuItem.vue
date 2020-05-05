@@ -11,7 +11,7 @@
             <g-icon style="cursor: pointer" @click="changePosition(false)">fas fa-caret-square-down</g-icon>
           </p>
         </div>
-        <img v-if="image" :src="image" class="menu-setting-item__image" draggable="false"/>
+        <img v-if="image" :src="`${image}?w=80&h=80`" class="menu-setting-item__image" draggable="false"/>
         <img v-else alt draggable="false" src="/plugins/pos-plugin/assets/empty_dish.svg" class="menu-setting-item__image"/>
         <div class="menu-setting-item__content px-2">
           <div class="menu-setting-item__name row-flex">
