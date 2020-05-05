@@ -112,6 +112,7 @@
       border-radius: 4px;
       display: flex;
       flex-wrap: wrap;
+      min-height: 40px;
 
       .g-chip {
         color: #1d1d26

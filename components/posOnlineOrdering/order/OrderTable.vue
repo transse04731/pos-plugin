@@ -303,7 +303,7 @@
 <style scoped lang="scss">
   .po-order-table {
     position: relative;
-    width: 430px;
+    width: 340px;
     height: 100vh;
     background-color: #F8F8F8;
     display: flex;
@@ -318,8 +318,8 @@
 
     &__header {
       &__image {
-        width: 430px;
-        height: 205px;
+        width: 340px;
+        height: 164px;
         margin-bottom: 20px;
       }
 

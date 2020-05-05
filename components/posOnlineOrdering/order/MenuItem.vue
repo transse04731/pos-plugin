@@ -147,7 +147,6 @@
 
     &__add {
       margin-left: 10px;
-      margin-right: 30px;
     }
 
     &__action {
