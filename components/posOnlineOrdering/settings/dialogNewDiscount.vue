@@ -28,16 +28,11 @@
             <g-checkbox color="indigo accent-2" v-model="condition.totalValue.active" label="Total value"/>
           </div>
           <div :class="['row-flex', 'br-2', 'b-grey', 'ba-thin', !condition.totalValue.active && 'disabled']">
-            <div class="col-6 b-grey brw-thin row-flex align-items-center justify-center pa-2"
-                 @click="toggleTotalValue()">
-              <g-icon color="#212121" v-if="condition.totalValue.type === 'greater'" size="20">fas
-                fa-greater-than-equal
-              </g-icon>
-              <g-icon color="#212121" v-if="condition.totalValue.type === 'less'" size="20">fas fa-less-than-equal
-              </g-icon>
+            <div class="col-6 b-grey brw-thin row-flex align-items-center justify-center pa-2">
+              <input type="number" placeholder="MIN" class="ta-center fw-700 fs-large" v-model="condition.totalValue.min"/>
             </div>
-            <div class="col-6 row-flex align-items-center justify-center">
-              <input type="number" class="ta-center fw-700 fs-large" v-model="condition.totalValue.value"/>
+            <div class="col-6 row-flex align-items-center justify-center pa-2">
+              <input type="number" placeholder="MIN" class="ta-center fw-700 fs-large" v-model="condition.totalValue.max"/>
             </div>
           </div>
           <div>
@@ -80,14 +75,8 @@
           <div>
             <g-checkbox color="indigo accent-2" v-model="condition.coupon.active" label="Coupon"/>
           </div>
-          <div :class="['row-flex', !condition.coupon.active && 'disabled']">
-            <div class="flex-equal row-flex align-items-center justify-center">
-              <g-text-field-bs v-model="condition.coupon.title"/>
-            </div>
-            <div class="col-3 row-flex align-items-center justify-end pr-2">No. of use</div>
-            <div class="flex-equal row-flex align-items-center justify-center">
-              <g-text-field-bs type="number" v-model="condition.coupon.numberUse"/>
-            </div>
+          <div :class="[!condition.coupon.active && 'disabled']">
+            <g-text-field-bs v-model="condition.coupon.title"/>
           </div>
         </div>
         <div class="dialog__action">
@@ -119,8 +108,8 @@
         condition: {
           totalValue: {
             active: false,
-            type: 'greater',
-            value: 0
+            min: '',
+            max: '',
           },
           time: {
             active: false,
@@ -202,6 +191,7 @@
         -moz-appearance: textfield;
         outline: none;
         user-select: text;
+        max-width: 99%;
 
         &::-webkit-outer-spin-button,
         &::-webkit-inner-spin-button {
