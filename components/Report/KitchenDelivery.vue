@@ -5,10 +5,10 @@
     </div>
     <div class="info">
       <div>{{customerName}}</div>
-      <div>{{customerAddress}}</div>
-      <div>{{customerZipCode}}</div>
+      <div v-if="customerAddress">{{customerAddress}}</div>
+      <div v-if="customerZipCode">{{customerZipCode}}</div>
       <div>{{customerPhone}}</div>
-      <div>{{note}}</div>
+      <div v-if="note">{{note}}</div>
     </div>
     <div class="divider-dashed"/>
     <div class="kitchen-items">
