@@ -77,6 +77,7 @@
                       :is-opening="isStoreOpening"
                       :currency-unit="store.currency"
                       :quantity="getQuantityInOrder(item)"
+                      :disabled="menuItemDisabled"
                       @menu-item-selected="addItemToOrder(item)"
                       @increase="addItemToOrder(item)"
                       @decrease="removeItemFromOrder(item)"/>
@@ -87,7 +88,7 @@
           <order-table v-if="showOrder" @back="showOrder = false" :store="store" :is-opening="isStoreOpening"/>
         </div>
         <div class="pos-order__right">
-          <order-table :store="store" :is-opening="isStoreOpening" :merchant-message="merchantMessage"/>
+          <order-table :store="store" :is-opening="isStoreOpening" :merchant-message="merchantMessage" @confirm-view="menuItemDisabled = $event"/>
         </div>
       
         <!-- Merchant dialog -->
@@ -140,7 +141,8 @@
         },
         throttle: null,
         choosing: 0,
-        menuHour: false
+        menuHour: false,
+        menuItemDisabled: false
       }
     },
     filters: {

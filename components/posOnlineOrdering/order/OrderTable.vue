@@ -146,6 +146,7 @@
   import _ from 'lodash'
   import OrderCreated from './OrderCreated';
   import {disableBodyScroll, enableBodyScroll} from 'pos-vue-framework'
+  import orderUtil from '../../logic/orderUtil';
 
   export default {
     name: 'OrderTable',
@@ -284,7 +285,8 @@
           return {
             name,
             value,
-            coupon
+            coupon,
+            type: amount.type
           }
         })
       },
@@ -294,7 +296,8 @@
         if (!this.confirmView) return this.totalPrice
 
         const totalDiscount = this.discounts.reduce((total, {value}) => total + value, 0)
-        return this.totalPrice + this.shippingFee - totalDiscount
+        const total = this.totalPrice + this.shippingFee - totalDiscount;
+        return total < 0 ? 0 : total
       }
     },
     watch: {
@@ -304,6 +307,9 @@
         if (val.some(discount => discount.coupon === this.couponCode)) {
           this.couponTf.error = ''
         }
+      },
+      confirmView(val) {
+        this.$emit('confirm-view', val)
       }
     },
     methods: {
@@ -320,21 +326,30 @@
         this.increaseOrAddNewItems(item)
       },
       confirmPayment() {
-        if(this.unavailableConfirm) return
+        if (this.unavailableConfirm) return
 
         const {socket} = window.cms
 
         const {note, deliveryTime, ...customer} = this.customer;
 
-        const products = _.map(this.orderItems, orderItem => {
+        let products = _.map(this.orderItems, orderItem => {
           return {
             ..._.omit(orderItem, ['_id', 'desc', 'image', 'category', 'groupPrinters']),
             groupPrinter: orderItem.groupPrinters[0],
             groupPrinter2: this.store.useMultiplePrinters && orderItem.groupPrinters.length >= 2 && orderItem.groupPrinters[1],
             category: orderItem.category.name,
+            originalPrice: orderItem.price
           }
         })
 
+        if (this.discounts && this.discounts.length) {
+          const discount = _.reduce(this.discounts.filter(i => i.type !== 'freeShipping'), (acc, { value }) => {
+            return acc + value
+          }, 0);
+          const value = this.totalPrice - discount
+
+          products = orderUtil.applyDiscountForOrder(products, { difference: discount, value })
+        }
         //convert delivery time to date
         // const period = deliveryTime.substr(deliveryTime.length - 2, deliveryTime.length)
         // const time = deliveryTime.slice(0, deliveryTime.length - 2).trim().split(':')
@@ -348,12 +363,12 @@
           // deliveryTime: date.toDate(),
           note,
           createdDate: new Date(),
-          shippingFee: this.shippingFee,
+          shippingFee: this.discounts.some(item => item.type === 'freeShipping') ? 0 : this.shippingFee,
           totalPrice: this.totalPrice,
           takeOut: true,
         }
 
-        if(!this.store.useMultiplePrinters) {
+        if (!this.store.useMultiplePrinters) {
           Object.assign(orderData, {printers: [this.store.printers[0]]})
         }
 

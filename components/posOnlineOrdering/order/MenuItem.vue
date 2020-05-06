@@ -17,7 +17,7 @@
     </div>
     <g-icon @click="addToOrder" v-if="isOpening"
             size="28" color="#424242"
-            class="po-menu-item__add">
+            :class="['po-menu-item__add', disabled && 'disabled']">
       add_circle
     </g-icon>
     <div class="po-menu-item__action" v-if="isOpening">
@@ -52,7 +52,8 @@
           width: 60,
           height: 60,
         }),
-      }
+      },
+      disabled: Boolean
     },
     filters: {
       currency(val) {
