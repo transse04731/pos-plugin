@@ -40,10 +40,10 @@
           </div>
           <div :class="['row-flex', 'br-2', 'b-grey', 'ba-thin', !conditions.timePeriod.active && 'disabled']">
             <div class="col-6 b-grey brw-thin row-flex align-items-center justify-center pa-2">
-              <g-date-picker-input class="date-picker" v-model="conditions.timePeriod.value.startDate" :max="conditions.timePeriod.value.endDate"/>
+              <g-date-picker-input icon="far fa-calendar-alt" class="date-picker" v-model="conditions.timePeriod.value.startDate" :max="conditions.timePeriod.value.endDate"/>
             </div>
             <div class="col-6 row-flex align-items-center justify-center pa-2">
-              <g-date-picker-input class="date-picker" v-model="conditions.timePeriod.value.endDate" :min="conditions.timePeriod.value.startDate"/>
+              <g-date-picker-input icon="far fa-calendar-alt" class="date-picker" v-model="conditions.timePeriod.value.endDate" :min="conditions.timePeriod.value.startDate"/>
             </div>
           </div>
           <div>
@@ -312,13 +312,23 @@
         padding: 6px 4px;
       }
 
-      .date-picker ::v-deep .g-tf {
-        &:before, &:after {
-          display: none;
+      .date-picker ::v-deep {
+        .g-tf-wrapper {
+          margin: 0;
         }
 
-        .input > div {
-          display: none;
+        .g-tf {
+          &:before, &:after {
+            display: none;
+          }
+
+          .input > div {
+            display: none;
+          }
+
+          input {
+            text-align: center;
+          }
         }
       }
 
