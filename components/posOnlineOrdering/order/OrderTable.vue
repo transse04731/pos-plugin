@@ -204,7 +204,9 @@
       hasMenuItem() { return this.orderItems.length > 0 },
       totalItems() { return this.orderItems.length },
       totalPrice() {
-        return _.sumBy(this.orderItems, item => item.price * item.quantity)
+        return this.orderItems.reduce((sum, item) => {
+          return sum + item.price * item.quantity
+        }, 0)
       },
       shippingFee() {
         if (!this.orderItems || this.orderItems.length === 0)
@@ -249,7 +251,7 @@
         discounts = discounts.filter(discount => {
           return discount.store === this.store._id && discount.type.includes(this.orderType) && discount.enabled
         })
-        if (!discounts.length) return this.totalPrice + this.shippingFee
+        if (!discounts.length) return discounts
 
         const applicableDiscounts = discounts.filter(({ conditions: { coupon, daysOfWeek, timePeriod, total, zipCode } }) => {
           if (total && total.min && this.totalPrice < total.min) return false
@@ -288,6 +290,8 @@
       },
       effectiveTotal() {
         if (!this.orderItems || !this.orderItems.length) return 0
+
+        if (!this.confirmView) return this.totalPrice
 
         const totalDiscount = this.discounts.reduce((total, {value}) => total + value, 0)
         return this.totalPrice + this.shippingFee - totalDiscount

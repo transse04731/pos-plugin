@@ -80,19 +80,13 @@
           "key": "total",
           "fields": [
             {
-              "schemaType": "string",
-              "key": "type",
-              "type": "input@select",
-              "optionsType": "onlyValue",
-              "options": [
-                "gte",
-                "lte"
-              ]
+              "schemaType": "number",
+              "key": "min",
+              "type": "input@number"
             },
             {
               "schemaType": "number",
-              "key": "value",
-              "default": "",
+              "key": "max",
               "type": "input@number"
             }
           ],
