@@ -35,23 +35,23 @@
             <div v-if="orderView && hasMenuItem"
                  v-for="(item, index) in orderItems" :key="index"
                  class="po-order-table__item">
-              <div>
-                <div class="po-order-table__item__name">{{ item.name }}</div>
-                <div class="po-order-table__item__note">
-                  <g-icon size="16">icon-note</g-icon>
-                  {{ item.note || `${$t('store.note')}...` }}
+              <div class="row-flex align-items-center">
+                <div :class="['po-order-table__item__name', store.collapseText && 'collapse']">{{ item.name }}</div>
+                <g-spacer/>
+
+                <div class="po-order-table__item__price">{{ item.price | currency }}</div>
+
+                <div class="po-order-table__item__action">
+                  <g-icon @click.stop="removeItem(item)" color="#424242" size="28">remove_circle_outline</g-icon>
+                  <span>{{item.quantity}}</span>
+                  <g-icon @click.stop="addItem(item)" color="#424242" size="28">add_circle</g-icon>
                 </div>
               </div>
 
-              <g-spacer/>
-
-              <div class="po-order-table__item__price">{{ item.price | currency }}</div>
-
-              <div class="po-order-table__item__action">
-                <g-icon @click.stop="removeItem(item)" color="#424242" size="28">remove_circle_outline</g-icon>
-                <span>{{item.quantity}}</span>
-                <g-icon @click.stop="addItem(item)" color="#424242" size="28">add_circle</g-icon>
+              <div class="po-order-table__item__note">
+                <g-text-field dense prepend-icon="icon-note@16" :placeholder="`${$t('store.note')}...`" v-model="item.note"/>
               </div>
+
             </div>
 
             <!-- Confirm -->
@@ -338,7 +338,8 @@
             groupPrinter: orderItem.groupPrinters[0],
             groupPrinter2: this.store.useMultiplePrinters && orderItem.groupPrinters.length >= 2 && orderItem.groupPrinters[1],
             category: orderItem.category.name,
-            originalPrice: orderItem.price
+            originalPrice: orderItem.price,
+            modifiers: [{name: orderItem.note, price: 0, quantity: 1}]
           }
         })
 
@@ -614,11 +615,9 @@
     }
 
     &__item {
-      display: flex;
-      flex-direction: row;
       align-items: center;
       width: 100%;
-      height: 74px;
+      min-height: 74px;
       border-bottom: 1px dashed #d8d8d8;
 
       &__name {
@@ -626,10 +625,13 @@
         font-size: 15px;
         line-height: 19px;
         word-break: break-word;
-        -webkit-line-clamp: 2;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+
+        &.collapse {
+          -webkit-line-clamp: 2;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
       }
 
       &__price {
@@ -640,9 +642,23 @@
       }
 
       &__note {
-        font-size: 12px;
-        color: #9E9E9E;
         margin-top: 8px;
+
+        .g-tf-wrapper {
+          margin: 0;
+
+          ::v-deep .g-tf {
+            &:before, &:after {
+              display: none;
+            }
+
+            .g-tf-input {
+              font-size: 12px;
+              color: #9E9E9E;
+              font-style: italic;
+            }
+          }
+        }
       }
 
       &__action {
