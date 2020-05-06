@@ -5,6 +5,11 @@
         <div class="mt-2">{{$t('store.orderSuccessfully')}}</div>
       </div>
       <div class="cpn-order-created__content">
+        <!-- Order progress -->
+        <div style="text-align: center">
+          <order-progress :status="order.status"/>
+        </div>
+        
         <div v-for="(item, index) in order.items" :key="index" class="order-detail">
           <div class="order-detail__index" >{{ item.quantity || 1}}</div>
           <div class="order-detail__name">{{ item.name }}</div>
@@ -25,18 +30,22 @@
           <g-spacer/>
           <span>{{ (order.totalPrice + order.shippingFee) | currency}}</span>
         </div>
-        <div class="cpn-order-created__message">Please enter your email address if you would like to receive notifications for future discount & promotion.</div>
-        <g-text-field v-model="email" prepend-icon="email" label="Email"/>
       </div>
-      <div class="cpn-order-created__actions">
-        <g-btn-bs width="98" background-color="#536DFE" text-color="#FFF" rounded @click="confirm">OK</g-btn-bs>
+      <div v-if="orderHasBeenProcessed" class="cpn-order-created__actions">
+        <g-btn-bs width="98" text-color="#536DFE" rounded @click="close">Close</g-btn-bs>
       </div>
     </div>
   </g-dialog>
 </template>
 <script>
+  import OrderProgress from './OrderProgress';
   export default {
     name: 'OrderCreated',
+    components: { OrderProgress },
+    props: {
+      value: Boolean,
+      order: Object,
+    },
     filters: {
       currency(value) {
         if (value)
@@ -44,13 +53,8 @@
         return 0
       }
     },
-    props: {
-      value: Boolean,
-      order: Object,
-    },
     data() {
       return {
-        email: '',
       }
     },
     computed: {
@@ -61,16 +65,24 @@
         set(val) {
           this.$emit('input', val)
         }
+      },
+      orderHasBeenProcessed() {
+        return this.order.status !== 'inProgress'
       }
     },
     methods: {
-      confirm() {
-        if (this.email)
-          this.$emit('subscribe', this.email)
-        else
-          this.$emit('close')
+      close() {
         this.internalValue = false
       }
+    },
+    created() {
+      window.cms.socket.on('updateOrderStatus', (orderToken, orderStatus) => {
+        if (orderToken === this.order.orderToken)
+          this.order.status = orderStatus
+      })
+    },
+    beforeDestroy() {
+      window.cms.socket.off('updateOrderStatus')
     }
   }
 </script>
@@ -107,6 +119,7 @@
     }
 
     &__content {
+      margin-bottom: 50px;
       overflow: hidden scroll;
       max-height: calc(100% - 120px);
       scrollbar-width: none; // firefox
@@ -152,10 +165,11 @@
     }
     
     &__actions {
+      padding-top: 10px;
       display: flex;
       flex-direction: row;
-      justify-content: flex-end;
-      margin-top: 8px;
+      justify-content: center;
+      border-top: 1px solid #eee;
     }
   }
 

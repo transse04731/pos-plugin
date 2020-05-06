@@ -1,36 +1,21 @@
 <template>
   <div class="order-progress">
-    <!-- dashed line -->
-    <div class="order-progress__dashed-line"></div>
-    <div class="order-progress__steps">
-      <div v-if="receivedTime" class="order-progress__step">
-        <div class="order-progress__step__icon">
-          <img draggable="false" src="/plugins/pos-plugin/assets/order-progress--received.svg">
-        </div>
-        <span>Received</span>
-        <span>{{ receivedTime | toTime }}</span>
+    <div class="order-progress__circular">
+      <g-progress-circular v-if="inprogress" :rotate="-90" size="80" width="40" :value="progress" color="#536DFE"/>
+      <div v-else :style="actResultDivStyle">
+        <img draggable="false" v-if="confirmed" src="/plugins/pos-plugin/assets/order-progress--confirmed.svg">
+        <img draggable="false" v-else-if="cancelled" src="/plugins/pos-plugin/assets/order-progress--cancelled.svg">
       </div>
-      <div v-if="preparingTime" class="order-progress__step">
-        <div class="order-progress__step__icon">
-          <img draggable="false" src="/plugins/pos-plugin/assets/order-progress--preparing.svg">
-        </div>
-        <span>Preparing</span>
-        <span>{{ preparingTime | toTime }}</span>
+    </div>
+    <div style="font-size: 18px; margin-top: 13px; margin-bottom: 30px; max-width: 350px">
+      <div v-if="inprogress">Please wait while we proceed your order!</div>
+      <div v-else-if="confirmed">
+        <div>Your order is confirmed for </div>
+        <div style="font-weight: bold">{{ deliveryTime }}</div>
       </div>
-      <div v-if="cancelledTime" class="order-progress__step-cancelled">
-        <div class="order-progress__step__icon">
-          <img draggable="false" src="/plugins/pos-plugin/assets/order-progress--preparing.svg">
-        </div>
-        <span>Cancelled</span>
-        <span>{{ cancelledTime | toTime }}</span>
-      </div>
-      <div class="order-progress__step">
-        <div class="order-progress__step__icon">
-          <img v-if="pickup" draggable="false" src="/plugins/pos-plugin/assets/order-progress--redy4pickup.svg">
-          <img v-else draggable="false" src="/plugins/pos-plugin/assets/order-progress--completed.svg">
-        </div>
-        <span> {{ completedText }} </span>
-        <span>{{ completedTime | toTime }}</span>
+      <div v-else-if="cancelled">
+        <div style="color: #E57373">Sorry, your order has been cancelled!</div>
+        <div style="color: #747474">Reason: {{ cancelledReason }}</div>
       </div>
     </div>
   </div>
@@ -39,73 +24,72 @@
   export default {
     name: 'OrderProgress',
     props: {
-      receivedTime: String,
-      preparingTime: String,
-      completedTime: String,
-      cancelledTime: String,
-      status: String,
-      type: String,
-    },
-    filters: {
-      toTime(val) {
-        return dayjs(val).format('HH:mm')
-      }
+      deliveryTime: String,
+      cancelledReason: String
     },
     data: function () {
-      return {}
+      return {
+        orderProcessTimeOut: 300, // 5 minutes
+        waited: 0,
+        status: 'inProgress' // kitchen, declined, completed
+      }
     },
     computed: {
-      completed() {
-        return this.status === 'completed'
+      progress() {
+        return Math.floor(100 * this.waited / this.orderProcessTimeOut)
       },
-      cancelled() {
-        return this.status === 'declined'
+      inprogress() {
+        return this.status === 'inProgress'
       },
-      preparing() {
+      confirmed() {
         return this.status === 'kitchen'
       },
-      pickup() {
-        return this.type === 'pickup'
+      cancelled() {
+        return this.status === 'declined' || this.waited > this.orderProcessTimeOut
       },
-      completedText() {
-        return pickup ? 'Ready for pickup' : 'On the way'
+      actResultDivStyle() {
+        return {
+          width: '80px',
+          height: '80px',
+          display: 'flex',
+          'justify-content': 'center',
+          'align-items': 'center',
+          'border-radius': '50%',
+          'background-color': this.confirmed ? '#536DFE' : '#E57373',
+        }
       }
+    },
+    created() {
+      this.intervalId = setInterval(() => {
+        this.waited++
+        if (this.waited > this.orderProcessTimeOut)
+          clearInterval(this.intervalId)
+      }, 1000)
+    },
+    beforeDestroy() {
+      clearInterval(this.intervalId)
     },
     methods: {}
   }
 </script>
 <style scoped lang="scss">
   .order-progress {
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     
-    &__dashed-line {
-      height: 1px;
-      width: 100%;
-      border-top: 1px dashed gray;
-      z-index: 0;
-      position: absolute;
-      top: 25px;
-      left: 0;
+    &__circular {
+      padding: 4px;
+      background-color: #EEEEEE;
+      border-radius: 50%;
+      display: inline-block;
     }
-    
-    &__steps {
-      display: flex;
-      justify-content: space-between;
-    }
-    
-    &__step {
-      display: inline-flex;
-      flex-direction: column;
-      align-items: center;
-      
-      &__icon {
-        width: 55px;
-        height: 55px;
-        background: #536DFE;
-        border-radius: 50%;
-        text-align: center;
-        line-height: 55px;
-      }
+  }
+  
+  ::v-deep {
+    .g-progress-circular__underlay {
+      stroke: transparent;
     }
   }
 </style>

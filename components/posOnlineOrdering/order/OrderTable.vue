@@ -233,12 +233,10 @@
       addItem(item) {
         this.increaseOrAddNewItems(item)
       },
-      confirmPayment() {
+      async confirmPayment() {
         if(this.unavailableConfirm) return
-
-        const {socket} = window.cms
-
-        const {note, deliveryTime, ...customer} = this.customer;
+        
+        const {note, ...customer} = this.customer;
 
         const products = _.map(this.orderItems, orderItem => {
           return {
@@ -248,37 +246,39 @@
             category: orderItem.category.name,
           }
         })
-
-        //convert delivery time to date
-        // const period = deliveryTime.substr(deliveryTime.length - 2, deliveryTime.length)
-        // const time = deliveryTime.slice(0, deliveryTime.length - 2).trim().split(':')
-        // const date = dayjs().second(0).minute(+time[1]).hour(+time[0]).add(period.toUpperCase() === 'PM' ? 12 : 0, 'hour')
-
+        
+        // an identifier for an order
+        const orderToken = await axios.get(`${location.origin}/store/order-token`).data.token
+        
         const orderData = {
           orderType: this.orderType,
           paymentType: this.paymentType,
           customer,
           products,
-          // deliveryTime: date.toDate(),
           note,
           createdDate: new Date(),
           shippingFee: this.shippingFee,
           totalPrice: this.totalPrice,
           takeOut: true,
+          orderToken
         }
 
         if(!this.store.useMultiplePrinters) {
           Object.assign(orderData, {printers: [this.store.printers[0]]})
         }
 
-        socket.emit('createOrder', this.store._id, orderData)
+        window.cms.socket.emit('createOrder', this.store._id, orderData)
 
         this.dialog.order = {
+          orderToken: orderToken,
           items: this.orderItems,
           shippingFee: this.shippingFee,
           totalPrice: this.totalPrice,
+          status: 'inProgress'
         }
 
+        // clear customer info at this place is incorrect
+        // TODO:
         this.customer = {
           name: '',
           phone: '',
@@ -294,12 +294,7 @@
         this.clearOrder()
         this.view = 'order'
         this.$emit('back') // for mobile
-      },
-      async subscribe(email) {
-        const response = (await axios.post('/store/subscribe', { email, storeId: this.store._id })).data
-        alert(response.message)
-        this.closeOrderSuccess()
-      },
+      }
     }
   }
 </script>

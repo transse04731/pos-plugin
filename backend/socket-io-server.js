@@ -92,6 +92,11 @@ module.exports = function (cms) {
       callback(store.id);
     })
 
+    // TODO: analysis side fx
+    socket.on('updateOrderStatus', (orderToken, orderStatus) => {
+      internalSocketIOServer.to(orderToken).emit('updateOrderStatus', orderToken, orderStatus)
+    })
+
     if (socket.request._query && socket.request._query.clientId) {
       const clientId = socket.request._query.clientId;
       updateDeviceAndNotify(true, clientId);
@@ -126,23 +131,18 @@ module.exports = function (cms) {
       externalSocketIOServer.emitTo(deviceId, 'unpairDevice')
     })
 
+
+
     socket.on('createOrder', async (storeId, orderData) => {
       storeId = ObjectId(storeId);
       const device = await DeviceModel.findOne({storeId, 'features.onlineOrdering': true});
       const deviceId = device._id.toString();
 
-      externalSocketIOServer.emitToPersistent(deviceId, 'createOrder', [orderData]);
+      // join orderToken room
+      socket.join(orderData.orderToken)
+
+      externalSocketIOServer.emitToPersistent(deviceId, 'createOrder', [orderData], "createOrderResponse");
     });
-
-    socket.on('getCustomerCreatedOrders', async(storeId, trackPhone, callback) => {
-      storeId = ObjectId(storeId);
-      const device = await DeviceModel.findOne({storeId, 'features.onlineOrdering': true});
-      const deviceId = device._id.toString();
-
-      externalSocketIOServer.emitTo(deviceId, 'getCustomerCreatedOrders', trackPhone, (res) => {
-        callback && callback(res)
-      })
-    })
 
     socket.on('updateApp', async (deviceId, uploadPath) => {
       externalSocketIOServer.emitToPersistent(deviceId, 'updateApp', [uploadPath]);

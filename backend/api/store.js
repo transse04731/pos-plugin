@@ -1,3 +1,4 @@
+const uuidv1 = require('uuid')
 const _ = require('lodash')
 const express = require('express')
 const router = express.Router()
@@ -46,6 +47,10 @@ router.post('/validate-client-domain', async (req, res) => {
   const storeWithClientDomain = await cms.getModel('Store').findOne({ clientDomain })
   const urlTaken = (storeWithClientDomain && storeWithClientDomain._id.toString() !== store)
   res.json(urlTaken ? {message: 'Client domain has been taken!'} : {ok: true})
+})
+
+router.get('/order-token', async (req, res) => {
+  res.json({ token: uuidv1.v1() })
 })
 
 module.exports = router
