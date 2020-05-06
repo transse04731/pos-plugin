@@ -44,7 +44,7 @@
                   <div class="flex-equal fs-small-2 pl-1" style="line-height: 20px">
                     {{item.id}}. {{item.name}}
                     <template v-if="item.modifiers.length > 0">
-                      <span class="i text-grey">(<span v-for="modifier in item.modifiers">{{modifier}}</span>)</span>
+                      <span class="i text-grey">(<span v-for="modifier in item.modifiers">{{modifier.name}}</span>)</span>
                     </template>
                   </div>
                   <div class="col-3 fs-small-2 ta-right" style="line-height: 20px">€{{item.price | formatMoney(decimals)}}</div>

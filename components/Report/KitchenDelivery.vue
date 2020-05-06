@@ -17,19 +17,27 @@
           <table>
             <tbody>
             <tr>
-              <td :style="{'padding-bottom': index === items.length - 1 ? '0' : '18px', width: calculateQuantityColumnWidth(item.quantity)}">
+              <td :style="{'padding-bottom': index === items.length - 1 || item.modifiers ? '0' : '18px', width: calculateQuantityColumnWidth(item.quantity)}">
                 {{item.quantity}}
               </td>
-              <td :style="{'padding-bottom': index === items.length - 1 ? '0' : '18px', width: '5%'}">
+              <td :style="{'padding-bottom': index === items.length - 1 || item.modifiers ? '0' : '18px', width: '5%'}">
                 x
               </td>
-              <td :style="{'padding-bottom': index === items.length - 1 ? '0' : '18px', width: calculateItemColumnWidth(item.quantity)}">
+              <td :style="{'padding-bottom': index === items.length - 1 || item.modifiers ? '0' : '18px', width: calculateItemColumnWidth(item.quantity)}">
                 {{`${item.id}. ${item.name}`}}
               </td>
             </tr>
             </tbody>
           </table>
         </div>
+
+        <div class="kitchen-item-modifiers" v-if="item.modifiers"
+             :style="{'padding-bottom': index === items.length - 1 ? '0' : '18px'}">
+          <div v-for="mod in item.modifiers" class="inset">
+            <span>* {{mod.name}}</span> <span v-if="mod.price">${{mod.price | convertMoney}}</span>
+          </div>
+        </div>
+        <div v-if="item.separate" style="font-size: 40px;">************************</div>
       </div>
     </div>
     <div class="divider-dashed"/>
@@ -137,12 +145,20 @@
     }
 
     .inset {
-      padding-left: 80px;
+      padding-left: 60px;
     }
 
     .kitchen-items {
       margin-top: 20px;
       margin-bottom: 20px;
+
+      .kitchen-item {
+        font-size: 40px;
+
+        &-modifiers {
+          font-size: 30px;
+        }
+      }
 
       table {
         text-align: left;
