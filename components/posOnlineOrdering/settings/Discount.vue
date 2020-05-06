@@ -27,8 +27,8 @@
             <div class="w-20 pl-2">{{discount.name}}</div>
             <div class="col-2 pl-1" style="text-transform: capitalize">{{getType(discount.type)}}</div>
             <div class="col-2 pl-1">{{getAmount(discount.amount)}}</div>
-            <div class="flex-equal pl-1">{{getCondition(discount.conditions)}}</div>
-            <div class="col-1 pl-1">
+            <div class="flex-equal pl-1 ">{{getCondition(discount.conditions)}}</div>
+            <div class="col-1 pl-1 ta-center">
               <span :class="getStatusClass(discount.enabled)">{{getActiveStatus(discount.enabled)}}</span>
             </div>
             <div class="col-1 row-flex justify-center">

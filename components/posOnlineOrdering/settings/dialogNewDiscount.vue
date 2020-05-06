@@ -227,16 +227,16 @@
       }
     },
     watch: {
-      discount(val) {
-        if (val) {
-          this.name = val.name
-          this.type = val.type
+      value(val) {
+        if (val && this.edit) {
+          this.name = this.discount.name
+          this.type = this.discount.type
           this.amount = {
-            type: val.amount.type,
-            value: val.amount.value,
+            type: this.discount.amount.type,
+            value: this.discount.amount.value,
           }
 
-          const { daysOfWeek, total, coupon, timePeriod, zipCode } = val.conditions;
+          const { daysOfWeek, total, coupon, timePeriod, zipCode } = this.discount.conditions;
           this.conditions = {
             total: {
               active: !!total,
@@ -298,6 +298,7 @@
         -moz-appearance: textfield;
         outline: none;
         user-select: text;
+        width: 100%;
 
         &::-webkit-outer-spin-button,
         &::-webkit-inner-spin-button {
