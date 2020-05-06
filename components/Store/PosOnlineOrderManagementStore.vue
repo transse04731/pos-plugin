@@ -3,6 +3,8 @@
 </template>
 <script>
   import _ from 'lodash'
+  import semverSort from 'semver/functions/sort'
+
   export default {
     name: 'PosOnlineOrderManagementStore',
     domain: 'PosOnlineOrderManagementStore',
@@ -192,11 +194,15 @@
           devices: _.map(store.devices, device => {
             const app = _.find(this.versionControlViewModel, app => app.group === device.appName)
             const appItem = _.filter(app && app.files, appItem => appItem.version > device.appVersion)
-            const deviceVersions = _.orderBy(_.map(appItem, this.convertAppItemToViewModel), 'text', 'desc')
+
+            const deviceVersions = appItem.map(this.convertAppItemToViewModel)
+            const deviceVersionMap = _.keyBy(deviceVersions, 'version')
+            const versions = semverSort(Object.keys(deviceVersionMap)).reverse().map(key => deviceVersionMap[key])
+
             return {
               ...device,
               // store all version of device's app
-              versions: deviceVersions,
+              versions,
               // store selected version to update, default set to latest version
               updateVersion: deviceVersions.length && deviceVersions[0].value,
             }

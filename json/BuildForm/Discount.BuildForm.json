@@ -80,19 +80,13 @@
           "key": "total",
           "fields": [
             {
-              "schemaType": "string",
-              "key": "type",
-              "type": "input@select",
-              "optionsType": "onlyValue",
-              "options": [
-                "gte",
-                "lte"
-              ]
+              "schemaType": "number",
+              "key": "min",
+              "type": "input@number"
             },
             {
               "schemaType": "number",
-              "key": "value",
-              "default": "",
+              "key": "max",
               "type": "input@number"
             }
           ],
@@ -161,27 +155,9 @@
           "clipboardType": "cut"
         },
         {
-          "schemaType": "object",
+          "schemaType": "string",
           "key": "coupon",
-          "fields": [
-            {
-              "_id": "5eafd0b65f063646f605398f",
-              "schemaType": "string",
-              "key": "code",
-              "type": "input",
-              "addable": true,
-              "clipboardType": "cut"
-            },
-            {
-              "_id": "5eafd0b65f063646f6053990",
-              "schemaType": "number",
-              "key": "usesRemaining",
-              "type": "input@number",
-              "addable": true,
-              "clipboardType": "cut"
-            }
-          ],
-          "type": "object",
+          "type": "input",
           "addable": true
         }
       ]

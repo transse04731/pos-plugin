@@ -3,7 +3,7 @@
     <div class="po-order-table">
       <div  class="po-order-table__header">
         <!-- header image -->
-        <img :src="store.orderHeaderImageSrc || '/plugins/pos-plugin/assets/images/header.png'" class="po-order-table__header__image"/>
+        <img :src="`${store.orderHeaderImageSrc}?w=340&h=180` || '/plugins/pos-plugin/assets/images/header.png'" class="po-order-table__header__image"/>
       </div>
       <div class="po-order-table__main">
         <!-- header text -->
@@ -15,7 +15,7 @@
         </div>
 
         <!-- content -->
-        <div class="po-order-table__content">
+        <div id="table-content" class="po-order-table__content">
           <template v-if="!isOpening">
             <div class="message-closed">
               <div class="message-closed__title">Merchant is temporarily closed</div>
@@ -35,23 +35,23 @@
             <div v-if="orderView && hasMenuItem"
                  v-for="(item, index) in orderItems" :key="index"
                  class="po-order-table__item">
-              <div>
-                <div class="po-order-table__item__name">{{ item.name }}</div>
-                <div class="po-order-table__item__note">
-                  <g-icon size="16">icon-note</g-icon>
-                  {{ item.note || `${$t('store.note')}...` }}
+              <div class="row-flex align-items-center">
+                <div :class="['po-order-table__item__name', store.collapseText && 'collapse']">{{ item.name }}</div>
+                <g-spacer/>
+
+                <div class="po-order-table__item__price">{{ item.price | currency }}</div>
+
+                <div class="po-order-table__item__action">
+                  <g-icon @click.stop="removeItem(item)" color="#424242" size="28">remove_circle_outline</g-icon>
+                  <span>{{item.quantity}}</span>
+                  <g-icon @click.stop="addItem(item)" color="#424242" size="28">add_circle</g-icon>
                 </div>
               </div>
 
-              <g-spacer/>
-
-              <div class="po-order-table__item__price">{{ item.price | currency }}</div>
-
-              <div class="po-order-table__item__action">
-                <g-icon @click.stop="removeItem(item)" color="#424242" size="28">remove_circle_outline</g-icon>
-                <span>{{item.quantity}}</span>
-                <g-icon @click.stop="addItem(item)" color="#424242" size="28">add_circle</g-icon>
+              <div class="po-order-table__item__note">
+                <g-text-field dense prepend-icon="icon-note@16" :placeholder="`${$t('store.note')}...`" v-model="item.note"/>
               </div>
+
             </div>
 
             <!-- Confirm -->
@@ -69,6 +69,11 @@
                   <g-text-field :rules="validateZipcode" type="number" v-model="customer.zipCode" :label="$t('store.zipCode')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-zip-code@16"/>
 <!--                  <g-time-picker-input v-model="customer.deliveryTime" label="Delivery time" required prepend-icon="icon-delivery-truck@16"/>-->
                 </template>
+                <div>
+                  <div v-if="!couponTf.active" @click="couponTf.active = true"><u>Apply coupon code</u></div>
+                  <g-text-field-bs v-if="couponTf.active" placeholder="COUPON CODE" suffix="Apply" @click:append-outer="applyCoupon" v-model="couponTf.value"/>
+                  <div class="error-message">{{couponTf.error}}</div>
+                </div>
                 <g-textarea v-model="customer.note" :placeholder="`${$t('store.note')}...`" rows="3" no-resize/>
               </div>
 
@@ -89,10 +94,15 @@
                 <g-spacer/>
                 <span>{{ totalPrice | currency }}</span>
               </div>
-              <div class="order-item-summary order-item-summary--end" >
+              <div class="order-item-summary" >
                 <span>{{$t('store.shippingFee')}}:</span>
                 <g-spacer/>
                 <span>{{ shippingFee | currency }}</span>
+              </div>
+              <div class="order-item-summary" v-for="{name, coupon, value} in discounts">
+                <span>{{coupon ? `Coupon (${coupon})` : `${name}`}}:</span>
+                <g-spacer/>
+                <span>-{{ value | currency }}</span>
               </div>
             </template>
           </template>
@@ -100,15 +110,15 @@
       </div>
       <!-- footer -->
       <div :class="['po-order-table__footer', !isOpening && 'disabled']">
-        <div>{{$t('store.total')}}: <span style="font-weight: 700; font-size: 18px; margin-left: 4px">{{ (totalPrice + shippingFee) | currency }}</span></div>
+        <div>{{$t('store.total')}}: <span style="font-weight: 700; font-size: 18px; margin-left: 4px">{{ effectiveTotal | currency }}</span></div>
         <g-spacer/>
-        <g-btn-bs v-if="orderView" class="r" width="180" large rounded background-color="#2979FF" @click="view = 'confirm'" :disabled="orderItems.length === 0">
+        <g-btn-bs v-if="orderView" style="position: relative; justify-content: flex-start" width="154" large rounded background-color="#2979FF" @click="view = 'confirm'" :disabled="orderItems.length === 0">
           {{$t('store.payment')}}
           <div class="icon-payment">
             <g-icon size="16" color="white" class="ml-1">fas fa-chevron-right</g-icon>
           </div>
         </g-btn-bs>
-        <g-btn-bs v-if="confirmView" width="180" :disabled="unavailableConfirm" large rounded background-color="#2979FF" @click="confirmPayment" elevation="5">{{$t('store.confirm')}}</g-btn-bs>
+        <g-btn-bs v-if="confirmView" width="154" :disabled="unavailableConfirm" large rounded background-color="#2979FF" @click="confirmPayment" elevation="5">{{$t('store.confirm')}}</g-btn-bs>
       </div>
       <div class="po-order-table__footer--mobile" v-if="orderItems.length > 0">
         <g-badge :value="true" color="#4CAF50" overlay>
@@ -119,7 +129,7 @@
             <g-icon>icon-menu2</g-icon>
           </div>
         </g-badge>
-        <div class="po-order-table__footer--mobile--total">{{(totalPrice + shippingFee) | currency}}</div>
+        <div class="po-order-table__footer--mobile--total">{{effectiveTotal | currency}}</div>
         <g-spacer/>
         <g-btn-bs v-if="orderView" rounded background-color="#2979FF" @click="view = 'confirm'" style="padding: 8px 16px">{{$t('store.payment')}}</g-btn-bs>
         <g-btn-bs v-if="confirmView" :disabled="unavailableConfirm" rounded background-color="#2979FF" @click="confirmPayment" style="padding: 8px 16px" elevation="5">
@@ -135,6 +145,8 @@
 <script>
   import _ from 'lodash'
   import OrderCreated from './OrderCreated';
+  import {disableBodyScroll, enableBodyScroll} from 'pos-vue-framework'
+  import orderUtil from '../../logic/orderUtil';
 
   export default {
     name: 'OrderTable',
@@ -144,7 +156,7 @@
       isOpening: Boolean,
       merchantMessage: String,
     },
-    data: function () {
+    data() {
       return {
         view: 'order',
         orderType: this.store.delivery ? 'delivery' : 'pickup', // delivery || pick-up
@@ -161,7 +173,13 @@
         dialog: {
           value: false,
           order: {}
-        }
+        },
+        couponTf: {
+          active: false,
+          error: '',
+          value: ''
+        },
+        couponCode: '',
       }
     },
     injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems,clearOrder)'],
@@ -172,6 +190,14 @@
         return 0
       }
     },
+    mounted() {
+      // const content = document.getElementById('table-content')
+      // content && disableBodyScroll(content)
+    },
+    beforeDestroy() {
+      // const content = document.getElementById('table-content')
+      // content && enableBodyScroll(content)
+    },
     computed: {
       confirmView() { return !this.orderView },
       orderView() { return this.view === 'order' },
@@ -179,17 +205,19 @@
       hasMenuItem() { return this.orderItems.length > 0 },
       totalItems() { return this.orderItems.length },
       totalPrice() {
-        return _.sumBy(this.orderItems, item => item.price * item.quantity)
+        return this.orderItems && this.orderItems.reduce((sum, item) => {
+          return sum + item.price * item.quantity
+        }, 0)
       },
       shippingFee() {
         if (!this.orderItems || this.orderItems.length === 0)
           return 0;
-        
+
         if (this.orderType === 'pickup' || this.orderType === 'pickup' || !this.store.deliveryFee)
           return 0
 
         // calculate zip code from store setting
-        for(let deliveryFee of this.store.deliveryFee.fees) {
+        for (let deliveryFee of this.store.deliveryFee.fees) {
          if (_.lowerCase(_.trim(deliveryFee.zipCode)) === _.lowerCase(_.trim(this.customer.zipCode)))
            return deliveryFee.fee
         }
@@ -218,6 +246,70 @@
           rules.push((val) => val.length < 5 || zipCodes.includes(val) || 'Shipping service is not available to your zip code!')
         }
         return rules
+      },
+      discounts() {
+        let discounts = cms.getList('Discount')
+        discounts = discounts.filter(discount => {
+          return discount.store === this.store._id && discount.type.includes(this.orderType) && discount.enabled
+        })
+        if (!discounts.length) return discounts
+
+        const applicableDiscounts = discounts.filter(({ conditions: { coupon, daysOfWeek, timePeriod, total, zipCode } }) => {
+          if (total && total.min && this.totalPrice < total.min) return false
+          if (total && total.max && this.totalPrice > total.max) return false
+          if (timePeriod) {
+            if (dayjs().isBefore(dayjs(timePeriod.startDate)) || dayjs().isAfter(dayjs(timePeriod.endDate))) {
+              return false
+            }
+          }
+          if (daysOfWeek && daysOfWeek.length) {
+            if (!daysOfWeek.includes(dayjs().format('dddd'))) return false
+          }
+          if (zipCode && zipCode.length) {
+            if (this.orderType !== 'delivery' || !zipCode.includes(this.customer.zipCode)) return false
+          }
+          if (coupon && coupon !== this.couponCode) {
+            this.couponCode && (this.couponTf.error = 'Invalid Coupon!')
+            return false
+          }
+
+          return true
+        })
+
+        return applicableDiscounts.map(({ amount, name, conditions: {coupon} }) => {
+          let value
+          if (amount.type === 'flat') value = amount.value
+          else if (amount.type === 'percent') value = amount.value * this.totalPrice / 100
+          else value = this.shippingFee
+
+          return {
+            name,
+            value,
+            coupon,
+            type: amount.type
+          }
+        })
+      },
+      effectiveTotal() {
+        if (!this.orderItems || !this.orderItems.length) return 0
+
+        if (!this.confirmView) return this.totalPrice
+
+        const totalDiscount = this.discounts.reduce((total, {value}) => total + value, 0)
+        const total = this.totalPrice + this.shippingFee - totalDiscount;
+        return total < 0 ? 0 : total
+      }
+    },
+    watch: {
+      discounts(val) {
+        if (!val || !val.length) return
+
+        if (val.some(discount => discount.coupon === this.couponCode)) {
+          this.couponTf.error = ''
+        }
+      },
+      confirmView(val) {
+        this.$emit('confirm-view', val)
       }
     },
     methods: {
@@ -234,18 +326,29 @@
         this.increaseOrAddNewItems(item)
       },
       async confirmPayment() {
-        if(this.unavailableConfirm) return
-        
+        if (this.unavailableConfirm) return
+
         const {note, ...customer} = this.customer;
 
-        const products = _.map(this.orderItems, orderItem => {
+        let products = _.map(this.orderItems, orderItem => {
           return {
-            ..._.omit(orderItem, ['_id', 'category', 'groupPrinters']),
+            ..._.omit(orderItem, ['_id', 'desc', 'image', 'category', 'groupPrinters']),
             groupPrinter: orderItem.groupPrinters[0],
             groupPrinter2: this.store.useMultiplePrinters && orderItem.groupPrinters.length >= 2 && orderItem.groupPrinters[1],
             category: orderItem.category.name,
+            originalPrice: orderItem.price,
+            modifiers: [{name: orderItem.note, price: 0, quantity: 1}]
           }
         })
+        
+        if (this.discounts && this.discounts.length) {
+          const discount = _.reduce(this.discounts.filter(i => i.type !== 'freeShipping'), (acc, { value }) => {
+            return acc + value
+          }, 0);
+          const value = this.totalPrice - discount
+
+          products = orderUtil.applyDiscountForOrder(products, { difference: discount, value })
+        }
         
         // an identifier for an order
         const orderToken = await axios.get(`${location.origin}/store/order-token`).data.token
@@ -257,13 +360,13 @@
           products,
           note,
           createdDate: new Date(),
-          shippingFee: this.shippingFee,
+          shippingFee: this.discounts.some(item => item.type === 'freeShipping') ? 0 : this.shippingFee,
           totalPrice: this.totalPrice,
           takeOut: true,
           orderToken
         }
 
-        if(!this.store.useMultiplePrinters) {
+        if (!this.store.useMultiplePrinters) {
           Object.assign(orderData, {printers: [this.store.printers[0]]})
         }
 
@@ -294,6 +397,9 @@
         this.clearOrder()
         this.view = 'order'
         this.$emit('back') // for mobile
+      },
+      applyCoupon() {
+        this.couponCode = this.couponTf.value
       }
     }
   }
@@ -317,7 +423,7 @@
     &__header {
       &__image {
         width: 340px;
-        height: 164px;
+        height: 180px;
         margin-bottom: 20px;
       }
 
@@ -333,7 +439,7 @@
         &--main {
           display: flex;
           flex: 1;
-          font-size: 25px;
+          font-size: 20px;
         }
       }
 
@@ -350,8 +456,7 @@
     &__content {
       flex: 1;
       margin-bottom: 100px;
-      overflow-x: hidden;
-      overflow-y: auto;
+      overflow: auto;
       scrollbar-width: none; // firefox
 
       &::-webkit-scrollbar {
@@ -402,6 +507,41 @@
         .g-textarea ::v-deep textarea,
         .g-tf-wrapper ::v-deep input {
           user-select: text !important;
+        }
+
+        .bs-tf-wrapper {
+          margin: 0;
+          width: 100%;
+
+          ::v-deep .bs-tf-input-group,
+          ::v-deep .bs-tf-input-text {
+            background: white;
+          }
+
+          ::v-deep .bs-tf-input-group {
+            border-color: #efefef
+          }
+
+          ::v-deep .bs-tf-input-text {
+            font-weight: 600;
+            font-size: 15px;
+            color: #000000;
+            cursor: pointer;
+
+            &:hover {
+              background: #EFEFEF;
+              color: #536DFE;
+            }
+          }
+
+          ::v-deep .bs-tf-inner-input-group__active {
+            box-shadow: none;
+            border-color: #efefef !important;
+          }
+
+          ::v-deep .bs-tf-input {
+            color: rgba(0, 0, 0, 0.87);
+          }
         }
       }
 
@@ -471,11 +611,9 @@
     }
 
     &__item {
-      display: flex;
-      flex-direction: row;
       align-items: center;
       width: 100%;
-      height: 74px;
+      min-height: 74px;
       border-bottom: 1px dashed #d8d8d8;
 
       &__name {
@@ -483,10 +621,13 @@
         font-size: 15px;
         line-height: 19px;
         word-break: break-word;
-        -webkit-line-clamp: 2;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+
+        &.collapse {
+          -webkit-line-clamp: 2;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
       }
 
       &__price {
@@ -497,9 +638,23 @@
       }
 
       &__note {
-        font-size: 12px;
-        color: #9E9E9E;
         margin-top: 8px;
+
+        .g-tf-wrapper {
+          margin: 0;
+
+          ::v-deep .g-tf {
+            &:before, &:after {
+              display: none;
+            }
+
+            .g-tf-input {
+              font-size: 12px;
+              color: #9E9E9E;
+              font-style: italic;
+            }
+          }
+        }
       }
 
       &__action {
@@ -519,17 +674,18 @@
       position: absolute;
       left: 0;
       bottom: 0;
-      height: 100px;
+      height: 80px;
       border-radius: 0 25px 0 0;
       display: flex;
       align-items: center;
       background-color: #E9E9E9;
       width: 100%;
-      padding-left: 20px;
-      padding-right: 20px;
+      padding-left: 16px;
+      padding-right: 8px;
+      font-size: 15px;
 
       .g-btn-bs {
-        padding: 8px 40px;
+        padding: 8px 18px;
       }
 
       &--mobile {
@@ -551,7 +707,7 @@
     }
   }
 
-  @media screen and (max-width: 1040px) {
+  @media screen and (max-width: 1139px) {
     .po-order-table {
       background: #F2F2F2;
 
@@ -668,6 +824,14 @@
     align-items: center;
     justify-content: center;
   }
+
+  .error-message {
+    display: block;
+    font-size: 80%;
+    font-weight: 400;
+    margin-top: 2px;
+    color: red;
+  }
 </style>
 
 <style lang="scss">
@@ -690,6 +854,18 @@
       100% {
         background: transparent;
         color: inherit;
+      }
+    }
+
+    &[type=number] {
+      -moz-appearance: textfield;
+      outline: none;
+      user-select: text;
+
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
       }
     }
   }

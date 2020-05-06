@@ -14,7 +14,18 @@
                 </div>
 
                 <div style="display: flex; align-items: center; justify-content: flex-end; white-space: nowrap;">
-                  <span :style="storeOpenStatusStyle">{{ storeOpenStatus }}</span>
+                  <g-menu v-model="menuHour" open-on-hover close-on-content-click nudge-left="100">
+                    <template v-slot:activator="{on}">
+                      <span @mouseenter="on.mouseenter" @mouseleave="on.mouseleave" @click="dialog.hour = true" :style="storeOpenStatusStyle">{{ storeOpenStatus }}</span>
+                    </template>
+                    <div class="menu-hour">
+                      <div class="fw-700 mb-2">Open hours:</div>
+                      <div class="row-flex align-items-center justify-between my-1 fs-small" v-for="day in storeWorkingDay">
+                        <div>{{day.wdayString}}</div>
+                        <div class="ta-right">{{day.open}} - {{day.close}}</div>
+                      </div>
+                    </div>
+                  </g-menu>
                   <template v-if="storeWorkingTime">
                     <span style="margin-right: 3px;">|</span>
                     <g-icon size="16">access_time</g-icon>
@@ -66,16 +77,19 @@
                     :is-opening="isStoreOpening"
                     :currency-unit="store.currency"
                     :quantity="getQuantityInOrder(item)"
+                    :disabled="menuItemDisabled"
+                    :collapse-text="store.collapseText"
                     @menu-item-selected="addItemToOrder(item)"
                     @increase="addItemToOrder(item)"
                     @decrease="removeItemFromOrder(item)"/>
               </div>
             </div>
+            <div class="pos-order__tab--content-footer"></div>
           </div>
           <order-table v-if="showOrder" @back="showOrder = false" :store="store" :is-opening="isStoreOpening"/>
         </div>
         <div class="pos-order__right">
-          <order-table :store="store" :is-opening="isStoreOpening" :merchant-message="merchantMessage"/>
+          <order-table :store="store" :is-opening="isStoreOpening" :merchant-message="merchantMessage" @confirm-view="menuItemDisabled = $event"/>
         </div>
       
         <!-- Merchant dialog -->
@@ -84,6 +98,18 @@
             <div class="dialog-closed__title">Merchant is temporarily closed</div>
             <div class="dialog-closed__message">{{ merchantMessage }}</div>
             <g-btn-bs text-color="indigo accent-2" @click="dialog.closed = false">OK</g-btn-bs>
+          </div>
+        </g-dialog>
+
+        <!-- Dialog Hour -->
+        <g-dialog v-model="dialog.hour" width="400" eager>
+          <div class="bg-white pa-5 r w-100 br-2">
+            <g-icon style="position: absolute; top: 16px; right: 16px" @click="dialog.hour = false" size="16">icon-close</g-icon>
+            <div class="fw-700 mb-2 fs-large-3">Open Hours</div>
+            <div class="row-flex align-items-center justify-between my-1 fs-small" v-for="day in storeWorkingDay">
+              <div>{{day.wdayString}}</div>
+              <div class="ta-right">{{day.open}} - {{day.close}}</div>
+            </div>
           </div>
         </g-dialog>
       </template>
@@ -114,10 +140,13 @@
         today: dayjs().format("dddd"),
         now: dayjs().format('HH:mm'),
         dialog: {
-          closed: false
+          closed: false,
+          hour: false
         },
         throttle: null,
-        choosing: 0
+        choosing: 0,
+        menuHour: false,
+        menuItemDisabled: false
       }
     },
     filters: {
@@ -156,7 +185,7 @@
             setTimeout(() => {
               const contentRef = this.$refs['tab-content']
               contentRef && contentRef.addEventListener('scroll', this.throttle)
-              contentRef && disableBodyScroll(contentRef)
+              // contentRef && disableBodyScroll(contentRef)
             }, 500)
           } else {
             const contentRef = this.$refs['tab-content']
@@ -169,7 +198,7 @@
     beforeDestroy() {
       clearInterval(this.dayInterval)
       this.$refs['tab-content'].removeEventListener('scroll', this.throttle)
-      enableBodyScroll(this.$refs['tab-content'])
+      // enableBodyScroll(this.$refs['tab-content'])
     },
     computed: {
       shippingFee() {
@@ -193,7 +222,7 @@
         const categories = _.cloneDeep(this.categories)
         const products = _.cloneDeep(this.products)
         _.each(categories, cate => {
-          cate.items = _.filter(products, p => p.category._id === cate._id)
+          cate.items = _.orderBy(_.filter(products, p => p.category._id === cate._id), 'position', 'asc')
         })
         return categories
       },
@@ -248,6 +277,27 @@
       },
       storeWorkingTime() {
         return this.todayOpenHour ? `${this.todayOpenHour.openTime} - ${this.todayOpenHour.closeTime}` : null
+      },
+      storeWorkingDay() {
+        return this.store.openHours.map(oh => {
+          let days = []
+          for(let i = 0; i < oh.dayInWeeks.length; i++) {
+            const weekday = oh.dayInWeeks[i]
+            if(!weekday)
+              days.push({})
+            else {
+              if (days.length === 0) days.push({})
+              let day = _.last(days)
+              if(day.start) {
+                Object.assign(day, {end: this.dayInWeeks[i].slice(0, 3)})
+              } else {
+                Object.assign(day, {start: this.dayInWeeks[i].slice(0, 3)})
+              }
+            }
+          }
+          const wdayString = days.filter(d => !_.isEmpty(d)).map(d => d.start + (d.end ? ` - ${d.end}` : '')).join(', ')
+          return { wdayString, open: oh.openTime, close: oh.closeTime }
+        })
       }
     },
     methods: {
@@ -265,7 +315,8 @@
         this.$set(this, 'store', await cms.getModel('Store').findOne({_id: this.store._id}))
       },
       async loadCategories() {
-        this.$set(this, 'categories', await cms.getModel('Category').find({ store: this.store._id }, { store: 0 }))
+        const categories = await cms.getModel('Category').find({ store: this.store._id }, { store: 0 })
+        this.$set(this, 'categories', _.orderBy(categories, 'position', 'asc'))
       },
       async loadProducts() {
         this.$set(this, 'products', await cms.getModel('Product').find({ store: this.store._id }, { store: 0 }))
@@ -322,7 +373,7 @@
             this.choosing--
           }, 1000)
         }
-      }
+      },
     },
     watch: {
       selectedCategoryId(val) {
@@ -470,10 +521,9 @@
       &--content {
         flex: 1;
         margin-top: 30px;
-        overflow: hidden auto;
+        overflow: auto;
         /*scroll-behavior: smooth;*/
         scrollbar-width: none; // firefox
-        -webkit-overflow-scrolling: touch;
 
         &::-webkit-scrollbar {
           display: none;
@@ -495,9 +545,14 @@
     }
   }
 
-  @media screen and (max-width: 1040px) {
+  @media screen and (max-width: 1139px) {
     .pos-order__left {
       padding: 0;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
 
       .pos-order__left__header {
         & > img {
@@ -562,18 +617,13 @@
           .sub-title {
             font-size: 18px;
           }
-
-          & > div:last-child {
-            .pos-order__tab--content-main {
-              margin-bottom: 80px;
-            }
-          }
         }
       }
 
       .pos-order__info {
         display: flex;
         position: fixed;
+        z-index: 5;
         bottom: 0;
         width: 100%;
         border-top-right-radius: 32px;
@@ -587,6 +637,10 @@
           align-self: center;
           margin-left: 16px;
         }
+
+        & ~ .pos-order__tab--content .pos-order__tab--content-footer {
+          height: 80px;
+        }
       }
 
       ::v-deep .po-order-table {
@@ -596,6 +650,8 @@
         position: fixed;
         top: 0;
         left: 0;
+        bottom: 72px;
+        right: 0;
         height: calc(100% - 72px);
       }
     }
@@ -634,6 +690,19 @@
       color: #424242;
       padding-bottom: 36px;
       border-bottom: 1px solid #EFEFEF;
+    }
+  }
+
+  .menu-hour {
+    padding: 16px;
+    background: white;
+    border-radius: 2px;
+    min-width: 280px;
+  }
+
+  @media screen and (max-width: 1139px) {
+    .menu-hour {
+      display: none;
     }
   }
 </style>

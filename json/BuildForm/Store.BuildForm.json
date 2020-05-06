@@ -246,6 +246,12 @@
           "type": "input"
         }
       ]
+    },
+    {
+      "_id": "5eb27546dfe7ca5edac50068",
+      "schemaType": "boolean",
+      "key": "collapseText",
+      "type": "input@switch"
     }
   ],
   "name": "Store",

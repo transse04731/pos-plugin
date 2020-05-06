@@ -130,18 +130,17 @@ module.exports = function (cms) {
     socket.on('unpairDevice', async deviceId => {
       externalSocketIOServer.emitTo(deviceId, 'unpairDevice')
     })
-
-
-
     socket.on('createOrder', async (storeId, orderData) => {
       storeId = ObjectId(storeId);
       const device = await DeviceModel.findOne({storeId, 'features.onlineOrdering': true});
-      const deviceId = device._id.toString();
+
+      if (!device) return console.error('No store device with onlineOrdering feature found, created online order will not be saved');
 
       // join orderToken room
       socket.join(orderData.orderToken)
 
-      externalSocketIOServer.emitToPersistent(deviceId, 'createOrder', [orderData], "createOrderResponse");
+      const deviceId = device._id.toString();
+      externalSocketIOServer.emitToPersistent(deviceId, 'createOrder', [orderData]);
     });
 
     socket.on('updateApp', async (deviceId, uploadPath) => {

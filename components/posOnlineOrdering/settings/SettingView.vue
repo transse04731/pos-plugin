@@ -22,12 +22,15 @@
             :store="store"
             :categories="categories"
             :products="products"
+            :collapse-text="store.collapseText"
+            @change-collapse="updateStore"
             @add-new-category="addNewCategory"
             @change-category-name="changeCategoryName"
             @delete-category="deleteCategory"
             @add-new-product="addNewProduct"
             @update-product="updateProduct"
-            @delete-product="deleteProduct"/>
+            @delete-product="deleteProduct"
+            @swap-category="swapCategory"/>
         <delivery-fee v-if="view === 'setting-delivery-fee'" :store="store" @update="updateStore"/>
         <multiple-printer v-if="view === 'setting-multiple-printer'" :store="store" @update="updateStore"/>
         <discount v-if="view === 'setting-discount'" :list-discount="listDiscount"
@@ -123,7 +126,7 @@
 
       // categories
       async loadCategories() {
-        this.$set(this, 'categories', await cms.getModel('Category').find({ store: this.store._id }, { store: 0 }))
+        this.$set(this, 'categories', await cms.getModel('Category').find({ store: this.store._id }, { store: 0 }).sort({position: 1}))
       },
       async addNewCategory(name, callback) {
         if (_.trim(name) === "") {
@@ -137,7 +140,7 @@
           return
         }
 
-        await cms.getModel('Category').create({name, store: this.store._id})
+        await cms.getModel('Category').create({name, store: this.store._id, position: this.categories.length})
         await this.loadCategories()
         callback && callback({ok: true})
       },
@@ -169,6 +172,17 @@
         await cms.getModel('Category').remove({_id: _id})
         await this.loadCategories()
         await this.loadProducts()
+      },
+
+      async swapCategory(oldId, swapId, oldIndex, newIndex) {
+        const category = _.cloneDeep(this.categories[oldIndex])
+        const swapCategory = _.cloneDeep(this.categories[newIndex])
+        category.position = newIndex
+        swapCategory.position = oldIndex
+        this.categories.splice(oldIndex, 1, swapCategory)
+        this.categories.splice(newIndex, 1, category)
+        await cms.getModel('Category').updateOne({_id: oldId}, {position: newIndex})
+        await cms.getModel('Category').updateOne({_id: swapId}, {position: oldIndex})
       },
       
       // products
