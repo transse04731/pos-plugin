@@ -78,6 +78,7 @@
                       :currency-unit="store.currency"
                       :quantity="getQuantityInOrder(item)"
                       :disabled="menuItemDisabled"
+                      :collapse-text="store.collapseText"
                       @menu-item-selected="addItemToOrder(item)"
                       @increase="addItemToOrder(item)"
                       @decrease="removeItemFromOrder(item)"/>

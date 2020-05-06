@@ -3,8 +3,8 @@
     <img v-if="image" alt draggable="false" :src="menuItemThumbnail" class="po-menu-item__thumbnail"/>
     <img v-else alt draggable="false" src="/plugins/pos-plugin/assets/empty_dish.svg" class="po-menu-item__thumbnail"/>
     <div class="po-menu-item__content">
-      <div class="po-menu-item__name">{{ name }}</div>
-      <div class="po-menu-item__desc">{{ desc }}</div>
+      <div :class="['po-menu-item__name', collapseText && 'collapse']">{{ name }}</div>
+      <div :class="['po-menu-item__desc', collapseText && 'collapse']">{{ desc }}</div>
       <div class="po-menu-item__prices--under">
         <div :class="price2 && 'po-menu-item__prices--discount'"> {{ price | currency }}</div>
         <div v-if="price2"> {{ price2 | currency }}</div>
@@ -53,7 +53,8 @@
           height: 60,
         }),
       },
-      disabled: Boolean
+      disabled: Boolean,
+      collapseText: Boolean
     },
     filters: {
       currency(val) {
@@ -85,7 +86,7 @@
     display: flex;
     align-items: flex-start;
     padding-top: 8px;
-    height: 80px;
+    min-height: 80px;
 
     &__thumbnail {
       border-radius: 15px;
@@ -97,28 +98,34 @@
     &__name {
       font-weight: bold;
       font-size: 15px;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      max-width: 350px;
+      max-width: 100%;
       user-select: auto;
+
+      &.collapse {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
     }
 
     &__content {
       margin-right: 16px;
-      max-width: calc(100% - 180px);
+      max-width: calc(100% - 200px);
     }
 
     &__desc {
       font-size: 13px;
       color: #757575;
-      max-width: 350px;
+      max-width: 100%;
       word-break: break-word;
-      -webkit-line-clamp: 2;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      user-select: auto;
+
+      &.collapse {
+        -webkit-line-clamp: 2;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        user-select: auto;
+      }
     }
 
     &__prices {
@@ -159,10 +166,16 @@
     }
   }
 
-  @media screen and (max-width: 1040px) {
+  @media screen and (max-width: 1139px) {
     .po-menu-item {
       &__content {
         line-height: 1.2;
+        max-width: calc(100% - 160px);
+        margin-right: 4px;
+      }
+
+      &__thumbnail {
+        margin-right: 8px;
       }
 
       &__name {

@@ -10,6 +10,8 @@
       </div>
       <div class="menu-setting__main" v-else>
         <div class="row-flex justify-end mb-2">
+          <g-switch v-model="collapse" label="Collapse overflow text"/>
+          <g-spacer/>
           <g-btn-bs @click="openWebShop" border-color="gray">Preview</g-btn-bs>
           <g-btn-bs background-color="#2979FF" icon="add_circle"
                     @click="dialog.addNewCategory = true">
@@ -50,6 +52,7 @@
                           :available-printers="store.printers"
                           :use-multiple-printers="store.useMultiplePrinters"
                           :key="`item_${index}`"
+                          :collapse-text="collapse"
                           @editing="setEditing(product._id, $event)"
                           @save="updateProduct(product._id, $event)"
                           @delete="openDeleteProductDialog(product._id)"
@@ -98,6 +101,7 @@
       store: Object,
       categories: Array,
       products: Array,
+      collapseText: Boolean
     },
     data: function () {
       return {
@@ -130,6 +134,14 @@
           cate.products = _.orderBy(_.filter(products, p => p.category._id === cate._id), 'position', 'asc')
         })
         return categories
+      },
+      collapse: {
+        get() {
+          return this.collapseText
+        },
+        set(val) {
+          this.$emit('change-collapse', {collapseText: val})
+        }
       }
     },
     watch: {

@@ -16,10 +16,10 @@
         <div class="menu-setting-item__content px-2">
           <div class="menu-setting-item__name row-flex">
             <span class="col-1">{{id ? id + '.' : ''}}</span>
-            <span class="flex-equal">{{name}}</span>
+            <span :class="['flex-equal', collapseText && 'collapse']">{{name}}</span>
             <span class="col-3" v-if="useMultiplePrinters">{{groupPrinterStr}}</span>
           </div>
-          <div class="menu-setting-item__desc">
+          <div :class="['menu-setting-item__desc', collapseText && 'collapse']">
             {{desc}}
           </div>
         </div>
@@ -77,7 +77,7 @@
   export default {
     name: 'SettingMenuItem',
     components: { SettingNewMenuItem },
-    props: [ '_id', 'index', 'id', 'image', 'name', 'desc', 'price', 'groupPrinters', 'tax', 'availablePrinters', 'useMultiplePrinters', 'maxIndex'],
+    props: [ '_id', 'index', 'id', 'image', 'name', 'desc', 'price', 'groupPrinters', 'tax', 'availablePrinters', 'useMultiplePrinters', 'maxIndex', 'collapseText'],
     data: function () {
       return {
         mode: 'view',
@@ -136,7 +136,7 @@
     grid-gap: 15px;
     background-color: #fff;
     align-items: center;
-    height: 112px;
+    min-height: 112px;
 
     &__image {
       width: 80px;
@@ -161,19 +161,29 @@
     &__price {
       font-weight: 700;
       font-size: 15px;
+
+      .collapse {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 500px;
+      }
     }
 
     &__desc {
       word-break: break-word;
-      -webkit-line-clamp: 2;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
       font-size: 14px;
       font-style: italic;
       color: #757575;
-      max-width: 420px;
+      max-width: 100%;
       margin-bottom: 24px;
+
+      &.collapse {
+        -webkit-line-clamp: 2;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
     }
 
     &__tax {

@@ -22,6 +22,8 @@
             :store="store"
             :categories="categories"
             :products="products"
+            :collapse-text="store.collapseText"
+            @change-collapse="updateStore"
             @add-new-category="addNewCategory"
             @change-category-name="changeCategoryName"
             @delete-category="deleteCategory"
