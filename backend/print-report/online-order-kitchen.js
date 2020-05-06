@@ -98,7 +98,6 @@ async function printEscPos(escPrinter, printData, groupPrinter) {
       escPrinter.newLine();
     }
   })
-  escPrinter.newLine()
   escPrinter.setTextNormal()
   escPrinter.bold(true);
   escPrinter.drawLine()

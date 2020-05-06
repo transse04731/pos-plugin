@@ -131,14 +131,14 @@ module.exports = async function (cms) {
 
         printer.alignLeft();
         items.forEach((item, index) => {
+          printer.bold(false);
           const quantityColumnWidth = item.quantity.toString().length * 0.05;
           const itemsColumnWidth = 0.92 - item.quantity.toString().length * 0.05;
 
           printer.setTextQuadArea();
-          printer.bold(true);
           printer.tableCustom([
-            {text: item.quantity, align: 'LEFT', width: quantityColumnWidth},
-            {text: 'x', align: 'LEFT', width: 0.05},
+            {text: item.quantity, align: 'LEFT', width: quantityColumnWidth, bold: true},
+            {text: 'x', align: 'LEFT', width: 0.05, bold: true},
             {text: `${item.id}. ${item.name}`, align: 'LEFT', width: itemsColumnWidth},
           ], {textDoubleWith: true});
 
