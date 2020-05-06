@@ -63,6 +63,7 @@
               </g-radio-group>
               <div class="section-form">
                 <g-text-field v-model="customer.name" :label="$t('store.name')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-person@16"/>
+                <g-text-field v-model="customer.company" :label="$t('store.company')" clearable clear-icon="icon-cancel@16" prepend-icon="icon-company@16"/>
                 <g-text-field type="number" v-model="customer.phone" :label="$t('store.telephone')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-phone2@16"/>
                 <template v-if="orderType === 'delivery'">
                   <g-text-field v-model="customer.address" :label="$t('store.address')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-place@16"/>
@@ -163,6 +164,7 @@
         paymentType: 'cash', // cash || credit
         customer: {
           name: '',
+          company: '',
           phone: '',
           address: '',
           zipCode: '',
@@ -180,6 +182,8 @@
           value: ''
         },
         couponCode: '',
+        totalPrice: 0,
+        totalItems: 0
       }
     },
     injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems,clearOrder)'],
@@ -190,25 +194,21 @@
         return 0
       }
     },
-    mounted() {
-      // const content = document.getElementById('table-content')
-      // content && disableBodyScroll(content)
-    },
-    beforeDestroy() {
-      // const content = document.getElementById('table-content')
-      // content && enableBodyScroll(content)
+    created() {
+      this.$watch('orderItems', orderItems => {
+        this.totalPrice = orderItems ? orderItems.reduce((sum, item) => {
+          return sum + item.price * item.quantity
+        }, 0) : 0
+        this.totalItems = orderItems ? orderItems.reduce((quan, item) => {
+          return quan + item.quantity
+        },0) : 0
+      })
     },
     computed: {
       confirmView() { return !this.orderView },
       orderView() { return this.view === 'order' },
       noMenuItem() { return !this.hasMenuItem },
       hasMenuItem() { return this.orderItems.length > 0 },
-      totalItems() { return this.orderItems.length },
-      totalPrice() {
-        return this.orderItems && this.orderItems.reduce((sum, item) => {
-          return sum + item.price * item.quantity
-        }, 0)
-      },
       shippingFee() {
         if (!this.orderItems || this.orderItems.length === 0)
           return 0;
@@ -255,6 +255,13 @@
         if (!discounts.length) return discounts
 
         const applicableDiscounts = discounts.filter(({ conditions: { coupon, daysOfWeek, timePeriod, total, zipCode } }) => {
+          if (coupon && this.couponCode) {
+            if (coupon !== this.couponCode) {
+              this.couponTf.error = 'Invalid Coupon!'
+              return false
+            }
+            this.couponTf.error = 'No applicable for this order!'
+          }
           if (total && total.min && this.totalPrice < total.min) return false
           if (total && total.max && this.totalPrice > total.max) return false
           if (timePeriod) {
@@ -268,11 +275,8 @@
           if (zipCode && zipCode.length) {
             if (this.orderType !== 'delivery' || !zipCode.includes(this.customer.zipCode)) return false
           }
-          if (coupon && coupon !== this.couponCode) {
-            this.couponCode && (this.couponTf.error = 'Invalid Coupon!')
-            return false
-          }
 
+          this.couponTf.error = ''
           return true
         })
 
@@ -337,7 +341,7 @@
             groupPrinter2: this.store.useMultiplePrinters && orderItem.groupPrinters.length >= 2 && orderItem.groupPrinters[1],
             category: orderItem.category.name,
             originalPrice: orderItem.price,
-            modifiers: [{name: orderItem.note, price: 0, quantity: 1}]
+            ...orderItem.note && {modifiers: [{name: orderItem.note, price: 0, quantity: 1}]},
           }
         })
         
@@ -385,6 +389,7 @@
         // TODO:
         this.customer = {
           name: '',
+          company: '',
           phone: '',
           address: '',
           zipCode: '',

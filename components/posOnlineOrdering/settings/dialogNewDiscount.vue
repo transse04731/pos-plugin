@@ -14,11 +14,11 @@
           </div>
           <div class="col-6 row-flex">
             <div class="flex-equal">
-              <g-select :items="amounts" v-model="amount.type" text-field-component="GTextFieldBs"
+              <g-select :items="amounts" v-model="amount.type" text-field-component="GTextFieldBs" :key="internalValue"
                         label="Amount"/>
             </div>
             <div class="col-3 pt-3" v-if="amount.type !== 'freeShipping'">
-              <g-text-field-bs large v-model="amount.value"/>
+              <g-text-field-bs type="number" large v-model="amount.value"/>
             </div>
           </div>
         </div>
