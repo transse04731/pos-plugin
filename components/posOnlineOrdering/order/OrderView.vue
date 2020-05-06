@@ -14,7 +14,18 @@
                 </div>
 
                 <div style="display: flex; align-items: center; justify-content: flex-end; white-space: nowrap;">
-                  <span :style="storeOpenStatusStyle" @click="showWorkingDay">{{ storeOpenStatus }}</span>
+                  <g-menu v-model="menuHour" open-on-hover close-on-content-click nudge-left="100">
+                    <template v-slot:activator="{on}">
+                      <span @mouseenter="on.mouseenter" @mouseleave="on.mouseleave" @click="dialog.hour = true" :style="storeOpenStatusStyle">{{ storeOpenStatus }}</span>
+                    </template>
+                    <div class="menu-hour">
+                      <div class="fw-700 mb-2">Open hours:</div>
+                      <div class="row-flex align-items-center justify-between my-1 fs-small" v-for="day in storeWorkingDay">
+                        <div>{{day.wdayString}}</div>
+                        <div class="ta-right">{{day.open}} - {{day.close}}</div>
+                      </div>
+                    </div>
+                  </g-menu>
                   <template v-if="storeWorkingTime">
                     <span style="margin-right: 3px;">|</span>
                     <g-icon size="16">access_time</g-icon>
@@ -87,6 +98,18 @@
             <g-btn-bs text-color="indigo accent-2" @click="dialog.closed = false">OK</g-btn-bs>
           </div>
         </g-dialog>
+
+        <!-- Dialog Hour -->
+        <g-dialog v-model="dialog.hour" width="400" eager>
+          <div class="bg-white pa-5 r w-100 br-2">
+            <g-icon style="position: absolute; top: 16px; right: 16px" @click="dialog.hour = false" size="16">icon-close</g-icon>
+            <div class="fw-700 mb-2 fs-large-3">Open Hours</div>
+            <div class="row-flex align-items-center justify-between my-1 fs-small" v-for="day in storeWorkingDay">
+              <div>{{day.wdayString}}</div>
+              <div class="ta-right">{{day.open}} - {{day.close}}</div>
+            </div>
+          </div>
+        </g-dialog>
       </template>
     </div>
 </template>
@@ -112,10 +135,12 @@
         today: dayjs().format("dddd"),
         now: dayjs().format('HH:mm'),
         dialog: {
-          closed: false
+          closed: false,
+          hour: false
         },
         throttle: null,
-        choosing: 0
+        choosing: 0,
+        menuHour: false
       }
     },
     filters: {
@@ -247,6 +272,27 @@
       storeWorkingTime() {
         return this.todayOpenHour ? `${this.todayOpenHour.openTime} - ${this.todayOpenHour.closeTime}` : null
       },
+      storeWorkingDay() {
+        return this.store.openHours.map(oh => {
+          let days = []
+          for(let i = 0; i < oh.dayInWeeks.length; i++) {
+            const weekday = oh.dayInWeeks[i]
+            if(!weekday)
+              days.push({})
+            else {
+              if (days.length === 0) days.push({})
+              let day = _.last(days)
+              if(day.start) {
+                Object.assign(day, {end: this.dayInWeeks[i].slice(0, 3)})
+              } else {
+                Object.assign(day, {start: this.dayInWeeks[i].slice(0, 3)})
+              }
+            }
+          }
+          const wdayString = days.filter(d => !_.isEmpty(d)).map(d => d.start + (d.end ? ` - ${d.end}` : '')).join(', ')
+          return { wdayString, open: oh.openTime, close: oh.closeTime }
+        })
+      }
     },
     methods: {
       getOpenHour(dayInWeekIndex) {
@@ -322,16 +368,6 @@
           }, 1000)
         }
       },
-      showWorkingDay() {
-        const workdays = this.store.openHours.map(oh => {
-          const days = oh.dayInWeeks.map((day, index) => {
-            if(day) return this.dayInWeeks[index].slice(0, 3)
-            return day
-          }).filter(day => !!day)
-          return `${days.join(' - ')}: ${oh.openTime} - ${oh.closeTime}`
-        })
-        console.log(workdays)
-      }
     },
     watch: {
       selectedCategoryId(val) {
@@ -503,7 +539,7 @@
     }
   }
 
-  @media screen and (max-width: 1040px) {
+  @media screen and (max-width: 1139px) {
     .pos-order__left {
       padding: 0;
       position: fixed;
@@ -648,6 +684,19 @@
       color: #424242;
       padding-bottom: 36px;
       border-bottom: 1px solid #EFEFEF;
+    }
+  }
+
+  .menu-hour {
+    padding: 16px;
+    background: white;
+    border-radius: 2px;
+    min-width: 280px;
+  }
+
+  @media screen and (max-width: 1139px) {
+    .menu-hour {
+      display: none;
     }
   }
 </style>

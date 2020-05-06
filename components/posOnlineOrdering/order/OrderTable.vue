@@ -680,7 +680,7 @@
     }
   }
 
-  @media screen and (max-width: 1040px) {
+  @media screen and (max-width: 1139px) {
     .po-order-table {
       background: #F2F2F2;
 
