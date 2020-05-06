@@ -18,7 +18,7 @@
                         label="Amount"/>
             </div>
             <div class="col-3 pt-3" v-if="amount.type !== 'freeShipping'">
-              <g-text-field-bs large v-model="amount.value"/>
+              <g-text-field-bs type="number" large v-model="amount.value"/>
             </div>
           </div>
         </div>

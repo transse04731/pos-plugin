@@ -84,7 +84,7 @@
       },
       getType(type) {
         if (type && type instanceof Array && type.length > 0) {
-          return type.join('; ')
+          return _.sortBy(type).join('; ')
         }
         return ''
       },
@@ -102,8 +102,9 @@
         for (const key in condition) {
           if (key === 'total') {
             let text = ''
-            if (condition[key].min) text += `Min ${condition[key].min} `
-            if (condition[key].max) text += `, Max ${condition[key].max} `
+            if (condition[key].min) text += `Min ${condition[key].min}`
+            if (condition[key].min && condition[key].max) text += ', '
+            if (condition[key].max) text += `Max ${condition[key].max}`
 
             Object.assign(conditions, { [`Total Value`]: text })
           }
