@@ -1150,6 +1150,12 @@
       "schemaType": "string",
       "key": "onlineOrderId",
       "type": "input"
+    },
+    {
+      "_id": "5eb29901ebdd901532b5b0f1",
+      "schemaType": "string",
+      "key": "declineReason",
+      "type": "input"
     }
   ],
   "id": "5c42fb05c016df1bbe8cc7ae",

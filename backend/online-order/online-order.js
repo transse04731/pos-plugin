@@ -241,5 +241,9 @@ module.exports = async cms => {
       await updateDeviceStatus(false);
       callback();
     });
+
+    socket.on('updateOrderStatus', (orderToken, orderStatus, extraInfo) => {
+      onlineOrderSocket.emit('updateOrderStatus', orderToken, orderStatus, extraInfo)
+    })
   })
 }

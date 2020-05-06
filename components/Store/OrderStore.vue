@@ -533,29 +533,36 @@
         this.kitchenOrders = await orderModel.find({ online: true, status: 'kitchen' })
       },
       async declineOrder(order) {
-        await cms.getModel('Order').findOneAndUpdate({ _id: order._id},
+        const status = 'declined'
+        const updatedOrder = await cms.getModel('Order').findOneAndUpdate({ _id: order._id},
           Object.assign({}, order, {
-            status: 'declined',
+            status,
             user: this.user
           }))
         await this.updateOnlineOrders()
+        window.cms.socket.emit('updateOrderStatus', updatedOrder.onlineOrderId, status, order.declineReason)
       },
       async acceptPendingOrder(order) {
-        await cms.getModel('Order').findOneAndUpdate({ _id: order._id},
+        const status = 'kitchen'
+        const updatedOrder = await cms.getModel('Order').findOneAndUpdate({ _id: order._id},
           Object.assign({}, order, {
-            status: 'kitchen',
+            status,
             user: this.user
           }))
         this.printOnlineOrderKitchen(order._id).catch(e => console.error(e))
         this.printOnlineOrderReport(order._id).catch(e => console.error(e))
         await this.updateOnlineOrders()
+        const extraInfo = `${order.type === 'delivery' ? 'Delivery' : (order.type === 'pickup') ? 'Pick up' : ''} in ${order.prepareTime} minutes`
+        window.cms.socket.emit('updateOrderStatus', updatedOrder.onlineOrderId, status, extraInfo)
       },
       async setPendingOrder(order) {
-        await cms.getModel('Order').findOneAndUpdate({ _id: order._id},
+        const status = 'inProgress'
+        const updatedOrder = await cms.getModel('Order').findOneAndUpdate({ _id: order._id},
           Object.assign({}, order, {
-            status: 'inProgress'
+            status,
           }))
         await this.updateOnlineOrders()
+        window.cms.socket.emit('updateOrderStatus', updatedOrder.onlineOrderId, status)
       },
       async completeOrder(order) {
         await cms.getModel('Order').findOneAndUpdate({_id: order._id},
