@@ -142,18 +142,20 @@ module.exports = async function (cms) {
             {text: `${item.id}. ${item.name}`, align: 'LEFT', width: itemsColumnWidth},
           ], {textDoubleWith: true});
 
-          printer.setTextDoubleWidth();
-          printer.bold(true);
-          if (item.modifiers) item.modifiers.forEach(mod => {
-            let modifierText = `* ${mod.name}`
-            if (mod.price) modifierText += ` $${convertMoney(mod.price)}`;
+          if (item.modifiers) {
+            printer.setTextDoubleWidth();
 
-            printer.tableCustom([
-              {text: '', align: 'LEFT', width: quantityColumnWidth},
-              {text: '', align: 'LEFT', width: 0.05},
-              {text: modifierText, align: 'LEFT', width: itemsColumnWidth},
-            ], {textDoubleWith: true});
-          });
+            item.modifiers.forEach(mod => {
+              let modifierText = `* ${mod.name}`
+              if (mod.price) modifierText += ` ${convertMoney(mod.price)}`;
+
+              printer.tableCustom([
+                {text: '', align: 'LEFT', width: quantityColumnWidth},
+                {text: '', align: 'LEFT', width: 0.05},
+                {text: modifierText, align: 'LEFT', width: itemsColumnWidth},
+              ], {textDoubleWith: true});
+            });
+          }
 
           if (index < items.length - 1) {
             printer.setTextNormal();

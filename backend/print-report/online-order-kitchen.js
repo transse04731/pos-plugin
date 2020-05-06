@@ -78,7 +78,6 @@ async function printEscPos(escPrinter, printData, groupPrinter) {
     ], {textDoubleWith: true});
 
     if (item.modifiers) {
-      escPrinter.setTextNormal();
       escPrinter.setTextDoubleWidth();
 
       item.modifiers.forEach(mod => {
