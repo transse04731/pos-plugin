@@ -124,7 +124,7 @@
       <div class="po-order-table__footer--mobile" v-if="orderItems.length > 0">
         <g-badge :value="true" color="#4CAF50" overlay>
           <template v-slot:badge>
-            {{orderItems.length}}
+            {{totalItemsCount}}
           </template>
           <div style="width: 40px; height: 40px; background-color: #ff5252; border-radius: 8px; display: flex; align-items: center; justify-content: center">
             <g-icon>icon-menu2</g-icon>
@@ -302,6 +302,9 @@
         const totalDiscount = this.discounts.reduce((total, {value}) => total + value, 0)
         const total = this.totalPrice + this.shippingFee - totalDiscount;
         return total < 0 ? 0 : total
+      },
+      totalItemsCount() {
+        return _.sumBy(this.orderItems, orderItem => orderItem.quantity)
       }
     },
     watch: {

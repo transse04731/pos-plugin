@@ -43,7 +43,7 @@
           <div class="pos-order__info" v-if="orderItems.length > 0">
             <g-badge :value="true" color="#4CAF50" overlay>
               <template v-slot:badge>
-                {{orderItems.length}}
+                {{totalItemsCount}}
               </template>
               <div style="width: 40px; height: 40px; background-color: #ff5252; border-radius: 8px; display: flex; align-items: center; justify-content: center">
                 <g-icon>icon-menu2</g-icon>
@@ -51,7 +51,12 @@
             </g-badge>
             <div class="pos-order__info--total">{{ totalPrice | currency }}</div>
             <g-spacer/>
-            <g-btn-bs background-color="#2979FF" rounded style="padding: 8px 16px" @click="showOrder = true">CHECK OUT</g-btn-bs>
+            <g-btn-bs background-color="#2979FF" rounded style="padding: 8px 16px" @click="showOrder = true" width="160">
+              {{$t('store.payment')}}
+              <div class="icon-payment">
+                <g-icon size="16" color="white" class="ml-1">fas fa-chevron-right</g-icon>
+              </div>
+            </g-btn-bs>
           </div>
           <div class="pos-order__tab">
             <div class="pos-order__tab--icon">
@@ -296,6 +301,9 @@
           const wdayString = days.filter(d => !_.isEmpty(d)).map(d => d.start + (d.end ? ` - ${d.end}` : '')).join(', ')
           return { wdayString, open: oh.openTime, close: oh.closeTime }
         })
+      },
+      totalItemsCount() {
+        return _.sumBy(this.orderItems, orderItem => orderItem.quantity)
       }
     },
     methods: {
@@ -698,6 +706,18 @@
     min-width: 280px;
   }
 
+  .icon-payment {
+    position: absolute;
+    width: 33px;
+    height: 33px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    right: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
   @media screen and (max-width: 1139px) {
     .menu-hour {
       display: none;
