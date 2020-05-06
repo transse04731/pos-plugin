@@ -514,3 +514,11 @@ body::-webkit-scrollbar {
   background-size: contain;
   background-position: center;
 }
+
+.icon-company {
+  background-image: url("../assets/company.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  fill: none !important;
+}

@@ -20,7 +20,8 @@ module.exports = {
       confirm: 'Bestätigen',
       orderSuccessfully: 'Bestellung erfolgreich',
       items: 'Artikel',
-      shippingFee: 'Liefergebühr'
+      shippingFee: 'Liefergebühr',
+      company: 'Firmenname',
     }
   }
 }

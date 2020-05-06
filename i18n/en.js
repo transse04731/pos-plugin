@@ -291,7 +291,8 @@ module.exports = {
       confirm: 'CONFIRM',
       orderSuccessfully: 'Order Successfully',
       items: 'Items',
-      shippingFee: 'Shipping Fee'
+      shippingFee: 'Shipping Fee',
+      company: 'Company'
     }
   }
 }

@@ -63,6 +63,7 @@
               </g-radio-group>
               <div class="section-form">
                 <g-text-field v-model="customer.name" :label="$t('store.name')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-person@16"/>
+                <g-text-field v-model="customer.company" :label="$t('store.company')" clearable clear-icon="icon-cancel@16" prepend-icon="icon-company@16"/>
                 <g-text-field type="number" v-model="customer.phone" :label="$t('store.telephone')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-phone2@16"/>
                 <template v-if="orderType === 'delivery'">
                   <g-text-field v-model="customer.address" :label="$t('store.address')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-place@16"/>
@@ -163,6 +164,7 @@
         paymentType: 'cash', // cash || credit
         customer: {
           name: '',
+          company: '',
           phone: '',
           address: '',
           zipCode: '',
@@ -181,6 +183,7 @@
         },
         couponCode: '',
         totalPrice: 0,
+        totalItems: 0
       }
     },
     injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems,clearOrder)'],
@@ -196,6 +199,9 @@
         this.totalPrice = orderItems ? orderItems.reduce((sum, item) => {
           return sum + item.price * item.quantity
         }, 0) : 0
+        this.totalItems = orderItems ? orderItems.reduce((quan, item) => {
+          return quan + item.quantity
+        },0) : 0
       })
     },
     computed: {
@@ -203,7 +209,6 @@
       orderView() { return this.view === 'order' },
       noMenuItem() { return !this.hasMenuItem },
       hasMenuItem() { return this.orderItems.length > 0 },
-      totalItems() { return this.orderItems.length },
       shippingFee() {
         if (!this.orderItems || this.orderItems.length === 0)
           return 0;
@@ -378,6 +383,7 @@
 
         this.customer = {
           name: '',
+          company: '',
           phone: '',
           address: '',
           zipCode: '',
