@@ -255,6 +255,13 @@
         if (!discounts.length) return discounts
 
         const applicableDiscounts = discounts.filter(({ conditions: { coupon, daysOfWeek, timePeriod, total, zipCode } }) => {
+          if (coupon && this.couponCode) {
+            if (coupon !== this.couponCode) {
+              this.couponTf.error = 'Invalid Coupon!'
+              return false
+            }
+            this.couponTf.error = 'No applicable for this order!'
+          }
           if (total && total.min && this.totalPrice < total.min) return false
           if (total && total.max && this.totalPrice > total.max) return false
           if (timePeriod) {
@@ -268,11 +275,8 @@
           if (zipCode && zipCode.length) {
             if (this.orderType !== 'delivery' || !zipCode.includes(this.customer.zipCode)) return false
           }
-          if (coupon && coupon !== this.couponCode) {
-            this.couponCode && (this.couponTf.error = 'Invalid Coupon!')
-            return false
-          }
 
+          this.couponTf.error = ''
           return true
         })
 

@@ -292,7 +292,7 @@ module.exports = {
       orderSuccessfully: 'Order Successfully',
       items: 'Items',
       shippingFee: 'Shipping Fee',
-      company: 'Company'
+      company: 'Company Name'
     }
   }
 }
