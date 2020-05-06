@@ -72,17 +72,17 @@
               <div class="sub-title mb-2">{{ category && category.name }}</div>
               <div class="pos-order__tab--content-main">
                 <menu-item
-                      v-for="(item, index) in category.items" :key="index"
-                      v-bind="item"
-                      :is-opening="isStoreOpening"
-                      :currency-unit="store.currency"
-                      :quantity="getQuantityInOrder(item)"
-                      :disabled="menuItemDisabled"
-                      :collapse-text="store.collapseText"
-                      @menu-item-selected="addItemToOrder(item)"
-                      @increase="addItemToOrder(item)"
-                      @decrease="removeItemFromOrder(item)"/>
-                </div>
+                    v-for="(item, index) in category.items" :key="index"
+                    v-bind="item"
+                    :is-opening="isStoreOpening"
+                    :currency-unit="store.currency"
+                    :quantity="getQuantityInOrder(item)"
+                    :disabled="menuItemDisabled"
+                    :collapse-text="store.collapseText"
+                    @menu-item-selected="addItemToOrder(item)"
+                    @increase="addItemToOrder(item)"
+                    @decrease="removeItemFromOrder(item)"/>
+              </div>
             </div>
             <div class="pos-order__tab--content-footer"></div>
           </div>
@@ -120,11 +120,12 @@
   import OrderTable from './OrderTable';
   import MenuItem from './MenuItem';
   import {smoothScrolling, disableBodyScroll, enableBodyScroll} from 'pos-vue-framework'
+  import CreatedOrder from './CreatedOrder';
 
   export default {
     name: 'OrderView',
     injectService: ['PosOnlineOrderStore:(orderItems, increaseOrAddNewItems, decreaseOrRemoveItems)'],
-    components: { MenuItem, OrderTable},
+    components: { CreatedOrder, MenuItem, OrderTable},
     data: function () {
       return {
         selectedCategoryId: null,
@@ -418,7 +419,7 @@
           font-size: 15px;
           color: #424242;
           font-weight: 300;
-          margin-top: 8px;
+          padding-top: 8px;
 
           .phone-image {
             width: 24px;

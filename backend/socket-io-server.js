@@ -92,6 +92,11 @@ module.exports = function (cms) {
       callback(store.id);
     })
 
+    // TODO: analysis side fx
+    socket.on('updateOrderStatus', (orderToken, orderStatus, extraInfo) => {
+      internalSocketIOServer.to(orderToken).emit('updateOrderStatus', orderToken, orderStatus, extraInfo)
+    })
+
     if (socket.request._query && socket.request._query.clientId) {
       const clientId = socket.request._query.clientId;
       updateDeviceAndNotify(true, clientId);
@@ -125,12 +130,14 @@ module.exports = function (cms) {
     socket.on('unpairDevice', async deviceId => {
       externalSocketIOServer.emitTo(deviceId, 'unpairDevice')
     })
-
     socket.on('createOrder', async (storeId, orderData) => {
       storeId = ObjectId(storeId);
       const device = await DeviceModel.findOne({storeId, 'features.onlineOrdering': true});
 
       if (!device) return console.error('No store device with onlineOrdering feature found, created online order will not be saved');
+
+      // join orderToken room
+      socket.join(orderData.orderToken)
 
       const deviceId = device._id.toString();
       externalSocketIOServer.emitToPersistent(deviceId, 'createOrder', [orderData]);
