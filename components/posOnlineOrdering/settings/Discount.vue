@@ -27,7 +27,11 @@
             <div class="w-20 pl-2">{{discount.name}}</div>
             <div class="col-2 pl-1" style="text-transform: capitalize">{{getType(discount.type)}}</div>
             <div class="col-2 pl-1">{{getAmount(discount.amount)}}</div>
-            <div class="flex-equal pl-1 ">{{getCondition(discount.conditions)}}</div>
+            <div class="flex-equal pl-1">
+              <div v-for="(value, key, index) in getCondition(discount.conditions)" :key=index>
+                <span style="font-weight: bold">{{key}}:</span> <span>{{value}}</span>
+              </div>
+            </div>
             <div class="col-1 pl-1 ta-center">
               <span :class="getStatusClass(discount.enabled)">{{getActiveStatus(discount.enabled)}}</span>
             </div>
@@ -94,24 +98,37 @@
         }
       },
       getCondition(condition) {
-        let cdt = ''
+        let conditions = {}
         for (const key in condition) {
           if (key === 'total') {
-            cdt += 'Total value '
-            if (condition[key].type === 'gte') {
-              cdt += `≥ ${condition[key].value}; `
-            } else {
-              cdt += `≤ ${condition[key].value}; `
-            }
+            let text = ''
+            if (condition[key].min) text += `Min ${condition[key].min} `
+            if (condition[key].max) text += `, Max ${condition[key].max} `
+
+            Object.assign(conditions, { [`Total Value`]: text })
           }
-          if (key === 'daysOfWeek' && condition[key] && condition[key].length) {
-            cdt += `Days of week: ${condition[key].join(', ')}; `
+          if (key === 'timePeriod') {
+            Object.assign(conditions, {
+              [`Time Period`]: `${dayjs(condition[key].startDate).format('DD.MM.YYYY')} - ${dayjs(condition[key].endDate).format('DD.MM.YYYY')}`,
+            })
           }
-          if (key === 'code') {
-            cdt += `Coupon: ${condition[key].code}(${condition[key].usesRemaining}); `
+          if (key === 'daysOfWeek' && condition[key].length) {
+            Object.assign(conditions, {
+              [`Days of week`]: `${condition[key].join(', ')}`
+            })
+          }
+          if (key === 'zipCode' && condition[key].length) {
+            Object.assign(conditions, {
+              [`Zip codes`]: `${condition[key].join(', ')}`
+            })
+          }
+          if (key === 'coupon') {
+            Object.assign(conditions, {
+              [`Coupon`]: `${condition[key]}`
+            })
           }
         }
-        return cdt.slice(0, cdt.length - 2)
+        return conditions
       },
       getStatusClass(status) {
         if (status) {
@@ -218,7 +235,7 @@
       &-row {
         display: flex;
         align-items: center;
-        height: 55px;
+        min-height: 55px;
         font-size: 14px;
         color: #424242;
 
@@ -238,7 +255,7 @@
           &--disabled {
             background: #FFF3E0;
             color: #FF9800;
-            padding: 6px 8px;
+            padding: 6px 12px;
           }
 
           &--active {
