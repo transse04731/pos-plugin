@@ -180,6 +180,7 @@
           value: ''
         },
         couponCode: '',
+        totalPrice: 0,
       }
     },
     injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems,clearOrder)'],
@@ -190,13 +191,12 @@
         return 0
       }
     },
-    mounted() {
-      // const content = document.getElementById('table-content')
-      // content && disableBodyScroll(content)
-    },
-    beforeDestroy() {
-      // const content = document.getElementById('table-content')
-      // content && enableBodyScroll(content)
+    created() {
+      this.$watch('orderItems', orderItems => {
+        this.totalPrice = orderItems ? orderItems.reduce((sum, item) => {
+          return sum + item.price * item.quantity
+        }, 0) : 0
+      })
     },
     computed: {
       confirmView() { return !this.orderView },
@@ -204,11 +204,6 @@
       noMenuItem() { return !this.hasMenuItem },
       hasMenuItem() { return this.orderItems.length > 0 },
       totalItems() { return this.orderItems.length },
-      totalPrice() {
-        return this.orderItems && this.orderItems.reduce((sum, item) => {
-          return sum + item.price * item.quantity
-        }, 0)
-      },
       shippingFee() {
         if (!this.orderItems || this.orderItems.length === 0)
           return 0;
