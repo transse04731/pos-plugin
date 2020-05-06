@@ -9,7 +9,7 @@ async function makePrintData(cms, { orderId }) {
   if (!order) return null;
 
   const {
-    customer: { name, phone, address, zipCode },
+    customer: { name, phone, address, zipCode, company },
     note,
     items,
     shippingFee,
@@ -24,6 +24,7 @@ async function makePrintData(cms, { orderId }) {
     customerPhone: phone,
     customerAddress: address,
     customerZipCode: zipCode,
+    customerCompany: company,
     note,
     items,
     shippingFee,
@@ -39,6 +40,7 @@ async function printEscPos(escPrinter, printData, groupPrinter) {
     customerPhone,
     customerAddress,
     customerZipCode,
+    customerCompany,
     note,
     items,
     shippingFee,
@@ -52,7 +54,12 @@ async function printEscPos(escPrinter, printData, groupPrinter) {
   escPrinter.alignCenter();
   escPrinter.setTextDoubleHeight();
   escPrinter.bold(true);
-  escPrinter.println(`Liefer #${orderNumber}`)
+  escPrinter.println(`Lieferschein #${orderNumber}`)
+  if (customerCompany) {
+    escPrinter.invert(true);
+    escPrinter.println('Firma');
+    escPrinter.invert(false);
+  }
 
   escPrinter.alignLeft()
   escPrinter.setTextNormal()
