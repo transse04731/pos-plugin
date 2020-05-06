@@ -63,7 +63,7 @@
               </g-text-field-bs>
             </g-card-actions>
             <g-card-actions v-if="order.confirmStep2">
-              <div>
+              <div class="w-100">
                 <p class="ml-2 mb-1">Time to complete (min)</p>
                 <value-picker :values="[15, 30, 45, 60]" :default-value="defaultPrepareTime || 30" allow-custom v-model="order.prepareTime"></value-picker>
               </div>
