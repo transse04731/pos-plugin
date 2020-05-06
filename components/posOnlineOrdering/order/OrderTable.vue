@@ -3,7 +3,7 @@
     <div class="po-order-table">
       <div  class="po-order-table__header">
         <!-- header image -->
-        <img :src="`${store.orderHeaderImageSrc}?w=340&h=164` || '/plugins/pos-plugin/assets/images/header.png'" class="po-order-table__header__image"/>
+        <img :src="`${store.orderHeaderImageSrc}?w=340&h=180` || '/plugins/pos-plugin/assets/images/header.png'" class="po-order-table__header__image"/>
       </div>
       <div class="po-order-table__main">
         <!-- header text -->
@@ -112,13 +112,13 @@
       <div :class="['po-order-table__footer', !isOpening && 'disabled']">
         <div>{{$t('store.total')}}: <span style="font-weight: 700; font-size: 18px; margin-left: 4px">{{ effectiveTotal | currency }}</span></div>
         <g-spacer/>
-        <g-btn-bs v-if="orderView" class="r" width="180" large rounded background-color="#2979FF" @click="view = 'confirm'" :disabled="orderItems.length === 0">
+        <g-btn-bs v-if="orderView" style="position: relative; justify-content: flex-start" width="154" large rounded background-color="#2979FF" @click="view = 'confirm'" :disabled="orderItems.length === 0">
           {{$t('store.payment')}}
           <div class="icon-payment">
             <g-icon size="16" color="white" class="ml-1">fas fa-chevron-right</g-icon>
           </div>
         </g-btn-bs>
-        <g-btn-bs v-if="confirmView" width="180" :disabled="unavailableConfirm" large rounded background-color="#2979FF" @click="confirmPayment" elevation="5">{{$t('store.confirm')}}</g-btn-bs>
+        <g-btn-bs v-if="confirmView" width="154" :disabled="unavailableConfirm" large rounded background-color="#2979FF" @click="confirmPayment" elevation="5">{{$t('store.confirm')}}</g-btn-bs>
       </div>
       <div class="po-order-table__footer--mobile" v-if="orderItems.length > 0">
         <g-badge :value="true" color="#4CAF50" overlay>
@@ -407,7 +407,7 @@
     &__header {
       &__image {
         width: 340px;
-        height: 164px;
+        height: 180px;
         margin-bottom: 20px;
       }
 
@@ -423,7 +423,7 @@
         &--main {
           display: flex;
           flex: 1;
-          font-size: 25px;
+          font-size: 20px;
         }
       }
 
@@ -634,17 +634,18 @@
       position: absolute;
       left: 0;
       bottom: 0;
-      height: 100px;
+      height: 80px;
       border-radius: 0 25px 0 0;
       display: flex;
       align-items: center;
       background-color: #E9E9E9;
       width: 100%;
-      padding-left: 20px;
-      padding-right: 20px;
+      padding-left: 16px;
+      padding-right: 8px;
+      font-size: 15px;
 
       .g-btn-bs {
-        padding: 8px 40px;
+        padding: 8px 18px;
       }
 
       &--mobile {
