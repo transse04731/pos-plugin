@@ -34,7 +34,7 @@ function createOnlineOrderSocket(deviceId) {
 
     onlineOrderSocket.on('createOrder', async (orderData, ackFn) => {
       if (!orderData) return
-      let {orderType: type, paymentType, customer, products: items, deliveryTime, createdDate: dateString, shippingFee, note} = orderData
+      let {orderType: type, paymentType, customer, products: items, createdDate: dateString, shippingFee, note, orderToken} = orderData
 
       items = items.map(item => {
         if (item.originalPrice) return item;
@@ -56,7 +56,7 @@ function createOnlineOrderSocket(deviceId) {
         status: 'inProgress',
         items,
         customer,
-        deliveryDate: deliveryTime,
+        deliveryDate: dayjs(),
         payment: [{type: paymentType, value: vSum}],
         type,
         date,
@@ -70,6 +70,7 @@ function createOnlineOrderSocket(deviceId) {
         received: vSum,
         online: true,
         note,
+        onlineOrderId: orderToken
       }
 
       await cms.getModel('Order').create(order)
@@ -240,5 +241,9 @@ module.exports = async cms => {
       await updateDeviceStatus(false);
       callback();
     });
+
+    socket.on('updateOrderStatus', (orderToken, orderStatus, extraInfo) => {
+      onlineOrderSocket.emit('updateOrderStatus', orderToken, orderStatus, extraInfo)
+    })
   })
 }

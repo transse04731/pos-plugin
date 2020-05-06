@@ -174,7 +174,8 @@
         return dayjs(date).format('HH:mm')
       },
       formatMoney(value, decimals = 2) {
-        return !isNaN(value) ? value.toFixed(decimals) : value
+        if (value != null)
+          return !isNaN(value) ? value.toFixed(decimals) : value
       }
     },
     data() {

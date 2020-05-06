@@ -923,6 +923,16 @@
           "schemaType": "boolean",
           "key": "separate",
           "type": "input@checkbox"
+        },
+        {
+          "schemaType": "string",
+          "key": "image",
+          "type": "input"
+        },
+        {
+          "schemaType": "string",
+          "key": "desc",
+          "type": "input"
         }
       ],
       "default": null,
@@ -1139,6 +1149,18 @@
           "schemaType": "string"
         }
       ]
+    },
+    {
+      "_id": "5eb289924a624b0a817f8b92",
+      "schemaType": "string",
+      "key": "onlineOrderId",
+      "type": "input"
+    },
+    {
+      "_id": "5eb29901ebdd901532b5b0f1",
+      "schemaType": "string",
+      "key": "declineReason",
+      "type": "input"
     }
   ],
   "id": "5c42fb05c016df1bbe8cc7ae",
