@@ -139,7 +139,7 @@
     </div>
 
     <!-- Order created -->
-    <order-created v-model="dialog.value" :order="dialog.order" @close="closeOrderSuccess" @subscribe="subscribe"/>
+    <order-created v-if="dialog.value" v-model="dialog.value" :order="dialog.order" @close="closeOrderSuccess"/>
   </div>
 </template>
 <script>
@@ -332,7 +332,7 @@
 
         let products = _.map(this.orderItems, orderItem => {
           return {
-            ..._.omit(orderItem, ['_id', 'desc', 'image', 'category', 'groupPrinters']),
+            ..._.omit(orderItem, ['_id', 'category', 'groupPrinters']),
             groupPrinter: orderItem.groupPrinters[0],
             groupPrinter2: this.store.useMultiplePrinters && orderItem.groupPrinters.length >= 2 && orderItem.groupPrinters[1],
             category: orderItem.category.name,
@@ -351,7 +351,8 @@
         }
         
         // an identifier for an order
-        const orderToken = await axios.get(`${location.origin}/store/order-token`).data.token
+        const generateOrderTokenResponse = await axios.get(`${location.origin}/store/order-token`)
+        const orderToken = generateOrderTokenResponse.data.token
         
         const orderData = {
           orderType: this.orderType,

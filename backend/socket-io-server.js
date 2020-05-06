@@ -93,8 +93,8 @@ module.exports = function (cms) {
     })
 
     // TODO: analysis side fx
-    socket.on('updateOrderStatus', (orderToken, orderStatus) => {
-      internalSocketIOServer.to(orderToken).emit('updateOrderStatus', orderToken, orderStatus)
+    socket.on('updateOrderStatus', (orderToken, orderStatus, extraInfo) => {
+      internalSocketIOServer.to(orderToken).emit('updateOrderStatus', orderToken, orderStatus, extraInfo)
     })
 
     if (socket.request._query && socket.request._query.clientId) {

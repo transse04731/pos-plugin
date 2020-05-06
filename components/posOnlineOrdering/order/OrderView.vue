@@ -121,13 +121,12 @@
   import MenuItem from './MenuItem';
   import {smoothScrolling, disableBodyScroll, enableBodyScroll} from 'pos-vue-framework'
   import TableExpansionRow from '../../Order/components/TableExpansionRow';
-  import OrderProgress from './OrderProgress';
   import CreatedOrder from './CreatedOrder';
 
   export default {
     name: 'OrderView',
     injectService: ['PosOnlineOrderStore:(orderItems, increaseOrAddNewItems, decreaseOrRemoveItems)'],
-    components: { CreatedOrder, OrderProgress, TableExpansionRow, MenuItem, OrderTable},
+    components: { CreatedOrder, TableExpansionRow, MenuItem, OrderTable},
     data: function () {
       return {
         selectedCategoryId: null,
