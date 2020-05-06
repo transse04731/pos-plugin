@@ -11,7 +11,7 @@
           <div>{{ item.price * (item.quantity || 1) | currency }}</div>
         </div>
         <div class="mt-2 row-flex fs-small">
-          <span>{{$t('store.total')}} <b>{{ order.items && order.items.length }}</b> {{$t('store.items')}}</span>
+          <span>{{$t('store.total')}} <b>{{ totalItems }}</b> {{$t('store.items')}}</span>
           <g-spacer/>
           <span>{{ order.totalPrice | currency }}</span>
         </div>
@@ -61,6 +61,9 @@
         set(val) {
           this.$emit('input', val)
         }
+      },
+      totalItems() {
+        return this.order.items ? this.order.items.reduce((quan, item) => quan + item.quantity, 0) : 0
       }
     },
     methods: {
