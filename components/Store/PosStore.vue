@@ -186,6 +186,7 @@
       }
     },
     async created() {
+      document.title = 'Online Ordering'
       this.initSocket()
       this.setDateInterval = setInterval(() => this.systemDate = new Date(), 10000)
 

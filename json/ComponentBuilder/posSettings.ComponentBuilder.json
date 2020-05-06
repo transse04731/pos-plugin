@@ -479,8 +479,8 @@
                   "type": "event"
                 },
                 {
-                  "service": "SettingsStore:updateDevice",
-                  "local": "updateDevice",
+                  "service": "SettingsStore:updateOnlineDevice",
+                  "local": "updateOnlineDevice",
                   "type": "event"
                 },
                 {
