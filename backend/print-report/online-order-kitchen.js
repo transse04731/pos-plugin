@@ -9,7 +9,7 @@ async function makePrintData(cms, { orderId }) {
   if (!order) return null;
 
   const {
-    customer: { name, phone, address, zipCode },
+    customer: { name, phone, address, zipCode, company },
     note,
     items,
     shippingFee,
@@ -24,6 +24,7 @@ async function makePrintData(cms, { orderId }) {
     customerPhone: phone,
     customerAddress: address,
     customerZipCode: zipCode,
+    customerCompany: company,
     note,
     items,
     shippingFee,
@@ -39,6 +40,7 @@ async function printEscPos(escPrinter, printData, groupPrinter) {
     customerPhone,
     customerAddress,
     customerZipCode,
+    customerCompany,
     note,
     items,
     shippingFee,
@@ -52,7 +54,12 @@ async function printEscPos(escPrinter, printData, groupPrinter) {
   escPrinter.alignCenter();
   escPrinter.setTextDoubleHeight();
   escPrinter.bold(true);
-  escPrinter.println(`Liefer #${orderNumber}`)
+  escPrinter.println(`Lieferschein #${orderNumber}`)
+  if (customerCompany) {
+    escPrinter.invert(true);
+    escPrinter.println('Firma');
+    escPrinter.invert(false);
+  }
 
   escPrinter.alignLeft()
   escPrinter.setTextNormal()
@@ -66,16 +73,30 @@ async function printEscPos(escPrinter, printData, groupPrinter) {
   escPrinter.bold(true);
   escPrinter.drawLine()
   filteredItems.forEach((item, index) => {
+    escPrinter.bold(false);
     const quantityColumnWidth = item.quantity.toString().length * 0.05;
     const itemsColumnWidth = 0.92 - item.quantity.toString().length * 0.05;
 
     escPrinter.setTextQuadArea();
-    escPrinter.bold(true);
     escPrinter.tableCustom([
-      {text: item.quantity, align: 'LEFT', width: quantityColumnWidth},
-      {text: 'x', align: 'LEFT', width: 0.05},
+      {text: item.quantity, align: 'LEFT', width: quantityColumnWidth, bold: true},
+      {text: 'x', align: 'LEFT', width: 0.05, bold: true},
       {text: `${item.id}. ${item.name}`, align: 'LEFT', width: itemsColumnWidth},
     ], {textDoubleWith: true});
+
+    if (item.modifiers) {
+      escPrinter.setTextDoubleWidth();
+
+      item.modifiers.forEach(mod => {
+        let modifierText = `* ${mod.name}`
+
+        escPrinter.tableCustom([
+          {text: '', align: 'LEFT', width: quantityColumnWidth},
+          {text: '', align: 'LEFT', width: 0.05},
+          {text: modifierText, align: 'LEFT', width: itemsColumnWidth},
+        ], {textDoubleWith: true});
+      });
+    }
 
     if (index < items.length - 1) {
       escPrinter.setTextNormal();
@@ -83,7 +104,6 @@ async function printEscPos(escPrinter, printData, groupPrinter) {
       escPrinter.newLine();
     }
   })
-  escPrinter.newLine()
   escPrinter.setTextNormal()
   escPrinter.bold(true);
   escPrinter.drawLine()

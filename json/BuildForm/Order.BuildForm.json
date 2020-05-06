@@ -578,6 +578,11 @@
           "schemaType": "string",
           "key": "zipCode",
           "type": "input"
+        },
+        {
+          "schemaType": "string",
+          "key": "company",
+          "type": "input"
         }
       ],
       "type": "object",

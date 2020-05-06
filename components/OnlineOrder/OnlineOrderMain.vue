@@ -44,7 +44,7 @@
                   <div class="flex-equal fs-small-2 pl-1" style="line-height: 20px">
                     {{item.id}}. {{item.name}}
                     <template v-if="item.modifiers.length > 0">
-                      <span class="i text-grey">(<span v-for="modifier in item.modifiers">{{modifier}}</span>)</span>
+                      <span class="i text-grey">(<span v-for="modifier in item.modifiers">{{modifier.name}}</span>)</span>
                     </template>
                   </div>
                   <div class="col-3 fs-small-2 ta-right" style="line-height: 20px">€{{item.price | formatMoney(decimals)}}</div>
@@ -63,7 +63,7 @@
               </g-text-field-bs>
             </g-card-actions>
             <g-card-actions v-if="order.confirmStep2">
-              <div>
+              <div class="w-100">
                 <p class="ml-2 mb-1">Time to complete (min)</p>
                 <value-picker :values="[15, 30, 45, 60]" :default-value="defaultPrepareTime || 30" allow-custom v-model="order.prepareTime"></value-picker>
               </div>

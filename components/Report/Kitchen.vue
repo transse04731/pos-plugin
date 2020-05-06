@@ -7,7 +7,7 @@
     </div>
     <div class="divider-dashed"/>
     <div class="kitchen-items">
-      <div v-for="(item, index) in items">
+      <div v-for="(item, index) in items" :key="index">
         <div class="kitchen-item" :style="{fontSize: computedFontSize}">
           <table>
             <tbody>
@@ -25,13 +25,24 @@
             </tbody>
           </table>
         </div>
+
         <div class="kitchen-item-modifiers" v-if="item.modifiers"
              :style="{'padding-bottom': index === items.length - 1 ? '0' : '18px'}">
-          <div v-for="mod in item.modifiers" class="inset">
-            <span>* {{mod.name}}</span> <span v-if="mod.price">${{mod.price | convertMoney}}</span>
+          <div v-for="mod in item.modifiers">
+            <table>
+              <tbody>
+              <tr>
+                <td :style="{'padding-bottom': index === items.length - 1 || item.modifiers ? '0' : '18px', width: calculateQuantityColumnWidth(item.quantity)}"></td>
+                <td :style="{'padding-bottom': index === items.length - 1 || item.modifiers ? '0' : '18px', width: '5%'}"></td>
+                <td :style="{'padding-bottom': index === items.length - 1 || item.modifiers ? '0' : '18px', width: calculateItemColumnWidth(item.quantity)}">
+                  <span>* {{mod.name}}</span> <span v-if="mod.price">${{mod.price | convertMoney}}</span>
+                </td>
+              </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-        <div v-show="item.separate" style="font-size: 40px;">************************</div>
+        <div v-if="item.separate" style="font-size: 40px;">************************</div>
       </div>
     </div>
     <div class="divider-dashed"/>
