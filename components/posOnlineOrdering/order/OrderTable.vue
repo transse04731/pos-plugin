@@ -247,7 +247,7 @@
       discounts() {
         let discounts = cms.getList('Discount')
         discounts = discounts.filter(discount => {
-          return discount.store === this.store._id && discount.type.includes(this.orderType)
+          return discount.store === this.store._id && discount.type.includes(this.orderType) && discount.enabled
         })
         if (!discounts.length) return this.totalPrice + this.shippingFee
 
