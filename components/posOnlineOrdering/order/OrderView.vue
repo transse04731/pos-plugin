@@ -14,7 +14,7 @@
                 </div>
 
                 <div style="display: flex; align-items: center; justify-content: flex-end; white-space: nowrap;">
-                  <span :style="storeOpenStatusStyle">{{ storeOpenStatus }}</span>
+                  <span :style="storeOpenStatusStyle" @click="showWorkingDay">{{ storeOpenStatus }}</span>
                   <template v-if="storeWorkingTime">
                     <span style="margin-right: 3px;">|</span>
                     <g-icon size="16">access_time</g-icon>
@@ -246,7 +246,7 @@
       },
       storeWorkingTime() {
         return this.todayOpenHour ? `${this.todayOpenHour.openTime} - ${this.todayOpenHour.closeTime}` : null
-      }
+      },
     },
     methods: {
       getOpenHour(dayInWeekIndex) {
@@ -321,6 +321,16 @@
             this.choosing--
           }, 1000)
         }
+      },
+      showWorkingDay() {
+        const workdays = this.store.openHours.map(oh => {
+          const days = oh.dayInWeeks.map((day, index) => {
+            if(day) return this.dayInWeeks[index].slice(0, 3)
+            return day
+          }).filter(day => !!day)
+          return `${days.join(' - ')}: ${oh.openTime} - ${oh.closeTime}`
+        })
+        console.log(workdays)
       }
     },
     watch: {

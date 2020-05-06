@@ -204,7 +204,7 @@
       hasMenuItem() { return this.orderItems.length > 0 },
       totalItems() { return this.orderItems.length },
       totalPrice() {
-        return this.orderItems.reduce((sum, item) => {
+        return this.orderItems && this.orderItems.reduce((sum, item) => {
           return sum + item.price * item.quantity
         }, 0)
       },
@@ -515,11 +515,20 @@
             font-size: 15px;
             color: #000000;
             cursor: pointer;
+
+            &:hover {
+              background: #EFEFEF;
+              color: #536DFE;
+            }
           }
 
           ::v-deep .bs-tf-inner-input-group__active {
             box-shadow: none;
             border-color: #efefef !important;
+          }
+
+          ::v-deep .bs-tf-input {
+            color: rgba(0, 0, 0, 0.87);
           }
         }
       }
@@ -818,6 +827,18 @@
       100% {
         background: transparent;
         color: inherit;
+      }
+    }
+
+    &[type=number] {
+      -moz-appearance: textfield;
+      outline: none;
+      user-select: text;
+
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
       }
     }
   }
