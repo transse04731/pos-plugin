@@ -52,9 +52,8 @@
         </div>
       </g-card-text>
       <g-card-actions>
-        <g-btn-bs background-color="#E57373" text-color="white" @click.stop="declineOrder(order)">Cancel & move to declined orders</g-btn-bs>
-        <g-btn-bs background-color="#4CAF50" text-color="white" @click.stop="setPendingOrder(order)">Return to pending orders</g-btn-bs>
-        <g-btn-bs background-color="#2979FF" text-color="white" @click.stop="completeOrder(order)">Complete order</g-btn-bs>
+        <g-btn-bs height="60" background-color="#E57373" text-color="white" class="flex-equal" @click.stop="declineOrder(order)">Cancel & move to declined orders</g-btn-bs>
+        <g-btn-bs height="60" background-color="#2979FF" text-color="white" class="flex-equal" @click.stop="completeOrder(order)">Complete order</g-btn-bs>
       </g-card-actions>
     </g-card>
   </g-dialog>
