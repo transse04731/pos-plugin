@@ -845,6 +845,17 @@
           "schemaType": "boolean",
           "key": "paired",
           "type": "input@switch"
+        },
+        {
+          "schemaType": "string",
+          "key": "soundLoop",
+          "type": "input@select",
+          "optionsType": "onlyValue",
+          "options": [
+            "none",
+            "once",
+            "repeat"
+          ]
         }
       ]
     },

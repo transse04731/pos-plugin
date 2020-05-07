@@ -576,6 +576,36 @@
           online: true,
           status
         })
+      },
+      async playBell() {
+        this.bell.addEventListener('play', () => {
+          console.log('bell playing')
+          this.bellPlaying = true;
+        })
+
+        const play = async (event, repeat = false) => {
+          if (this.pendingOrders.length) await this.bell.play()
+
+          debugger
+          if (!repeat || !this.pendingOrders || !this.pendingOrders.length)  {
+            console.log('bell end')
+            this.bellPlaying = false
+            this.bell.removeEventListener('ended', play)
+          }
+        }
+
+        const setting = await cms.getModel('PosSetting').findOne()
+        if (!setting.onlineDevice.sound) return
+        const loop = setting.onlineDevice.soundLoop
+        await play()
+
+        if (!loop || loop === 'none') {
+          this.bellPlaying = false
+          return
+        }
+
+        console.log(`loop: ${loop}`)
+        this.bell.addEventListener('ended', loop === 'once' ? play : e => play(e, true))
       }
     },
     async created() {
@@ -583,12 +613,12 @@
 
       const cachedPageSize = localStorage.getItem('orderHistoryPageSize')
       if (cachedPageSize) this.orderHistoryPagination.limit = parseInt(cachedPageSize)
+      this.bell = new Audio('/plugins/pos-plugin/assets/sounds/bell.mp3')
+      await this.updateOnlineOrders()
 
       // add online orders: cms.socket.emit('added-online-order')
       cms.socket.on('updateOnlineOrders', async () => {
         await this.updateOnlineOrders()
-        const bell = new Audio('/plugins/pos-plugin/assets/sounds/bell.mp3')
-        bell.addEventListener('canplaythrough', () => bell.play())
       })
       // this.orderHistoryCurrentOrder = this.orderHistoryOrders[0];
     },
@@ -596,6 +626,15 @@
       'orderHistoryPagination.limit'(newVal) {
         localStorage.setItem('orderHistoryPageSize', newVal)
       },
+      pendingOrders: {
+        async handler(val) {
+          if (val && val.length) {
+            console.log('play bell now', this.bellPlaying)
+            if (!this.bellPlaying) await this.playBell()
+          }
+        },
+        immediate: true
+      }
     },
     provide() {
       return {
