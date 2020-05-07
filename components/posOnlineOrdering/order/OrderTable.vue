@@ -35,7 +35,7 @@
             <div v-if="orderView && hasMenuItem"
                  v-for="(item, index) in orderItems" :key="index"
                  class="po-order-table__item">
-              <div class="row-flex align-items-center">
+              <div class="row-flex align-items-center mt-1">
                 <div :class="['po-order-table__item__name', store.collapseText && 'collapse']">{{ item.name }}</div>
                 <g-spacer/>
 
@@ -124,7 +124,7 @@
       <div class="po-order-table__footer--mobile" v-if="orderItems.length > 0">
         <g-badge :value="true" color="#4CAF50" overlay>
           <template v-slot:badge>
-            {{orderItems.length}}
+            {{totalItems}}
           </template>
           <div style="width: 40px; height: 40px; background-color: #ff5252; border-radius: 8px; display: flex; align-items: center; justify-content: center">
             <g-icon>icon-menu2</g-icon>
@@ -156,6 +156,9 @@
       store: Object,
       isOpening: Boolean,
       merchantMessage: String,
+      orderItems: Array,
+      totalPrice: Number,
+      totalItems: Number
     },
     data() {
       return {
@@ -182,11 +185,8 @@
           value: ''
         },
         couponCode: '',
-        totalPrice: 0,
-        totalItems: 0
       }
     },
-    injectService: ['PosOnlineOrderStore:(orderItems,decreaseOrRemoveItems,increaseOrAddNewItems,clearOrder)'],
     filters: {
       currency(value) {
         if (value != null)
@@ -195,14 +195,6 @@
       }
     },
     created() {
-      this.$watch('orderItems', orderItems => {
-        this.totalPrice = orderItems ? orderItems.reduce((sum, item) => {
-          return sum + item.price * item.quantity
-        }, 0) : 0
-        this.totalItems = orderItems ? orderItems.reduce((quan, item) => {
-          return quan + item.quantity
-        },0) : 0
-      })
     },
     computed: {
       confirmView() { return !this.orderView },
@@ -325,10 +317,10 @@
         this.view = 'order'
       },
       removeItem(item) {
-        this.decreaseOrRemoveItems(item)
+        this.$emit('decrease', item)
       },
       addItem(item) {
-        this.increaseOrAddNewItems(item)
+        this.$emit('increase', item)
       },
       async confirmPayment() {
         if (this.unavailableConfirm) return
@@ -401,12 +393,15 @@
         this.dialog.value = true
       },
       closeOrderSuccess() {
-        this.clearOrder()
+        this.$emit('clear')
         this.view = 'order'
         this.$emit('back') // for mobile
       },
       applyCoupon() {
         this.couponCode = this.couponTf.value
+        if(this.discounts.length === 0) {
+          this.couponTf.error = 'Invalid Coupon!'
+        }
       }
     }
   }
@@ -756,7 +751,7 @@
         margin-top: 16px;
         margin-bottom: 0;
         background-color: white;
-        padding: 0 16px;
+        padding: 0 16px 72px;
         height: calc(100% - 50px);
 
         &::-webkit-scrollbar {
@@ -842,6 +837,10 @@
 </style>
 
 <style lang="scss">
+  .g-icon {
+    -webkit-tap-highlight-color: transparent;
+  }
+
   input {
     &:-webkit-autofill,
     &:-webkit-autofill:hover,
