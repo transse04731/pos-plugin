@@ -199,8 +199,17 @@
       },
       async deleteProduct(_id) {
         if (!_id) return
-        await cms.getModel('Product').remove({_id: _id, store: this.store._id})
-        await this.loadProducts()
+        const product = await cms.getModel('Product').findOne({_id}, { image: 1 })
+        if (product) {
+          const image = product.image
+          try {
+            await this.$getService('FileUploadStore').removeFile(image)
+          } catch (e) {
+            console.log(e)
+          }
+          await cms.getModel('Product').remove({_id: _id, store: this.store._id})
+          await this.loadProducts()
+        }
       },
 
       // Discounts
