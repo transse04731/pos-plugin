@@ -103,8 +103,8 @@
       return {
         deliveryTime: '',
         cancelledReason: '',
-        sprintTimeOut: 60,
-        orderProcessTimeOut: 180, // 3 minutes
+        sprintTimeOut: 5,
+        orderProcessTimeOut: 10, // 3 minutes
         waited: 0,
         circularSize: 70,
         status: 'inProgress', // inProgress, kitchen, declined,
@@ -123,7 +123,7 @@
         return this.order.status !== 'inProgress'
       },
       waitingConfirm() {
-        return this.order.status === 'inProgress'
+        return this.order.status === 'inProgress' && this.waited < this.orderProcessTimeOut
       },
       remainConfirmTime() {
         return this.orderProcessTimeOut - this.waited
