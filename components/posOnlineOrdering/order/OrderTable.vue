@@ -140,7 +140,7 @@
     </div>
 
     <!-- Order created -->
-    <order-created v-if="dialog.value" v-model="dialog.value" :order="dialog.order" @close="closeOrderSuccess"/>
+    <order-created v-if="dialog.value" v-model="dialog.value" :order="dialog.order" @close="closeOrderCreatedDialog"/>
   </div>
 </template>
 <script>
@@ -387,9 +387,10 @@
           totalPrice: this.totalPrice,
           status: 'inProgress'
         }
-
-        // clear customer info at this place is incorrect
-        // TODO:
+        
+        this.dialog.value = true
+      },
+      clearCustomerInfo() {
         this.customer = {
           name: '',
           company: '',
@@ -399,11 +400,10 @@
           deliveryTime: '',
           note: ''
         }
-
-        this.dialog.value = true
       },
-      closeOrderSuccess() {
+      closeOrderCreatedDialog() {
         this.clearOrder()
+        this.clearCustomerInfo()
         this.view = 'order'
         this.$emit('back') // for mobile
       },
