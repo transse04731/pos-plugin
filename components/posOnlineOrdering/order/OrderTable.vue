@@ -61,6 +61,10 @@
                 <g-radio small color="#1271ff" :label="$t('store.pickup')" value="pickup" :disabled="!store.pickup"/>
                 <g-radio small color="#1271ff" :label="$t('store.delivery')" value="delivery" :disabled="!store.delivery"/>
               </g-radio-group>
+              <span v-if="orderType === 'delivery' && !satisfyMinimumValue && store.minimumOrderValue && store.minimumOrderValue.active"
+                    style="color: #4CAF50; font-size: 15px">
+                Delivery service is not available for orders less than {{$t('common.currency')}}{{store.minimumOrderValue.value}}.
+              </span>
               <div class="section-form">
                 <g-text-field v-model="customer.name" :label="$t('store.name')" required clearable clear-icon="icon-cancel@16" prepend-icon="icon-person@16"/>
                 <g-text-field v-model="customer.company" :label="$t('store.company')" clearable clear-icon="icon-cancel@16" prepend-icon="icon-company@16"/>
@@ -111,11 +115,6 @@
       </div>
       <!-- footer -->
       <g-spacer/>
-      <div v-if="!satisfyMinimumValue && store.minimumOrderValue && store.minimumOrderValue.active"
-           style="color: #4CAF50; padding: 0 20px; font-size: 15px"
-      >
-        Delivery service is not available for orders less than {{$t('common.currency')}}{{store.minimumOrderValue.value}}.
-      </div>
       <div :class="['po-order-table__footer', !isOpening && 'disabled']">
         <div>{{$t('store.total')}}: <span style="font-weight: 700; font-size: 18px; margin-left: 4px">{{ effectiveTotal | currency }}</span></div>
         <g-spacer/>
@@ -205,7 +204,7 @@
     computed: {
       confirmView() { return !this.orderView },
       allowConfirmView() {
-        return this.orderItems.length && this.satisfyMinimumValue
+        return this.orderItems.length
       },
       satisfyMinimumValue() {
         return this.store.minimumOrderValue && this.store.minimumOrderValue.active
@@ -237,9 +236,11 @@
       unavailableConfirm() {
         const check = !this.customer.name || !this.customer.phone || isNaN(this.customer.phone)
         if (this.orderType === 'delivery') {
-          for(const fn of this.validateZipcode) {
-            if(typeof fn === 'function' && typeof fn(this.customer.zipCode) === "string")
+          if (!this.satisfyMinimumValue) return true
+          for (const fn of this.validateZipcode) {
+            if (typeof fn === 'function' && typeof fn(this.customer.zipCode) === 'string') {
               return true
+            }
           }
           return check || !this.customer.address || !this.customer.zipCode || this.customer.zipCode.length < 5
         }
