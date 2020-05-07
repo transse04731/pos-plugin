@@ -78,6 +78,10 @@
                   <div v-if="!couponTf.active" @click="couponTf.active = true"><u>Apply coupon code</u></div>
                   <g-text-field-bs v-if="couponTf.active" placeholder="COUPON CODE" suffix="Apply" @click:append-outer="applyCoupon" v-model="couponTf.value"/>
                   <div class="error-message">{{couponTf.error}}</div>
+                  <div v-if="couponTf.success" class="i text-green row-flex align-items-center fs-small-2">
+                    <g-icon size="12" color="green">check</g-icon>
+                    Coupon applied!
+                  </div>
                 </div>
                 <g-textarea v-model="customer.note" :placeholder="`${$t('store.note')}...`" rows="3" no-resize/>
               </div>
@@ -187,9 +191,11 @@
         couponTf: {
           active: false,
           error: '',
-          value: ''
+          value: '',
+          success: false
         },
         couponCode: '',
+        confirming: false
       }
     },
     filters: {
@@ -255,6 +261,7 @@
         return rules
       },
       discounts() {
+        this.couponTf.success = false
         let discounts = cms.getList('Discount')
         discounts = discounts.filter(discount => {
           return discount.store === this.store._id && discount.type.includes(this.orderType) && discount.enabled
@@ -285,6 +292,9 @@
           }
 
           this.couponTf.error = ''
+          if(coupon && this.couponCode && coupon === this.couponCode) {
+            this.couponTf.success = true
+          }
           return true
         })
 
@@ -340,7 +350,9 @@
         this.$emit('increase', item)
       },
       async confirmPayment() {
-        if (this.unavailableConfirm) return
+        if (this.unavailableConfirm || this.confirming) return
+
+        this.confirming = true
 
         const {note, ...customer} = this.customer;
 
@@ -394,10 +406,10 @@
           totalPrice: this.totalPrice,
           status: 'inProgress'
         }
-        
+
         this.dialog.value = true
       },
-      clearCustomerInfo() {
+      closeOrderCreatedDialog() {
         this.customer = {
           name: '',
           company: '',
@@ -407,9 +419,9 @@
           deliveryTime: '',
           note: ''
         }
-      },
-      closeOrderCreatedDialog() {
-        this.clearCustomerInfo()
+
+        this.confirming = false
+
         this.$emit('clear')
         this.view = 'order'
         this.$emit('back') // for mobile
@@ -474,7 +486,6 @@
 
     &__content {
       flex: 1;
-      margin-bottom: 100px;
       overflow: auto;
       scrollbar-width: none; // firefox
 
