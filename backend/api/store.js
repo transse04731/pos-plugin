@@ -3,59 +3,16 @@ const _ = require('lodash')
 const express = require('express')
 const router = express.Router()
 const https = require('https');
-const tmp = require('tmp-promise');
 
 // upload-zone
-const uploadZone = {};
-const mime = {
-  html: 'text/html',
-  txt: 'text/plain',
-  css: 'text/css',
-  gif: 'image/gif',
-  jpg: 'image/jpeg',
-  png: 'image/png',
-  svg: 'image/svg+xml',
-  js: 'application/javascript'
-};
-router.get('/upload-zone/prepare', async (req, res) => {
-  const {url} = req.query;
-  const file = await tmp.file();
-  const tempPath = file.path;
-  await new Promise((resolve ,reject) => download(url, tempPath, resolve, reject));
-  uploadZone[url] = tempPath;
-  const s = fs.createReadStream(tempPath);
-  const type = mime[path.extname(url).slice(1)] || 'text/plain';
-  s.on('open', () => {
-    res.setHeader('Content-Type', type);
-    s.pipe(res)
-  });
-  s.on('error', function () {
-    res.setHeader('Content-Type', 'text/plain');
-    res.statusCode = 404;
-    res.end('Not found');
-  });
-});
-
-function download(url, dest, cb, errCb) {
-  const file = fs.createWriteStream(dest);
-  https.get(url, res => {
-    res.pipe(file);
-    file.on('finish', () => file.close(cb));
-  }).on('error', err => {
-    fs.unlink(dest);
-    errCb && errCb(err.message);
-  });
-}
-
-router.post('/upload-zone/clean', async (req, res) => {
-  const {url} = req.body
-  if (uploadZone[url]) {
-    fs.unlink(uploadZone[url])
-    res.json({ message: 'Cleaned' })
+router.get('/upload-zone/prepare', async (req, res) => https.get(req.query.url, getRes => {
+  if (getRes.headers['content-length'] < 1024) {
+    res.status(400).end('Bad request')
   } else {
-    res.status(400).end()
+    res.set('Cache-Control', 'public, max-age=31557600')
+    getRes.pipe(res)
   }
-})
+}));
 
 // generate unique id for store
 router.get('/generate-id', async (req, res) => {
