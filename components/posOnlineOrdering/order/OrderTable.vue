@@ -255,7 +255,8 @@
         if (!discounts.length) return discounts
 
         const applicableDiscounts = discounts.filter(({ conditions: { coupon, daysOfWeek, timePeriod, total, zipCode } }) => {
-          if (coupon && this.couponCode) {
+          if (coupon) {
+            if (!this.couponCode) return false
             if (coupon !== this.couponCode) {
               this.couponTf.error = 'Invalid Coupon!'
               return false
