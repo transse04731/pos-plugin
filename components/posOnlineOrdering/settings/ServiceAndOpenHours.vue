@@ -53,6 +53,7 @@
   </div>
 </template>
 <script>
+  const _12HourTimeRegex = /^(?<hours>1[0-2]|0?[0-9]):(?<minutes>[0-5][0-9])(:(?<seconds>[0-5][0-9]))? ?(?<meridiems>[AaPp][Mm])$/i
   const _24HourTimeRegex = /^(?<hours>2[0-3]|[0-1]?[0-9]):(?<minutes>[0-5][0-9])(:(?<seconds>[0-5][0-9]))?$/i
 
   import _ from 'lodash'
@@ -140,17 +141,21 @@
       updateOpenHours() {
         this.$emit('update', { openHours: this.openHours })
       },
+      get24HourValue(time) {
+        time = _.toLower(time)
+        return _.includes(time, 'm') ? dayjs(time, 'hh:mma').format('HH:mm') : time
+      },
       updateHours(time, index, isOpenTime) {
         const openHour = this.openHours[index]
         this.$set(this.errors[index], 'message', '')
-        if(!_24HourTimeRegex.exec(time)) {
+        if(!_24HourTimeRegex.exec(time) && !_12HourTimeRegex.exec(time)) {
           this.$set(this.errors[index], `${isOpenTime ? 'open' : 'close'}`, true)
           this.$set(this.errors[index], 'message', `${isOpenTime ? 'Open' : 'Close'} time is invalid!`)
           return
         }
         if(isOpenTime) {
           this.$set(this.errors[index], 'open', false)
-          if(time < openHour.closeTime) {
+          if(this.get24HourValue(time) < this.get24HourValue(openHour.closeTime)) {
             this.$set(openHour, `openTime`, time)
             this.$set(this.errors[index], 'close', false)
           }
@@ -160,7 +165,7 @@
           }
         } else {
           this.$set(this.errors[index], 'close', false)
-          if(time > openHour.openTime) {
+          if(this.get24HourValue(time) > this.get24HourValue(openHour.openTime)) {
             this.$set(openHour, `closeTime`, time)
             this.$set(this.errors[index], 'open', false)
           }
