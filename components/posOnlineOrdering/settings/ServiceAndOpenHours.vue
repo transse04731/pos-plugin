@@ -49,9 +49,11 @@
           </g-radio-group>
         </div>
       </div>
-      <div class="row-flex">
-        <g-switch class="col-1" @change="toggleMinimumOrderValue" :input-value="computedMinimumOrderValue.active"/>
-        <div class="col-5 row-flex align-items-center">Require minimum value ({{$t('common.currency')}}) for delivery orders</div>
+      <div class="row-flex align-items-center">
+        <div class="col-10">
+          <g-switch :label="`Require minimum value ${$t('common.currency')} for delivery orders`"
+                    @change="toggleMinimumOrderValue" :input-value="computedMinimumOrderValue.active"/>
+        </div>
         <div class="col-2">
           <g-text-field-bs type="number" :value="computedMinimumOrderValue.value" @input="setMinimumOrderValue"/>
         </div>

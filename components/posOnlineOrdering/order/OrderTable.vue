@@ -149,7 +149,7 @@
     </div>
 
     <!-- Order created -->
-    <order-created v-if="dialog.value" v-model="dialog.value" :order="dialog.order" @close="closeOrderCreatedDialog"/>
+    <order-created v-if="dialog.value" v-model="dialog.value" :order="dialog.order" :phone="store.phone" @close="closeOrderCreatedDialog"/>
   </div>
 </template>
 <script>
@@ -275,7 +275,7 @@
               this.couponTf.error = 'Invalid Coupon!'
               return false
             }
-            this.couponTf.error = 'No applicable for this order!'
+            this.couponTf.error = 'Not applicable for this order!'
           }
           if (total && total.min && this.totalPrice < total.min) return false
           if (total && total.max && this.totalPrice > total.max) return false
@@ -701,9 +701,7 @@
     }
 
     &__footer {
-      left: 0;
-      bottom: 0;
-      height: 80px;
+      min-height: 80px;
       border-radius: 0 25px 0 0;
       display: flex;
       align-items: center;
@@ -738,11 +736,12 @@
 
   @media screen and (max-width: 1139px) {
     .po-order-table {
-      background: #F2F2F2;
+      background: #FFF;
 
       &__main {
         padding: 0;
-        height: 100%;
+        height: calc(100% - 72px);
+        background: #F2F2F2;
       }
 
       &__header {
@@ -778,7 +777,7 @@
         margin-top: 16px;
         margin-bottom: 0;
         background-color: white;
-        padding: 0 16px 72px;
+        padding: 0 16px;
         height: calc(100% - 50px);
 
         &::-webkit-scrollbar {

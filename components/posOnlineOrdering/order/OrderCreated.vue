@@ -22,7 +22,7 @@
               <div v-if="waitingConfirm" v-html>{{ waitingConfirmMessage }}</div>
               <div v-else-if="orderMissed">
                 <div style="color: #E57373">Order missed</div>
-                <div style="color: #747474">We apologize for any convenience caused. You can <a>try again!</a></div>
+                <div style="color: #747474">We apologize for any convenience caused. You can <span class="link-try-again" @click="tryAgain">try again</span>!</div>
               </div>
               <div v-else-if="confirmed">
                 <div>Your order is confirmed for </div>
@@ -35,27 +35,48 @@
             </div>
           </div>
         </div>
-        
-        <div v-for="(item, index) in order.items" :key="index" class="order-detail">
-          <div class="order-detail__index" >{{ item.quantity || 1}}</div>
-          <div class="order-detail__name">{{ item.name }}</div>
-          <div>{{ item.price * (item.quantity || 1) | currency }}</div>
-        </div>
-        <div class="mt-2 row-flex fs-small">
-          <span>{{$t('store.total')}} <b>{{ totalItems }}</b> {{$t('store.items')}}</span>
-          <g-spacer/>
-          <span>{{ order.totalPrice | currency }}</span>
-        </div>
-        <div class="order-detail">
-          <span>{{$t('store.shippingFee')}}:</span>
-          <g-spacer/>
-          <span>{{ order.shippingFee | currency }}</span>
-        </div>
-        <div class="mt-2 row-flex fw-700 fs-small">
-          <span>{{$t('store.total')}}</span>
-          <g-spacer/>
-          <span>{{ (order.totalPrice + order.shippingFee) | currency}}</span>
-        </div>
+
+        <template v-if="!orderMissed">
+          <div v-for="(item, index) in order.items" :key="index" class="order-detail">
+            <div class="order-detail__index" >{{ item.quantity || 1}}</div>
+            <div class="order-detail__name">{{ item.name }}</div>
+            <div>{{ item.price * (item.quantity || 1) | currency }}</div>
+          </div>
+          <div class="mt-2 row-flex fs-small">
+            <span>{{$t('store.total')}} <b>{{ totalItems }}</b> {{$t('store.items')}}</span>
+            <g-spacer/>
+            <span>{{ order.totalPrice | currency }}</span>
+          </div>
+          <div class="order-detail">
+            <span>{{$t('store.shippingFee')}}:</span>
+            <g-spacer/>
+            <span>{{ order.shippingFee | currency }}</span>
+          </div>
+          <div class="mt-2 row-flex fw-700 fs-small">
+            <span>{{$t('store.total')}}</span>
+            <g-spacer/>
+            <span>{{ (order.totalPrice + order.shippingFee) | currency}}</span>
+          </div>
+        </template>
+        <template v-else>
+          <div class="more-info">
+            <p class="fw-700 i mt-3">Some possible reasons for this issue:</p>
+            <div class="row-flex align-items-start">
+              <g-icon size="8" color="black" class="mr-3 mt-2">fas fa-circle</g-icon>
+              <div>The restaurant staffs are currently busy and cannot handle your order quick enough.</div>
+            </div>
+            <div class="row-flex align-items-start">
+              <g-icon size="8" color="black" class="mr-3 mt-2">fas fa-circle</g-icon>
+              <div>There might be a serious connectivity issue at the restaurant</div>
+            </div>
+            <p class="fw-700 i mt-2">For more information, call us directly:</p>
+            <div class="row-flex justify-center align-items-center mt-2">
+              <g-icon class="mr-1" size="20">icon-phone_blue</g-icon>
+              <div class="fw-600 fs-large-2 text-indigo-accent-2">{{phone}}</div>
+            </div>
+          </div>
+        </template>
+
       </div>
       <div v-if="orderHasBeenProcessed || orderMissed" class="cpn-order-created__actions">
         <g-btn-bs width="98" text-color="#536DFE" rounded @click="close">Close</g-btn-bs>
@@ -69,6 +90,7 @@
     props: {
       value: Boolean,
       order: Object,
+      phone: [Number, String],
     },
     filters: {
       currency(value) {
@@ -101,7 +123,7 @@
         return this.order.status !== 'inProgress'
       },
       waitingConfirm() {
-        return this.order.status === 'inProgress'
+        return this.order.status === 'inProgress' && this.waited < this.orderProcessTimeOut
       },
       remainConfirmTime() {
         return this.orderProcessTimeOut - this.waited
@@ -150,7 +172,11 @@
     },
     methods: {
       close() {
+        this.$emit('close')
         this.internalValue = false
+      },
+      tryAgain() {
+
       }
     },
     created() {
@@ -210,7 +236,6 @@
     }
 
     &__content {
-      margin-bottom: 50px;
       overflow: hidden scroll;
       max-height: calc(100% - 120px);
       scrollbar-width: none; // firefox
@@ -264,23 +289,43 @@
     }
   }
 
-  @media screen and (max-width: 1040px) {
-    .cpn-order-created {
-      padding: 24px;
-    }
-  }
-
-  
   /* Order progress */
   .order-progress {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    .order-message {
+      font-size: 18px;
+
+      .link-try-again {
+        color: #536DFE;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    }
   }
   ::v-deep {
     .g-progress-circular__underlay {
       stroke: transparent;
     }
   }
+
+  @media screen and (max-width: 1139px) {
+    .cpn-order-created {
+      padding: 24px;
+    }
+
+    .order-progress {
+      .order-message {
+        font-size: 16px;
+      }
+    }
+
+    .more-info {
+      font-size: 14px;
+    }
+  }
+
 </style>
