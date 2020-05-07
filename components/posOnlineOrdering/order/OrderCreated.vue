@@ -9,9 +9,8 @@
         <div style="text-align: center">
           <div class="order-progress">
             <div style="position:relative; background-color: #EEEEEE; border-radius: 50%; display: inline-block;">
-              <g-progress-circular v-if="inSprint" :rotate="-90" size="80" width="4" :value="inSprintProgress" color="#536DFE"/>
-              <g-progress-circular v-if="waitingConfirm" :rotate="-90" size="80" width="4" :value="confirmProgress" color="#536DFE"/>
-              <div v-if="waitingConfirm" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #424242; font-weight: bold; font-size: 18px;">{{ remainConfirmTime }}</div>
+              <g-progress-circular v-if="waitingConfirm" :rotate="-90" :size="circularSize" width="4" :value="confirmProgress" color="#536DFE"/>
+              <div v-if="waitingConfirm && remainConfirmTime < orderProcessTimeOut * 3/4" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #424242; font-weight: bold; font-size: 18px;">{{ roundedRemainConfirmTIme }}</div>
               <div v-if="orderHasBeenProcessed || orderMissed" style="padding: 4px;">
                 <div :style="actResultDivStyle">
                   <img draggable="false" v-if="confirmed" src="/plugins/pos-plugin/assets/order-progress--confirmed.svg">
@@ -20,8 +19,7 @@
               </div>
             </div>
             <div style="font-size: 18px; margin-top: 13px; margin-bottom: 30px; max-width: 350px">
-              <div v-if="inSprint">Sending your order to the restaurant...</div>
-              <div v-else-if="waitingConfirm">{{ waitingConfirmMessage }}</div>
+              <div v-if="waitingConfirm" v-html>{{ waitingConfirmMessage }}</div>
               <div v-else-if="orderMissed">
                 <div style="color: #E57373">Order missed</div>
                 <div style="color: #747474">We apologize for any convenience caused. You can <a>try again!</a></div>
@@ -86,6 +84,7 @@
         sprintTimeOut: 60,
         orderProcessTimeOut: 180, // 3 minutes
         waited: 0,
+        circularSize: 70,
         status: 'inProgress', // inProgress, kitchen, declined,
       }
     },
@@ -101,39 +100,29 @@
       orderHasBeenProcessed() {
         return this.order.status !== 'inProgress'
       },
-      inSprint() {
-        return this.order.status === 'inProgress' && this.waited <= this.sprintTimeOut
-      },
-      inSprintProgress() {
-        if (this.inSprint) {
-          const x = this.waited / this.sprintTimeOut
-          // Refs: https://easings.net/#easeOutSine
-          return 100 * Math.sin((x * Math.PI) / 2)
-        }
-      },
       waitingConfirm() {
-        return this.order.status === 'inProgress' && this.waited > this.sprintTimeOut && this.waited < this.orderProcessTimeOut
-      },
-      totalConfirmTime() {
-        return this.orderProcessTimeOut - this.sprintTimeOut
-      },
-      waitedConfirmTime() {
-        return this.waited - this.sprintTimeOut
+        return this.order.status === 'inProgress'
       },
       remainConfirmTime() {
-        return this.totalConfirmTime - this.waitedConfirmTime
+        return this.orderProcessTimeOut - this.waited
+      },
+      roundedRemainConfirmTIme() {
+        return Math.floor(this.remainConfirmTime)
       },
       confirmProgress() {
-        if (this.waitingConfirm)
-          return 100 * this.remainConfirmTime / this.totalConfirmTime
+        const x = this.waited / this.orderProcessTimeOut
+        // Refs: https://easings.net/#easeOutSine
+        return 100 * (1 - Math.sin((x * Math.PI) / 2))
       },
       waitingConfirmMessage() {
-        if (this.remainConfirmTime > this.totalConfirmTime / 2)
-          return 'Please wait while we proceed your order.'
-        else if (this.remainConfirmTime > this.totalConfirmTime / 4)
-          return 'The process might take a while...'
+        if (this.remainConfirmTime > this.orderProcessTimeOut * 3/4)
+          return `Sending your order to the restaurant...`
+        else if (this.remainConfirmTime > this.orderProcessTimeOut / 2)
+          return `Please wait while we proceed your order...`
+        else if (this.remainConfirmTime > this.orderProcessTimeOut / 4)
+          return `The process might take a while...`
         else
-          return 'Hold on! The restaurant might be crowded at the moment...'
+          return `Hold on! The restaurant might be crowded at the moment...`
       },
       orderMissed() {
         return this.order.status === 'inProgress' && this.waited >= this.orderProcessTimeOut
@@ -146,8 +135,8 @@
       },
       actResultDivStyle() {
         return {
-          width: '80px',
-          height: '80px',
+          width: `${this.circularSize}px`,
+          height: `${this.circularSize}px`,
           display: 'flex',
           'justify-content': 'center',
           'align-items': 'center',
@@ -157,7 +146,7 @@
       },
       totalItems() {
         return this.order.items ? this.order.items.reduce((quan, item) => quan + item.quantity, 0) : 0
-      }
+      },
     },
     methods: {
       close() {
@@ -176,11 +165,11 @@
         }
       })
       this.intervalId = setInterval(() => {
-        this.waited++
-        if (this.waited === this.orderProcessTimeOut) {
+        this.waited += 0.25
+        if (this.waited >= this.orderProcessTimeOut) {
           clearInterval(this.intervalId)
         }
-      }, 1000)
+      }, 250)
     },
     beforeDestroy() {
       window.cms.socket.off('updateOrderStatus')
