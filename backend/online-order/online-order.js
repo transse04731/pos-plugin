@@ -131,6 +131,11 @@ function createOnlineOrderSocket(deviceId) {
       }
     })
 
+    onlineOrderSocket.on('updateOrderTimeOut', async (orderTimeOut) => {
+      // TODO:
+      console.log(orderTimeOut)
+    })
+
     onlineOrderSocket.on('disconnect', () => {
       activeProxies = 0;
       if (proxyClient) {
