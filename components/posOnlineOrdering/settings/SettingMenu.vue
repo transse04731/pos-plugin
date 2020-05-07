@@ -105,7 +105,7 @@
     },
     data: function () {
       return {
-        showProducts: {},
+        showProducts: _.reduce(this.categories, (acc, v) => { acc[v._id] = true; return acc }, {}) ,
         showAddNewProductPanel: {},
         editingProducts: {},
         selectedCategoryId: null,
