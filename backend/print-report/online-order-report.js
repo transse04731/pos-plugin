@@ -1,26 +1,29 @@
-const { convertHtmlToPng } = require('../print-utils/print-utils');
+const {convertHtmlToPng} = require('../print-utils/print-utils');
 const vueSsrRenderer = require('../print-utils/vue-ssr-renderer');
 const Vue = require('vue');
-const dayjs = require('dayjs')
+const dayjs = require('dayjs');
 
 function convertMoney(value) {
   return !isNaN(value) ? value.toFixed(2) : value
 }
 
-async function makePrintData(cms, { orderId }) {
+async function makePrintData(cms, {orderId}) {
   const order = await cms.getModel('Order').findById(orderId);
+  const i18nSetting = await cms.getModel('SystemConfig').findOne({type: 'I18n'});
+  const locale = i18nSetting ? i18nSetting.content.locale : 'en';
+  const localeFilePath = `../../i18n/${locale}.js`;
+  const localeObj = require(localeFilePath)[locale];
 
   if (!order) return null;
 
   const {
-    customer: { name, phone, address, zipCode, company },
+    customer: {name, phone, address, zipCode, company},
     note,
     items,
     shippingFee,
     vSum: orderSum,
     date
   } = order;
-
 
   return {
     orderNumber: order.id,
@@ -33,7 +36,8 @@ async function makePrintData(cms, { orderId }) {
     items,
     shippingFee,
     orderSum,
-    date: dayjs(date).format('MMM DD, YYYY, HH:mm')
+    date: dayjs(date).format(localeObj.printing.dateFormat),
+    locale: localeObj,
   };
 }
 
@@ -49,16 +53,17 @@ async function printEscPos(escPrinter, printData) {
     items,
     shippingFee,
     orderSum,
-    date
+    date,
+    locale,
   } = printData;
 
   escPrinter.alignCenter();
   escPrinter.setTextDoubleHeight();
   escPrinter.bold(true);
-  escPrinter.println(`Lieferschein #${orderNumber}`)
+  escPrinter.println(`${locale.printing.delivery} #${orderNumber}`)
   if (customerCompany) {
     escPrinter.invert(true);
-    escPrinter.println('Firma');
+    escPrinter.println(`${locale.printing.company}`);
     escPrinter.invert(false);
   }
 
@@ -107,7 +112,7 @@ async function printSsr(printer, printData) {
   const OrderDelivery = require('../../dist/OrderDelivery.vue');
 
   const component = new Vue({
-    components: { OrderDelivery },
+    components: {OrderDelivery},
     render(h) {
       return h('OrderDelivery', {
         props: {

@@ -407,6 +407,12 @@ module.exports = {
         hasSound: 'Incoming order notification sound',
         cancelAndDecline: 'Cancel & move to declined orders',
       }
+    },
+
+    printing: {
+      delivery: 'Delivery',
+      company: 'Company',
+      dateFormat: 'MMM DD, YYYY, HH:mm'
     }
   }
 }

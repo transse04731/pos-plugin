@@ -405,6 +405,12 @@ module.exports = {
         hasSound: 'Klingeln bei Eingang der Bestellung',
         cancelAndDecline: 'Cancel & move to declined orders',
       }
+    },
+
+    printing: {
+      delivery: 'Lieferschein',
+      company: 'Firma',
+      dateFormat: 'DD.MM.YYYY, HH:mm'
     }
   }
 }

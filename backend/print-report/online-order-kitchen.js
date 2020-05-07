@@ -1,15 +1,19 @@
-const { convertHtmlToPng } = require('../print-utils/print-utils');
+const {convertHtmlToPng} = require('../print-utils/print-utils');
 const vueSsrRenderer = require('../print-utils/vue-ssr-renderer');
 const Vue = require('vue');
 const dayjs = require('dayjs')
 
-async function makePrintData(cms, { orderId }) {
+async function makePrintData(cms, {orderId}) {
   const order = await cms.getModel('Order').findById(orderId).lean();
+  const i18nSetting = await cms.getModel('SystemConfig').findOne({type: 'I18n'});
+  const locale = i18nSetting ? i18nSetting.content.locale : 'en';
+  const localeFilePath = `../../i18n/${locale}.js`;
+  const localeObj = require(localeFilePath)[locale];
 
   if (!order) return null;
 
   const {
-    customer: { name, phone, address, zipCode, company },
+    customer: {name, phone, address, zipCode, company},
     note,
     items,
     shippingFee,
@@ -29,7 +33,8 @@ async function makePrintData(cms, { orderId }) {
     items,
     shippingFee,
     orderSum,
-    date: dayjs(date).format('MMM DD, YYYY, HH:mm')
+    date: dayjs(date).format(localeObj.printing.dateFormat),
+    locale: localeObj,
   };
 }
 
@@ -43,9 +48,8 @@ async function printEscPos(escPrinter, printData, groupPrinter) {
     customerCompany,
     note,
     items,
-    shippingFee,
-    orderSum,
-    date
+    date,
+    locale,
   } = printData;
 
   let filteredItems = items.filter(item => item.groupPrinter === groupPrinter || item.groupPrinter2 === groupPrinter)
@@ -54,10 +58,10 @@ async function printEscPos(escPrinter, printData, groupPrinter) {
   escPrinter.alignCenter();
   escPrinter.setTextDoubleHeight();
   escPrinter.bold(true);
-  escPrinter.println(`Lieferschein #${orderNumber}`)
+  escPrinter.println(`${locale.printing.delivery} #${orderNumber}`)
   if (customerCompany) {
     escPrinter.invert(true);
-    escPrinter.println('Firma');
+    escPrinter.println(`${locale.printing.company}`);
     escPrinter.invert(false);
   }
 
@@ -122,7 +126,7 @@ async function printSsr(printer, printData, groupPrinter) {
   if (!filteredItems.length) return
 
   const component = new Vue({
-    components: { KitchenDelivery },
+    components: {KitchenDelivery},
     render(h) {
       return h('KitchenDelivery', {
         props: {
