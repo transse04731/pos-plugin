@@ -110,10 +110,16 @@
         </div>
       </div>
       <!-- footer -->
+      <g-spacer/>
+      <div v-if="!satisfyMinimumValue && store.minimumOrderValue && store.minimumOrderValue.active"
+           style="color: #4CAF50; padding: 0 20px; font-size: 15px"
+      >
+        Delivery service is not available for orders less than {{$t('common.currency')}}{{store.minimumOrderValue.value}}.
+      </div>
       <div :class="['po-order-table__footer', !isOpening && 'disabled']">
         <div>{{$t('store.total')}}: <span style="font-weight: 700; font-size: 18px; margin-left: 4px">{{ effectiveTotal | currency }}</span></div>
         <g-spacer/>
-        <g-btn-bs v-if="orderView" style="position: relative; justify-content: flex-start" width="154" large rounded background-color="#2979FF" @click="view = 'confirm'" :disabled="orderItems.length === 0">
+        <g-btn-bs v-if="orderView" style="position: relative; justify-content: flex-start" width="154" large rounded background-color="#2979FF" @click="view = 'confirm'" :disabled="!allowConfirmView">
           {{$t('store.payment')}}
           <div class="icon-payment">
             <g-icon size="16" color="white" class="ml-1">fas fa-chevron-right</g-icon>
@@ -198,6 +204,14 @@
     },
     computed: {
       confirmView() { return !this.orderView },
+      allowConfirmView() {
+        return this.orderItems.length && this.satisfyMinimumValue
+      },
+      satisfyMinimumValue() {
+        return this.store.minimumOrderValue && this.store.minimumOrderValue.active
+          ? this.totalPrice >= this.store.minimumOrderValue.value
+          : true
+      },
       orderView() { return this.view === 'order' },
       noMenuItem() { return !this.hasMenuItem },
       hasMenuItem() { return this.orderItems.length > 0 },
@@ -675,7 +689,6 @@
     }
 
     &__footer {
-      position: absolute;
       left: 0;
       bottom: 0;
       height: 80px;

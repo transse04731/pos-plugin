@@ -49,6 +49,13 @@
           </g-radio-group>
         </div>
       </div>
+      <div class="row-flex">
+        <g-switch class="col-1" @change="toggleMinimumOrderValue" :input-value="computedMinimumOrderValue.active"/>
+        <div class="col-5 row-flex align-items-center">Require minimum value ({{$t('common.currency')}}) for delivery orders</div>
+        <div class="col-2">
+          <g-text-field-bs type="number" :value="computedMinimumOrderValue.value" @input="setMinimumOrderValue"/>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -70,12 +77,19 @@
           name: '',
           locale: ''
         })
+      },
+      minimumOrderValue: {
+        type: Object,
+        default: () => ({
+          active: false,
+          value: 0
+        })
       }
     },
     data: function () {
       return {
         days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-        errors: []
+        errors: [],
       }
     },
     computed: {
@@ -93,6 +107,14 @@
         },
         set(value) {
           this.$emit('update', { pickup: value === "1" })
+        }
+      },
+      computedMinimumOrderValue: {
+        get() {
+          return this.minimumOrderValue
+        },
+        set(value) {
+          this.$emit('update', { minimumOrderValue: value })
         }
       },
       computedOpenHours() {
@@ -175,7 +197,12 @@
           }
         }
         this.$emit('update', {openHours: this.openHours})
-      }
+      },
+      toggleMinimumOrderValue(active) {
+        this.computedMinimumOrderValue = Object.assign({}, this.computedMinimumOrderValue, { active })
+      },
+      setMinimumOrderValue(value) {
+        this.computedMinimumOrderValue = Object.assign({}, this.computedMinimumOrderValue, { value })}
     }
   }
 </script>
@@ -281,6 +308,14 @@
           font-weight: 600;
         }
       }
+
+      .g-switch-wrapper {
+        margin: 16px 0;
+      }
+    }
+
+    .bs-tf-wrapper ::v-deep .bs-tf-input {
+      width: 100%;
     }
   }
 </style>
