@@ -103,8 +103,8 @@
       return {
         deliveryTime: '',
         cancelledReason: '',
-        sprintTimeOut: 5,
-        orderProcessTimeOut: 10, // 3 minutes
+        sprintTimeOut: 60,
+        orderProcessTimeOut: 180, // 3 minutes
         waited: 0,
         circularSize: 70,
         status: 'inProgress', // inProgress, kitchen, declined,
