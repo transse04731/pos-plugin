@@ -13,10 +13,13 @@
                   <span class="sub-title">{{store.phone}}</span>
                 </div>
 
-                <div style="display: flex; align-items: center; justify-content: flex-end; white-space: nowrap;">
+                <div style="display: flex; align-items: center; justify-content: flex-end; white-space: nowrap;" @click="dialog.hour = true">
                   <g-menu v-model="menuHour" open-on-hover close-on-content-click nudge-left="100">
                     <template v-slot:activator="{on}">
-                      <span @mouseenter="on.mouseenter" @mouseleave="on.mouseleave" @click="dialog.hour = true" :style="storeOpenStatusStyle">{{ storeOpenStatus }}</span>
+                      <div @mouseenter="on.mouseenter" @mouseleave="on.mouseleave" :style="storeOpenStatusStyle" class="row-flex align-items-center mr-1">
+                        {{ storeOpenStatus }}
+                        <g-icon size="16" :style="storeOpenStatusStyle">info</g-icon>
+                      </div>
                     </template>
                     <div class="menu-hour">
                       <div class="fw-700 mb-2">Open hours:</div>
@@ -280,7 +283,6 @@
       storeOpenStatusStyle() {
         return {
           color: this.isStoreOpening ? '#4CAF50' : "#FF4452",
-          'margin-right': '5px'
         }
       },
       storeWorkingTime() {
@@ -353,12 +355,11 @@
         this.$set(this, 'products', await cms.getModel('Product').find({ store: this.store._id }, { store: 0 }))
       },
       getCategoryStyle(cate) {
-        const common = {cursor: 'pointer', padding: '20px 24px', whiteSpace: 'nowrap', '-webkit-tap-highlight-color': 'transparent'};
         return cate._id === this.selectedCategoryId ? {
           fontWeight: 'bold',
           borderBottom: '2px solid #000',
-          color: '#000000', ...common
-        } : {borderBottom: '2px solid transparent', color: '#424242', ...common}
+          color: '#000000',
+        } : {borderBottom: '2px solid transparent', color: '#424242'}
       },
       addItemToOrder(item) {
         this.increaseOrAddNewItems(item)
@@ -547,6 +548,16 @@
         &::-webkit-scrollbar {
           display: none;
         }
+
+        div {
+          cursor: pointer;
+          display : flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0 24px;
+          white-space: nowrap;
+          -webkit-tap-highlight-color: transparent;
+        }
       }
 
       &--content {
@@ -631,7 +642,8 @@
         border-radius: 0;
         overflow: hidden;
         position: relative;
-
+        flex-basis: 48px;
+        margin-top: 8px;
 
         &--icon {
           img {
@@ -644,6 +656,7 @@
         &--content {
           padding-left: 16px;
           padding-right: 16px;
+          margin-top: 4px;
 
           .sub-title {
             font-size: 18px;
