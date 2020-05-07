@@ -5,6 +5,7 @@
     </div>
     <div class="info">
       <div>{{customerName}}</div>
+      <div v-if="customerCompany">{{customerCompany}}</div>
       <div v-if="customerAddress">{{customerAddress}}</div>
       <div v-if="customerZipCode">{{customerZipCode}}</div>
       <div>{{customerPhone}}</div>
@@ -48,6 +49,7 @@
       marginTop: Number,
       orderNumber: [String, Number],
       customerName: String,
+      customerCompany: String,
       customerPhone: String,
       customerAddress: String,
       customerZipCode: String,

@@ -68,6 +68,7 @@ async function printEscPos(escPrinter, printData, groupPrinter) {
   escPrinter.alignLeft()
   escPrinter.setTextNormal()
   escPrinter.println(customerName)
+  customerCompany && escPrinter.println(customerCompany)
   customerAddress && escPrinter.println(customerAddress)
   customerZipCode && escPrinter.println(customerZipCode)
   escPrinter.println(customerPhone)

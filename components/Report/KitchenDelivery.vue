@@ -5,6 +5,7 @@
     </div>
     <div class="info">
       <div>{{customerName}}</div>
+      <div v-if="customerCompany">{{customerCompany}}</div>
       <div v-if="customerAddress">{{customerAddress}}</div>
       <div v-if="customerZipCode">{{customerZipCode}}</div>
       <div>{{customerPhone}}</div>
@@ -65,6 +66,7 @@
       fontSize: Number,
       marginTop: Number,
       customerName: String,
+      customerCompany: String,
       customerPhone: String,
       customerAddress: String,
       customerZipCode: String,
