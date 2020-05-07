@@ -205,7 +205,7 @@
     },
     beforeDestroy() {
       clearInterval(this.dayInterval)
-      this.$refs['tab-content'].removeEventListener('scroll', this.throttle)
+      this.$refs['tab-content'] && this.$refs['tab-content'].removeEventListener('scroll', this.throttle)
       // enableBodyScroll(this.$refs['tab-content'])
     },
     computed: {
@@ -694,8 +694,9 @@
         position: fixed;
         top: 0;
         left: 0;
-        bottom: 72px;
+        bottom: 0;
         right: 0;
+        height: 100%;
       }
     }
 
