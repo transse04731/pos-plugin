@@ -43,7 +43,7 @@
           <div class="pos-order__info" v-if="orderItems.length > 0">
             <g-badge :value="true" color="#4CAF50" overlay>
               <template v-slot:badge>
-                {{totalItemsCount}}
+                {{totalItems}}
               </template>
               <div style="width: 40px; height: 40px; background-color: #ff5252; border-radius: 8px; display: flex; align-items: center; justify-content: center">
                 <g-icon>icon-menu2</g-icon>
@@ -91,10 +91,12 @@
             </div>
             <div class="pos-order__tab--content-footer"></div>
           </div>
-          <order-table v-if="showOrder" @back="showOrder = false" :store="store" :is-opening="isStoreOpening"/>
+          <order-table v-if="showOrder" :store="store" :order-items="orderItems" :total-price="totalPrice" :total-items="totalItems" :is-opening="isStoreOpening"
+                       @back="showOrder = false" @increase="increaseOrAddNewItems" @decrease="decreaseOrRemoveItems" @clear="clearOrder"/>
         </div>
         <div class="pos-order__right">
-          <order-table :store="store" :is-opening="isStoreOpening" :merchant-message="merchantMessage" @confirm-view="menuItemDisabled = $event"/>
+          <order-table :store="store" :order-items="orderItems" :total-price="totalPrice" :total-items="totalItems"  :is-opening="isStoreOpening" :merchant-message="merchantMessage"
+                       @confirm-view="menuItemDisabled = $event" @increase="increaseOrAddNewItems" @decrease="decreaseOrRemoveItems" @clear="clearOrder"/>
         </div>
       
         <!-- Merchant dialog -->
@@ -129,7 +131,6 @@
 
   export default {
     name: 'OrderView',
-    injectService: ['PosOnlineOrderStore:(orderItems, increaseOrAddNewItems, decreaseOrRemoveItems)'],
     components: { CreatedOrder, MenuItem, OrderTable},
     data: function () {
       return {
@@ -149,7 +150,8 @@
         throttle: null,
         choosing: 0,
         menuHour: false,
-        menuItemDisabled: false
+        menuItemDisabled: false,
+        orderItems: [],
       }
     },
     filters: {
@@ -220,6 +222,9 @@
       },
       totalPrice() {
         return _.sumBy(this.orderItems, item => item.price * item.quantity)
+      },
+      totalItems() {
+        return _.sumBy(this.orderItems, item => item.quantity)
       },
       categoriesViewModel() {
         const categories = _.cloneDeep(this.categories)
@@ -301,12 +306,32 @@
           const wdayString = days.filter(d => !_.isEmpty(d)).map(d => d.start + (d.end ? ` - ${d.end}` : '')).join(', ')
           return { wdayString, open: oh.openTime, close: oh.closeTime }
         })
-      },
-      totalItemsCount() {
-        return _.sumBy(this.orderItems, orderItem => orderItem.quantity)
       }
     },
     methods: {
+      increaseOrAddNewItems(item) {
+        const indexOfItem = _.findIndex(this.orderItems, i => i._id === item._id)
+        if (indexOfItem < 0) {
+          this.orderItems.push({ ..._.cloneDeep(item), quantity: 1 })
+        } else {
+          const item = Object.assign({}, this.orderItems[indexOfItem], {quantity: this.orderItems[indexOfItem].quantity + 1})
+          this.orderItems.splice(indexOfItem, 1, item)
+        }
+      },
+      decreaseOrRemoveItems(item) {
+        const indexOfItem = _.findIndex(this.orderItems, i => i._id === item._id)
+        if (indexOfItem < 0)
+          return;
+        if (this.orderItems[indexOfItem].quantity > 1) {
+          const item = Object.assign({}, this.orderItems[indexOfItem], {quantity: this.orderItems[indexOfItem].quantity - 1})
+          this.orderItems.splice(indexOfItem, 1, item)
+        } else
+          this.orderItems.splice(indexOfItem, 1)
+
+      },
+      clearOrder() {
+        this.orderItems.splice(0, this.orderItems.length)
+      },
       getOpenHour(dayInWeekIndex) {
         for (let openHour of this.store.openHours) {
           if (openHour.dayInWeeks[dayInWeekIndex])
@@ -658,7 +683,6 @@
         left: 0;
         bottom: 72px;
         right: 0;
-        height: calc(100% - 72px);
       }
     }
 
@@ -670,8 +694,16 @@
   }
 
   @media screen and (max-width: 350px) {
-    .pos-order__left .pos-order__left__header .pos-order__left__header--info {
-      font-size: 12px;
+    .pos-order__left .pos-order__left__header {
+      img {
+        max-height: 50px;
+        max-width: 100px;
+      }
+
+      .pos-order__left__header--info {
+        font-size: 12px;
+        margin-right: 8px;
+      }
     }
   }
 

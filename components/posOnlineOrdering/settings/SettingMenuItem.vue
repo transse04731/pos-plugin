@@ -1,8 +1,8 @@
 <template>
   <div style="border-bottom: 1px solid #E0E0E0">
     <template v-if="mode === 'view'">
-      <div class="menu-setting-item">
-        <div class="ta-center" @mouseenter="positioning = true" @mouseleave="positioning = false">
+      <div class="menu-setting-item" @mouseenter="positioning = true" @mouseleave="positioning = false">
+        <div class="ta-center">
           <p v-if="positioning">
             <g-icon style="cursor: pointer" @click="changePosition(true)">fas fa-caret-square-up</g-icon>
           </p>
