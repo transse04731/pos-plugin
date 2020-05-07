@@ -12,13 +12,19 @@
       }
     },
     mounted() {
-      cms.socket.emit('getWebshopId', storeId => {
-        this.id = storeId || ''
-      })
+      this.getId()
+    },
+    activated() {
+      this.getId()
     },
     methods: {
       pair() {
         this.$router.push('/pos-setup')
+      },
+      getId() {
+        cms.socket.emit('getWebshopId', storeId => {
+          this.id = storeId || ''
+        })
       }
     }
   }

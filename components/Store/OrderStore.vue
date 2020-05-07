@@ -586,7 +586,6 @@
         const play = async (event, repeat = false) => {
           if (this.pendingOrders.length) await this.bell.play()
 
-          debugger
           if (!repeat || !this.pendingOrders || !this.pendingOrders.length)  {
             console.log('bell end')
             this.bellPlaying = false
