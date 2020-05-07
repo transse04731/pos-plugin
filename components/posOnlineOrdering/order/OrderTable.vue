@@ -307,6 +307,8 @@
       },
       confirmView(val) {
         this.$emit('confirm-view', val)
+        const wrapper = document.getElementById('table-content')
+        wrapper && wrapper.scroll({top: 0})
       }
     },
     methods: {
