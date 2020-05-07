@@ -8,15 +8,24 @@
         <!-- Order progress -->
         <div style="text-align: center">
           <div class="order-progress">
-            <div class="order-progress__circular">
-              <g-progress-circular v-if="inprogress" :rotate="-90" size="80" width="40" :value="progress" color="#536DFE"/>
-              <div v-else :style="actResultDivStyle">
-                <img draggable="false" v-if="confirmed" src="/plugins/pos-plugin/assets/order-progress--confirmed.svg">
-                <img draggable="false" v-else-if="cancelled" src="/plugins/pos-plugin/assets/order-progress--cancelled.svg">
+            <div style="position:relative; background-color: #EEEEEE; border-radius: 50%; display: inline-block;">
+              <g-progress-circular v-if="inSprint" :rotate="-90" size="80" width="4" :value="inSprintProgress" color="#536DFE"/>
+              <g-progress-circular v-if="waitingConfirm" :rotate="-90" size="80" width="4" :value="confirmProgress" color="#536DFE"/>
+              <div v-if="waitingConfirm" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #424242; font-weight: bold; font-size: 18px;">{{ remainConfirmTime }}</div>
+              <div v-if="orderHasBeenProcessed || orderMissed" style="padding: 4px;">
+                <div :style="actResultDivStyle">
+                  <img draggable="false" v-if="confirmed" src="/plugins/pos-plugin/assets/order-progress--confirmed.svg">
+                  <img draggable="false" v-else-if="cancelled || orderMissed" src="/plugins/pos-plugin/assets/order-progress--cancelled.svg">
+                </div>
               </div>
             </div>
             <div style="font-size: 18px; margin-top: 13px; margin-bottom: 30px; max-width: 350px">
-              <div v-if="inprogress">Please wait while we proceed your order!</div>
+              <div v-if="inSprint">Sending your order to the restaurant...</div>
+              <div v-else-if="waitingConfirm">{{ waitingConfirmMessage }}</div>
+              <div v-else-if="orderMissed">
+                <div style="color: #E57373">Order missed</div>
+                <div style="color: #747474">We apologize for any convenience caused. You can <a>try again!</a></div>
+              </div>
               <div v-else-if="confirmed">
                 <div>Your order is confirmed for </div>
                 <div style="font-weight: bold">{{ deliveryTime }}</div>
@@ -50,7 +59,7 @@
           <span>{{ (order.totalPrice + order.shippingFee) | currency}}</span>
         </div>
       </div>
-      <div v-if="orderHasBeenProcessed" class="cpn-order-created__actions">
+      <div v-if="orderHasBeenProcessed || orderMissed" class="cpn-order-created__actions">
         <g-btn-bs width="98" text-color="#536DFE" rounded @click="close">Close</g-btn-bs>
       </div>
     </div>
@@ -74,9 +83,10 @@
       return {
         deliveryTime: '',
         cancelledReason: '',
-        orderProcessTimeOut: 300, // 5 minutes
+        sprintTimeOut: 60,
+        orderProcessTimeOut: 180, // 3 minutes
         waited: 0,
-        status: 'inProgress' // inProgress, kitchen, declined
+        status: 'inProgress', // inProgress, kitchen, declined,
       }
     },
     computed: {
@@ -91,11 +101,42 @@
       orderHasBeenProcessed() {
         return this.order.status !== 'inProgress'
       },
-      progress() {
-        return Math.floor(100 * this.waited / this.orderProcessTimeOut)
+      inSprint() {
+        return this.order.status === 'inProgress' && this.waited <= this.sprintTimeOut
       },
-      inprogress() {
-        return this.order.status === 'inProgress'
+      inSprintProgress() {
+        if (this.inSprint) {
+          const x = this.waited / this.sprintTimeOut
+          // Refs: https://easings.net/#easeOutSine
+          return 100 * Math.sin((x * Math.PI) / 2)
+        }
+      },
+      waitingConfirm() {
+        return this.order.status === 'inProgress' && this.waited > this.sprintTimeOut && this.waited < this.orderProcessTimeOut
+      },
+      totalConfirmTime() {
+        return this.orderProcessTimeOut - this.sprintTimeOut
+      },
+      waitedConfirmTime() {
+        return this.waited - this.sprintTimeOut
+      },
+      remainConfirmTime() {
+        return this.totalConfirmTime - this.waitedConfirmTime
+      },
+      confirmProgress() {
+        if (this.waitingConfirm)
+          return 100 * this.remainConfirmTime / this.totalConfirmTime
+      },
+      waitingConfirmMessage() {
+        if (this.remainConfirmTime > this.totalConfirmTime / 2)
+          return 'Please wait while we proceed your order.'
+        else if (this.remainConfirmTime > this.totalConfirmTime / 4)
+          return 'The process might take a while...'
+        else
+          return 'Hold on! The restaurant might be crowded at the moment...'
+      },
+      orderMissed() {
+        return this.order.status === 'inProgress' && this.waited >= this.orderProcessTimeOut
       },
       confirmed() {
         return this.order.status === 'kitchen'
@@ -134,10 +175,9 @@
           }
         }
       })
-
       this.intervalId = setInterval(() => {
         this.waited++
-        if (this.waited > this.orderProcessTimeOut) {
+        if (this.waited === this.orderProcessTimeOut) {
           clearInterval(this.intervalId)
         }
       }, 1000)
@@ -248,13 +288,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-  
-    &__circular {
-      padding: 4px;
-      background-color: #EEEEEE;
-      border-radius: 50%;
-      display: inline-block;
-    }
   }
   ::v-deep {
     .g-progress-circular__underlay {
